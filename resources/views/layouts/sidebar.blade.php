@@ -52,7 +52,7 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="./index.php" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-home nav-icon"></i>
                                 <p>Dashboard</p>
                             </a>
                         </li>
@@ -62,7 +62,7 @@
 
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-copy"></i>
+                        <i class="nav-icon fas fa-folder"></i>
                         <p>
                             Master Data
                             <i class="fas fa-angle-left right"></i>
@@ -91,7 +91,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-copy"></i>
+                        <i class="nav-icon fas fa-id-badge"></i>
                         <p>
                             Employee Data
                             <i class="fas fa-angle-left right"></i>
@@ -116,7 +116,7 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="./index.php" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-wallet nav-icon"></i>
                                 <p>Payroll</p>
                             </a>
                         </li>
@@ -126,7 +126,7 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="./index.php" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-users nav-icon"></i>
                                 <p>Recruitment</p>
                             </a>
                         </li>

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class=" lg:ml-[250px] mt-10">
-
+    <div>
+        <H1>HELLO WORLD</H1>
     </div>
 @endsection
