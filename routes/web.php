@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Superadmin\DataUserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -9,3 +10,6 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
+
+Route::get('/datauser', [DataUserController::class, 'index'])->name('data-user.index');
+
