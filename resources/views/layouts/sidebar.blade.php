@@ -125,7 +125,7 @@
                   <li class="nav-item menu-open">
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="./index.php" class="nav-link">
+                            <a href="#" class="nav-link">
                                 <i class="fas fa-users nav-icon"></i>
                                 <p>Recruitment</p>
                             </a>
