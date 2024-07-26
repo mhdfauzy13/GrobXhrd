@@ -51,7 +51,7 @@
                 <li class="nav-item menu-open">
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="./index.php" class="nav-link">
+                            <a href={{ route('dashboard.index') }} class="nav-link">
                                 <i class="fas fa-home nav-icon"></i>
                                 <p>Dashboard</p>
                             </a>
@@ -115,7 +115,7 @@
                   <li class="nav-item menu-open">
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="./index.php" class="nav-link">
+                            <a href={{ route('payroll.index') }} class="nav-link">
                                 <i class="fas fa-wallet nav-icon"></i>
                                 <p>Payroll</p>
                             </a>
