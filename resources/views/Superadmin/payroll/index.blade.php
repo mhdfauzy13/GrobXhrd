@@ -2,6 +2,6 @@
 
 @section('content')
     <div>
-        <h1>ABCDEFG</h1>
+        <h1>HALO INI HALAMAN PAYROLL</h1>
     </div>
 @endsection
