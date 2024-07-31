@@ -40,14 +40,11 @@
                 <li class="nav-item menu-open">
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href={{ route('dashboard.index') }} class="nav-link">
+                            <a href={{ route('dashboard.index')}} class="nav-link">
                                 <i class="fas fa-home nav-icon"></i>
                                 <p>Dashboard</p>
                             </a>
                         </li>
-                 
-
-
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-folder"></i>
@@ -58,7 +55,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href={{ route('datauser.index') }} class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>User</p>
                             </a>
