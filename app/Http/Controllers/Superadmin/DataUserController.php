@@ -9,19 +9,18 @@ use Illuminate\Http\Request;
 
 class DataUserController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         return view('Superadmin.MasterData.user.index');
     }
 
     public function create(): View
     {
         return view('Superadmin.MasterData.user.create');
-
     }
 
     public function store(Request $request)
     {
-        
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
