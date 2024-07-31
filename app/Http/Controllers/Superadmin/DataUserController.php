@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 
 class DataUserController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         return view('Superadmin.MasterData.user.index');
     }
-
 }

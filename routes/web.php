@@ -3,10 +3,9 @@
 
 
 use App\Http\Controllers\Superadmin\AttendanceController;
-use App\Http\Controllers\Superadmin\EmployeeData;
+use App\Http\Controllers\Superadmin\CompanyController;
 use App\Http\Controllers\Superadmin\DashboardController;
 use App\Http\Controllers\Superadmin\PayrollController;
-use App\Http\Controllers\Superadmin\DataUserController;
 use App\Http\Controllers\Superadmin\RecruitmentController;
 
 use Illuminate\Support\Facades\Route;
@@ -19,5 +18,5 @@ Route::get('/attendance', [AttendanceController::class, 'index'])->name('attanda
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 Route::get('/payroll', [PayrollController::class, 'index'])->name('payroll.index');
 Route::get('/recruitment', [RecruitmentController::class, 'index'])->name('recruitment.index');
-
-
+Route::get('/company', [CompanyController::class, 'index'])->name('company.index');
+Route::resource('/company', \App\Http\Controllers\Superadmin\CompanyController::class);
