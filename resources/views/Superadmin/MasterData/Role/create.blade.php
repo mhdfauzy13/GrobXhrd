@@ -60,47 +60,52 @@
                                 </div>
                             </form> --}}
 
-                          
-                          <form action="{{ route('role.store') }}" method="POST" id="quickForm">
-                            @csrf
-                            <div class="card-body">
-                                <div class="form-group">
-                                    <label for="roleName">Nama Role</label>
-                                    <input type="text" name="name" class="form-control" id="roleName" placeholder="Masukkan Role">
+
+                            <form action="{{ route('role.store') }}" method="POST" id="quickForm">
+                                @csrf
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="roleName">Nama Role</label>
+                                        <input type="text" name="name" class="form-control" id="roleName"
+                                            placeholder="Masukkan Role">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="permissions">Permission yang Diberikan</label>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" name="permissions[]" value="create"
+                                                class="custom-control-input" id="permissionCreate">
+                                            <label class="custom-control-label" for="permissionCreate">Create</label>
+                                        </div>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" name="permissions[]" value="read"
+                                                class="custom-control-input" id="permissionRead">
+                                            <label class="custom-control-label" for="permissionRead">Read</label>
+                                        </div>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" name="permissions[]" value="update"
+                                                class="custom-control-input" id="permissionUpdate">
+                                            <label class="custom-control-label" for="permissionUpdate">Update</label>
+                                        </div>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" name="permissions[]" value="delete"
+                                                class="custom-control-input" id="permissionDelete">
+                                            <label class="custom-control-label" for="permissionDelete">Delete</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="status">Status</label>
+                                        <select name="status" class="form-control" id="status">
+                                            <option value="enable">Enable</option>
+                                            <option value="disable">Disable</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="permissions">Permission yang Diberikan</label>
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" name="permissions[]" value="create" class="custom-control-input" id="permissionCreate">
-                                        <label class="custom-control-label" for="permissionCreate">Create</label>
-                                    </div>
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" name="permissions[]" value="read" class="custom-control-input" id="permissionRead">
-                                        <label class="custom-control-label" for="permissionRead">Read</label>
-                                    </div>
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" name="permissions[]" value="update" class="custom-control-input" id="permissionUpdate">
-                                        <label class="custom-control-label" for="permissionUpdate">Update</label>
-                                    </div>
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" name="permissions[]" value="delete" class="custom-control-input" id="permissionDelete">
-                                        <label class="custom-control-label" for="permissionDelete">Delete</label>
-                                    </div>
+                                <!-- /.card-body -->
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
                                 </div>
-                                <div class="form-group">
-                                    <label for="status">Status</label>
-                                    <select name="status" class="form-control" id="status">
-                                        <option value="enable">Enable</option>
-                                        <option value="disable">Disable</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <!-- /.card-body -->
-                            <div class="card-footer">
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </div>
-                        </form>
-                        
+                            </form>
+
                         </div>
                         <!-- /.card -->
                     </div>
