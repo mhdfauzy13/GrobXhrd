@@ -5,6 +5,7 @@
 use App\Http\Controllers\Superadmin\AttendanceController;
 use App\Http\Controllers\Superadmin\CompanyController;
 use App\Http\Controllers\Superadmin\DashboardController;
+use App\Http\Controllers\Superadmin\EmployeeController;
 use App\Http\Controllers\Superadmin\PayrollController;
 use App\Http\Controllers\Superadmin\RecruitmentController;
 use App\Http\Controllers\Superadmin\RoleController;
@@ -24,3 +25,8 @@ Route::resource('/company', \App\Http\Controllers\Superadmin\CompanyController::
 Route::get('/role', [RoleController::class, 'index'])->name('role.index');
 Route::get('/create-role', [RoleController::class, 'create'])->name('role.create');
 Route::post('/create-role/store', [RoleController::class, 'store'])->name('role.store');
+
+
+
+Route::get('/Employee', [EmployeeController::class, 'index'])->name('Employee.index');
+

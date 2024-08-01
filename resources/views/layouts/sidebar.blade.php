@@ -87,6 +87,12 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
+                     <li class="nav-item">
+                            <a href="{{route('Employee.index')}}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Employee</p>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="{{ route('attandance.index') }}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
