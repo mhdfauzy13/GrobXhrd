@@ -19,12 +19,8 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <!-- left column -->
                     <div class="col-md-12">
-                        <!-- jquery validation -->
                         <div class="card card-primary">
-                          
-
 
                             <form action="{{ route('role.store') }}" method="POST" id="quickForm">
                                 @csrf
@@ -84,6 +80,5 @@
                 <!-- /.row -->
             </div><!-- /.container-fluid -->
         </section>
-      
     </div>
 @endsection

@@ -35,20 +35,31 @@
                             <div class="form-group">
                                 <label for="role">Role</label>
                                 <select name="role" id="role" class="form-control" required>
-                                    <option value="admin">Admin</option>
-                                    <option value="hrd">HRD</option>
+                                    @foreach (\Spatie\Permission\Models\Role::all() as $role)
+                                        <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 
                             <div class="form-group">
                                 <label for="password">Password</label>
-                                <input type="password" name="password" id="password" class="form-control" required>
+                                <div class="input-group">
+                                    <input type="password" name="password" id="password" class="form-control" required>
+                                    <span class="input-group-text" id="togglePassword">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
+                                </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="password_confirmation">Confirm Password</label>
-                                <input type="password" name="password_confirmation" id="password_confirmation"
-                                    class="form-control" required>
+                                <div class="input-group">
+                                    <input type="password" name="password_confirmation" id="password_confirmation"
+                                        class="form-control" required>
+                                    <span class="input-group-text" id="togglePasswordConfirmation">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
+                                </div>
                             </div>
                         </div>
 

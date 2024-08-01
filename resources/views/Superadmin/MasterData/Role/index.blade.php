@@ -1,5 +1,4 @@
 {{-- @extends('layouts.app')
-
 @section('content')
     <!-- Main content -->
     <section class="content">
@@ -141,8 +140,11 @@
                                         @endforeach
                                     </td>
                                     <td class="project-state text-center">
+
                                         <span class="badge {{ $role->status ? 'badge-success' : 'badge-danger' }}">
                                             {{ $role->status ? 'Enabled' : 'Disabled' }}
+                                        <span class="badge {{ $role->status == 'enable' ? 'badge-success' : 'badge-danger' }}">
+                                            {{ ucfirst($role->status) }}
                                         </span>
                                     </td>
                                     {{-- <td class="project-actions text-right">
@@ -163,10 +165,12 @@
                                 </tr>
                             @endforeach
                         </tbody>
-
                     </table>
                 </div>
             </div>
         </div>
     </section>
 @endsection
+
+
+

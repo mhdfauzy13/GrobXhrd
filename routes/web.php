@@ -1,7 +1,5 @@
 <?php
 
-
-
 use App\Http\Controllers\Superadmin\AttendanceController;
 use App\Http\Controllers\Superadmin\CompanyController;
 use App\Http\Controllers\Superadmin\DashboardController;
@@ -9,6 +7,7 @@ use App\Http\Controllers\Superadmin\DataUserController;
 use App\Http\Controllers\Superadmin\PayrollController;
 use App\Http\Controllers\Superadmin\RecruitmentController;
 use App\Http\Controllers\Superadmin\RoleController;
+use App\Models\Role;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {

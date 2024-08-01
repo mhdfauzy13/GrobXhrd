@@ -21,5 +21,7 @@ class Role extends SpatieRole
     {
         return $query->where('status', false);
     }
+
+    
     
 }

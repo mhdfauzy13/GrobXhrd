@@ -1,18 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- Main content -->
     <section class="content">
-
-        <!-- Default box -->
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Data User</h3>
-
                 <div class="card-tools">
                     <a class="btn btn-primary btn-sm" href="{{ route('datausers.create') }}">
-                        <i class="fas fa-plus">
-                        </i>
+                        <i class="fas fa-plus"></i>
                         Create
                     </a>
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -28,67 +23,41 @@
                     <table class="table table-striped projects">
                         <thead>
                             <tr>
-                                {{-- <th style="width: 1%">
-                                    #
-                                </th> --}}
-                                <th style="width: 20%">
-                                    Name
-                                </th>
-                                <th style="width: 30%">
-                                    Email
-                                </th>
-                                <th>
-                                    Role
-                                </th>
-                                <th style="width: 8%" class="text-center">
-                                    Status
-                                </th>
-                                <th style="width: 20%">
-                                </th>
+                                <th style="width: 20%">Name</th>
+                                <th style="width: 30%">Email</th>
+                                <th>Role</th>
+                                <th style="width: 20%"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                {{-- <td>
-                                    #
-                                </td> --}}
-                                <td>
-                                    <a>
-                                        Esaa
-                                    </a>
-                                </td>
-                                <td>
-                                    <a>
-                                        esaa15@gmail.com
-                                    </a>
-                                </td>
-                                <td>
-                                    <a>
-                                        Admin
-                                    </a>
-                                </td>
-                                <td class="project-state">
-                                    <span class="badge badge-success">Success</span>
-                                </td>
-                                <td class="project-actions text-right">
-                                    {{-- <a class="btn btn-primary btn-sm" >
-                                        <i class="fas fa-folder">
-                                        </i>
-                                        View
-                                    </a> --}}
-                                    <a class="btn btn-info btn-sm" href="#">
-                                        <i class="fas fa-pencil-alt">
-                                        </i>
-                                        Edit
-                                    </a>
-                                    <a class="btn btn-danger btn-sm" href="#">
-                                        <i class="fas fa-trash">
-                                        </i>
-                                        Delete
-                                    </a>
-                                </td>
-                            </tr>
-
+                            @foreach ($users as $user)
+                                <tr>
+                                    <td>{{ $user->name }}</td>
+                                    <td>{{ $user->email }}</td>
+                                    <td>
+                                        @if ($user->roles->isNotEmpty())
+                                            {{ $user->roles->pluck('name')->implode(', ') }}
+                                        @else
+                                            <span class="text-muted">No Role Assigned</span>
+                                        @endif
+                                    </td>
+                                    <td class="project-actions text-right">
+                                        <a class="btn btn-info btn-sm" href="#">
+                                            <i class="fas fa-pencil-alt"></i>
+                                            Edit
+                                        </a>
+                                        <form method="post"
+                                            action="{{ route('datausers.destroy', ['datauser' => $user->user_id]) }}">
+                                            @csrf
+                                            @method('delete')
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-trash"></i>
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

@@ -9,9 +9,10 @@ use Illuminate\Http\Request;
 
 class DataUserController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        return view('Superadmin.MasterData.user.index');
+        $users = User::with('roles')->get();
+        return view('Superadmin.MasterData.user.index', ['users' => $users]);
     }
 
     public function create(): View
@@ -25,15 +26,24 @@ class DataUserController extends Controller
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
             'role' => 'required|string',
-            'password' => 'required|min:8',
+            'password' => 'required|min:8|confirmed',
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
-            // 'role' => 'admin',
             'password' => bcrypt($request->input('password')),
         ]);
+
+        $user->assignRole($request->input('role'));
+
         return redirect()->route('datausers.index')->with('success', 'Akun berhasil dibuat');
+    }
+
+    public function destroy(\App\Models\User $datauser)
+    {
+        $datauser->delete();
+
+        return redirect()->route('datausers.index')->with('success', 'Data berhasil dihapus!');
     }
 }
