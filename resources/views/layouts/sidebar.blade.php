@@ -36,14 +36,19 @@
          <nav class="mt-2">
              <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                  data-accordion="false">
-                <li class="nav-item menu-open">
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href={{ route('dashboard.index')}} class="nav-link">
-                                <i class="fas fa-home nav-icon"></i>
-                                <p>Dashboard</p>
-                            </a>
-                        </li>
+
+                 <li class="nav-item menu-open">
+                     <ul class="nav nav-treeview">
+                         <li class="nav-item">
+                             <a href={{ route('dashboard.index') }} class="nav-link">
+                                 <i class="fas fa-home nav-icon"></i>
+                                 <p>Dashboard</p>
+                             </a>
+                         </li>
+
+
+
+
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-folder"></i>
@@ -82,6 +87,12 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
+                     <li class="nav-item">
+                            <a href="{{route('Employee.index')}}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Employee</p>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="{{ route('attandance.index') }}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
