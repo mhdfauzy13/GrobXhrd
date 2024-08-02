@@ -12,21 +12,14 @@ return new class extends Migration
     public function up()
     {
         Schema::table('roles', function (Blueprint $table) {
-            if (!Schema::hasColumn('roles', 'status')) {
-                $table->enum('status', ['enable', 'disable'])->default('enable');
-            }
+            $table->string('status')->change();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down()
     {
         Schema::table('roles', function (Blueprint $table) {
-            if (Schema::hasColumn('roles', 'status')) {
-                $table->dropColumn('status');
-            }
+            $table->integer('status')->change();
         });
     }
 };

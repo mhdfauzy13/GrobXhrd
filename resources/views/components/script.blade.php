@@ -1,5 +1,11 @@
 <!-- components/script.blade.php -->
+<!-- components/script.blade.php -->
 <!-- jQuery -->
+<script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
+<!-- Bootstrap -->
+<script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<!-- AdminLTE -->
+<script src="{{ asset('dist/js/adminlte.js') }}"></script>
 <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
 <!-- Bootstrap -->
 <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -12,3 +18,6 @@
 <script src="{{ asset('dist/js/demo.js') }}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ asset('dist/js/pages/dashboard3.js') }}"></script>
+
+<!--  Script for Show/Hide Password -->
+<script src="{{ asset('dist/js/password-toggle.js') }}"></script>

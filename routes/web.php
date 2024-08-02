@@ -1,13 +1,14 @@
 <?php
 
-
-
 use App\Http\Controllers\Superadmin\AttendanceController;
 use App\Http\Controllers\Superadmin\CompanyController;
 use App\Http\Controllers\Superadmin\DashboardController;
+use App\Http\Controllers\Superadmin\DataUserController;
+use App\Http\Controllers\Superadmin\EmployeeController;
 use App\Http\Controllers\Superadmin\PayrollController;
 use App\Http\Controllers\Superadmin\RecruitmentController;
 use App\Http\Controllers\Superadmin\RoleController;
+use App\Models\Role;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -23,9 +24,26 @@ Route::post('/recruitment', [RecruitmentController::class, 'store'])->name('recr
 
 // Route::resource('company', CompanyController::class);
 
+
+
+Route::get('/datauser', [DataUserController::class, 'index'])->name('datauser.index');
+Route::resource('/datausers', \App\Http\Controllers\Superadmin\DataUserController::class);
+
+Route::get('/company', [CompanyController::class, 'index'])->name('company.index');
+Route::resource('/company', \App\Http\Controllers\Superadmin\CompanyController::class);
+
 Route::get('/company', [CompanyController::class, 'index'])->name('company.index');
 Route::resource('/company', \App\Http\Controllers\Superadmin\CompanyController::class);
 
 Route::get('/role', [RoleController::class, 'index'])->name('role.index');
 Route::get('/create-role', [RoleController::class, 'create'])->name('role.create');
 Route::post('/create-role/store', [RoleController::class, 'store'])->name('role.store');
+Route::get('/role/{id}/edit', [RoleController::class, 'edit'])->name('role.edit');
+Route::put('/role/{id}', [RoleController::class, 'update'])->name('role.update');
+Route::delete('role/{id}', [RoleController::class, 'destroy'])->name('role.destroy');
+
+
+
+
+Route::get('/Employee', [EmployeeController::class, 'index'])->name('Employee.index');
+
