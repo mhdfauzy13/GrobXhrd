@@ -16,17 +16,41 @@ class RolesAndPermissionsSeeder extends Seeder
     public function run()
     {
         // Buat permissions
-        $permissions = ['create', 'read', 'update', 'delete'];
+        $permissions = [
+            'role.index', 'role.create', 'role.edit', 'role.delete',
+            'user.index', 'user.create', 'user.edit', 'user.delete',
         
+        ];        
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
         }
 
         // Buat roles dan tambahkan permissions
-        $adminRole = Role::firstOrCreate(['name' => 'admin', 'status' => true]);
-        $adminRole->syncPermissions($permissions);
+        // $adminRole = Role::firstOrCreate(['name' => 'admin', 'status' => true]);
+        // $adminRole->syncPermissions($permissions);
 
-        $userRole = Role::firstOrCreate(['name' => 'user', 'status' => true]);
-        $userRole->syncPermissions(['read']);
-    }
+        // $userRole = Role::firstOrCreate(['name' => 'user', 'status' => true]);
+        // $userRole->syncPermissions(['read']);
+
+                    
+                    //ini yang baru nya
+                    // $adminRole = Role::firstOrCreate(['name' => 'admin']);
+                    // $adminRole->syncPermissions($permissions);
+
+                    // $userRole = Role::firstOrCreate(['name' => 'user']);
+                    // $userRole->syncPermissions(['user.create', 'user.edit', 'user.index']);
+
+                    $roles = [
+                        'Admin' => ['role.index', 'role.create', 'role.edit', 'role.delete', 'user.index', 'user.create', 'user.edit', 'user.delete'],
+                        'User' => ['user.index']
+                    ];
+            
+                    foreach ($roles as $roleName => $permissions) {
+                        Role::updateOrCreate(
+                            ['name' => $roleName],
+                            ['status' => 'enable']
+                        )->syncPermissions($permissions);
+                    }
+                
+                }
 }

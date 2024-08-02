@@ -24,6 +24,10 @@ Route::get('/recruitment', [RecruitmentController::class, 'index'])->name('recru
 Route::get('/role', [RoleController::class, 'index'])->name('role.index');
 Route::get('/create-role', [RoleController::class, 'create'])->name('role.create');
 Route::post('/create-role/store', [RoleController::class, 'store'])->name('role.store');
+Route::get('/role/{id}/edit', [RoleController::class, 'edit'])->name('role.edit');
+Route::put('/role/{id}', [RoleController::class, 'update'])->name('role.update');
+Route::delete('role/{id}', [RoleController::class, 'destroy'])->name('role.destroy');
+
 
 
 
