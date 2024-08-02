@@ -112,9 +112,9 @@
                     <table class="table table-striped projects">
                         <thead>
                             <tr>
-                                <th style="width: 1%">
+                                {{-- <th style="width: 1%">
                                     #
-                                </th>
+                                </th> --}}
                                 <th style="width: 20%">
                                     Name
                                 </th>
@@ -131,7 +131,7 @@
                         </thead>
 
                         <tbody>
-                            @foreach ($roles as $role)
+                            {{-- @foreach ($roles as $role)
                                 <tr>
                                     <td>#</td>
                                     <td>{{ $role->name }}</td>
@@ -145,23 +145,57 @@
                                             {{ ucfirst($role->status) }}
                                         </span>
                                     </td>
-                                    {{-- <td class="project-actions text-right">
-                                        <a class="btn btn-primary btn-sm" href="{{ route('role.show', $role->id) }}">
+                                    <td class="project-actions text-right">  --}}
+                                        {{-- <a class="btn btn-primary btn-sm" href="{{ route('role.show', $role->id) }}">
                                             <i class="fas fa-folder"></i> View
                                         </a>
-                                        <a class="btn btn-info btn-sm" href="{{ route('role.edit', $role->id) }}">
+                                        {{-- <a class="btn btn-info btn-sm" href="{{ route('role.edit', $role->id) }}">
                                             <i class="fas fa-pencil-alt"></i> Edit
                                         </a>
                                         <form action="{{ route('role.destroy', $role->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                <i class="fas fa-trash"></i> Delete
+                                            <button type="submit" class="btn btn-danger btn-sm"> --}}
+                                                {{-- <i class="fas fa-trash"></i> Delete
                                             </button>
                                         </form>
-                                    </td> --}}
+                                    </td>
                                 </tr>
-                            @endforeach
+                            @endforeach --}}
+
+
+                            @foreach ($roles as $role)
+                            <tr>  
+                                {{-- <td>#</td> --}}
+                                <td>{{ $role->name }}</td>
+                                {{-- <td>{{ $role->status }}</td> --}}
+                                <td>
+                                    <span class="badge-success">
+                                    @foreach ($role->permissions as $permission)
+                                        {{ $permission->name }}<br>
+                                    @endforeach
+                                </span>
+                                </td>
+                                <td class="project-state text-center">
+                                    <span class="badge {{ $role->status == 'enable' ? 'badge-success' : 'badge-danger' }}">
+                                        {{ ucfirst($role->status) }}
+                                    </span>
+                                </td>
+                                <td class="project-actions text-right">  
+                                    
+                                    <a class="btn btn-info btn-sm" href="{{ route('role.edit', $role->id) }}">
+                                        <i class="fas fa-pencil-alt"></i> Edit
+                                    </a>
+                                    <form action="{{ route('role.destroy', $role->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm"> 
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                                    @endforeach 
                         </tbody>
 
                     </table>
