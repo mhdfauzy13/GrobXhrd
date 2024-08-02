@@ -8,7 +8,6 @@ use App\Http\Controllers\Superadmin\DashboardController;
 use App\Http\Controllers\Superadmin\PayrollController;
 use App\Http\Controllers\Superadmin\RecruitmentController;
 use App\Http\Controllers\Superadmin\RoleController;
-
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -22,8 +21,10 @@ Route::get('/recruitment', [RecruitmentController::class, 'index'])->name('recru
 Route::get('/recruitment/create', [RecruitmentController::class, 'create'])->name('recruitment.create');
 Route::post('/recruitment', [RecruitmentController::class, 'store'])->name('recruitment.store');
 
-Route::resource('company', CompanyController::class);
+// Route::resource('company', CompanyController::class);
 
+Route::get('/company', [CompanyController::class, 'index'])->name('company.index');
+Route::resource('/company', \App\Http\Controllers\Superadmin\CompanyController::class);
 
 Route::get('/role', [RoleController::class, 'index'])->name('role.index');
 Route::get('/create-role', [RoleController::class, 'create'])->name('role.create');
