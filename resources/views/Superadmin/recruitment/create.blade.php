@@ -3,11 +3,12 @@
 @section('content')
 
     <div class="content">
+
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-xl-6">
-                        <h1>Create Company</h1>
+                        <h1>Create Recruitment</h1>
                     </div>
                 </div>
             </div>
@@ -21,7 +22,7 @@
                     </div>
 
                     <!-- Form utama -->
-                    <form action="{{ route('company.store') }}" method="POST">
+                    <form action="{{ route('recruitment.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="card-body">
                             @if ($errors->any())
@@ -35,13 +36,13 @@
                             @endif
 
                             <div class="form-group">
-                                <label for="name_company">Name Company</label>
-                                <input type="text" name="name_company" id="name_company" class="form-control" required>
+                                <label for="name">Name</label>
+                                <input type="text" name="name" id="name" class="form-control" required>
                             </div>
 
                             <div class="form-group">
-                                <label for="address">Address</label>
-                                <input type="text" name="address" id="address" class="form-control" required>
+                                <label for="email">Email</label>
+                                <input type="email" name="email" id="email" class="form-control" required>
                             </div>
 
                             <div class="form-group">
@@ -50,8 +51,29 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" name="email" id="email" class="form-control" required>
+                                <label for="date_of_birth">Date of Birth</label>
+                                <input type="date" name="date_of_birth" id="date_of_birth" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="last_education">Last Education</label>
+                                <input type="text" name="last_education" id="last_education" class="form-control"
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="last_position">Last Position</label>
+                                <input type="text" name="last_position" id="last_position" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cv_file">CV File</label>
+                                <input type="file" name="cv_file" id="cv_file" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="comment">Comment</label>
+                                <textarea name="comment" id="comment" class="form-control"></textarea>
                             </div>
 
                             <div class="form-group">
@@ -62,11 +84,10 @@
                                 </select>
                             </div>
 
-
-
                             <div class="card-footer">
                                 <button type="submit" class="btn btn-primary">Save</button>
                             </div>
+                        </div>
                     </form>
                 </div>
             </div>

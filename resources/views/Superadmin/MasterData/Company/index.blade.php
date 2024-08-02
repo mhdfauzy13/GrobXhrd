@@ -34,36 +34,34 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Jonas Photo</td>
-                                <td>Jl. Banda No 38 Citarum, Kec. Bandung Wetan, Kota Bandung</td>
-                                <td class="text-center">(123) 456-7890</td>
-                                <td class="text-center">jonas.photo@gmail.com</td>
-                                <td class="text-center"><span class="badge badge-success">Active</span></td>
-                                <td class="project-actions text-right">
-                                    <a class="btn btn-info btn-sm" href="#">
-                                        <i class="fas fa-pencil-alt"></i> Edit
-                                    </a>
-                                    <a class="btn btn-danger btn-sm" href="#">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Sima Creation</td>
-                                <td>Jl Sabang No 23</td>
-                                <td class="text-center">(146) 234-4567</td>
-                                <td class="text-center">sima.creation@gmail.com</td>
-                                <td class="text-center"><span class="badge badge-success">Active</span></td>
-                                <td class="project-actions text-right">
-                                    <a class="btn btn-info btn-sm" href="#">
-                                        <i class="fas fa-pencil-alt"></i> Edit
-                                    </a>
-                                    <a class="btn btn-danger btn-sm" href="#">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </a>
-                                </td>
-                            </tr>
+                            @foreach ($companies as $company)
+                                <tr>
+                                    <td>{{ $company->name_company }}</td>
+                                    <td>{{ $company->address }}</td>
+                                    <td class="text-center">{{ $company->phone_number }}</td>
+                                    <td class="text-center">{{ $company->email }}</td>
+                                    <td class="text-center">{{ $company->status }}</td>
+                                    <td class="text-center">
+                                        <a class="btn btn-info btn-sm"
+                                            href="{{ route('company.show', $company->company_id) }}">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                        <a class="btn btn-warning btn-sm"
+                                            href="{{ route('company.edit', $company->company_id) }}">
+                                            <i class="fas fa-pencil-alt"></i> Edit
+                                        </a>
+                                        <form action="{{ route('company.destroy', $company->company_id) }}" method="POST"
+                                            style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Are you sure?')">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Superadmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use Illuminate\Http\Request;
-use App\Models\User; // Pastikan model yang tepat digunakan, misalnya jika modelnya bukan User maka sesuaikan
 
 class CompanyController extends Controller
 {
     public function index()
     {
-        return view("superadmin.MasterData.company.index");
+        $companies = Company::all();
+        return view("superadmin.MasterData.company.index", compact('companies'));
     }
 
     public function create()
@@ -24,28 +25,73 @@ class CompanyController extends Controller
             'name_company' => 'required|string',
             'address' => 'required|string',
             'phone_number' => 'required|string',
-            'email' => 'required|email|unique:users,email|min:8',
-            'status' => 'required|string',
-            'google_client_id' => 'required|string',
-            'google_client_secret' => 'required|string',
-            'google_oauth_scope' => 'required|string',
-            'google_json_file' => 'required|string',
-            'google_oauth_url' => 'required|url',
+            'email' => 'required|email|unique:companies,email',
         ]);
 
-        User::create([
+        Company::create([
             'name_company' => $request->input('name_company'),
             'address' => $request->input('address'),
             'phone_number' => $request->input('phone_number'),
             'email' => $request->input('email'),
-            'status' => $request->input('status'),
-            'google_client_id' => $request->input('google_client_id'),
-            'google_client_secret' => $request->input('google_client_secret'),
-            'google_oauth_scope' => $request->input('google_oauth_scope'),
-            'google_json_file' => $request->input('google_json_file'),
-            'google_oauth_url' => $request->input('google_oauth_url'),
+            'status' => $request->input('status'), // Pastikan status juga ditambahkan jika diperlukan
         ]);
 
         return redirect()->route('company.index')->with('success', 'Company successfully created');
+    }
+
+    public function destroy($company_id)
+    {
+        $company = Company::where('company_id', $company_id)->first();
+
+        if (!$company) {
+            return redirect()->route('company.index')->with('error', 'Company not found');
+        }
+
+        $company->delete();
+
+        return redirect()->route('company.index')->with('success', 'Company successfully deleted');
+    }
+
+    public function edit($company_id)
+    {
+        $company = Company::where('company_id', $company_id)->first();
+
+        if (!$company) {
+            return redirect()->route('company.index')->with('error', 'Company not found');
+        }
+        return view('superadmin.MasterData.company.edit', compact('company'));
+    }
+
+    public function update(Request $request, $company_id)
+    {
+        $request->validate([
+            'name_company' => 'required|string',
+            'address' => 'required|string',
+            'phone_number' => 'required|string',
+            'email' => 'required|email|unique:companies,email,' . $company_id . ',company_id', // Pastikan validasi sesuai
+            'status' => 'required|string|in:active,inactive',
+        ]);
+
+        $company = Company::where('company_id', $company_id)->first();
+
+        if (!$company) {
+            return redirect()->route('company.index')->with('error', 'Company not found');
+        }
+
+        $company->update($request->only([
+            'name_company',
+            'address',
+            'phone_number',
+            'email',
+            'status',
+        ]));
+
+        return redirect()->route('company.index')->with('success', 'Company successfully updated');
+    }
+
+    public function show($company_id)
+    {
+        $company = Company::where('company_id', $company_id)->firstOrFail();
+        return view('superadmin.MasterData.company.show', compact('company'));
     }
 }
