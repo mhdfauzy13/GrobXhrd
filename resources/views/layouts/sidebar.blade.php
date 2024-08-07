@@ -37,94 +37,93 @@
              <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                  data-accordion="false">
 
-                <li class="nav-item menu-open">
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href={{ route('dashboard.index') }} class="nav-link">
-                                <i class="fas fa-home nav-icon"></i>
-                                <p>Dashboard</p>
-                            </a>
-                        </li>
-                 
+                 <li class="nav-item menu-open">
+                     <ul class="nav nav-treeview">
+                         <li class="nav-item">
+                             <a href={{ route('dashboard.index') }} class="nav-link">
+                                 <i class="fas fa-home nav-icon"></i>
+                                 <p>Dashboard</p>
+                             </a>
+                         </li>
 
 
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-folder"></i>
-                        <p>
-                            Master Data
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>User</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route ('role.index') }}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Role</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Company</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-id-badge"></i>
-                        <p>
-                            Employee Data
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('attandance.index') }}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Attendence</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Off Request</p>
-                            </a>
-                        </li>
-                    </ul>
-                  </li>
-                  <li class="nav-item menu-open">
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href={{ route('payroll.index') }} class="nav-link">
-                                <i class="fas fa-wallet nav-icon"></i>
-                                <p>Payroll</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                  <li class="nav-item menu-open">
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href={{ route('recruitment.index') }} class="nav-link">
-                                <i class="fas fa-users nav-icon"></i>
-                                <p>Recruitment</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-          <!-- /.sidebar-menu -->
-        </div>
-        <!-- /.sidebar -->
-      </aside>
-                
 
+
+                         <li class="nav-item">
+                             <a href="#" class="nav-link">
+                                 <i class="nav-icon fas fa-folder"></i>
+                                 <p>
+                                     Master Data
+                                     <i class="fas fa-angle-left right"></i>
+                                 </p>
+                             </a>
+                             <ul class="nav nav-treeview">
+                                 <li class="nav-item">
+                                     <a href="#" class="nav-link">
+                                         <i class="far fa-circle nav-icon"></i>
+                                         <p>User</p>
+                                     </a>
+                                 </li>
+                                 <li class="nav-item">
+                                     <a href="{{ route('role.index') }}" class="nav-link">
+                                         <i class="far fa-circle nav-icon"></i>
+                                         <p>Role</p>
+                                     </a>
+                                 </li>
+                                 <li class="nav-item">
+                                     <a href="{{ route('company.index') }}" class="nav-link">
+                                         <i class="far fa-circle nav-icon"></i>
+                                         <p>Company</p>
+                                     </a>
+                                 </li>
+                             </ul>
+                         </li>
+                         <li class="nav-item">
+                             <a href="#" class="nav-link">
+                                 <i class="nav-icon fas fa-id-badge"></i>
+                                 <p>
+                                     Employee Data
+                                     <i class="fas fa-angle-left right"></i>
+                                 </p>
+                             </a>
+                             <ul class="nav nav-treeview">
+                                 <li class="nav-item">
+                                     <a href="{{ route('attandance.index') }}" class="nav-link">
+                                         <i class="far fa-circle nav-icon"></i>
+                                         <p>Attendence</p>
+                                     </a>
+                                 </li>
+                                 <li class="nav-item">
+                                     <a href="#" class="nav-link">
+                                         <i class="far fa-circle nav-icon"></i>
+                                         <p>Off Request</p>
+                                     </a>
+                                 </li>
+                             </ul>
+                         </li>
+                         <li class="nav-item menu-open">
+                             <ul class="nav nav-treeview">
+                                 <li class="nav-item">
+                                     <a href={{ route('payroll.index') }} class="nav-link">
+                                         <i class="fas fa-wallet nav-icon"></i>
+                                         <p>Payroll</p>
+                                     </a>
+                                 </li>
+                             </ul>
+                         </li>
+                         <li class="nav-item menu-open">
+                             <ul class="nav nav-treeview">
+                                 <li class="nav-item">
+                                     <a href={{ route('recruitment.index') }} class="nav-link">
+                                         <i class="fas fa-users nav-icon"></i>
+                                         <p>Recruitment</p>
+                                     </a>
+                                 </li>
+                             </ul>
+                         </li>
+                     </ul>
+         </nav>
+         <!-- /.sidebar-menu -->
+     </div>
+     <!-- /.sidebar -->
+ </aside>
