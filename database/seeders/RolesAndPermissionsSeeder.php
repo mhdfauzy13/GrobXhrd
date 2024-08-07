@@ -13,44 +13,42 @@ class RolesAndPermissionsSeeder extends Seeder
     /**
      * Run the database seeds.
      */
+
     public function run()
     {
-        // Buat permissions
+        // Menambahkan permissions jika belum ada
         $permissions = [
             'role.index', 'role.create', 'role.edit', 'role.delete',
             'user.index', 'user.create', 'user.edit', 'user.delete',
-        
-        ];        
+        ];
+
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
         }
 
-        // Buat roles dan tambahkan permissions
-        // $adminRole = Role::firstOrCreate(['name' => 'admin', 'status' => true]);
-        // $adminRole->syncPermissions($permissions);
+        // Membuat atau memperbarui role dengan status
+        $roles = [
+            'admin' => [
+                'permissions' => [
+                    'role.index', 'role.create', 'role.edit', 'role.delete',
+                    'user.index', 'user.create', 'user.edit', 'user.delete'
+                ],
+                'status' => 'enable',
+            ],
+            'user' => [
+                'permissions' => [
+                    'user.index'
+                ],
+                'status' => 'enable',
+            ]
+        ];
 
-        // $userRole = Role::firstOrCreate(['name' => 'user', 'status' => true]);
-        // $userRole->syncPermissions(['read']);
-
-                    
-                    //ini yang baru nya
-                    // $adminRole = Role::firstOrCreate(['name' => 'admin']);
-                    // $adminRole->syncPermissions($permissions);
-
-                    // $userRole = Role::firstOrCreate(['name' => 'user']);
-                    // $userRole->syncPermissions(['user.create', 'user.edit', 'user.index']);
-
-                    $roles = [
-                        'Admin' => ['role.index', 'role.create', 'role.edit', 'role.delete', 'user.index', 'user.create', 'user.edit', 'user.delete'],
-                        'User' => ['user.index']
-                    ];
-            
-                    foreach ($roles as $roleName => $permissions) {
-                        Role::updateOrCreate(
-                            ['name' => $roleName],
-                            ['status' => 'enable']
-                        )->syncPermissions($permissions);
-                    }
-                
-                }
+        foreach ($roles as $roleName => $data) {
+            $role = Role::updateOrCreate(
+                ['name' => $roleName],
+                ['status' => $data['status']]
+            );
+            $role->syncPermissions($data['permissions']);
+        }
+    }
 }
