@@ -13,6 +13,7 @@ class RoleController extends Controller
     {
         // Ambil semua role beserta permissions yang terhubung
         $roles = Role::with('permissions')->get();
+        
 
         // Misalnya, jika Anda ingin memisahkan antara role yang aktif dan yang dinonaktifkan
         $activeRoles = $roles->filter(function ($role) {
@@ -23,22 +24,14 @@ class RoleController extends Controller
             return $role->status === 'disable';
         });
 
-        return view('superadmin.masterdata.role.index', compact('activeRoles', 'disabledRoles','roles'));
-
+        return view('superadmin.masterdata.role.index', compact('activeRoles', 'disabledRoles', 'roles'));
     }
 
     public function create()
     {
         // Ambil semua permissions untuk ditampilkan di form create
-        // codingan awal
         $permissions = Permission::all();
         return view('superadmin.masterdata.role.create', compact('permissions'));
-
-
-
-         
-
-        return view('superadmin.masterdata.role.create', compact('groupedPermissions'));
     }
 
     public function store(Request $request)
@@ -57,15 +50,7 @@ class RoleController extends Controller
             'status' => $validatedData['status'],
         ]);
 
-
         // Tambahkan permissions ke role
-        // $role->syncPermissions($validatedData['permissions']);
-        // if ($role->status == 'disable') {
-            // Misalnya, beri tahu pengguna bahwa role ini dinonaktifkan
-            // return redirect()->route('role.index')->with('warning', 'Role berhasil dibuat tetapi dinonaktifkan.');
-        // }
-
-        // Sync permissions
         $permissions = $request->input('permissions', []);
         $role->syncPermissions($permissions);
 
