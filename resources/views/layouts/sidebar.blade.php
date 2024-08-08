@@ -49,105 +49,105 @@
 
 
 
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-folder"></i>
-                        <p>
-                            Master Data
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href={{ route('datauser.index') }} class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>User</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route ('role.index') }}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Role</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href={{ route('company.index') }} class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Company</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-id-badge"></i>
-                        <p>
-                            Employee Data
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                     <li class="nav-item">
-                            <a href="{{route('Employee.index')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Employee</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('attandance.index') }}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Attendence</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Off Request</p>
-                            </a>
-                        </li>
-                    </ul>
-                  </li>
-                  <li class="nav-item menu-open">
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href={{ route('payroll.index') }} class="nav-link">
-                                <i class="fas fa-wallet nav-icon"></i>
-                                <p>Payroll</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                  <li class="nav-item menu-open">
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href={{ route('recruitment.index') }} class="nav-link">
-                                <i class="fas fa-users nav-icon"></i>
-                                <p>Recruitment</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                         <li class="nav-item">
+                             <a href="#" class="nav-link">
+                                 <i class="nav-icon fas fa-folder"></i>
+                                 <p>
+                                     Master Data
+                                     <i class="fas fa-angle-left right"></i>
+                                 </p>
+                             </a>
+                             <ul class="nav nav-treeview">
+                                 <li class="nav-item">
+                                     <a href={{ route('datauser.index') }} class="nav-link">
+                                         <i class="far fa-circle nav-icon"></i>
+                                         <p>User</p>
+                                     </a>
+                                 </li>
+                                 <li class="nav-item">
+                                     <a href="{{ route('role.index') }}" class="nav-link">
+                                         <i class="far fa-circle nav-icon"></i>
+                                         <p>Role</p>
+                                     </a>
+                                 </li>
+                                 <li class="nav-item">
+                                     <a href={{ route('company.index') }} class="nav-link">
+                                         <i class="far fa-circle nav-icon"></i>
+                                         <p>Company</p>
+                                     </a>
+                                 </li>
+                             </ul>
+                         </li>
+                         <li class="nav-item">
+                             <a href="#" class="nav-link">
+                                 <i class="nav-icon fas fa-id-badge"></i>
+                                 <p>
+                                     Employee Data
+                                     <i class="fas fa-angle-left right"></i>
+                                 </p>
+                             </a>
+                             <ul class="nav nav-treeview">
+                                 <li class="nav-item">
+                                     <a href="{{ route('Employee.index') }}" class="nav-link">
+                                         <i class="far fa-circle nav-icon"></i>
+                                         <p>Employee</p>
+                                     </a>
+                                 </li>
+                                 <li class="nav-item">
+                                     <a href="{{ route('attandance.index') }}" class="nav-link">
+                                         <i class="far fa-circle nav-icon"></i>
+                                         <p>Attendence</p>
+                                     </a>
+                                 </li>
+                                 <li class="nav-item">
+                                     <a href="#" class="nav-link">
+                                         <i class="far fa-circle nav-icon"></i>
+                                         <p>Off Request</p>
+                                     </a>
+                                 </li>
+                             </ul>
+                         </li>
+                         <li class="nav-item menu-open">
+                             <ul class="nav nav-treeview">
+                                 <li class="nav-item">
+                                     <a href={{ route('payroll.index') }} class="nav-link">
+                                         <i class="fas fa-wallet nav-icon"></i>
+                                         <p>Payroll</p>
+                                     </a>
+                                 </li>
+                             </ul>
+                         </li>
+                         <li class="nav-item menu-open">
+                             <ul class="nav nav-treeview">
+                                 <li class="nav-item">
+                                     <a href={{ route('recruitment.index') }} class="nav-link">
+                                         <i class="fas fa-users nav-icon"></i>
+                                         <p>Recruitment</p>
+                                     </a>
+                                 </li>
+                             </ul>
+                         </li>
 
-                <li class="nav-item menu-open">
-    <ul class="nav nav-treeview">
-        <li class="nav-item">
-            <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link">
-                <i class="fas fa-sign-out-alt nav-icon"></i>
-                <p>{{ __('Log Out') }}</p>
-            </a>
-            <form id="logout-form" method="POST" action="{{ route('logout') }}" style="display: none;">
-                @csrf
-            </form>
-        </li>
-    </ul>
-</li>
+                         <li class="nav-item menu-open">
+                             <ul class="nav nav-treeview">
+                                 <li class="nav-item">
+                                     <a href="#"
+                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                                         class="nav-link">
+                                         <i class="fas fa-sign-out-alt nav-icon"></i>
+                                         <p>{{ __('Log Out') }}</p>
+                                     </a>
+                                     <form id="logout-form" method="POST" action="{{ route('logout') }}"
+                                         style="display: none;">
+                                         @csrf
+                                     </form>
+                                 </li>
+                             </ul>
+                         </li>
 
-            </ul>
-        </nav>
-          <!-- /.sidebar-menu -->
-        </div>
-        <!-- /.sidebar -->
-      </aside>
-                
-
-                         
+                     </ul>
+         </nav>
+         <!-- /.sidebar-menu -->
+     </div>
+     <!-- /.sidebar -->
+ </aside>

@@ -8,6 +8,9 @@
             <div class="card-header">
                 <h3 class="card-title">Projects</h3>
                 <div class="card-tools">
+                    <a class="btn btn-primary btn-sm" href="{{ route('recruitment.create') }}">
+                        <i class="fas fa-plus"></i> Create
+                    </a>
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                         <i class="fas fa-minus"></i>
                     </button>
@@ -21,7 +24,6 @@
                     <table class="table table-striped projects">
                         <thead>
                             <tr>
-                                <th>#</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone Number</th>
@@ -36,7 +38,6 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>#</td>
                                 <td>Esa Aulia</td>
                                 <td>auliaesa@gmail.com</td>
                                 <td>(123) 456-7890</td>
@@ -44,7 +45,7 @@
                                 <td>Bachelor's Degree</td>
                                 <td>Project Manager</td>
                                 <td><a href="#">Download CV</a></td>
-                                <td>Lorem ipsum dolor sit amet.</td>
+                                <td>Skill kurang sesuai</td>
                                 <td class="project-state"><span class="badge badge-success">Success</span></td>
                                 <td class="project-actions text-right">
                                     <a class="btn btn-primary btn-sm" href="#"><i class="fas fa-folder"></i> View</a>
@@ -53,7 +54,6 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>#</td>
                                 <td>Lutfian Tasa</td>
                                 <td>lutfi@gmail.com</td>
                                 <td>(123) 456-7890</td>
@@ -61,7 +61,7 @@
                                 <td>Bachelor's Degree</td>
                                 <td>Project Manager</td>
                                 <td><a href="#">Download CV</a></td>
-                                <td>Lorem ipsum dolor sit amet.</td>
+                                <td>Berkas kurang okeh</td>
                                 <td class="project-state"><span class="badge badge-success">Success</span></td>
                                 <td class="project-actions text-right">
                                     <a class="btn btn-primary btn-sm" href="#"><i class="fas fa-folder"></i> View</a>
