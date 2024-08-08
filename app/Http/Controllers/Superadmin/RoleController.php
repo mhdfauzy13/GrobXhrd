@@ -59,50 +59,41 @@ class RoleController extends Controller
 
 
     public function edit($id)
-{
-    // Ambil role berdasarkan ID dan semua permissions
-    $role = Role::findOrFail($id);
-    $permissions = Permission::all();
+    {
+        // Ambil role berdasarkan ID
+        $role = Role::findOrFail($id);
+        // Ambil semua permissions
+        $permissions = Permission::all();
+        // Ambil permissions yang sudah dimiliki oleh role
+        $rolePermissions = $role->permissions->pluck('name')->toArray();
 
-    return view('superadmin.masterdata.role.edit', compact('role', 'permissions'));
-}
-
-public function update(Request $request, $id)
-{
-    // Validasi data input
-    $validatedData = $request->validate([
-        'name' => 'required|string|max:255',
-        'permissions' => 'required|array',
-        'permissions.*' => 'string|exists:permissions,name',
-        'status' => 'required|string|in:enable,disable',
-    ]);
-
-    // Temukan role berdasarkan ID dan perbarui
-    $role = Role::findOrFail($id);
-    $role->update([
-        'name' => $validatedData['name'],
-        'status' => $validatedData['status'],
-    ]);
-
-    // Sinkronkan permissions
-    // $role->syncPermissions($validatedData['permissions']);
-    if ($request->has('permissions')) {
-        $permissions = $request->input('permissions');
-        foreach ($permissions as $permissionName) {
-            // Check if the permission exists, otherwise create it
-            $permission = Permission::firstOrCreate(['name' => $permissionName]);
-            $role->givePermissionTo($permission);
-        }
+        return view('superadmin.masterdata.role.edit', compact('role', 'permissions', 'rolePermissions'));
     }
 
-    
+    public function update(Request $request, $id)
+    {
+        // Validasi data input
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'permissions' => 'required|array',
+            'permissions.*' => 'string|exists:permissions,name',
+            'status' => 'required|string|in:enable,disable',
+        ]);
 
-    if ($role->status == 'disable') {
-        return redirect()->route('role.index')->with('warning', 'Role berhasil diperbarui tetapi dinonaktifkan.');
+        // Ambil role berdasarkan ID
+        $role = Role::findOrFail($id);
+        // Update role
+        $role->update([
+            'name' => $validatedData['name'],
+            'status' => $validatedData['status'],
+        ]);
+
+        // Update permissions
+        $permissions = $request->input('permissions', []);
+        $role->syncPermissions($permissions);
+
+        return redirect()->route('role.index')->with('success', 'Role berhasil diperbarui.');
     }
-
-    return redirect()->route('role.index')->with('success', 'Role berhasil diperbarui.');
-}
 
 
 public function destroy($id)
