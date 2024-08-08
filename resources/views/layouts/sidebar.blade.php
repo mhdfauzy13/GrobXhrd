@@ -127,6 +127,21 @@
                         </li>
                     </ul>
                 </li>
+
+                <li class="nav-item menu-open">
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link">
+                <i class="fas fa-sign-out-alt nav-icon"></i>
+                <p>{{ __('Log Out') }}</p>
+            </a>
+            <form id="logout-form" method="POST" action="{{ route('logout') }}" style="display: none;">
+                @csrf
+            </form>
+        </li>
+    </ul>
+</li>
+
             </ul>
         </nav>
           <!-- /.sidebar-menu -->

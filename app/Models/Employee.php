@@ -10,7 +10,7 @@ class Employee extends Model
 
     protected $primaryKey = 'employee_id';
 
-    protected $keyType = 'bigint';
+    protected $keyType = 'int';
 
     public $incrementing = true;
 

@@ -42,12 +42,12 @@
                                         @endif
                                     </td>
                                     <td class="project-actions text-right">
-                                        <a class="btn btn-info btn-sm" href="#">
+                                        <a class="btn btn-info btn-sm"href="{{ route('datausers.edit', ['datauser' => $user->user_id]) }}">
                                             <i class="fas fa-pencil-alt"></i>
                                             Edit
                                         </a>
                                         <form method="post"
-                                            action="{{ route('datausers.destroy', ['datauser' => $user->user_id]) }}">
+                                            action="{{ route('datausers.destroy', ['datauser' => $user->user_id]) }}" style="display:inline;">
                                             @csrf
                                             @method('delete')
                                             <button type="submit" class="btn btn-danger btn-sm">

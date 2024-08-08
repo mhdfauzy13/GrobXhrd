@@ -9,6 +9,6 @@ class AttendanceController extends Controller
 {
     public function index()
     {
-        return view('Superadmin.Employeedata.index');
+        return view('Superadmin.Employeedata.Attendence.index');
     }
 }
