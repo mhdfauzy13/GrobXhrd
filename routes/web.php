@@ -1,4 +1,7 @@
 <?php
+
+
+
 use App\Http\Controllers\Superadmin\AttendanceController;
 use App\Http\Controllers\Superadmin\CompanyController;
 use App\Http\Controllers\Superadmin\DashboardController;
@@ -12,8 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect()->route('login');
-});
-
+}
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard.index');
@@ -50,3 +52,4 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
