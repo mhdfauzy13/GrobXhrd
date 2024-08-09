@@ -59,7 +59,7 @@
                              </a>
                              <ul class="nav nav-treeview">
                                  <li class="nav-item">
-                                     <a href="#" class="nav-link">
+                                     <a href={{ route('datauser.index') }} class="nav-link">
                                          <i class="far fa-circle nav-icon"></i>
                                          <p>User</p>
                                      </a>
@@ -71,7 +71,7 @@
                                      </a>
                                  </li>
                                  <li class="nav-item">
-                                     <a href="{{ route('company.index') }}" class="nav-link">
+                                     <a href={{ route('company.index') }} class="nav-link">
                                          <i class="far fa-circle nav-icon"></i>
                                          <p>Company</p>
                                      </a>
@@ -87,6 +87,12 @@
                                  </p>
                              </a>
                              <ul class="nav nav-treeview">
+                                 <li class="nav-item">
+                                     <a href="{{ route('Employee.index') }}" class="nav-link">
+                                         <i class="far fa-circle nav-icon"></i>
+                                         <p>Employee</p>
+                                     </a>
+                                 </li>
                                  <li class="nav-item">
                                      <a href="{{ route('attandance.index') }}" class="nav-link">
                                          <i class="far fa-circle nav-icon"></i>
@@ -121,6 +127,24 @@
                                  </li>
                              </ul>
                          </li>
+
+                         <li class="nav-item menu-open">
+                             <ul class="nav nav-treeview">
+                                 <li class="nav-item">
+                                     <a href="#"
+                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                                         class="nav-link">
+                                         <i class="fas fa-sign-out-alt nav-icon"></i>
+                                         <p>{{ __('Log Out') }}</p>
+                                     </a>
+                                     <form id="logout-form" method="POST" action="{{ route('logout') }}"
+                                         style="display: none;">
+                                         @csrf
+                                     </form>
+                                 </li>
+                             </ul>
+                         </li>
+
                      </ul>
          </nav>
          <!-- /.sidebar-menu -->

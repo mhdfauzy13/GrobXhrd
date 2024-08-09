@@ -12,7 +12,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('companies', function (Blueprint $table) {
-            $table->id()->first(); // Menambahkan kolom id sebagai primary key
+            // $table->id()->first(); // Menambahkan kolom id sebagai primary key
+            $table->dropPrimary();
+            $table->bigIncrements('id')->first();
         });
     }
 
