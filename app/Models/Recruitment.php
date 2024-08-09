@@ -11,6 +11,8 @@ class Recruitment extends Model
 
     protected $table = 'recruitments';
 
+    protected $primaryKey = 'recruitment_id';
+    public $incrementing = true;
     protected $fillable = [
         'name',
         'email',
@@ -21,5 +23,9 @@ class Recruitment extends Model
         'cv_file',
         'comment',
         'status',
+    ];
+
+    protected $casts = [
+        'status' => 'string',
     ];
 }
