@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect()->route('login');
-}
+});
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard.index');
@@ -31,6 +31,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/recruitment', [RecruitmentController::class, 'index'])->name('recruitment.index');
     Route::get('/recruitment/create', [RecruitmentController::class, 'create'])->name('recruitment.create');
     Route::post('/recruitment', [RecruitmentController::class, 'store'])->name('recruitment.store');
+    Route::get('/recruitment/{recruitment_id}/edit', [RecruitmentController::class, 'edit'])->name('recruitment.edit');
+    Route::put('/recruitment/{recruitment_id}', [RecruitmentController::class, 'update'])->name('recruitment.update');
+    Route::delete('/recruitment/{recruitment_id}', [RecruitmentController::class, 'destroy'])->name('recruitment.destroy');
+
+
 
     Route::get('/company', [CompanyController::class, 'index'])->name('company.index');
     Route::resource('/company', \App\Http\Controllers\Superadmin\CompanyController::class);
@@ -52,4 +57,3 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
-
