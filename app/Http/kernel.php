@@ -61,6 +61,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
         // Add your custom middleware here
-        'check.role.status' => \App\Http\Middleware\CheckRoleStatus::class,
+        'checkRoleStatus' => \App\Http\Middleware\CheckRoleStatus::class,
+
     ];
 }
