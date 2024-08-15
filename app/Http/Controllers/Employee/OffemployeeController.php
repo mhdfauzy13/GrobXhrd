@@ -1,22 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\Superadmin;
+namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
 use App\Models\Offrequest;
 use Illuminate\Http\Request;
 
-class OffrequestController extends Controller
+class OffemployeeController extends Controller
 {
     public function index()
     {
         $offrequests = Offrequest::all();
-        return view('superadmin.employeedata.offrequest.index', compact('offrequests'));
+
+        return view('employee.offrequest.index', ['offrequests' => $offrequests]);
     }
 
     public function create()
     {
-        return view('superadmin.employeedata.offrequest.create');
+        return view('employee.offrequest.create');
     }
 
     public function store(Request $request)

@@ -20,6 +20,15 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="manager">Manager</label>
+                        <select name="manager" id="manager" class="form-control" required>
+                            @foreach (\Spatie\Permission\Models\Role::all() as $manager)
+                                <option value="{{ $manager->name }}">{{ $manager->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
                         <label for="mtitle">Title</label>
                         <input type="text" id="mtitle" name="mtitle" class="form-control" required>
                     </div>

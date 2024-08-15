@@ -9,6 +9,12 @@
                     <a class="btn btn-primary btn-sm" href="{{ route('offrequest.create') }}">
                         <i class="fas fa-plus"></i> Create
                     </a>
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             </div>
             <div class="card-body p-0">
@@ -18,6 +24,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Email</th>
+                                <th>Manager</th>
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Start Event</th>
@@ -29,7 +36,9 @@
                                 <tr>
                                     <td>{{ $offrequest->name }}</td>
                                     <td>{{ $offrequest->email }}</td>
-                                    <td>{{ $offrequest->mtitle }}</td>
+                                    <td>{{ $offrequest->manager->name ?? 'N/A' }}</td>
+                                    <td>{{ $offrequest->title }}</td>
+
                                     <td>{{ $offrequest->description }}</td>
                                     <td>{{ $offrequest->start_event }}</td>
                                     <td>{{ $offrequest->end_event }}</td>
