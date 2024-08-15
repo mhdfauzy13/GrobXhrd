@@ -100,11 +100,12 @@
                                      </a>
                                  </li>
                                  <li class="nav-item">
-                                     <a href="#" class="nav-link">
+                                     <a href="{{ route('offrequest.index') }}" class="nav-link">
                                          <i class="far fa-circle nav-icon"></i>
                                          <p>Off Request</p>
                                      </a>
                                  </li>
+
                              </ul>
                          </li>
                          <li class="nav-item menu-open">

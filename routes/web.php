@@ -1,7 +1,7 @@
 <?php
 
-
-
+use App\Http\Controllers\Employee\OffemployeeController;
+use App\Http\Controllers\Employee\OffrequestController;
 use App\Http\Controllers\Superadmin\AttendanceController;
 use App\Http\Controllers\Superadmin\CompanyController;
 use App\Http\Controllers\Superadmin\DashboardController;
@@ -9,7 +9,7 @@ use App\Http\Controllers\Superadmin\DataUserController;
 use App\Http\Controllers\Superadmin\EmployeeController;
 use App\Http\Controllers\Superadmin\PayrollController;
 use App\Http\Controllers\Superadmin\RecruitmentController;
-use App\Http\Controllers\Superadmin\RoleController;
+use App\Http\Controllers\Employee\RoleController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +35,12 @@ Route::middleware('auth')->group(function () {
     Route::put('/recruitment/{recruitment_id}', [RecruitmentController::class, 'update'])->name('recruitment.update');
     Route::delete('/recruitment/{recruitment_id}', [RecruitmentController::class, 'destroy'])->name('recruitment.destroy');
 
+    Route::get('/offrequest', [OffemployeeController::class, 'index'])->name('offrequest.index');
+    Route::get('/offrequest/create', [OffemployeeController::class, 'create'])->name('offrequest.create');
+    Route::post('/offrequest', [OffemployeeController::class, 'store'])->name('offrequest.store');
+    // Route::get('offrequest/{offrequest_id}/edit', [OffrequestController::class, 'edit'])->name('offrequest.edit');
+    // Route::put('/offrequest/{offrequest_id}', [OffrequestController::class, 'update'])->name('offrequest.update');
+    // Route::delete('/offrequest/{offrequest_id}', [OffrequestController::class, 'destroy'])->name('offrequest.destroy');
 
 
     Route::get('/company', [CompanyController::class, 'index'])->name('company.index');
