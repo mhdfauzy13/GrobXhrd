@@ -34,8 +34,8 @@
                         <tbody>
                             @foreach ($offrequests as $offrequest)
                                 <tr>
-                                    <td>{{ $offrequest->name }}</td>
-                                    <td>{{ $offrequest->email }}</td>
+                                    <td>{{ $offrequest->user->name }}</td>
+                                    <td>{{ $offrequest->user->email }}</td>
                                     <td>{{ $offrequest->manager->name ?? 'N/A' }}</td>
                                     <td>{{ $offrequest->title }}</td>
 

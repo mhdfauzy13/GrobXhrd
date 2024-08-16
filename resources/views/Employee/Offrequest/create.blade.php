@@ -9,15 +9,10 @@
             <div class="card-body">
                 <form action="{{ route('offrequest.store') }}" method="POST">
                     @csrf
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" id="name" name="name" class="form-control" required>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" class="form-control" required>
-                    </div>
+
+                    <input type="hidden" name="name" value="{{ Auth::user()->name }}">
+                    <input type="hidden" name="email" value="{{ Auth::user()->email }}">
 
                     <div class="form-group">
                         <label for="manager">Manager</label>

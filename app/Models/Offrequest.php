@@ -24,7 +24,13 @@ class Offrequest extends Model
         'description',
         'start_event',
         'end_event',
+        'user_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
 
     protected $casts = [
