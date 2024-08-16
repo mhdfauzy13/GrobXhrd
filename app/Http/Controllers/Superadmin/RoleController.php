@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Superadmin;
 
-use App\Http\Controllers\Controller;
+
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Controller;
+use App\Models\Role;
 use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
@@ -12,14 +13,14 @@ class RoleController extends Controller
     public function index()
     {
         $roles = Role::with('permissions')->get();
-        
+
 
         $activeRoles = $roles->filter(function ($role) {
-            return $role->status === 'enable';
+            return $role->isActive(); // Menggunakan method isActive()
         });
 
         $disabledRoles = $roles->filter(function ($role) {
-            return $role->status === 'disable';
+            return !$role->isActive(); // Menggunakan method isActive()
         });
 
         return view('superadmin.masterdata.role.index', compact('activeRoles', 'disabledRoles', 'roles'));
@@ -91,19 +92,29 @@ class RoleController extends Controller
     }
 
 
-public function destroy($id)
-{
-    // Temukan role berdasarkan ID
-    $role = Role::findOrFail($id);
-    
-    // Hapus role
-    $role->delete();
+    public function destroy($id)
+    {
+        // Temukan role berdasarkan ID
+        $role = Role::findOrFail($id);
 
-    return redirect()->route('role.index')->with('success', 'Role berhasil dihapus.');
+        // Hapus role
+        $role->delete();
+
+        return redirect()->route('role.index')->with('success', 'Role berhasil dihapus.');
+    }
+
+    public function checkRole($roleId)
+    {
+        $role = Role::find($roleId);
+
+        if ($role) {
+            if ($role->isActive()) {
+                return "Role ini aktif.";
+            } else {
+                return "Role ini tidak aktif.";
+            }
+        } else {
+            return "Role dengan ID $roleId tidak ditemukan.";
+        }
+    }
 }
-
-
-}
-
-
-

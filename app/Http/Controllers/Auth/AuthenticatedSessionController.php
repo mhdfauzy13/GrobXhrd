@@ -28,8 +28,25 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard.index', absolute: false));
+        // return redirect()->intended(route('dashboard.index', absolute: false));
 
+        return $this->authenticated($request, Auth::user());
+
+
+    }
+
+
+    protected function authenticated(Request $request, $user): RedirectResponse
+    {
+        foreach ($user->roles as $role) {
+            if ($role->status === 'disable') {
+                Auth::logout();
+
+                return redirect('/login')->withErrors('Role Anda tidak aktif. Silakan hubungi admin.');
+            }
+        }
+
+        return redirect()->intended(route('dashboard.index', absolute: false));
     }
 
     /**
