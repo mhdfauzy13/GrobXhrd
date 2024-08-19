@@ -30,4 +30,5 @@ class Role extends SpatieRole
     {
         return $this->status === 'enable';
     }
+    
 }
