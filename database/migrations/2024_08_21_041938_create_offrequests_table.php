@@ -13,7 +13,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('mtitle');
+            $table->string('title');
             $table->text('description');
             $table->dateTime('start_event');
             $table->dateTime('end_event');
