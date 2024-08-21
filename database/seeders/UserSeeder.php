@@ -8,13 +8,16 @@ use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
         User::create([
             'name' => 'Superadmin',
             // 'role' => 'admin',
             'email' => 'Superadmin@gmail.com',
-            'password' => bcrypt(12345678),]);
-
-}
+            'password' => bcrypt(12345678),
+        ]);
+    }
 }

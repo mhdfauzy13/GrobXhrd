@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Foundation\Http\Middleware\HandleInertiaRequests;
-use App\Http\Middleware\CheckRoleStatus; // Import middleware Anda
 
+use App\Http\Controllers\Employee\OffemployeeController;
+use App\Http\Controllers\Employee\OffrequestController;
 use App\Http\Controllers\Superadmin\AttendanceController;
 use App\Http\Controllers\Superadmin\CompanyController;
 use App\Http\Controllers\Superadmin\DashboardController;
@@ -10,7 +10,7 @@ use App\Http\Controllers\Superadmin\DataUserController;
 use App\Http\Controllers\Superadmin\EmployeeController;
 use App\Http\Controllers\Superadmin\PayrollController;
 use App\Http\Controllers\Superadmin\RecruitmentController;
-use App\Http\Controllers\Superadmin\RoleController;
+use App\Http\Controllers\Employee\RoleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\TestMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -21,7 +21,9 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+
 // Route untuk dashboard dengan middleware 'auth', 'verified', dan 'checkRoleStatus'
+
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified', 'checkRoleStatus'])
     ->name('dashboard.index');
@@ -37,6 +39,17 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
     Route::get('/recruitment', [RecruitmentController::class, 'index'])->name('recruitment.index');
     Route::get('/recruitment/create', [RecruitmentController::class, 'create'])->name('recruitment.create');
     Route::post('/recruitment', [RecruitmentController::class, 'store'])->name('recruitment.store');
+    Route::get('/recruitment/{recruitment_id}/edit', [RecruitmentController::class, 'edit'])->name('recruitment.edit');
+    Route::put('/recruitment/{recruitment_id}', [RecruitmentController::class, 'update'])->name('recruitment.update');
+    Route::delete('/recruitment/{recruitment_id}', [RecruitmentController::class, 'destroy'])->name('recruitment.destroy');
+
+    Route::get('/offrequest', [OffemployeeController::class, 'index'])->name('offrequest.index');
+    Route::get('/offrequest/create', [OffemployeeController::class, 'create'])->name('offrequest.create');
+    Route::post('/offrequest', [OffemployeeController::class, 'store'])->name('offrequest.store');
+    // Route::get('offrequest/{offrequest_id}/edit', [OffrequestController::class, 'edit'])->name('offrequest.edit');
+    // Route::put('/offrequest/{offrequest_id}', [OffrequestController::class, 'update'])->name('offrequest.update');
+    // Route::delete('/offrequest/{offrequest_id}', [OffrequestController::class, 'destroy'])->name('offrequest.destroy');
+
 
     Route::resource('/company', CompanyController::class);
     Route::resource('/datausers', DataUserController::class);
@@ -51,5 +64,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
     Route::resource('/employees', EmployeeController::class);
 });
 
+
 // Memasukkan route untuk autentikasi
 require __DIR__ . '/auth.php';
+
