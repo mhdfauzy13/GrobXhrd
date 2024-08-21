@@ -116,7 +116,7 @@
                     </li>
                 {{-- @elseif(auth()->user()->hasRole('employee')) --}}
                     <!-- Employee Sidebar Menu -->
-                    <li class="nav-item menu-open">
+                    {{-- <li class="nav-item menu-open">
                         <a href="{{ route('dashboard.index') }}" class="nav-link">
                             <i class="fas fa-home nav-icon"></i>
                             <p>Dashboard</p>
@@ -133,7 +133,7 @@
                             <i class="far fa-circle nav-icon"></i>
                             <p>Off Request</p>
                         </a>
-                    </li>
+                    </li> --}}
                 {{-- @endif --}}
 
                 <li class="nav-item menu-open">
