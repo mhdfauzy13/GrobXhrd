@@ -10,7 +10,7 @@ use App\Http\Controllers\Superadmin\DataUserController;
 use App\Http\Controllers\Superadmin\EmployeeController;
 use App\Http\Controllers\Superadmin\PayrollController;
 use App\Http\Controllers\Superadmin\RecruitmentController;
-use App\Http\Controllers\Employee\RoleController;
+use App\Http\Controllers\Superadmin\RoleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\TestMiddleware;
 use Illuminate\Support\Facades\Route;
