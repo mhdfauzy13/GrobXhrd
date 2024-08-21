@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
 use App\Models\Offrequest;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OffemployeeController extends Controller
 {
@@ -17,32 +19,33 @@ class OffemployeeController extends Controller
 
     public function create()
     {
-        return view('employee.offrequest.create');
+
+        $managers = User::where('role', 'manager')->pluck('name', 'user_id');
+
+        return view('employee.offrequest.create', compact('managers'));
     }
 
     public function store(Request $request)
     {
-        // Validasi input
         $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:offrequests,email',
-            'mtitle' => 'required|string',
+            'title' => 'required|string',
             'description' => 'required|string',
             'start_event' => 'required|date',
             'end_event' => 'required|date',
+            'manager_id' => 'required|exists:users,user_id',
         ]);
 
-        // Simpan data ke database
         Offrequest::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'mtitle' => $request->input('mtitle'),
+            'user_id' => Auth::id(),
+            'name' => Auth::user()->name,
+            'email' => Auth::user()->email,
+            'title' => $request->input('title'),
             'description' => $request->input('description'),
             'start_event' => $request->input('start_event'),
             'end_event' => $request->input('end_event'),
+            'manager_id' => $request->input('manager_id'),
         ]);
 
-        // Redirect ke halaman index dengan pesan sukses
-        return redirect()->route('offrequests.index')->with('success', 'Offrequest successfully created');
+        return redirect()->route('offrequests.index')->with('success', 'Permohonan cuti diajukan');
     }
 }

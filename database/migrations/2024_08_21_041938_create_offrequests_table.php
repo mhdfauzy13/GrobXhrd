@@ -10,13 +10,19 @@ return new class extends Migration
     {
         Schema::create('offrequests', function (Blueprint $table) {
             $table->bigIncrements('offrequest_id');
+            $table->unsignedBigInteger('user_id');
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('mtitle');
+            $table->string('title');
             $table->text('description');
             $table->dateTime('start_event');
             $table->dateTime('end_event');
             $table->timestamps();
+
+            $table->foreign('user_id')
+                ->references('user_id')
+                ->on('users')
+                ->onDelete('cascade');
         });
     }
 

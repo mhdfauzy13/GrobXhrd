@@ -7,30 +7,25 @@
                 <h3 class="card-title">Create Offrequest</h3>
             </div>
             <div class="card-body">
-                <form action="{{ route('offrequest.store') }}" method="POST">
+                <form action="{{ route('offrequests.store') }}" method="POST">
                     @csrf
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" id="name" name="name" class="form-control" required>
-                    </div>
+
+                    <input type="hidden" name="name" value="{{ Auth::user()->name }}">
+                    <input type="hidden" name="email" value="{{ Auth::user()->email }}">
 
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" class="form-control" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="manager">Manager</label>
-                        <select name="manager" id="manager" class="form-control" required>
-                            @foreach (\Spatie\Permission\Models\Role::all() as $manager)
-                                <option value="{{ $manager->name }}">{{ $manager->name }}</option>
+                        <label for="manager_id">Manager</label>
+                        <select name="manager_id" id="manager_id" class="form-control" required>
+                            <option value="">Pilih Manajer</option>
+                            @foreach ($managers as $user_id => $name)
+                                <option value="{{ $user_id }}">{{ $name }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="mtitle">Title</label>
-                        <input type="text" id="mtitle" name="mtitle" class="form-control" required>
+                        <label for="title">Title</label>
+                        <input type="text" id="title" name="title" class="form-control" required>
                     </div>
 
                     <div class="form-group">

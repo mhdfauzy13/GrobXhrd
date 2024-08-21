@@ -20,12 +20,22 @@ class Offrequest extends Model
     protected $fillable = [
         'name',
         'email',
-        'mtitle',
+        'title',
         'description',
         'start_event',
         'end_event',
+        'user_id',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function manager()
+    {
+        return $this->belongsTo(User::class, 'manager_id');
+    }
 
     protected $casts = [
         'start_event' => 'datetime',
