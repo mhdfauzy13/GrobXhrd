@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Superadmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -51,7 +52,7 @@ class DataUserController extends Controller
                 ->with(['error' => 'Data tidak ditemukan!']);
         }
 
-        $roles = \Spatie\Permission\Models\Role::all();
+        $roles = Role::all();
 
         return view('Superadmin.MasterData.user.update', [
             'user' => $user,
