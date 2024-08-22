@@ -10,7 +10,7 @@ class User extends Authenticatable
 {
     use HasRoles, Notifiable;
 
-   protected $primaryKey = 'user_id';
+    protected $primaryKey = 'user_id';
 
 
     public $incrementing = true;
@@ -31,5 +31,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    
+    public function offrequests()
+    {
+        return $this->hasMany(Offrequest::class, 'user_id');
+    }
 }

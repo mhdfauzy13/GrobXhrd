@@ -3,6 +3,11 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Foundation\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\CheckRoleStatus; // Import middleware Anda
+// use Illuminate\Middleware\Middleware;
+
+
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,8 +16,23 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'checkRoleStatus' => CheckRoleStatus::class
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
+
+    // return Application::configure()
+    // ->withMiddleware(function (Middleware $middleware) {
+    //     $middleware->append([
+    //         CheckRoleStatus::class,
+    //     ]);
+    // });
+
+
+
+    // $app->withMiddleware(function (Middleware $middleware) {
+    //     $middleware->append(CheckRoleStatus::class);
+    // });

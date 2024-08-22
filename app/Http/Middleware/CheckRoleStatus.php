@@ -1,5 +1,7 @@
 <?php
 
+// app/Http/Middleware/CheckRoleStatus.php
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -12,28 +14,29 @@ class CheckRoleStatus
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-
-    // public function handle(Request $request, Closure $next)
-    // {
-    //     $role = $request->user()->roles()->first();
-
-    //     if ($role && $role->status == 'disable') {
-    //         return redirect()->route('home')->with('error', 'Akses ditolak. Role Anda dinonaktifkan.');
-    //     }
-
-    //     return $next($request);
-    // }
-
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         $user = Auth::user();
 
-        if ($user && $user->role && $user->role->status == 'disable') {
-            return redirect()->route('home')->with('error', 'Akses ditolak. Role Anda dinonaktifkan.');
+        // Jika user tidak terautentikasi, langsung lanjutkan
+        if (!$user) {
+            return $next($request);
+        }
+
+        // Memeriksa setiap role user
+        foreach ($user->roles as $role) {
+            if (!$role->isActive()) {
+                Auth::logout(); // Logout user
+                return redirect()->route('login')->withErrors(['Your role has been deactivated.']);
+            }
         }
 
         return $next($request);
     }
 }
+
+

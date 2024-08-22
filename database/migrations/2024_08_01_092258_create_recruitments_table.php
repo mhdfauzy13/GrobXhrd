@@ -18,7 +18,7 @@ class CreateRecruitmentsTable extends Migration
             $table->string('last_position');
             $table->string('cv_file');
             $table->text('comment')->nullable();
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('status', ['accepted', 'rejected'])->default('accepted'); // Ubah status di sini
             $table->timestamps();
         });
     }
