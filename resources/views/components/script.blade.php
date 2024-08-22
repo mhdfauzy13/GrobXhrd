@@ -15,20 +15,75 @@
 <!--  Script for Show/Hide Password -->
 <script src="{{ asset('dist/js/password-toggle.js') }}"></script>
 
+{{-- Script buat klik employee detail --}}
 
 <style>
-        .clickable-row {
-            cursor: pointer;
-        }
-    </style>
+    .clickable-row {
+        cursor: pointer;
+    }
+</style>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const rows = document.querySelectorAll('.clickable-row');
-            rows.forEach(row => {
-                row.addEventListener('click', function() {
-                    window.location.href = this.dataset.url;
-                });
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const rows = document.querySelectorAll('.clickable-row');
+        rows.forEach(row => {
+            row.addEventListener('click', function() {
+                window.location.href = this.dataset.url;
             });
         });
-    </script>
+    });
+</script>
+
+
+
+{{-- Script buat create role --}}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Select/Deselect All Features
+        const selectAllFeatures = document.getElementById('selectAllFeatures');
+        const allFeatureCheckboxes = document.querySelectorAll('input[name="permissions[]"]');
+
+        selectAllFeatures.addEventListener('change', function() {
+            allFeatureCheckboxes.forEach((checkbox) => {
+                checkbox.checked = selectAllFeatures.checked;
+            });
+        });
+
+        // Select/Deselect All Role
+        const selectAllRole = document.getElementById('selectAllRole');
+        const roleCheckboxes = document.querySelectorAll('.role-checkbox');
+
+        selectAllRole.addEventListener('click', function(event) {
+            event.preventDefault();
+            const allChecked = Array.from(roleCheckboxes).every(checkbox => checkbox.checked);
+            roleCheckboxes.forEach((checkbox) => {
+                checkbox.checked = !allChecked;
+            });
+        });
+
+        // Select/Deselect All User
+        const selectAllUser = document.getElementById('selectAllUser');
+        const userCheckboxes = document.querySelectorAll('.user-checkbox');
+
+        selectAllUser.addEventListener('click', function(event) {
+            event.preventDefault();
+            const allChecked = Array.from(userCheckboxes).every(checkbox => checkbox.checked);
+            userCheckboxes.forEach((checkbox) => {
+                checkbox.checked = !allChecked;
+            });
+        });
+    });
+</script>
+
+{{-- SCRIPT BUAT SCANNER  --}}
+
+
+
+
+{{-- CSS BUAT SCANNER  --}}
+
+
+
+
+

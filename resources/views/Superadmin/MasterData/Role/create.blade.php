@@ -98,7 +98,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                        </div>
                                     <div class="form-group">
                                         <label for="status">Status</label>
                                         <select name="status" class="form-control" id="status">
@@ -112,8 +112,6 @@
                                     <a href="{{ route('role.index') }}" class="btn btn-secondary">Back</a>
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </div>
-
-
                             </form>
                         </div>
                         <!-- /.card -->
@@ -124,42 +122,6 @@
             </div><!-- /.container-fluid -->
         </section>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Select/Deselect All Features
-                const selectAllFeatures = document.getElementById('selectAllFeatures');
-                const allFeatureCheckboxes = document.querySelectorAll('input[name="permissions[]"]');
 
-                selectAllFeatures.addEventListener('change', function() {
-                    allFeatureCheckboxes.forEach((checkbox) => {
-                        checkbox.checked = selectAllFeatures.checked;
-                    });
-                });
-
-                // Select/Deselect All Role
-                const selectAllRole = document.getElementById('selectAllRole');
-                const roleCheckboxes = document.querySelectorAll('.role-checkbox');
-
-                selectAllRole.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    const allChecked = Array.from(roleCheckboxes).every(checkbox => checkbox.checked);
-                    roleCheckboxes.forEach((checkbox) => {
-                        checkbox.checked = !allChecked;
-                    });
-                });
-
-                // Select/Deselect All User
-                const selectAllUser = document.getElementById('selectAllUser');
-                const userCheckboxes = document.querySelectorAll('.user-checkbox');
-
-                selectAllUser.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    const allChecked = Array.from(userCheckboxes).every(checkbox => checkbox.checked);
-                    userCheckboxes.forEach((checkbox) => {
-                        checkbox.checked = !allChecked;
-                    });
-                });
-            });
-        </script>
     </div>
 @endsection

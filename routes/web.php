@@ -1,5 +1,6 @@
 <?php
-use App\Http\Controllers\Superadmin\AttendanceController;
+
+use App\Http\Controllers\Superadmin\AttandanceController;
 use App\Http\Controllers\Superadmin\CompanyController;
 use App\Http\Controllers\Superadmin\DashboardController;
 use App\Http\Controllers\Superadmin\DataUserController;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect()->route('login');
 });
+Route::get('/attandance/scan', [AttandanceController::class, 'scanView'])->name('attandance.scanView');
+Route::post('/attandance/scan', [AttandanceController::class, 'scan'])->name('attandance.scan');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
@@ -23,7 +26,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/attendance', [AttendanceController::class, 'index'])->name('attandance.index');
+    Route::get('/attandance', [AttandanceController::class, 'index'])->name('attandance.index');
+
     Route::get('/payroll', [PayrollController::class, 'index'])->name('payroll.index');
 
     Route::get('/recruitment', [RecruitmentController::class, 'index'])->name('recruitment.index');
@@ -31,11 +35,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/recruitment', [RecruitmentController::class, 'store'])->name('recruitment.store');
 
     Route::get('/company', [CompanyController::class, 'index'])->name('company.index');
-    Route::resource('/company', \App\Http\Controllers\Superadmin\CompanyController::class);
-    // Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::resource('/company', CompanyController::class);
 
     Route::get('/datauser', [DataUserController::class, 'index'])->name('datauser.index');
-    Route::resource('/datausers', \App\Http\Controllers\Superadmin\DataUserController::class);
+    Route::resource('/datausers', DataUserController::class);
 
     Route::get('/role', [RoleController::class, 'index'])->name('role.index');
     Route::get('/create-role', [RoleController::class, 'create'])->name('role.create');
@@ -45,7 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('role/{id}', [RoleController::class, 'destroy'])->name('role.destroy');
 
     Route::get('/Employee', [EmployeeController::class, 'index'])->name('Employee.index');
-    Route::resource('/Employees', \App\Http\Controllers\Superadmin\EmployeeController::class);
+    Route::resource('/Employees', EmployeeController::class);
     Route::get('/employees/{employee}', [EmployeeController::class, 'show'])->name('Employee.show');
 });
 

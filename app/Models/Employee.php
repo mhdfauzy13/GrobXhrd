@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Models;
-
+use App\Models\Attandance; 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
@@ -30,4 +31,9 @@ class Employee extends Model
         'insurance' => 'boolean',
         'current_salary' => 'integer',
     ];
+
+    public function attendances(): HasMany
+{
+    return $this->hasMany(Attandance::class, 'employee_id', 'employee_id');
+}
 }
