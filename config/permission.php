@@ -27,7 +27,10 @@ return [
          */
 
         'role' => App\Models\Role::class,
-        'permission' => App\Models\Permission::class,
+        // 'permission' => App\Models\Permission::class,
+        'permission' => \Spatie\Permission\Models\Permission::class,
+
+        
 
 
 

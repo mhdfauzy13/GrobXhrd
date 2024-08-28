@@ -35,4 +35,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Offrequest::class, 'user_id');
     }
+
+    public function managedOffrequests()
+    {
+        return $this->hasMany(Offrequest::class, 'manager_id');
+    }
 }

@@ -7,6 +7,7 @@ use App\Models\Offrequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role; // Impor Spatie\Permission\Models\Role
 
 class OffemployeeController extends Controller
 {
@@ -19,8 +20,8 @@ class OffemployeeController extends Controller
 
     public function create()
     {
-
-        $managers = User::where('role', 'manager')->pluck('name', 'user_id');
+        // Mengambil user dengan role 'manager' menggunakan Spatie Laravel Permission package
+        $managers = User::role('manager')->pluck('name', 'id');
 
         return view('employee.offrequest.create', compact('managers'));
     }
@@ -32,7 +33,7 @@ class OffemployeeController extends Controller
             'description' => 'required|string',
             'start_event' => 'required|date',
             'end_event' => 'required|date',
-            'manager_id' => 'required|exists:users,user_id',
+            'manager_id' => 'required|exists:users,id', // Validasi dengan 'id'
         ]);
 
         Offrequest::create([

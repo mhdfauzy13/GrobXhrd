@@ -4,46 +4,43 @@
     <section class="content">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Create Offrequest</h3>
+                <h3 class="card-title">Add Off Requests</h3>
             </div>
             <div class="card-body">
                 <form action="{{ route('offrequests.store') }}" method="POST">
                     @csrf
-
-                    <input type="hidden" name="name" value="{{ Auth::user()->name }}">
-                    <input type="hidden" name="email" value="{{ Auth::user()->email }}">
+                    <div class="form-group">
+                        <label for="title">Judul</label>
+                        <input type="text" name="title" class="form-control" id="title" placeholder="Masukkan judul permohonan cuti" required>
+                    </div>
 
                     <div class="form-group">
-                        <label for="manager_id">Manager</label>
-                        <select name="manager_id" id="manager_id" class="form-control" required>
-                            <option value="">Pilih Manajer</option>
-                            @foreach ($managers as $user_id => $name)
-                                <option value="{{ $user_id }}">{{ $name }}</option>
+                        <label for="description">Deskripsi</label>
+                        <textarea name="description" class="form-control" id="description" rows="4" placeholder="Masukkan deskripsi permohonan cuti" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="start_event">Tanggal Mulai</label>
+                        <input type="date" name="start_event" class="form-control" id="start_event" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="end_event">Tanggal Selesai</label>
+                        <input type="date" name="end_event" class="form-control" id="end_event" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="manager_id">Pilih Manager</label>
+                        <select name="manager_id" class="form-control" id="manager_id" required>
+                            <option value="" disabled selected>Pilih manager...</option>
+                            @foreach($managers as $id => $name)
+                                <option value="{{ $id }}">{{ $name }}</option>
                             @endforeach
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label for="title">Title</label>
-                        <input type="text" id="title" name="title" class="form-control" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description">Description</label>
-                        <textarea id="description" name="description" class="form-control" required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="start_event">Start Event</label>
-                        <input type="datetime-local" id="start_event" name="start_event" class="form-control" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="end_event">End Event</label>
-                        <input type="datetime-local" id="end_event" name="end_event" class="form-control" required>
-                    </div>
-
                     <button type="submit" class="btn btn-primary">Submit</button>
+                    <a href="{{ route('offrequests.index') }}" class="btn btn-secondary">Back</a>
                 </form>
             </div>
         </div>

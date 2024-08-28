@@ -2,24 +2,22 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
+use App\Models\Role; // Pastikan ini adalah model Role kamu
 use Spatie\Permission\Models\Permission;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-
 
 class RolesAndPermissionsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
-
     public function run()
     {
         // Menambahkan permissions jika belum ada
         $permissions = [
             'role.index', 'role.create', 'role.edit', 'role.delete',
             'user.index', 'user.create', 'user.edit', 'user.delete',
+            // Tambahkan permission lainnya jika diperlukan
         ];
 
         foreach ($permissions as $permission) {
@@ -38,6 +36,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'user' => [
                 'permissions' => [
                     'user.index'
+                ],
+                'status' => 'enable',
+            ],
+            'manager' => [ // Tambahkan role manager
+                'permissions' => [
+                    'role.index', 'user.index' // Tambahkan permissions sesuai kebutuhan
                 ],
                 'status' => 'enable',
             ]
