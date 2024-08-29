@@ -11,7 +11,7 @@
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
         @include('layouts.navbar')
-    
+
         @include('layouts.sidebar')
 
         <div class="content-wrapper">
@@ -25,4 +25,5 @@
     </div>
     @include('components.script')
 </body>
+
 </html>
