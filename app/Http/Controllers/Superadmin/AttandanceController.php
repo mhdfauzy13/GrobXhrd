@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Employee;
 use App\Models\Attandance;
+use Illuminate\Support\Facades\Storage;
 
 class AttandanceController extends Controller
 {
@@ -25,29 +26,45 @@ class AttandanceController extends Controller
 
     public function scan(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'employee_id' => 'required|exists:employees,employee_id',
+            'image' => 'nullable|string',
         ]);
 
         $employee = Employee::where('employee_id', $request->employee_id)->first();
         $attendance = $employee->attendances()->orderBy('created_at', 'desc')->first();
 
-        if ($attendance && $attendance->check_out == null) {
-            // Check-Out
+        $imagePath = null;
+
+        if ($request->has('image')) {
+            $imageData = $request->input('image');
+            $imageData = str_replace('data:image/jpeg;base64,', '', $imageData);
+            $imageData = str_replace(' ', '+', $imageData);
+            $imageName = uniqid() . '.jpg';
+            Storage::put('public/attandance_images/' . $imageName, base64_decode($imageData));
+            $imagePath = 'attandance_images/' . $imageName;
+        }
+
+        if (!$attendance || $attendance->check_out) {
+            // Check-in baru
+            $newAttendance = Attandance::create([
+                'employee_id' => $employee->employee_id,
+                'check_in' => now(),
+                'status' => 'IN',
+                'image' => $imagePath,
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Employee checked IN', 'attendance' => $newAttendance]);
+        } else {
+            // Check-out
             $attendance->update([
                 'check_out' => now(),
                 'status' => 'OUT',
+                'image' => $imagePath,
             ]);
-            $message = "{$employee->name} has successfully checked OUT!";
-        } else {
-            // Check-In
-            $employee->attendances()->create([
-                'check_in' => now(),
-                'status' => 'IN',
-            ]);
-            $message = "{$employee->name} has successfully checked IN!";
-        }
 
-        return response()->json(['message' => $message]);
+            return response()->json(['success' => true, 'message' => 'Employee checked OUT', 'attendance' => $attendance]);
+        }
     }
 }

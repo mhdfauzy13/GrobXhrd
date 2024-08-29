@@ -76,14 +76,16 @@
     });
 </script>
 
-{{-- SCRIPT BUAT SCANNER  --}}
+{{-- SCRIPT BUAT MODAL IMAGE --}}
 
-
-
-
-{{-- CSS BUAT SCANNER  --}}
-
-
+<script>
+    $('#imageModal').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget);
+        var image = button.data('image');
+        var modal = $(this);
+        modal.find('.modal-body #modalImage').attr('src', image);
+    });
+</script>
 
 
 

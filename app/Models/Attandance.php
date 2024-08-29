@@ -14,7 +14,8 @@ class Attandance extends Model
     protected $fillable = [
         'employee_id', 
         'check_in', 
-        'check_out', 
+        'check_out',
+        'image', 
         'status'
     ];
     protected $casts = [
