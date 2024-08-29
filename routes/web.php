@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Employee\OffemployeeController;
+use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\Superadmin\CompanyController;
 use App\Http\Controllers\Superadmin\DashboardController;
 use App\Http\Controllers\Superadmin\DataUserController;
@@ -64,6 +65,11 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
     Route::get('/Employee', [EmployeeController::class, 'index'])->name('Employee.index');
     Route::resource('/Employees', EmployeeController::class);
     Route::get('/employees/{employee}', [EmployeeController::class, 'show'])->name('Employee.show');
+
+    Route::get('/Holiday', [HolidayController::class, 'index'])->name('Holiday.calendar');
+    Route::resource('/Employees', EmployeeController::class);
+
+
 });
 
 // Memasukkan route untuk autentikasi
