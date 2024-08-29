@@ -7,7 +7,7 @@
                 <h3 class="card-title">Add Off Requests</h3>
             </div>
             <div class="card-body">
-                <form action="{{ route('offrequests.store') }}" method="POST">
+                <form action="{{ route('offrequest.store') }}" method="POST">
                     @csrf
                     <div class="form-group">
                         <label for="title">Judul</label>
@@ -21,26 +21,26 @@
 
                     <div class="form-group">
                         <label for="start_event">Tanggal Mulai</label>
-                        <input type="date" name="start_event" class="form-control" id="start_event" required>
+                        <input type="datetime-local" name="start_event" class="form-control" id="start_event" required>
                     </div>
 
                     <div class="form-group">
                         <label for="end_event">Tanggal Selesai</label>
-                        <input type="date" name="end_event" class="form-control" id="end_event" required>
+                        <input type="datetime-local" name="end_event" class="form-control" id="end_event" required>
                     </div>
 
                     <div class="form-group">
                         <label for="manager_id">Pilih Manager</label>
-                        <select name="manager_id" class="form-control" id="manager_id" required>
-                            <option value="" disabled selected>Pilih manager...</option>
-                            @foreach($managers as $id => $name)
-                                <option value="{{ $id }}">{{ $name }}</option>
+                        <select name="manager_id" id="manager_id" class="form-control">
+                            @foreach($managers as $manager)
+                                <option value="{{ $manager->id }}">{{ $manager->name }}</option>
                             @endforeach
                         </select>
                     </div>
+                    
 
                     <button type="submit" class="btn btn-primary">Submit</button>
-                    <a href="{{ route('offrequests.index') }}" class="btn btn-secondary">Back</a>
+                    <a href="{{ route('offrequest.index') }}" class="btn btn-secondary">Back</a>
                 </form>
             </div>
         </div>

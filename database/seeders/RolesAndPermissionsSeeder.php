@@ -1,8 +1,8 @@
-<?php
+<?php 
 
 namespace Database\Seeders;
 
-use App\Models\Role; // Pastikan ini adalah model Role kamu
+use Spatie\Permission\Models\Role; // Gunakan model Role dari Spatie
 use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Seeder;
 

@@ -33,18 +33,22 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($offrequests as $offrequest)
+                            @forelse ($offrequests as $offrequest)
                                 <tr>
-                                    <td>{{ $offrequest->user->name }}</td>
-                                    <td>{{ $offrequest->user->email }}</td>
+                                    <td>{{ $offrequest->user->name ?? 'N/A' }}</td>
+                                    <td>{{ $offrequest->user->email ?? 'N/A' }}</td>
                                     <td>{{ $offrequest->manager->name ?? 'N/A' }}</td>
                                     <td>{{ $offrequest->title }}</td>
                                     <td>{{ $offrequest->description }}</td>
-                                    <td>{{ $offrequest->start_event }}</td>
-                                    <td>{{ $offrequest->end_event }}</td>
+                                    <td>{{ $offrequest->start_event->format('Y-m-d') }}</td> <!-- Format tanggal sesuai kebutuhan -->
+                                    <td>{{ $offrequest->end_event->format('Y-m-d') }}</td> <!-- Format tanggal sesuai kebutuhan -->
                                     <td>{{ ucfirst($offrequest->status) }}</td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="8" class="text-center">No off requests available.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
