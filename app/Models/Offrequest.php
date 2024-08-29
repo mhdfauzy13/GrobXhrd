@@ -2,21 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Offrequest extends Model
 {
-    use HasFactory;
-
-
-    protected $table = 'offrequests';
-
-
-    protected $primaryKey = 'offrequest_id';
-
-    public $incrementing = true;
-
     protected $fillable = [
         'name',
         'email',
@@ -25,6 +14,8 @@ class Offrequest extends Model
         'start_event',
         'end_event',
         'user_id',
+        'manager_id',
+        'status',
     ];
 
     public function user()
@@ -36,9 +27,4 @@ class Offrequest extends Model
     {
         return $this->belongsTo(User::class, 'manager_id');
     }
-
-    protected $casts = [
-        'start_event' => 'datetime',
-        'end_event' => 'datetime',
-    ];
 }

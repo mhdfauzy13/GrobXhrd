@@ -17,6 +17,14 @@ class User extends Authenticatable
 
     protected $keyType = 'int';
 
+    public function scopeManagers($query)
+    {
+        return $query->select('name', 'user_id')
+                     ->whereHas('roles', function($query) {
+                         $query->where('roles.id', 3); // ID role 'manager'
+                     });
+    }
+
     protected $hidden = [
         'password',
     ];
@@ -34,5 +42,10 @@ class User extends Authenticatable
     public function offrequests()
     {
         return $this->hasMany(Offrequest::class, 'user_id');
+    }
+
+    public function managedOffrequests()
+    {
+        return $this->hasMany(Offrequest::class, 'manager_id');
     }
 }

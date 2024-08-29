@@ -20,7 +20,7 @@ public function up()
 public function down()
 {
     Schema::table('roles', function (Blueprint $table) {
-        $table->integer('status')->change();
+        // $table->integer('status')->change();
     });
 }
 };
