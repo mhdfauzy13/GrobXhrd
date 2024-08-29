@@ -13,7 +13,6 @@ use App\Http\Controllers\Superadmin\AttandanceController;
 use App\Http\Middleware\TestMiddleware;
 use Illuminate\Support\Facades\Route;
 
-// Tambahkan route di sini
 Route::get('/', function () {
     return redirect()->route('login');
 });
@@ -21,13 +20,11 @@ Route::get('/', function () {
 Route::get('/attandance/scan', [AttandanceController::class, 'scanView'])->name('attandance.scanView');
 Route::post('/attandance/scan', [AttandanceController::class, 'scan'])->name('attandance.scan');
 
-// Route untuk dashboard dengan middleware 'auth', 'verified', dan 'checkRoleStatus'
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified', 'checkRoleStatus'])
     ->name('dashboard.index');
 
-// Kelompokkan route yang memerlukan middleware 'auth' dan 'checkRoleStatus'
 Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
     
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -66,5 +63,4 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
     Route::get('/employees/{employee}', [EmployeeController::class, 'show'])->name('Employee.show');
 });
 
-// Memasukkan route untuk autentikasi
 require __DIR__ . '/auth.php';
