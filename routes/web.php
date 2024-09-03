@@ -10,6 +10,7 @@ use App\Http\Controllers\Superadmin\RecruitmentController;
 use App\Http\Controllers\Superadmin\RoleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Superadmin\AttandanceController;
+use App\Http\Controllers\Superadmin\HolidayController;
 use App\Http\Middleware\TestMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -21,7 +22,7 @@ Route::get('/', function () {
 Route::get('/attandance/scan', [AttandanceController::class, 'scanView'])->name('attandance.scanView');
 Route::post('/attandance/scan', [AttandanceController::class, 'scan'])->name('attandance.scan');
 
-// Route untuk dashboard dengan middleware 'auth', 'verified', dan 'checkRoleStatus'
+// Route untuk dashboard dengan middleware 'auth', 'verified', dan 'checkRoleStatus'git add
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified', 'checkRoleStatus'])
@@ -64,6 +65,12 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
     Route::get('/Employee', [EmployeeController::class, 'index'])->name('Employee.index');
     Route::resource('/Employees', EmployeeController::class);
     Route::get('/employees/{employee}', [EmployeeController::class, 'show'])->name('Employee.show');
+
+    Route::get('/Holidays', [HolidayController::class, 'index'])->name('Holiday.calendar');
+    Route::get('/holidays/data', [HolidayController::class, 'data']);
+    Route::resource('/Holiday', HolidayController::class);
+
+
 });
 
 // Memasukkan route untuk autentikasi
