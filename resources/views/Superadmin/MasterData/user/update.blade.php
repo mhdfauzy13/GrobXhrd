@@ -19,7 +19,7 @@
                         {{-- <h3 class="card-title">Edit</h3> --}}
                     </div>
 
-                    <form action="{{ route('datausers.update', $user->user_id) }}" method="POST">
+                    <form action="{{ route('datauser.update', $user->user_id) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="card-body">

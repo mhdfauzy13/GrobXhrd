@@ -13,10 +13,15 @@
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
         @include('layouts.navbar')
-    
-        @include('layouts.sidebar')
 
-        <div class="content-wrapper">
+        <!-- Main Sidebar Container -->
+        @if (auth()->user()->hasRole('superadmin'))
+            @include('partials.sidebar-admin')
+        @else
+            @include('partials.sidebar-user')
+        @endif
+
+    <div class="content-wrapper">
             <div class="content-header">
                 <div class="container-fluid">
                     @yield('content')
@@ -27,4 +32,5 @@
     </div>
     @include('components.script')
 </body>
+
 </html>

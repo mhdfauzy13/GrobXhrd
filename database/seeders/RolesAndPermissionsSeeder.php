@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
-use Spatie\Permission\Models\Role; // Gunakan model Role dari Spatie
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -24,35 +26,43 @@ class RolesAndPermissionsSeeder extends Seeder
             Permission::firstOrCreate(['name' => $permission]);
         }
 
-        // Membuat atau memperbarui role dengan status
-        $roles = [
-            'admin' => [
-                'permissions' => [
-                    'role.index', 'role.create', 'role.edit', 'role.delete',
-                    'user.index', 'user.create', 'user.edit', 'user.delete'
-                ],
-                'status' => 'enable',
-            ],
-            'user' => [
-                'permissions' => [
-                    'user.index'
-                ],
-                'status' => 'enable',
-            ],
-            'manager' => [ // Tambahkan role manager
-                'permissions' => [
-                    'role.index', 'user.index' // Tambahkan permissions sesuai kebutuhan
-                ],
-                'status' => 'enable',
-            ]
-        ];
+        // Buat Roles dan Assign Permissions
+        $adminRole = Role::firstOrCreate(['name' => 'superadmin'], ['status' => 'enable']);
+        $managerRole = Role::updateOrCreate(['name' => 'manager'], ['status' => 'enable']);
+        $employeeRole = Role::updateOrCreate(['name' => 'employee'], ['status' => 'enable']);
 
-        foreach ($roles as $roleName => $data) {
-            $role = Role::updateOrCreate(
-                ['name' => $roleName],
-                ['status' => $data['status']]
-            );
-            $role->syncPermissions($data['permissions']);
-        }
+        // Berikan permission ke masing-masing role
+        $managerRole->givePermissionTo(['user.index', 'user.edit', 'role.index']);
+        $employeeRole->givePermissionTo(['user.index', 'user.edit']);
+
+        // Menambahkan users dan meng-assign roles
+
+        // User Superadmin
+        $superadmin = User::updateOrCreate([
+            'email' => 'superadmin@gmail.com',
+        ], [
+            'name' => 'Superadmin',
+            'password' => Hash::make('password'),
+        ]);
+        $superadmin->assignRole($adminRole); // Assign role superadmin
+
+        // User Manager
+        $manager = User::updateOrCreate([
+            'email' => 'manager@gmail.com',
+        ], [
+            'name' => 'Manager',
+            'password' => Hash::make('password'),
+        ]);
+        $manager->assignRole($managerRole); // Assign role manager
+
+        // User Employee
+        $employee = User::updateOrCreate([
+            'email' => 'employee@gmail.com',
+        ], [
+            'name' => 'Employee',
+            'password' => Hash::make('password'),
+        ]);
+        $employee->assignRole($employeeRole); // Assign role employee
     }
 }
+

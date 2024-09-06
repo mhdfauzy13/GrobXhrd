@@ -13,6 +13,7 @@ class RoleController extends Controller
     public function index()
     {
         $roles = Role::with('permissions')->get();
+        $roles = Role::paginate(10);
 
 
         $activeRoles = $roles->filter(function ($role) {
@@ -22,6 +23,8 @@ class RoleController extends Controller
         $disabledRoles = $roles->filter(function ($role) {
             return !$role->isActive(); // Menggunakan method isActive()
         });
+
+
 
         return view('superadmin.masterdata.role.index', compact('activeRoles', 'disabledRoles', 'roles'));
     }
