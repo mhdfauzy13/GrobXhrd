@@ -6,7 +6,7 @@
             <div class="card-header">
                 <h3 class="card-title">Data User</h3>
                 <div class="card-tools">
-                    <a class="btn btn-primary btn-sm" href="{{ route('datausers.create') }}">
+                    <a class="btn btn-primary btn-sm" href="{{ route('datauser.create') }}">
                         <i class="fas fa-plus"></i>
                         Create
                     </a>
@@ -42,12 +42,12 @@
                                         @endif
                                     </td>
                                     <td class="project-actions text-right">
-                                        <a class="btn btn-info btn-sm"href="{{ route('datausers.edit', ['datauser' => $user->user_id]) }}">
+                                        <a class="btn btn-info btn-sm" href="{{ route('datauser.edit', ['id' => $user->user_id]) }}">
                                             <i class="fas fa-pencil-alt"></i>
                                             Edit
                                         </a>
-                                        <form method="post"
-                                            action="{{ route('datausers.destroy', ['datauser' => $user->user_id]) }}" style="display:inline;">
+                                        
+                                        <form method="post" action="{{ route('datauser.destroy', ['id' => $user->user_id]) }}" style="display:inline;">
                                             @csrf
                                             @method('delete')
                                             <button type="submit" class="btn btn-danger btn-sm">
@@ -55,6 +55,7 @@
                                                 Delete
                                             </button>
                                         </form>
+                                        
                                     </td>
                                 </tr>
                             @endforeach

@@ -78,10 +78,9 @@
 
                     </table>
                 </div>
-                  <!-- Add Pagination Links -->
-                  {{-- <div class="card-footer clearfix">
-                    {{ $role->links() }}
-                </div> --}}
+                <div class="card-footer clearfix">
+                    {{ $roles->links() }}
+                </div>
             </div>
         </div>
     </section>

@@ -2,28 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasRoles, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     protected $primaryKey = 'user_id';
-
-
     public $incrementing = true;
-
     protected $keyType = 'int';
-
-    public function scopeManagers($query)
-    {
-        return $query->select('name', 'user_id')
-                     ->whereHas('roles', function($query) {
-                         $query->where('roles.id', 3); // ID role 'manager'
-                     });
-    }
 
     protected $hidden = [
         'password',
@@ -38,14 +28,4 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    public function offrequests()
-    {
-        return $this->hasMany(Offrequest::class, 'user_id');
-    }
-
-    public function managedOffrequests()
-    {
-        return $this->hasMany(Offrequest::class, 'manager_id');
-    }
 }
