@@ -37,7 +37,7 @@
                                 <label for="role">Role</label>
                                 <select name="role" id="role" class="form-control" required>
                                     @foreach ($roles as $role)
-                                        <option value="{{ $role->name }}" {{ $user->hasRole($role->name) ? 'selected' : '' }}>
+                                        <option value="{{ $role->name }}" {{ $user->hasRole($role) ? 'selected' : '' }}>
                                             {{ $role->name }}
                                         </option>
                                     @endforeach
@@ -63,10 +63,10 @@
                                     </span>
                                 </div>
                             </div>
-                        </div>
 
+                        </div>
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Update</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
                         </div>
                     </form>
                 </div>

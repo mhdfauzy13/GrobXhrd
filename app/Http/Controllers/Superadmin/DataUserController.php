@@ -28,7 +28,7 @@ class DataUserController extends Controller
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
-            'role' => 'required|string',
+            'role' => 'required|exists:roles,name',
             'password' => 'required|min:8|confirmed',
         ]);
 
@@ -38,64 +38,62 @@ class DataUserController extends Controller
             'password' => Hash::make($request->input('password')),
         ]);
 
-        $user->assignRole($request->input('role'));
 
-        return redirect()->route('datausers.index')->with('success', 'Akun berhasil dibuat');
+        // Cari role berdasarkan nama
+        $role = Role::where('name', $request->role)->firstOrFail();
+
+
+        // Assign role ke user
+        $user->assignRole($role);
+
+        return redirect()->route('datauser.index')->with('success', 'Akun berhasil dibuat');
     }
-    public function edit($userId)
+
+    public function edit($user_id)
     {
-        $user = User::where('user_id', $userId)->first();
-
-        if (!$user) {
-            return redirect()
-                ->route('datausers.index')
-                ->with(['error' => 'Data tidak ditemukan!']);
-        }
-
+        // Cari user berdasarkan user_id
+        $user = User::findOrFail($user_id);
+    
+        // Mendapatkan semua role
         $roles = Role::all();
-
-        return view('Superadmin.MasterData.user.update', [
-            'user' => $user,
-            'roles' => $roles,
-        ]);
+    
+        // Tampilkan form edit dengan data user dan role
+        return view('Superadmin.MasterData.user.edit', compact('user', 'roles'));
     }
 
-    public function update(Request $request, $userId)
+
+    public function update(Request $request, $user_id)
     {
-        $user = User::where('user_id', $userId)->first();
-
-        if (!$user) {
-            return redirect()
-                ->route('datausers.index')
-                ->with(['error' => 'Data tidak ditemukan!']);
-        }
-
+        // Cari user berdasarkan user_id
+        $user = User::findOrFail($user_id);
+    
+        // Validasi input
         $request->validate([
             'name' => 'required|string',
-            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($user->user_id, 'user_id')],
-            'role' => 'required|string',
+            'email' => 'required|email|unique:users,email,' . $user->user_id . ',user_id',
+            'role' => 'required|exists:roles,name',
             'password' => 'nullable|min:8|confirmed',
         ]);
-
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->input('password'));
-        }
-
-        $user->save();
-
-        $user->syncRoles($request->input('role'));
-
-        return redirect()
-            ->route('datausers.index')
-            ->with(['success' => 'Data Berhasil Disimpan!']);
+    
+        // Update user
+        $user->update([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'password' => $request->filled('password') ? Hash::make($request->input('password')) : $user->password,
+        ]);
+    
+        // Sinkronisasi role
+        $role = Role::where('name', $request->role)->firstOrFail();
+        $user->syncRoles($role);
+    
+        return redirect()->route('datauser.index')->with('success', 'Data user berhasil diupdate');
     }
+    
+
 
     public function destroy(User $datauser)
     {
         $datauser->delete();
-        return redirect()->route('datausers.index')->with('success', 'Data berhasil dihapus!');
+        return redirect()->route('datauser.index')->with('success', 'Data berhasil dihapus!');
     }
 }

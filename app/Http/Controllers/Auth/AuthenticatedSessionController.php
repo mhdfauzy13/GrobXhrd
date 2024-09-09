@@ -28,23 +28,24 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // return redirect()->intended(route('dashboard.index', absolute: false));
-
         return $this->authenticated($request, Auth::user());
-
-
     }
-
 
     protected function authenticated(Request $request, $user): RedirectResponse
     {
         foreach ($user->roles as $role) {
             if ($role->status === 'disable') {
                 Auth::logout();
+                
+                // Mencegah pengalihan berulang dengan menambahkan
+                // pengecekan status aktif untuk role yang dinonaktifkan
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
 
                 return redirect('/login')->withErrors('Role Anda tidak aktif. Silakan hubungi admin.');
             }
         }
+        
 
         return redirect()->intended(route('dashboard.index', absolute: false));
     }
@@ -57,12 +58,9 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');
     }
-
-  
-
 }
+

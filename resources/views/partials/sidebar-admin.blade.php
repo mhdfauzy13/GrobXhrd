@@ -69,12 +69,7 @@
                                          <p>Role</p>
                                      </a>
                                  </li>
-                                 <li class="nav-item">
-                                     <a href={{ route('company.index') }} class="nav-link">
-                                         <i class="far fa-circle nav-icon"></i>
-                                         <p>Company</p>
-                                     </a>
-                                 </li>
+                               
                              </ul>
                          </li>
                          <li class="nav-item">
