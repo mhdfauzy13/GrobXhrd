@@ -3,8 +3,19 @@
     margin: 0 auto;
 }
 
+/* Custom styling */
+.input-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.form-container {
+    width: 300px;
+}
+
 .fc td, .fc th {
-    border: 1px solid #dee2e6 !important; /* Tambahkan border */
+    border: 1px solid #dee2e6 !important;
 }
 
 .fc-event.holiday {
