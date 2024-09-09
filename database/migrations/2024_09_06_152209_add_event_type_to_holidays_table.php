@@ -9,7 +9,7 @@ class AddEventTypeToHolidaysTable extends Migration
     public function up()
     {
         Schema::table('holidays', function (Blueprint $table) {
-            $table->string('event_type')->default('regular'); // 'regular' for regular holidays and 'special' for special events
+            $table->string('event_type')->default('regular');
         });
     }
 

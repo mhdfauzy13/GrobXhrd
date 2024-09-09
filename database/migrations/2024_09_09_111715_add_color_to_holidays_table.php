@@ -9,7 +9,7 @@ class AddColorToHolidaysTable extends Migration
     public function up()
     {
         Schema::table('holidays', function (Blueprint $table) {
-            $table->string('color')->nullable(); // Kolom untuk menyimpan warna event
+            $table->string('color')->nullable();
         });
     }
 

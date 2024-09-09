@@ -14,7 +14,8 @@
     width: 300px;
 }
 
-.fc td, .fc th {
+.fc td,
+.fc th {
     border: 1px solid #dee2e6 !important;
 }
 
@@ -27,5 +28,5 @@
 .fc-event.leave {
     background-color: #cce5ff;
     border-color: #004085;
-    color: #000;
+      color: #000;
 }

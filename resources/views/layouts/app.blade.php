@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,9 +11,10 @@
 
     <!-- Link to custom.css -->
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
-    
+
     @include('components.head')
 </head>
+
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
         <!-- Navbar -->
@@ -36,4 +38,5 @@
     <script src="{{ asset('adminlte/js/adminlte.min.js') }}"></script>
     @yield('scripts')
 </body>
+
 </html>

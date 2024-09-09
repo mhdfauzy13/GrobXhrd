@@ -130,7 +130,8 @@
                 drop: function(info) {
                     // Mengecek jika opsi 'remove after drop' dicentang
                     if (document.getElementById('drop-remove').checked) {
-                        info.draggedEl.parentNode.removeChild(info.draggedEl); // Menghapus event dari draggable list
+                        info.draggedEl.parentNode.removeChild(info
+                        .draggedEl); // Menghapus event dari draggable list
                     }
                     // Event tetap muncul di daftar, tetapi tidak muncul dua kali saat di-drag
                 },
@@ -156,7 +157,8 @@
                 var color = $(this).data('color');
                 $('#eventColor').val(color);
                 $('#addEventButton').css('background-color', color);
-                $('#addEventButton').css('color', getTextColor(color)); // Set warna teks tombol sesuai dengan latar belakang
+                $('#addEventButton').css('color', getTextColor(
+                color)); // Set warna teks tombol sesuai dengan latar belakang
             });
 
             function getTextColor(bgColor) {
@@ -175,12 +177,12 @@
             $('#addEventButton').click(function() {
                 var eventTitle = $('#eventTitle').val();
                 var eventColor = $('#eventColor').val();
-                
+
                 if (eventTitle.trim() === '') {
                     alert('Please enter an event title.');
                     return;
                 }
-                
+
                 // Tambahkan event ke draggable events list
                 var newEvent = $('<div class="fc-event"></div>').text(eventTitle).css({
                     'background-color': eventColor,

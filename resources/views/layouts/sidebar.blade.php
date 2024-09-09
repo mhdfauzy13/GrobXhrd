@@ -129,7 +129,7 @@
                 <li class="nav-item menu-open">
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href={{ route('holiday.calendar') }} class="nav-link">
+                            <a href="{{ route('holiday.calendar') }}" class="nav-link">
                                 <i class="fas fa-calendar nav-icon"></i>
                                 <p>Holiday</p>
                             </a>
@@ -152,5 +152,5 @@
         </nav>
         <!-- /.sidebar-menu -->
     </div>
-    <!-- /.sidebar -->
+    <!-- /.sidebar -->
 </aside>

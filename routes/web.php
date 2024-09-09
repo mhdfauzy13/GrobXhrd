@@ -11,7 +11,6 @@ use App\Http\Controllers\Superadmin\RoleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Superadmin\AttandanceController;
 use App\Http\Controllers\Superadmin\HolidayController;
-use App\Http\Middleware\TestMiddleware;
 use Illuminate\Support\Facades\Route;
 
 // Tambahkan route di sini
@@ -22,17 +21,16 @@ Route::get('/', function () {
 Route::get('/attandance/scan', [AttandanceController::class, 'scanView'])->name('attandance.scanView');
 Route::post('/attandance/scan', [AttandanceController::class, 'scan'])->name('attandance.scan');
 
-// Route untuk dashboard dengan middleware 'auth', 'verified', dan 'checkRoleStatus'git add
-
+// Route untuk dashboard dengan middleware 'auth', 'verified', dan 'checkRoleStatus'
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified', 'checkRoleStatus'])
     ->name('dashboard.index');
 
 // Kelompokkan route yang memerlukan middleware 'auth' dan 'checkRoleStatus'
 Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
-    
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update'); 
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/attendance', [AttandanceController::class, 'index'])->name('attandance.index');
@@ -69,12 +67,9 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
     Route::prefix('superadmin')->name('holiday.')->group(function () {
         Route::get('calendar', [HolidayController::class, 'calendar'])->name('calendar');
         Route::post('create-event', [HolidayController::class, 'createEvent'])->name('createEvent');
-        Route::get('data', [HolidayController::class, 'data'])->name('calendar.data'); 
+        Route::get('data', [HolidayController::class, 'data'])->name('calendar.data');
         Route::get('sync', [HolidayController::class, 'syncNationalHolidays'])->name('sync');
     });
-    
-
-
 });
 
 // Memasukkan route untuk autentikasi

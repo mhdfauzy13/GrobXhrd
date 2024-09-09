@@ -17,12 +17,12 @@ class HolidayController extends Controller
 
     public function calendar()
     {
-        return view('superadmin.holiday.calendar'); // Pastikan view ada di folder yang benar
+        return view('superadmin.holiday.calendar');
     }
 
     public function data()
     {
-        $holidays = Holiday::all()->map(function($holiday) {
+        $holidays = Holiday::all()->map(function ($holiday) {
             return [
                 'title' => $holiday->name,
                 'start' => $holiday->date->format('Y-m-d'),
