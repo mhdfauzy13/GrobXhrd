@@ -1,10 +1,12 @@
 <?php
+
 namespace App\Http\Controllers\Superadmin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Holiday;
-use App\Models\OffRequest;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 
 class HolidayController extends Controller
 {
@@ -13,32 +15,73 @@ class HolidayController extends Controller
         return view('superadmin.holiday.calendar');
     }
 
+    public function calendar()
+    {
+        return view('superadmin.holiday.calendar'); // Pastikan view ada di folder yang benar
+    }
+
     public function data()
     {
-        // Mengambil data libur dan memformatnya untuk FullCalendar
         $holidays = Holiday::all()->map(function($holiday) {
             return [
                 'title' => $holiday->name,
                 'start' => $holiday->date->format('Y-m-d'),
                 'description' => $holiday->description,
-                'type' => 'holiday' // Menambahkan tipe event sebagai 'holiday'
+                'color' => $holiday->color,
+                'type' => 'holiday'
             ];
         });
 
-        // Mengambil data cuti dan memformatnya untuk FullCalendar
-        $leaves = OffRequest::all()->map(function($leave) {
-            return [
-                'title' => $leave->name,
-                'start' => $leave->start_date->format('Y-m-d'),
-                'end' => $leave->end_date->format('Y-m-d'),
-                'description' => $leave->description,
-                'type' => 'leave' // Menambahkan tipe event sebagai 'leave'
-            ];
-        });
+        return response()->json($holidays);
+    }
 
-        // Menggabungkan data libur dan cuti
-        $events = $holidays->merge($leaves);
+    public function syncNationalHolidays()
+    {
+        try {
+            $client = new Client();
+            $response = $client->get('https://holidayapi.com/v1/holidays', [
+                'query' => [
+                    'key' => 'HOLIDAY_API_KEY',
+                    'country' => 'ID',
+                    'year' => now()->year,
+                    'public' => 'true',
+                ]
+            ]);
 
-        return response()->json($events);
+            $holidays = json_decode($response->getBody()->getContents(), true)['holidays'];
+
+            foreach ($holidays as $holiday) {
+                Holiday::updateOrCreate(
+                    ['date' => $holiday['date']],
+                    [
+                        'name' => $holiday['name'],
+                        'description' => $holiday['description'] ?? 'Libur nasional',
+                    ]
+                );
+            }
+
+            return response()->json(['message' => 'Libur nasional berhasil disinkronkan']);
+        } catch (\Exception $e) {
+            Log::error('Error syncing national holidays: ' . $e->getMessage());
+            return response()->json(['message' => 'Gagal sinkronisasi libur'], 500);
+        }
+    }
+
+    public function createEvent(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'date' => 'required|date',
+            'color' => 'required|string',
+        ]);
+
+        Holiday::create([
+            'name' => $request->name,
+            'date' => $request->date,
+            'description' => $request->description ?? null,
+            'color' => $request->color,
+        ]);
+
+        return response()->json(['message' => 'Event berhasil ditambahkan']);
     }
 }

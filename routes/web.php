@@ -32,7 +32,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
     
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update'); 
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/attendance', [AttandanceController::class, 'index'])->name('attandance.index');
@@ -66,9 +66,13 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
     Route::resource('/Employees', EmployeeController::class);
     Route::get('/employees/{employee}', [EmployeeController::class, 'show'])->name('Employee.show');
 
-    Route::get('/Holidays', [HolidayController::class, 'index'])->name('Holiday.calendar');
-    Route::get('/holidays/data', [HolidayController::class, 'data']);
-    Route::resource('/Holiday', HolidayController::class);
+    Route::prefix('superadmin')->name('holiday.')->group(function () {
+        Route::get('calendar', [HolidayController::class, 'calendar'])->name('calendar');
+        Route::post('create-event', [HolidayController::class, 'createEvent'])->name('createEvent');
+        Route::get('data', [HolidayController::class, 'data'])->name('calendar.data'); 
+        Route::get('sync', [HolidayController::class, 'syncNationalHolidays'])->name('sync');
+    });
+    
 
 
 });
