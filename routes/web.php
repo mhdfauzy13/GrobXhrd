@@ -64,11 +64,12 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
     Route::resource('/Employees', EmployeeController::class);
     Route::get('/employees/{employee}', [EmployeeController::class, 'show'])->name('Employee.show');
 
-    Route::prefix('superadmin')->name('holiday.')->group(function () {
+
+    Route::prefix('superadmin/holiday')->name('holiday.')->group(function () {
         Route::get('calendar', [HolidayController::class, 'calendar'])->name('calendar');
-        Route::post('create-event', [HolidayController::class, 'createEvent'])->name('createEvent');
         Route::get('data', [HolidayController::class, 'data'])->name('calendar.data');
         Route::get('sync', [HolidayController::class, 'syncNationalHolidays'])->name('sync');
+        Route::post('create', [HolidayController::class, 'createEvent'])->name('create');
     });
 });
 

@@ -10,5 +10,5 @@ class Holiday extends Model
     use HasFactory;
 
     protected $primaryKey = 'holiday_id';
-    protected $fillable = ['name', 'date', 'description', 'color']; // Menambahkan 'color' ke fillable
+    protected $fillable = ['name', 'date', 'color']; // Hanya memasukkan kolom yang relevan
 }

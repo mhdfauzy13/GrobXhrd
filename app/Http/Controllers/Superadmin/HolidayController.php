@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Superadmin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Holiday;
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
+use GuzzleHttp\Client;
 
 class HolidayController extends Controller
 {
@@ -25,8 +25,7 @@ class HolidayController extends Controller
         $holidays = Holiday::all()->map(function ($holiday) {
             return [
                 'title' => $holiday->name,
-                'start' => $holiday->date->format('Y-m-d'),
-                'description' => $holiday->description,
+                'start' => $holiday->date->format('Y-m-d'), // Tanggal event
                 'color' => $holiday->color,
                 'type' => 'holiday'
             ];
@@ -35,13 +34,34 @@ class HolidayController extends Controller
         return response()->json($holidays);
     }
 
+    public function createEvent(Request $request)
+    {
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'color' => 'required|string|max:7', // Validasi kode warna hex
+            ]);
+
+            Holiday::create([
+                'name' => $request->name,
+                'color' => $request->color,
+                'date' => now()->toDateString(), // Set tanggal ke hari ini atau sesuai kebutuhan
+            ]);
+
+            return response()->json(['message' => 'Event berhasil ditambahkan']);
+        } catch (\Exception $e) {
+            Log::error('Error creating event: ' . $e->getMessage());
+            return response()->json(['message' => 'Gagal menambahkan event'], 500);
+        }
+    }
+
     public function syncNationalHolidays()
     {
         try {
             $client = new Client();
             $response = $client->get('https://holidayapi.com/v1/holidays', [
                 'query' => [
-                    'key' => 'HOLIDAY_API_KEY',
+                    'key' => 'HOLIDAY_API_KEY', // Gantilah dengan API key Anda yang benar
                     'country' => 'ID',
                     'year' => now()->year,
                     'public' => 'true',
@@ -55,7 +75,7 @@ class HolidayController extends Controller
                     ['date' => $holiday['date']],
                     [
                         'name' => $holiday['name'],
-                        'description' => $holiday['description'] ?? 'Libur nasional',
+                        'color' => 'gray', // Set warna default jika tidak ada informasi warna dari API
                     ]
                 );
             }
@@ -63,25 +83,7 @@ class HolidayController extends Controller
             return response()->json(['message' => 'Libur nasional berhasil disinkronkan']);
         } catch (\Exception $e) {
             Log::error('Error syncing national holidays: ' . $e->getMessage());
-            return response()->json(['message' => 'Gagal sinkronisasi libur'], 500);
+            return response()->json(['message' => 'Gagal sinkronisasi libur nasional'], 500);
         }
-    }
-
-    public function createEvent(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string',
-            'date' => 'required|date',
-            'color' => 'required|string',
-        ]);
-
-        Holiday::create([
-            'name' => $request->name,
-            'date' => $request->date,
-            'description' => $request->description ?? null,
-            'color' => $request->color,
-        ]);
-
-        return response()->json(['message' => 'Event berhasil ditambahkan']);
     }
 }

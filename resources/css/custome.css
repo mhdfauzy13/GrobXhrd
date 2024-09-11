@@ -14,19 +14,22 @@
     width: 300px;
 }
 
+/* Styling tabel kalender */
 .fc td,
 .fc th {
     border: 1px solid #dee2e6 !important;
 }
 
+/* Styling untuk event libur */
 .fc-event.holiday {
-    background-color: #ffcccc;
-    border-color: #ff0000;
-    color: #000;
+    background-color: #ffcccc; /* Warna latar belakang */
+    border-color: #ff0000; /* Warna border */
+    color: #000; /* Warna teks */
 }
 
+/* Styling untuk event cuti */
 .fc-event.leave {
-    background-color: #cce5ff;
-    border-color: #004085;
-      color: #000;
+    background-color: #cce5ff; /* Warna latar belakang */
+    border-color: #004085; /* Warna border */
+    color: #000; /* Warna teks */
 }

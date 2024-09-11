@@ -71,7 +71,6 @@
         <!-- Draggable Events -->
         <div id="external-events">
             <p><strong>Draggable Events</strong></p>
-            <!-- Bagian draggable events kosong, akan diisi secara dinamis -->
             <p>
                 <input type="checkbox" id="drop-remove">
                 <label for="drop-remove">remove after drop</label>
@@ -128,18 +127,18 @@
                 editable: true,
                 droppable: true,
                 drop: function(info) {
-                    // Mengecek jika opsi 'remove after drop' dicentang
                     if (document.getElementById('drop-remove').checked) {
-                        info.draggedEl.parentNode.removeChild(info
-                        .draggedEl); // Menghapus event dari draggable list
+                        info.draggedEl.parentNode.removeChild(info.draggedEl);
                     }
-                    // Event tetap muncul di daftar, tetapi tidak muncul dua kali saat di-drag
                 },
                 events: function(info, successCallback, failureCallback) {
                     $.ajax({
                         url: '{{ route('holiday.calendar.data') }}',
                         method: 'GET',
                         success: function(response) {
+                            response.forEach(function(event) {
+                                event.backgroundColor = event.color;
+                            });
                             successCallback(response);
                         },
                         error: function(xhr) {
@@ -157,23 +156,20 @@
                 var color = $(this).data('color');
                 $('#eventColor').val(color);
                 $('#addEventButton').css('background-color', color);
-                $('#addEventButton').css('color', getTextColor(
-                color)); // Set warna teks tombol sesuai dengan latar belakang
+                $('#addEventButton').css('color', getTextColor(color));
             });
 
             function getTextColor(bgColor) {
-                // Fungsi untuk menentukan warna teks berdasarkan warna latar belakang
                 var color = bgColor.replace('#', '');
                 var r = parseInt(color.substr(0, 2), 16);
                 var g = parseInt(color.substr(2, 2), 16);
                 var b = parseInt(color.substr(4, 2), 16);
 
-                // Menggunakan rumus kontras untuk menentukan apakah warna teks harus putih atau hitam
                 var brightness = (r * 299 + g * 587 + b * 114) / 1000;
                 return (brightness > 128) ? 'black' : 'white';
             }
 
-            // Tambah event ke draggable events
+            // Tambah event ke draggable events dengan AJAX
             $('#addEventButton').click(function() {
                 var eventTitle = $('#eventTitle').val();
                 var eventColor = $('#eventColor').val();
@@ -183,32 +179,48 @@
                     return;
                 }
 
-                // Tambahkan event ke draggable events list
-                var newEvent = $('<div class="fc-event"></div>').text(eventTitle).css({
-                    'background-color': eventColor,
-                    'color': getTextColor(eventColor),
-                    'margin': '10px 0',
-                    'cursor': 'pointer'
-                });
+                $.ajax({
+                    url: '{{ route('holiday.create') }}', // Route untuk menyimpan data
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}', // CSRF token untuk keamanan
+                        name: eventTitle,
+                        color: eventColor
+                    },
+                    success: function(response) {
+                        alert(response.message);
 
-                $('#external-events').append(newEvent);
+                        var newEvent = $('<div class="fc-event"></div>').text(eventTitle).css({
+                            'background-color': eventColor,
+                            'color': getTextColor(eventColor),
+                            'margin': '10px 0',
+                            'cursor': 'pointer'
+                        });
 
-                // Update draggable pada elemen yang baru ditambahkan
-                new FullCalendar.Draggable(newEvent[0], {
-                    itemSelector: '.fc-event',
-                    eventData: function(eventEl) {
-                        return {
-                            title: eventEl.innerText,
-                            backgroundColor: eventEl.style.backgroundColor
-                        };
+                        $('#external-events').append(newEvent);
+
+                        new FullCalendar.Draggable(newEvent[0], {
+                            itemSelector: '.fc-event',
+                            eventData: function(eventEl) {
+                                return {
+                                    title: eventEl.innerText,
+                                    backgroundColor: eventEl.style.backgroundColor
+                                };
+                            }
+                        });
+
+                        $('#eventTitle').val('');
+                        $('#eventColor').val('#ff0000');
+                        $('#addEventButton').css('background-color',
+                        '#007bff'); // Menetapkan warna default
+                        $('#addEventButton').css('color',
+                        'white'); // Menetapkan warna teks default
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                        alert('Gagal menambahkan event');
                     }
                 });
-
-                // Reset form setelah klik
-                $('#eventTitle').val('');
-                $('#eventColor').val('#ff0000');
-                $('#addEventButton').css('background-color', ''); // Reset warna tombol
-                $('#addEventButton').css('color', ''); // Reset warna teks tombol
             });
         });
     </script>

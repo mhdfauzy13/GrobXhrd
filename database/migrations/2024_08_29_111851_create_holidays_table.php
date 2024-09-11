@@ -12,7 +12,7 @@ class CreateHolidaysTable extends Migration
             $table->bigIncrements('holiday_id');
             $table->string('name');
             $table->date('date');
-            $table->string('description')->nullable();
+            $table->string('color')->nullable(); // Menambahkan kolom warna
             $table->timestamps();
         });
     }
