@@ -53,7 +53,7 @@ class EmployeeController extends Controller
 
         $employee = Employee::create($request->all());
 
-        return redirect()->route('Employees.index')->with('success', 'Employee created successfully!');
+        return redirect()->route('employees.index')->with('success', 'Employee created successfully!');
     }
 
     public function edit($employee)
@@ -61,7 +61,7 @@ class EmployeeController extends Controller
         $employeeModel = Employee::where('employee_id', $employee)->first();
 
         if (!$employeeModel) {
-            return redirect()->route('Employees.index')->with('error', 'Data tidak ditemukan!');
+            return redirect()->route('employees.index')->with('error', 'Data tidak ditemukan!');
         }
 
         return view('Superadmin.Employeedata.Employee.update', compact('employeeModel'));
@@ -72,7 +72,7 @@ class EmployeeController extends Controller
         $employeeModel = Employee::where('employee_id', $employee)->first();
 
         if (!$employeeModel) {
-            return redirect()->route('Employees.index')->with('error', 'Data tidak ditemukan!');
+            return redirect()->route('employees.index')->with('error', 'Data tidak ditemukan!');
         }
 
         $request->validate([
@@ -105,7 +105,7 @@ class EmployeeController extends Controller
 
         $employeeModel->update($request->all());
 
-        return redirect()->route('Employees.index')->with('success', 'Data Berhasil Disimpan!');
+        return redirect()->route('employee.index')->with('success', 'Data Berhasil Disimpan!');
     }
 
     public function destroy($employee_id)
@@ -113,7 +113,7 @@ class EmployeeController extends Controller
         $employee = Employee::where('employee_id', $employee_id)->first();
 
         $employee->delete();
-        return redirect()->route('Employees.index')->with('success', 'Data berhasil dihapus!');
+        return redirect()->route('employees.index')->with('success', 'Data berhasil dihapus!');
     }
 
     public function show($employee_id)

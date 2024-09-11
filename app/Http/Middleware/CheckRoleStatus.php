@@ -30,9 +30,7 @@ class CheckRoleStatus
             return redirect()->route('dashboard.index')->withErrors(['msg' => 'Anda tidak memiliki akses ke halaman ini.']);
         }
 
-        if ($request->is('manager/*') && !$user->hasRole('manager')) {
-            return redirect()->route('dashboard.index')->withErrors(['msg' => 'Anda tidak memiliki akses ke halaman ini.']);
-        }
+
 
         return $next($request);
     }

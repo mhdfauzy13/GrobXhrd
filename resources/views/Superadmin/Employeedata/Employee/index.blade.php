@@ -10,7 +10,7 @@
                 <h3 class="card-title">Employee</h3>
 
                 <div class="card-tools">
-                    <a href="{{ route('Employees.create') }}"class="btn btn-primary" title="Create Employee">
+                    <a href="{{ route('employee.create') }}"class="btn btn-primary" title="Create Employee">
                         <i class="fas fa-plus"></i> Create
                     </a>
 
@@ -46,7 +46,7 @@
                                         <a class="btn btn-info btn-sm" href="{{ route('Employees.edit', $employee->employee_id) }}">
                                             <i class="fas fa-pencil-alt"></i> Edit
                                         </a>
-                                        <form method="POST" action="{{ route('Employees.destroy', $employee->employee_id) }}" style="display:inline;">
+                                        <form method="POST" action="{{ route('employee.destroy', $employee->employee_id) }}" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm">
