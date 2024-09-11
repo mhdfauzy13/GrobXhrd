@@ -4,20 +4,27 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class CheckRole
 {
-    public function handle($request, Closure $next, $role)
-    {
-        if (!Auth::check()) {
-            return redirect()->route('login');
-        }
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @param  string[]  ...$roles
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function handle($request, Closure $next, ...$roles)
+{
+    $user = Auth::user();
 
-        $userRoles = Auth::user()->roles->pluck('name')->toArray(); // Convert to array
-        if (!in_array($role, $userRoles)) {
-            abort(403, 'User does not have the right roles.');
-        }
-
-        return $next($request);
+    if (!Auth::check() || !$user->hasAnyRole($roles)) {
+        abort(403, 'You do not have access to this area.');
     }
+
+    return $next($request);
+}
+
 }

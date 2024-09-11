@@ -2,6 +2,6 @@
 
 @section('content')
     <div>
-        <h1>HALOO INI DASHBOARD SUPERADMIN </h1>
+        <h1>HALOO INI DASHBOARD EMPLOYEE </h1>
     </div>
 @endsection

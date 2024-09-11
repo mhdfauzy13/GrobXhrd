@@ -12,6 +12,15 @@ use Illuminate\Validation\Rule;
 
 class DataUserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:user.index')->only(['index']);
+        $this->middleware('permission:user.create')->only(['create', 'store']);
+        $this->middleware('permission:user.edit')->only(['edit', 'update']);
+        $this->middleware('permission:user.delete')->only('destroy');
+    }
+
+    
     public function index(): View
     {
         $users = User::with('roles')->get();
@@ -40,7 +49,7 @@ class DataUserController extends Controller
 
         $user->assignRole($request->input('role'));
 
-        return redirect()->route('datausers.index')->with('success', 'Akun berhasil dibuat');
+        return redirect()->route('datauser.index')->with('success', 'Akun berhasil dibuat');
     }
     public function edit($userId)
     {
@@ -48,7 +57,7 @@ class DataUserController extends Controller
 
         if (!$user) {
             return redirect()
-                ->route('datausers.index')
+                ->route('datauser.index')
                 ->with(['error' => 'Data tidak ditemukan!']);
         }
 
@@ -66,7 +75,7 @@ class DataUserController extends Controller
 
         if (!$user) {
             return redirect()
-                ->route('datausers.index')
+                ->route('datauser.index')
                 ->with(['error' => 'Data tidak ditemukan!']);
         }
 
@@ -89,13 +98,13 @@ class DataUserController extends Controller
         $user->syncRoles($request->input('role'));
 
         return redirect()
-            ->route('datausers.index')
+            ->route('datauser.index')
             ->with(['success' => 'Data Berhasil Disimpan!']);
     }
 
     public function destroy(User $datauser)
     {
         $datauser->delete();
-        return redirect()->route('datausers.index')->with('success', 'Data berhasil dihapus!');
+        return redirect()->route('datauser.index')->with('success', 'Data berhasil dihapus!');
     }
 }

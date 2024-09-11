@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Storage;
 
 class AttandanceController extends Controller
 {
+     public function __construct()
+    {
+        // Menambahkan pengecekan permission untuk metode-metode tertentu
+        $this->middleware('permission:attandance.index')->only('index');
+        $this->middleware('permission:attandance.scanView')->only(['scanView']);
+        $this->middleware('permission:attandance.scan')->only(['scan']);
+    }
     public function index(Request $request)
     {
         $date = $request->input('date', now()->format('Y-m-d'));
@@ -21,7 +28,7 @@ class AttandanceController extends Controller
 
     public function scanView()
     {
-        return view('Superadmin.Employeedata.Attandance.scan');
+        return view('Employee.attandance.scan');
     }
 
     public function scan(Request $request)

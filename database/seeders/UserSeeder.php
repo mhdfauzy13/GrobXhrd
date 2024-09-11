@@ -11,7 +11,7 @@ class UserSeeder extends Seeder
     public function run()
     {
         // Ambil role yang sudah ada
-        $adminRole = Role::where('name', 'Superadmin')->first();
+        $adminRole = Role::where('name', 'superadmin')->first(); // Nama role sesuai di seeder sebelumnya
         $managerRole = Role::where('name', 'manager')->first();
         $employeeRole = Role::where('name', 'employee')->first();
 
@@ -20,12 +20,12 @@ class UserSeeder extends Seeder
             'email' => 'superadmin@gmail.com',
         ], [
             'name' => 'Superadmin',
-            'password' => Hash::make('password'), // Hash password di sini
+            'password' => Hash::make('password'),
         ]);
 
         // Assign role Superadmin ke user
         if ($adminRole) {
-            $superadmin->assignRole($adminRole); // Tidak perlu menggunakan role_id
+            $superadmin->assignRole($adminRole);
         }
 
         // Menambahkan user Manager
@@ -38,7 +38,7 @@ class UserSeeder extends Seeder
 
         // Assign role Manager ke user
         if ($managerRole) {
-            $manager->assignRole($managerRole); // Menggunakan assignRole untuk role manager
+            $manager->assignRole($managerRole);
         }
 
         // Menambahkan user Employee
@@ -51,7 +51,7 @@ class UserSeeder extends Seeder
 
         // Assign role Employee ke user
         if ($employeeRole) {
-            $employee->assignRole($employeeRole); // Assign role employee ke user
+            $employee->assignRole($employeeRole);
         }
     }
 }

@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Storage;
 
 class RecruitmentController extends Controller
 {
+     public function __construct()
+    {
+        $this->middleware('permission:recruitment.index')->only('index');
+        $this->middleware('permission:recruitment.create')->only(['create', 'store']);
+        $this->middleware('permission:recruitment.edit')->only(['edit', 'update']);
+        $this->middleware('permission:recruitment.delete')->only('destroy');
+    }
     public function index()
     {
         $recruitments = Recruitment::all();
