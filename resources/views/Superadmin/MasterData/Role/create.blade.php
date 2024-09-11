@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- Content Wrapper. Contains page content -->
     <div class="content">
-        <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
@@ -14,13 +12,10 @@
             </div>
         </section>
 
-        <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <!-- left column -->
                     <div class="col-md-12">
-                        <!-- jquery validation -->
                         <div class="card card-primary">
                             <form action="{{ route('role.store') }}" method="POST" id="quickForm">
                                 @csrf
@@ -28,77 +23,32 @@
                                     <div class="form-group">
                                         <label for="roleName">Nama Role</label>
                                         <input type="text" name="name" class="form-control" id="roleName"
-                                            placeholder="Masukkan Role">
+                                            placeholder="Masukkan Role" required>
                                     </div>
+
                                     <div class="form-group">
-                                        <label for="permissions">Permission yang Diberikan</label>
+                                        <label for="permissions">Permissions</label>
 
-                                        <!-- Single Checkbox for Select/Deselect All -->
+                                        <!-- Select/Deselect All -->
                                         <div class="custom-control custom-checkbox mb-2">
-                                            <input type="checkbox" class="custom-control-input" id="selectAllFeatures">
-                                            <label class="custom-control-label" for="selectAllFeatures">Select All</label>
+                                            <input type="checkbox" class="custom-control-input" id="selectAllPermissions">
+                                            <label class="custom-control-label" for="selectAllPermissions">Select All</label>
                                         </div>
 
-                                        <!-- Fitur Role -->
-                                        <div class="card mt-3">
-                                            <div class="card-header">
-                                                {{-- <h3 class="card-title">Fitur Role</h3> --}}
-                                                <a href="#" id="selectAllRole" class="card-title">Fitur Role</a>
-                                            </div>
-                                            <div class="card-body">
+                                        <!-- Daftar Permissions -->
+                                        <div class="form-group">
+                                            @foreach($permissions as $permission)
                                                 <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" name="permissions[]" value="role.index"
-                                                        class="custom-control-input role-checkbox" id="roleIndex">
-                                                    <label class="custom-control-label" for="roleIndex">View</label>
+                                                    <input type="checkbox" name="permissions[]" value="{{ $permission->name }}"
+                                                        class="custom-control-input permission-checkbox" id="permission_{{ $permission->id }}">
+                                                    <label class="custom-control-label" for="permission_{{ $permission->id }}">
+                                                        {{ ucfirst($permission->name) }}
+                                                    </label>
                                                 </div>
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" name="permissions[]" value="role.create"
-                                                        class="custom-control-input role-checkbox" id="roleCreate">
-                                                    <label class="custom-control-label" for="roleCreate">Create</label>
-                                                </div>
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" name="permissions[]" value="role.edit"
-                                                        class="custom-control-input role-checkbox" id="roleEdit">
-                                                    <label class="custom-control-label" for="roleEdit">Edit</label>
-                                                </div>
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" name="permissions[]" value="role.delete"
-                                                        class="custom-control-input role-checkbox" id="roleDelete">
-                                                    <label class="custom-control-label" for="roleDelete">Delete</label>
-                                                </div>
-                                            </div>
+                                            @endforeach
                                         </div>
+                                    </div>
 
-                                        <!-- Fitur User -->
-                                        <div class="card mt-3">
-                                            <div class="card-header">
-                                                {{-- <h3 class="card-title">Fitur User</h3> --}}
-                                                <a href="#" id="selectAllUser" class="card-title">Fitur User</a>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" name="permissions[]" value="user.index"
-                                                        class="custom-control-input user-checkbox" id="userIndex">
-                                                    <label class="custom-control-label" for="userIndex">View</label>
-                                                </div>
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" name="permissions[]" value="user.create"
-                                                        class="custom-control-input user-checkbox" id="userCreate">
-                                                    <label class="custom-control-label" for="userCreate">Create</label>
-                                                </div>
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" name="permissions[]" value="user.edit"
-                                                        class="custom-control-input user-checkbox" id="userEdit">
-                                                    <label class="custom-control-label" for="userEdit">Edit</label>
-                                                </div>
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" name="permissions[]" value="user.delete"
-                                                        class="custom-control-input user-checkbox" id="userDelete">
-                                                    <label class="custom-control-label" for="userDelete">Delete</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        </div>
                                     <div class="form-group">
                                         <label for="status">Status</label>
                                         <select name="status" class="form-control" id="status">
@@ -107,21 +57,27 @@
                                         </select>
                                     </div>
                                 </div>
-                                <!-- /.card-body -->
+
                                 <div class="card-footer">
                                     <a href="{{ route('role.index') }}" class="btn btn-secondary">Back</a>
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </div>
                             </form>
                         </div>
-                        <!-- /.card -->
                     </div>
-                    <!--/.col (left) -->
                 </div>
-                <!-- /.row -->
-            </div><!-- /.container-fluid -->
+            </div>
         </section>
-
-
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        document.getElementById('selectAllPermissions').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.permission-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+    </script>
 @endsection
