@@ -7,7 +7,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Employee Details</h3>
                     <div class="card-tools">
-                        <a href="{{ route('Employees.index') }}" class="btn btn-primary" title="Back to List">
+                        <a href="{{ route('employee.index') }}" class="btn btn-primary" title="Back to List">
                             <i class="fas fa-arrow-left"></i> Back
                         </a>
                     </div>

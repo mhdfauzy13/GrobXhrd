@@ -9,21 +9,15 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasRoles, HasFactory, Notifiable;
 
     protected $primaryKey = 'user_id';
     public $incrementing = true;
     protected $keyType = 'int';
 
-    protected $hidden = [
-        'password',
-    ];
+    protected $hidden = ['password'];
 
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $fillable = ['name', 'email', 'password'];
 
     protected $casts = [
         'email_verified_at' => 'datetime',

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Employee\DashboardEmployeeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Superadmin\DashboardController;
 use App\Http\Controllers\Superadmin\DataUserController;
@@ -16,56 +17,133 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Rute yang Memerlukan Role 'superadmin'
 Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
+    
+    // Dashboard
+    Route::get('dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard.index')
+        ->middleware('permission:dashboard.view');
 
-    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    // Role Management
+    Route::prefix('Superadmin')->group(function () {
+        Route::get('/role', [RoleController::class, 'index'])
+            ->name('role.index')
+            ->middleware('permission:role.index');
+        Route::get('/role/create', [RoleController::class, 'create'])
+            ->name('role.create')
+            ->middleware('permission:role.create');
+        Route::post('/role', [RoleController::class, 'store'])
+            ->name('role.store')
+            ->middleware('permission:role.create');
+        Route::get('/role/{id}/edit', [RoleController::class, 'edit'])
+            ->name('role.edit')
+            ->middleware('permission:role.edit');
+        Route::put('/role/{id}', [RoleController::class, 'update'])
+            ->name('role.update')
+            ->middleware('permission:role.edit');
+        Route::delete('/role/{id}', [RoleController::class, 'destroy'])
+            ->name('role.destroy')
+            ->middleware('permission:role.delete');
 
-    Route::prefix('superadmin')->group(function () {
-        Route::get('/role', [RoleController::class, 'index'])->name('role.index');
-        Route::get('/role/create', [RoleController::class, 'create'])->name('role.create');
-        Route::post('/role', [RoleController::class, 'store'])->name('role.store');
-        Route::get('/role/{id}/edit', [RoleController::class, 'edit'])->name('role.edit');
-        Route::put('/role/{id}', [RoleController::class, 'update'])->name('role.update');
-        Route::delete('/role/{id}', [RoleController::class, 'destroy'])->name('role.destroy');
+        // Data User
+        Route::get('/datauser', [DataUserController::class, 'index'])
+            ->name('datauser.index')
+            ->middleware('permission:user.index');
+        Route::get('/datauser/create', [DataUserController::class, 'create'])
+            ->name('datauser.create')
+            ->middleware('permission:user.create');
+        Route::post('/datauser', [DataUserController::class, 'store'])
+            ->name('datauser.store')
+            ->middleware('permission:user.create');
+        Route::get('/datauser/{id}/edit', [DataUserController::class, 'edit'])
+            ->name('datauser.edit')
+            ->middleware('permission:user.edit');
+        Route::put('/datauser/{id}', [DataUserController::class, 'update'])
+            ->name('datauser.update')
+            ->middleware('permission:user.edit');
+        Route::delete('/datauser/{id}', [DataUserController::class, 'destroy'])
+            ->name('datauser.destroy')
+            ->middleware('permission:user.delete');
 
-        Route::get('/datauser', [DataUserController::class, 'index'])->name('datauser.index');
-        Route::get('/datauser/create', [DataUserController::class, 'create'])->name('datauser.create');
-        Route::post('/datauser', [DataUserController::class, 'store'])->name('datauser.store');
-        Route::get('/datauser/{id}/edit', [DataUserController::class, 'edit'])->name('datauser.edit');
-        Route::put('/datauser/{id}', [DataUserController::class, 'update'])->name('datauser.update');
-        Route::delete('/datauser/{id}', [DataUserController::class, 'destroy'])->name('datauser.destroy');
+        // Attendance
+        Route::get('/attendance', [AttandanceController::class, 'index'])
+            ->name('attandance.index')
+            ->middleware('permission:attandance.index');
 
-        Route::get('/attendance', [AttandanceController::class, 'index'])->name('attandance.index');
-        Route::resource('/employees', EmployeeController::class)->names([
-            'index' => 'Employee.index',
-            'create' => 'employee.create',
-            'store' => 'employee.store',
-            'edit' => 'employee.edit',
-            'update' => 'employee.update',
-            'destroy' => 'employee.destroy',
-        ]);
+        // Off Request
+        Route::get('/offrequest', [OffemployeeController::class, 'index'])
+            ->name('offrequest.index')
+            ->middleware('permission:offrequest.index');
 
-        Route::get('/employees/{employee}', [EmployeeController::class, 'show'])->name('employee.show');
-        Route::get('/company', [CompanyController::class, 'index'])->name('company.index');
-        Route::get('/payroll', [PayrollController::class, 'index'])->name('payroll.index');
+        // Company
+        Route::get('/company', [CompanyController::class, 'index'])
+            ->name('company.index')
+            ->middleware('permission:company.index');
 
-        Route::get('/recruitment', [RecruitmentController::class, 'index'])->name('recruitment.index');
-        Route::get('/recruitment/create', [RecruitmentController::class, 'create'])->name('recruitment.create');
-        Route::post('/recruitment', [RecruitmentController::class, 'store'])->name('recruitment.store');
-        Route::get('/recruitment/{recruitment_id}/edit', [RecruitmentController::class, 'edit'])->name('recruitment.edit');
-        Route::put('/recruitment/{recruitment_id}', [RecruitmentController::class, 'update'])->name('recruitment.update');
-        Route::delete('/recruitment/{recruitment_id}', [RecruitmentController::class, 'destroy'])->name('recruitment.destroy');
+        // Payroll
+        Route::get('/payroll', [PayrollController::class, 'index'])
+            ->name('payroll.index')
+            ->middleware('permission:payroll.index');
+
+        // Recruitment
+        Route::get('/recruitment', [RecruitmentController::class, 'index'])
+            ->name('recruitment.index')
+            ->middleware('permission:recruitment.index');
+        Route::get('/recruitment/create', [RecruitmentController::class, 'create'])
+            ->name('recruitment.create')
+            ->middleware('permission:recruitment.create');
+        Route::post('/recruitment', [RecruitmentController::class, 'store'])
+            ->name('recruitment.store')
+            ->middleware('permission:recruitment.create');
+        Route::get('/recruitment/{recruitment_id}/edit', [RecruitmentController::class, 'edit'])
+            ->name('recruitment.edit')
+            ->middleware('permission:recruitment.edit');
+        Route::put('/recruitment/{recruitment_id}', [RecruitmentController::class, 'update'])
+            ->name('recruitment.update')
+            ->middleware('permission:recruitment.edit');
+        Route::delete('/recruitment/{recruitment_id}', [RecruitmentController::class, 'destroy'])
+            ->name('recruitment.destroy')
+            ->middleware('permission:recruitment.delete');
+
+        // Employee
+        Route::resource('/employee', EmployeeController::class)
+            ->names([
+                'index' => 'employee.index',
+                'create' => 'employee.create',
+                'store' => 'employee.store',
+                'edit' => 'employee.edit',
+                'update' => 'employee.update',
+                'destroy' => 'employee.destroy',
+            ])
+            ->middleware([
+                'index' => 'permission:employee.index',
+                'create' => 'permission:employee.create',
+                'edit' => 'permission:employee.edit',
+                'destroy' => 'permission:employee.destroy',
+            ]);
     });
 
-});
+    // Employee Routes
+    Route::prefix('Employee')->group(function () {
+        Route::get('dashboard', [DashboardEmployeeController::class, 'index'])
+            ->name('dashboardemployee.index')
+            ->middleware('permission:dashboardemployee.view');
 
-// Rute yang Dapat Diakses oleh Pengguna Lain
-Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
-    Route::prefix('employee')->group(function () {
-        Route::get('/offrequest', [OffemployeeController::class, 'index'])->name('offrequest.index');
-        Route::get('/offrequest/create', [OffemployeeController::class, 'create'])->name('offrequest.create');
-        Route::post('/offrequest', [OffemployeeController::class, 'store'])->name('offrequest.store');
+        // Attendance Scan
+        Route::get('/attandance/scan', [AttandanceController::class, 'scanView'])
+            ->name('attandance.scanView')
+            ->middleware('permission:attandance.scanView');
+        Route::post('/attandance/scan', [AttandanceController::class, 'scan'])
+            ->name('attandance.scan')
+            ->middleware('permission:attandance.scan');
+
+        // Off Request
+        Route::get('/offrequest/create', [OffemployeeController::class, 'create'])
+            ->name('offrequest.create')
+            ->middleware('permission:offrequest.create');
+        Route::post('/offrequest', [OffemployeeController::class, 'store'])
+            ->name('offrequest.store')
+            ->middleware('permission:offrequest.store');
     });
 });
 

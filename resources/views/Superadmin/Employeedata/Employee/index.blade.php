@@ -10,7 +10,7 @@
                 <h3 class="card-title">Employee</h3>
 
                 <div class="card-tools">
-                    <a href="{{ route('Employees.create') }}"class="btn btn-primary" title="Create Employee">
+                    <a href="{{ route('employee.create') }}"class="btn btn-primary" title="Create Employee">
                         <i class="fas fa-plus"></i> Create
                     </a>
 
@@ -37,16 +37,16 @@
 
                         <tbody>
                             @foreach ($employees as $employee)
-                                <tr data-url="{{ route('Employees.show', $employee->employee_id) }}" class="clickable-row">
+                                <tr data-url="{{ route('employee.show', $employee->employee_id) }}" class="clickable-row">
                                     <td class="text-left">{{ $employee->first_name }}</td>
                                     <td class="text-center">{{ $employee->last_name }}</td>
                                     <td class="text-center">{{ $employee->email }}</td>
                                     <td class="text-center">{{ $employee->address }}</td>
                                     <td class="project-actions text-right">
-                                        <a class="btn btn-info btn-sm" href="{{ route('Employees.edit', $employee->employee_id) }}">
+                                        <a class="btn btn-info btn-sm" href="{{ route('employee.edit', $employee->employee_id) }}">
                                             <i class="fas fa-pencil-alt"></i> Edit
                                         </a>
-                                        <form method="POST" action="{{ route('Employees.destroy', $employee->employee_id) }}" style="display:inline;">
+                                        <form method="POST" action="{{ route('employee.destroy', $employee->employee_id) }}" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm">

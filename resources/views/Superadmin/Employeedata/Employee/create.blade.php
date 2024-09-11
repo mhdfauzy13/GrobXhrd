@@ -19,7 +19,7 @@
                         {{-- <h3 class="card-title">Create</h3> --}}
                     </div>
 
-                    <form action="{{ route('Employees.store') }}" method="POST">
+                    <form action="{{ route('employee.store') }}" method="POST">
                         @csrf
                         <div class="card-body">
                             <div class="row">

@@ -14,14 +14,9 @@
     <div class="wrapper">
         @include('layouts.navbar')
 
-        <!-- Main Sidebar Container -->
-        @if (auth()->user()->hasRole('superadmin'))
-            @include('partials.sidebar-admin')
-        @else
-            @include('partials.sidebar-user')
-        @endif
+        @include('partials.sidebar')
 
-    <div class="content-wrapper">
+        <div class="content-wrapper">
             <div class="content-header">
                 <div class="container-fluid">
                     @yield('content')

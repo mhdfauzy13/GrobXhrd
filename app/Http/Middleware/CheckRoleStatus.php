@@ -18,12 +18,13 @@ class CheckRoleStatus
     public function handle($request, Closure $next)
     {
         $user = Auth::user();
+
+        // Jika semua role pengguna tidak aktif, logout
         if ($user->roles->every(fn($role) => !$role->isActive())) {
             Auth::logout();
-            return redirect()->route('login')->withErrors(['msg' => 'Role is not active.']);
+            return redirect()->route('login')->withErrors(['msg' => 'Your role is not active.']);
         }
 
         return $next($request);
     }
-    
 }

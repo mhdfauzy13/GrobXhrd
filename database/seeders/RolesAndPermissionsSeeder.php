@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -15,54 +15,111 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     public function run()
     {
-        // Menambahkan permissions jika belum ada
+        // Daftar semua permissions
         $permissions = [
-            'role.index', 'role.create', 'role.edit', 'role.delete',
-            'user.index', 'user.create', 'user.edit', 'user.delete',
-            // Tambahkan permission lainnya jika diperlukan
+            //Permission dashboard 
+            'dashboard.view',
+            'dashboardemployee.view',
+
+            // Permission terkait Role
+            'role.index',
+            'role.create',
+            'role.edit',
+            'role.delete',
+
+            // Permission terkait User
+            'user.index',
+            'user.create',
+            'user.edit',
+            'user.delete',
+
+            // Permission terkait Company
+            'company.index',
+            'company.create',
+            'company.edit',
+            'company.delete',
+
+            // Permission terkait Employee
+            'employee.index',
+            'employee.create',
+            'employee.edit',
+            'employee.destroy',
+
+            // Permission terkait Payroll
+            'payroll.index',
+            'payroll.create',
+            'payroll.edit',
+            'payroll.delete',
+
+            // Permission terkait Recruitment
+            'recruitment.index',
+            'recruitment.create',
+            'recruitment.edit',
+            'recruitment.delete',
+
+            // Permission terkait Attandance
+            'attandance.index',
+            'attandance.scanView',
+            'attandance.scan',
+
+            // Permission terkait Offrequest
+            'offrequest.index',
+            'offrequest.create',
+            'offrequest.store',
         ];
 
+        // Membuat atau memperbarui permissions
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
         }
 
-        // Buat Roles dan Assign Permissions
+        // Buat roles
         $adminRole = Role::firstOrCreate(['name' => 'superadmin'], ['status' => 'enable']);
-        $managerRole = Role::updateOrCreate(['name' => 'manager'], ['status' => 'enable']);
-        $employeeRole = Role::updateOrCreate(['name' => 'employee'], ['status' => 'enable']);
+        $managerRole = Role::firstOrCreate(['name' => 'manager'], ['status' => 'enable']);
+        $employeeRole = Role::firstOrCreate(['name' => 'employee'], ['status' => 'enable']);
 
-        // Berikan permission ke masing-masing role
-        $managerRole->givePermissionTo(['user.index', 'user.edit', 'role.index']);
-        $employeeRole->givePermissionTo(['user.index', 'user.edit']);
+        // Assign permissions ke roles
+        $adminRole->givePermissionTo($permissions); // Superadmin mendapatkan semua permission
 
-        // Menambahkan users dan meng-assign roles
+        $managerRole->givePermissionTo(['user.index', 'user.edit', 'role.index', 'company.index', 'employee.index', 'payroll.index', 'recruitment.index']);
 
+        $employeeRole->givePermissionTo([ 'dashboardemployee.view', 'attandance.scan', 'offrequest.create','attandance.scanView']);
+
+        // Buat dan assign roles ke users
         // User Superadmin
-        $superadmin = User::updateOrCreate([
-            'email' => 'superadmin@gmail.com',
-        ], [
-            'name' => 'Superadmin',
-            'password' => Hash::make('password'),
-        ]);
+        $superadmin = User::updateOrCreate(
+            [
+                'email' => 'superadmin@gmail.com',
+            ],
+            [
+                'name' => 'Superadmin',
+                'password' => Hash::make('password'),
+            ],
+        );
         $superadmin->assignRole($adminRole); // Assign role superadmin
 
         // User Manager
-        $manager = User::updateOrCreate([
-            'email' => 'manager@gmail.com',
-        ], [
-            'name' => 'Manager',
-            'password' => Hash::make('password'),
-        ]);
+        $manager = User::updateOrCreate(
+            [
+                'email' => 'manager@gmail.com',
+            ],
+            [
+                'name' => 'Manager',
+                'password' => Hash::make('password'),
+            ],
+        );
         $manager->assignRole($managerRole); // Assign role manager
 
         // User Employee
-        $employee = User::updateOrCreate([
-            'email' => 'employee@gmail.com',
-        ], [
-            'name' => 'Employee',
-            'password' => Hash::make('password'),
-        ]);
+        $employee = User::updateOrCreate(
+            [
+                'email' => 'employee@gmail.com',
+            ],
+            [
+                'name' => 'Employee',
+                'password' => Hash::make('password'),
+            ],
+        );
         $employee->assignRole($employeeRole); // Assign role employee
     }
 }
-

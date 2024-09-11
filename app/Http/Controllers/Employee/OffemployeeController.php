@@ -8,10 +8,17 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Spatie\Permission\Models\Role; // Impor Spatie\Permission\Models\Role
+use Spatie\Permission\Models\Role; 
 
 class OffemployeeController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:offrequest.index')->only(['index']);
+        $this->middleware('permission:offrequest.create')->only(['create']);
+        $this->middleware('permission:offrequest.store')->only(['store']);
+
+    }
     public function index()
     {
         // $offrequests = Offrequest::all();

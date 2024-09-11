@@ -10,6 +10,15 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class EmployeeController extends Controller
 {
+    
+    public function __construct()
+    {
+        // Menambahkan pengecekan permission untuk metode-metode tertentu
+        $this->middleware('permission:employee.index')->only('index');
+        $this->middleware('permission:employee.create')->only(['create', 'store']);
+        $this->middleware('permission:employee.edit')->only(['edit', 'update']);
+        $this->middleware('permission:employee.destroy')->only('destroy');
+    }
     public function index(): View
     {
         $employees = Employee::all();
