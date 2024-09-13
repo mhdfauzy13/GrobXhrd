@@ -63,6 +63,16 @@
         .event-title-container input {
             margin-right: 10px;
         }
+
+        #event-preview {
+            margin-top: 20px;
+        }
+
+        .event-item {
+            padding: 10px;
+            margin: 5px 0;
+            color: white;
+        }
     </style>
 @endsection
 
@@ -88,9 +98,12 @@
                 </div>
                 <div class="event-title-container">
                     <input type="text" class="form-control" id="eventTitle" placeholder="Title Event">
-                    <button type="submit" id="addEventButton" class="btn btn-primary btn-add-event">Add</button>
+                    <button type="button" id="addEventButton" class="btn btn-primary btn-add-event">Add</button>
                 </div>
                 <input type="hidden" id="eventColor" name="color" value="#ff0000">
+                <div id="event-preview">
+                    <!-- Preview of events will appear here -->
+                </div>
             </div>
         </div>
 
@@ -106,50 +119,6 @@
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@6.1.4/main.min.js'></script>
     <script>
         $(document).ready(function() {
-            // Inisialisasi FullCalendar Draggable
-            var draggable = new FullCalendar.Draggable(document.getElementById('external-events'), {
-                itemSelector: '.fc-event',
-                eventData: function(eventEl) {
-                    return {
-                        title: eventEl.innerText,
-                        backgroundColor: eventEl.style.backgroundColor
-                    };
-                }
-            });
-
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                editable: true,
-                droppable: true,
-                drop: function(info) {
-                    if (document.getElementById('drop-remove').checked) {
-                        info.draggedEl.parentNode.removeChild(info.draggedEl);
-                    }
-                },
-                events: function(info, successCallback, failureCallback) {
-                    $.ajax({
-                        url: '{{ route('holiday.calendar.data') }}',
-                        method: 'GET',
-                        success: function(response) {
-                            response.forEach(function(event) {
-                                event.backgroundColor = event.color;
-                            });
-                            successCallback(response);
-                        },
-                        error: function(xhr) {
-                            console.error(xhr.responseText);
-                            failureCallback(xhr.responseText);
-                        }
-                    });
-                }
-            });
-
-            calendar.render();
 
             // Pilihan warna untuk event
             $('.color-options div').click(function() {
@@ -158,6 +127,8 @@
                 $('#addEventButton').css('background-color', color);
                 $('#addEventButton').css('color', getTextColor(color));
             });
+
+            //Menentukan warna text berdasarkan latar belakang
 
             function getTextColor(bgColor) {
                 var color = bgColor.replace('#', '');
@@ -169,7 +140,91 @@
                 return (brightness > 128) ? 'black' : 'white';
             }
 
-            // Tambah event ke draggable events dengan AJAX
+            //Menambahkan event baru ke preview
+
+            $('#addEventButton').click(function() {
+                const title = $('#eventTitle').val();
+                const color = $('#eventColor').val();
+
+                if (title.trim() === '') {
+                    alert('Please enter an event title.');
+                    return;
+                }
+
+
+                const preview = $('#event-preview');
+                const eventElement = $(
+                    `<div class="event-item" style="background-color: ${color};">${title}</div>`);
+                preview.append(eventElement);
+
+            });
+
+            // Inisialisasi Fullcalender dan Draggable
+
+            var draggable = new FullCalendar.Draggable(document.getElementById('external-events'), {
+                itemSelector: '.fc-event',
+                eventData: function(eventEl) {
+                    return {
+                        title: eventEl.innerText,
+                        backgroundColor: eventEl.style.backgroundColor
+                    };
+                }
+            });
+
+
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                editable: true,
+                droppable: true,
+                events: function(info, successCallback, failureCallback) {
+                    $.ajax({
+                        url: '{{ route('holiday.calendar.data') }}',
+                        method: 'GET',
+                        success: function(response) {
+                            response.forEach(function(event) {
+                                event.backgroundColor = event
+                                    .color;
+                            });
+                            successCallback(response);
+                        },
+                        error: function(xhr) {
+                            console.error(xhr.responseText);
+                            failureCallback(xhr.responseText);
+                        }
+                    });
+                },
+                eventDrop: function(info) {
+
+                    const event = info.event;
+                    fetch('{{ route('holiday.save-event') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                    .getAttribute('content')
+                            },
+                            body: JSON.stringify({
+                                id: event.id,
+                                title: event.title,
+                                start: event.start.toISOString(),
+                                end: event.end ? event.end.toISOString() : null,
+                                color: event.backgroundColor
+                            })
+                        }).then(response => response.json())
+                        .then(data => console.log(data))
+                        .catch(error => console.error('Error:', error));
+                }
+            });
+
+            calendar.render();
+
+            //Menambahkan event ke kalender
+
             $('#addEventButton').click(function() {
                 var eventTitle = $('#eventTitle').val();
                 var eventColor = $('#eventColor').val();
@@ -180,10 +235,10 @@
                 }
 
                 $.ajax({
-                    url: '{{ route('holiday.create') }}', // Route untuk menyimpan data
+                    url: '{{ route('holiday.create') }}',
                     method: 'POST',
                     data: {
-                        _token: '{{ csrf_token() }}', // CSRF token untuk keamanan
+                        _token: '{{ csrf_token() }}',
                         name: eventTitle,
                         color: eventColor
                     },
@@ -211,10 +266,8 @@
 
                         $('#eventTitle').val('');
                         $('#eventColor').val('#ff0000');
-                        $('#addEventButton').css('background-color',
-                        '#007bff'); // Menetapkan warna default
-                        $('#addEventButton').css('color',
-                        'white'); // Menetapkan warna teks default
+                        $('#addEventButton').css('background-color', '#007bff');
+                        $('#addEventButton').css('color', 'white');
                     },
                     error: function(xhr) {
                         console.error(xhr.responseText);
