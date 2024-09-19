@@ -140,7 +140,7 @@
                 return (brightness > 128) ? 'black' : 'white';
             }
 
-            //Menambahkan event baru ke preview
+
 
             $('#addEventButton').click(function() {
                 const title = $('#eventTitle').val();
