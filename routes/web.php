@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Employee\DashboardEmployeeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Superadmin\DashboardController;
@@ -17,8 +18,9 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+
 Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
-    
+
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])
         ->name('dashboard.index')
@@ -74,8 +76,8 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/offrequest', [OffemployeeController::class, 'index'])
             ->name('offrequest.index')
             ->middleware('permission:offrequest.index');
+        
 
-        // Company
         Route::get('/company', [CompanyController::class, 'index'])
             ->name('company.index')
             ->middleware('permission:company.index');
@@ -137,14 +139,27 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('attandance.scan')
             ->middleware('permission:attandance.scan');
 
-        // Off Request
+        //Off request
+    
         Route::get('/offrequest/create', [OffemployeeController::class, 'create'])
             ->name('offrequest.create')
             ->middleware('permission:offrequest.create');
         Route::post('/offrequest', [OffemployeeController::class, 'store'])
-            ->name('offrequest.store')
+            ->name('offrequest.store')  
             ->middleware('permission:offrequest.store');
+        Route::post('/offrequest/{id}/approve', [OffemployeeController::class, 'approve'])
+            ->name('offrequest.approve')
+            ->middleware('permission:offrequest.approve');
+        Route::post('/offrequest/{id}/reject', [OffemployeeController::class, 'reject'])
+            ->name('offrequest.reject')
+            ->middleware('permission:offrequest.reject');
+        Route::get('/offrequests/approver', [OffemployeeController::class, 'approverIndex'])
+            ->name('offrequest.approver')
+            ->middleware('permission:offrequest.approver');
+       
     });
 });
+
+
 
 require __DIR__ . '/auth.php';

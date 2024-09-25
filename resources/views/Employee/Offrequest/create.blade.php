@@ -10,6 +10,11 @@
                 <form action="{{ route('offrequest.store') }}" method="POST">
                     @csrf
                     <div class="form-group">
+                        <label for="name">Nama</label>
+                        <input type="text" class="form-control" id="name" value="{{ Auth::user()->name }}" readonly>
+                    </div>
+                    
+                    <div class="form-group">
                         <label for="title">Judul</label>
                         <input type="text" name="title" class="form-control" id="title" placeholder="Masukkan judul permohonan cuti" required>
                     </div>
@@ -31,12 +36,15 @@
 
                     <div class="form-group">
                         <label for="manager_id">Pilih Manager</label>
-                        <select name="manager_id" id="manager_id" class="form-control">
-                            @foreach($managers as $manager)
-                                <option value="{{ $manager->id }}">{{ $manager->name }}</option>
+                        <select name="manager_id" id="manager_id" class="form-control" required>
+                            <option value="">Pilih Manager</option>
+                            @foreach($approvers as $approver)
+                                <option value="{{ $approver->user_id }}">{{ $approver->name }}</option>
                             @endforeach
                         </select>
                     </div>
+                    
+                    
                     
 
                     <button type="submit" class="btn btn-primary">Submit</button>
