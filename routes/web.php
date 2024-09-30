@@ -10,6 +10,7 @@ use App\Http\Controllers\Superadmin\RecruitmentController;
 use App\Http\Controllers\Superadmin\RoleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Superadmin\AttandanceController;
+use App\Http\Controllers\Superadmin\EventController;
 use App\Http\Controllers\Superadmin\HolidayController;
 use Illuminate\Support\Facades\Route;
 
@@ -81,6 +82,9 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::post('save-event', [HolidayController::class, 'saveEvent'])->name('save-event'); // Menyimpan event dari frontend
         Route::post('delete-event', [HolidayController::class, 'deleteEvent'])->name('delete-event'); // Menghapus event
     });
+
+    Route::get('events/list',  [EventController::class, 'ListEvent'])->name('events.list');
+    Route::resource('events', EventController::class);
 });
 
 require __DIR__ . '/auth.php';
