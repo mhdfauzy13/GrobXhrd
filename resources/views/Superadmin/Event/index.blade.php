@@ -45,17 +45,17 @@
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 themeSystem: 'bootstrap5',
-                events: `{{ route('events.list') }}`,
+                events: '{{ route('events.list') }}',
                 dateClick: function(info) {
                     console.log(info);
 
                     $.ajax({
-                        url: `{{ route('events.create') }}`,
+                        url: '{{ route('events.create') }}',
                         success: function(res) {
                             modal.html(res).modal('show')
                         }
                     })
-                    x
+
                     $('#modal-action').modal('show')
                 }
             });
