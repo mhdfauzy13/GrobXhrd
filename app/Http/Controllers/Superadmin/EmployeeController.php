@@ -32,6 +32,8 @@ class EmployeeController extends Controller
 
     public function store(Request $request)
     {
+        dd($request->all());
+
         $request->validate([
             'first_name' => 'required|string',
             'last_name' => 'required|string',

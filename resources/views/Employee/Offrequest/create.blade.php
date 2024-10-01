@@ -10,6 +10,11 @@
                 <form action="{{ route('offrequest.store') }}" method="POST">
                     @csrf
                     <div class="form-group">
+                        <label for="name">Nama</label>
+                        <input type="text" class="form-control" id="name" value="{{ Auth::user()->name }}" readonly>
+                    </div>
+                    
+                    <div class="form-group">
                         <label for="title">Judul</label>
                         <input type="text" name="title" class="form-control" id="title" placeholder="Masukkan judul permohonan cuti" required>
                     </div>
@@ -21,22 +26,25 @@
 
                     <div class="form-group">
                         <label for="start_event">Tanggal Mulai</label>
-                        <input type="datetime-local" name="start_event" class="form-control" id="start_event" required>
+                        <input type="date" name="start_event" class="form-control" id="start_event" required>
                     </div>
-
+                    
                     <div class="form-group">
                         <label for="end_event">Tanggal Selesai</label>
-                        <input type="datetime-local" name="end_event" class="form-control" id="end_event" required>
+                        <input type="date" name="end_event" class="form-control" id="end_event" required>
                     </div>
 
                     <div class="form-group">
                         <label for="manager_id">Pilih Manager</label>
-                        <select name="manager_id" id="manager_id" class="form-control">
-                            @foreach($managers as $manager)
-                                <option value="{{ $manager->id }}">{{ $manager->name }}</option>
+                        <select name="manager_id" id="manager_id" class="form-control" required>
+                            <option value="">Pilih Manager</option>
+                            @foreach($approvers as $approver)
+                                <option value="{{ $approver->user_id }}">{{ $approver->name }}</option>
                             @endforeach
                         </select>
                     </div>
+                    
+                    
                     
 
                     <button type="submit" class="btn btn-primary">Submit</button>
@@ -45,4 +53,44 @@
             </div>
         </div>
     </section>
+
+
+    <script>
+        // Fungsi untuk mendapatkan tanggal saat ini dalam format YYYY-MM-DD
+        function getCurrentDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+    
+            return `${year}-${month}-${day}`;
+        }
+    
+        // Ambil elemen input
+        const startEventInput = document.getElementById('start_event');
+        const endEventInput = document.getElementById('end_event');
+    
+        // Set nilai minimum tanggal mulai dan selesai ke hari ini
+        const minDate = getCurrentDate();
+        startEventInput.setAttribute('min', minDate);
+        endEventInput.setAttribute('min', minDate);
+    
+        // Set default tanggal mulai saat field diklik pertama kali
+        startEventInput.addEventListener('click', function() {
+            if (!startEventInput.value) {
+                startEventInput.value = minDate; // Set tanggal mulai ke hari ini
+            }
+        });
+    
+        // Event listener untuk mengupdate tanggal selesai ketika tanggal mulai dipilih
+        startEventInput.addEventListener('change', function() {
+            const startDate = startEventInput.value;
+            // Set tanggal selesai minimal sama dengan tanggal mulai
+            endEventInput.setAttribute('min', startDate);
+            // Jika tanggal selesai belum diisi atau lebih kecil dari tanggal mulai, set ulang tanggal selesai
+            if (!endEventInput.value || endEventInput.value < startDate) {
+                endEventInput.value = startDate; // Set tanggal selesai default ke tanggal mulai
+            }
+        });
+    </script>
 @endsection
