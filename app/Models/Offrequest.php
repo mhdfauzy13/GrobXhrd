@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Offrequest extends Model
 {
+
+    protected $table = 'offrequests';
+    protected $primaryKey = 'offrequest_id'; // Ganti dengan nama kolom primary key yang benar
+    public $incrementing = false; // Jika primary key tidak auto increment, set ke false
+    protected $keyType = 'string';
     protected $fillable = [
         'name',
         'email',

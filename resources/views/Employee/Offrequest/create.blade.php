@@ -26,12 +26,12 @@
 
                     <div class="form-group">
                         <label for="start_event">Tanggal Mulai</label>
-                        <input type="datetime-local" name="start_event" class="form-control" id="start_event" required>
+                        <input type="date" name="start_event" class="form-control" id="start_event" required>
                     </div>
-
+                    
                     <div class="form-group">
                         <label for="end_event">Tanggal Selesai</label>
-                        <input type="datetime-local" name="end_event" class="form-control" id="end_event" required>
+                        <input type="date" name="end_event" class="form-control" id="end_event" required>
                     </div>
 
                     <div class="form-group">
@@ -53,4 +53,44 @@
             </div>
         </div>
     </section>
+
+
+    <script>
+        // Fungsi untuk mendapatkan tanggal saat ini dalam format YYYY-MM-DD
+        function getCurrentDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+    
+            return `${year}-${month}-${day}`;
+        }
+    
+        // Ambil elemen input
+        const startEventInput = document.getElementById('start_event');
+        const endEventInput = document.getElementById('end_event');
+    
+        // Set nilai minimum tanggal mulai dan selesai ke hari ini
+        const minDate = getCurrentDate();
+        startEventInput.setAttribute('min', minDate);
+        endEventInput.setAttribute('min', minDate);
+    
+        // Set default tanggal mulai saat field diklik pertama kali
+        startEventInput.addEventListener('click', function() {
+            if (!startEventInput.value) {
+                startEventInput.value = minDate; // Set tanggal mulai ke hari ini
+            }
+        });
+    
+        // Event listener untuk mengupdate tanggal selesai ketika tanggal mulai dipilih
+        startEventInput.addEventListener('change', function() {
+            const startDate = startEventInput.value;
+            // Set tanggal selesai minimal sama dengan tanggal mulai
+            endEventInput.setAttribute('min', startDate);
+            // Jika tanggal selesai belum diisi atau lebih kecil dari tanggal mulai, set ulang tanggal selesai
+            if (!endEventInput.value || endEventInput.value < startDate) {
+                endEventInput.value = startDate; // Set tanggal selesai default ke tanggal mulai
+            }
+        });
+    </script>
 @endsection

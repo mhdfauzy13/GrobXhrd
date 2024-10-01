@@ -42,8 +42,11 @@
                                     <td>{{ $offrequest->description }}</td>
                                     <td>{{ $offrequest->start_event->format('Y-m-d') }}</td>
                                     <td>{{ $offrequest->end_event->format('Y-m-d') }}</td>
-                                    <td>{{ ucfirst($offrequest->status) }}</td>
-                               
+                                    <td>
+                                        <span class="badge {{ $offrequest->status == 'approved' ? 'bg-success' : ($offrequest->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
+                                            {{ ucfirst($offrequest->status) }}
+                                        </span>
+                                    </td>                             
                                 </tr>
                             @empty
                                 <tr>

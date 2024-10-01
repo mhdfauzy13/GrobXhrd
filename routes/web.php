@@ -73,10 +73,8 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->middleware('permission:attandance.index');
 
         // Off Request
-        Route::get('/offrequest', [OffemployeeController::class, 'index'])
-            ->name('offrequest.index')
-            ->middleware('permission:offrequest.index');
-        
+
+
 
         Route::get('/company', [CompanyController::class, 'index'])
             ->name('company.index')
@@ -140,23 +138,31 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->middleware('permission:attandance.scan');
 
         //Off request
-    
+
+        Route::get('/offrequest', [OffemployeeController::class, 'index'])
+            ->name('offrequest.index')
+            ->middleware('permission:offrequest.index');
         Route::get('/offrequest/create', [OffemployeeController::class, 'create'])
             ->name('offrequest.create')
             ->middleware('permission:offrequest.create');
         Route::post('/offrequest', [OffemployeeController::class, 'store'])
-            ->name('offrequest.store')  
+            ->name('offrequest.store')
             ->middleware('permission:offrequest.store');
-        Route::post('/offrequest/{id}/approve', [OffemployeeController::class, 'approve'])
+        Route::post('/offrequest/{offrequest_id}/approve', [OffemployeeController::class, 'approve'])
             ->name('offrequest.approve')
-            ->middleware('permission:offrequest.approve');
-        Route::post('/offrequest/{id}/reject', [OffemployeeController::class, 'reject'])
+            ->middleware('permission:offrequest.approver');
+
+        Route::post('/offrequest/{offrequest_id}/reject', [OffemployeeController::class, 'reject'])
             ->name('offrequest.reject')
-            ->middleware('permission:offrequest.reject');
-        Route::get('/offrequests/approver', [OffemployeeController::class, 'approverIndex'])
+            ->middleware('permission:offrequest.approver');
+
+        Route::get('/offrequest/history', [OffemployeeController::class, 'history'])
+            ->name('offrequest.history')
+            ->middleware('permission:offrequest.approver');
+
+        Route::get('/offrequest/approver', [OffemployeeController::class, 'approverIndex'])
             ->name('offrequest.approver')
             ->middleware('permission:offrequest.approver');
-       
     });
 });
 

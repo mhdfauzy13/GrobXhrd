@@ -153,7 +153,7 @@
                     <li class="nav-item">
                         <a href="{{ route('offrequest.approver') }}" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
-                            <p>Off Request approve</p>
+                            <p>Off Request Approve</p>
                         </a>
                     </li>
                 @endcan

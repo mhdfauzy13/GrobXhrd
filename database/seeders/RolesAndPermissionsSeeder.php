@@ -67,6 +67,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'offrequest.create',
             'offrequest.store',
             'offrequest.approver',
+            'offrequest.reject',
         ];
 
         // Membuat atau memperbarui permissions
@@ -82,8 +83,17 @@ class RolesAndPermissionsSeeder extends Seeder
         // Assign permissions ke roles
         $adminRole->givePermissionTo($permissions); // Superadmin mendapatkan semua permission
 
-        $managerRole->givePermissionTo(['user.index', 'user.edit', 'role.index', 'company.index', 'employee.index', 'payroll.index', 'recruitment.index']);
-
+        $managerRole->givePermissionTo([
+            'dashboardemployee.view', 
+            'user.index', 
+            'user.edit', 
+            'role.index', 
+            'employee.index', 
+            'payroll.index', 
+            'recruitment.index', 
+            'offrequest.index', 
+            'offrequest.approver', 
+        ]);
         $employeeRole->givePermissionTo(['dashboardemployee.view', 'attandance.scan', 'offrequest.create', 'attandance.scanView']);
 
         // Buat dan assign roles ke users

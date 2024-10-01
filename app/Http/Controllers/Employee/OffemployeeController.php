@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Employee;
 use App\Http\Controllers\Controller;
 use App\Models\Offrequest;
 use App\Models\User;
+use App\Notifications\OffrequestNotification;
+use App\Notifications\OffrequestStatusNotification;
+use App\Notifications\OffrequestSubmitted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -17,7 +20,7 @@ class OffemployeeController extends Controller
         $this->middleware('permission:offrequest.index')->only(['index']);
         $this->middleware('permission:offrequest.create')->only(['create']);
         $this->middleware('permission:offrequest.store')->only(['store']);
-        $this->middleware('permission:offrequest.approver')->only(['approverIndex','approve', 'reject']);
+        $this->middleware('permission:offrequest.approver')->only(['approverIndex', 'approve', 'reject']);
     }
 
     // Fungsi untuk menampilkan daftar off request milik user yang sedang login (sisi karyawan)
@@ -31,7 +34,7 @@ class OffemployeeController extends Controller
 
     public function create()
     {
-        $approvers = User::permission('offrequest.approve')->get();
+        $approvers = User::permission('offrequest.approver')->get();
         return view('employee.offrequest.create', compact('approvers'));
     }
 
@@ -60,7 +63,7 @@ class OffemployeeController extends Controller
                 ->with('error', 'You already have a pending leave request. Please wait until it is approved.');
         }
 
-      
+
 
         $offrequest = new Offrequest();
         $offrequest->user_id = $user->user_id; // Ambil user_id dari pengguna yang login
@@ -74,7 +77,10 @@ class OffemployeeController extends Controller
         $offrequest->status = 'pending';
         $offrequest->save();
 
-        
+        // $offrequest->manager->notify(new OffrequestSubmitted($offrequest));
+
+
+
 
         return redirect()->route('offrequest.index')->with('success', 'Off request submitted successfully.');
     }
@@ -82,12 +88,21 @@ class OffemployeeController extends Controller
     // Fungsi untuk menampilkan daftar off request untuk approver (sisi manager)
     public function approverIndex()
     {
+        // Dapatkan ID dari approver (manager) yang sedang login
+        $approverId = Auth::id();
+
         // Ambil daftar offrequest di mana manager_id adalah approver yang sedang login
-        $offrequests = Offrequest::where('status', 'pending')
+        $offrequests = Offrequest::pending()
+            ->forManager($approverId)
             ->get();
 
-        return view('employee.offrequest.approve', compact('offrequests'));
-    }
+        $approvedRequests = Offrequest::where('manager_id', $approverId)
+            ->whereIn('status', ['approved', 'rejected'])
+            ->get();
+
+            return view('employee.offrequest.approve', compact('offrequests', 'approvedRequests'));
+        }
+
 
 
     // Fungsi untuk approve permohonan cuti
@@ -98,7 +113,11 @@ class OffemployeeController extends Controller
 
         // Update status menjadi 'approved'
         $offrequest->status = 'approved';
+        $offrequest->approver_id = auth()->user()->user_id;
         $offrequest->save();
+
+        $offrequest->user->notify(new OffrequestNotification($offrequest));
+
 
         return redirect()->route('offrequest.approver')->with('success', 'Off request approved successfully.');
     }
@@ -111,7 +130,11 @@ class OffemployeeController extends Controller
 
         // Update status menjadi 'rejected'
         $offrequest->status = 'rejected';
+        $offrequest->approver_id = auth()->user()->user_id;
         $offrequest->save();
+
+        $offrequest->user->notify(new OffrequestNotification($offrequest));
+
 
         return redirect()->route('offrequest.approver')->with('success', 'Off request rejected successfully.');
     }
