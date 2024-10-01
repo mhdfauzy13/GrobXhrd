@@ -64,15 +64,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
     Route::resource('/Employees', EmployeeController::class);
     Route::get('/employees/{employee}', [EmployeeController::class, 'show'])->name('Employee.show');
 
-
-    Route::get('/holiday/calendar', function () {
-        return view('holiday.calendar');
-    })->name('holiday.calendar');
-
-    Route::get('/holiday/create', function () {
-        return view('holiday.create');
-    })->name('holiday.create');
-
+    Route::get('/holiday/calendar', [HolidayController::class, 'calendar'])->name('holiday.calendar');
     Route::prefix('superadmin/holiday')->name('holiday.')->group(function () {
         Route::get('calendar', [HolidayController::class, 'calendar'])->name('calendar'); // Menampilkan tampilan kalender
         Route::get('data', [HolidayController::class, 'data'])->name('calendar.data'); // Mendapatkan data event
