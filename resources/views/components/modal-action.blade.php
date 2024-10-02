@@ -1,7 +1,7 @@
 @props(['action', 'data'])
 
 <div class="modal-dialog">
-    <form action="{{ $action }}" method="POST">
+    <form id="form-action" action="{{ $action }}" method="POST">
         @csrf
         <div class="modal-content">
             <div class="modal-header">

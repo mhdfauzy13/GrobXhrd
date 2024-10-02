@@ -2,19 +2,19 @@
 
 namespace Database\Seeders;
 
+use App\Models\Event;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Event; // Pastikan model Event diimport
-use Faker\Factory as Faker;
 
 class EventSeeder extends Seeder
 {
     /**
-     * Jalankan seeder database.
+     * Run the database seeds.
      */
     public function run(): void
     {
         $days = [[1, 3], 5, 6, 9, [12, 13]]; // Hari untuk event
-        $fake = fake('event_id'); // Menggunakan Faker instance
+        $fake = fake('idID'); // Menggunakan Faker instance
         $today = date('Y-m-d');
 
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Superadmin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\EventRequest;
 use App\Models\Event;
 use Illuminate\Http\Request;
 
@@ -21,7 +22,7 @@ class EventController extends Controller
         $events = Event::where('start_date', '>=', $start)
             ->where('end_date', '<=', $end)->get()
             ->map(fn($item) => [
-                'id' => $item->events_id,
+                'id' => $item->id,
                 'title' => $item->title,
                 'start' => $item->start_date,
                 'end' => $item->end_date,
@@ -34,5 +35,21 @@ class EventController extends Controller
     public function create(Event $event)
     {
         return view('superadmin.event-form', ['data' => $event, 'action' => route('events.store')]);
+    }
+
+
+    public function store(EventRequest $request, Event $event)
+    {
+        $event->start_date = $request->start_date;
+        $event->end_date = $request->end_date;
+        $event->title = $request->title;
+        $event->category = $request->category;
+
+        $event->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Save data successfully'
+        ]);
     }
 }
