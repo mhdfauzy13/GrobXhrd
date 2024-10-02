@@ -89,3 +89,15 @@
 
 
 
+{{-- <script>
+function formatNumber(input) {
+    // Menghapus karakter non-digit
+    let value = input.value.replace(/[^0-9]/g, '');
+
+    // Menambahkan pemisah ribuan
+    value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+    // Memperbarui nilai input dengan format yang benar
+    input.value = value;
+}
+</script> --}}

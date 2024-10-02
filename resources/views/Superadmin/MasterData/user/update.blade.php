@@ -25,19 +25,22 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="name">Name</label>
-                                <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $user->name) }}" required>
+                                <input type="text" name="name" id="name" class="form-control"
+                                    value="{{ $user->name }}" {{ $isEmployee ? 'readonly' : '' }}>
                             </div>
 
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" name="email" id="email" class="form-control" value="{{ old('email', $user->email) }}" required>
+                                <input type="email" name="email" id="email" class="form-control"
+                                    value="{{ $user->email }}" {{ $isEmployee ? 'readonly' : '' }}>
                             </div>
 
                             <div class="form-group">
                                 <label for="role">Role</label>
                                 <select name="role" id="role" class="form-control" required>
                                     @foreach ($roles as $role)
-                                        <option value="{{ $role->name }}" {{ $user->hasRole($role->name) ? 'selected' : '' }}>
+                                        <option value="{{ $role->name }}"
+                                            {{ $user->hasRole($role->name) ? 'selected' : '' }}>
                                             {{ $role->name }}
                                         </option>
                                     @endforeach
@@ -57,14 +60,14 @@
                             <div class="form-group">
                                 <label for="password_confirmation">Confirm Password</label>
                                 <div class="input-group">
-                                    <input type="password" name="password_confirmation" id="password_confirmation" class="form-control">
+                                    <input type="password" name="password_confirmation" id="password_confirmation"
+                                        class="form-control">
                                     <span class="input-group-text" id="togglePasswordConfirmation">
                                         <i class="fas fa-eye"></i>
                                     </span>
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary">Update</button>
                         </div>

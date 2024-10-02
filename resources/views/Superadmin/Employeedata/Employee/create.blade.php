@@ -41,6 +41,16 @@
                                     </div>
 
                                     <div class="form-group">
+                                        <label>Time Check-In</label>
+                                        <input type="time" name="check_in_time" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Time Check-Out</label>
+                                        <input type="time" name="check_out_time" class="form-control" required>
+                                    </div>
+
+
+                                    <div class="form-group">
                                         <label for="place_birth">Place of Birth</label>
                                         <input type="text" name="place_birth" id="place_birth" class="form-control"
                                             required>

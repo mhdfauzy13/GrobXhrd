@@ -44,6 +44,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'employee.create',
             'employee.edit',
             'employee.destroy',
+            'employee.show',
 
             // Permission terkait Payroll
             'payroll.index',
@@ -68,25 +69,20 @@ class RolesAndPermissionsSeeder extends Seeder
             'offrequest.store',
         ];
 
-        // Membuat atau memperbarui permissions
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
         }
 
-        // Buat roles
         $adminRole = Role::firstOrCreate(['name' => 'superadmin'], ['status' => 'enable']);
         $managerRole = Role::firstOrCreate(['name' => 'manager'], ['status' => 'enable']);
         $employeeRole = Role::firstOrCreate(['name' => 'employee'], ['status' => 'enable']);
 
-        // Assign permissions ke roles
         $adminRole->givePermissionTo($permissions); // Superadmin mendapatkan semua permission
 
         $managerRole->givePermissionTo(['user.index', 'user.edit', 'role.index', 'company.index', 'employee.index', 'payroll.index', 'recruitment.index']);
 
         $employeeRole->givePermissionTo([ 'dashboardemployee.view', 'attandance.scan', 'offrequest.create','attandance.scanView']);
 
-        // Buat dan assign roles ke users
-        // User Superadmin
         $superadmin = User::updateOrCreate(
             [
                 'email' => 'superadmin@gmail.com',
@@ -96,9 +92,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 'password' => Hash::make('password'),
             ],
         );
-        $superadmin->assignRole($adminRole); // Assign role superadmin
+        $superadmin->assignRole($adminRole);
 
-        // User Manager
         $manager = User::updateOrCreate(
             [
                 'email' => 'manager@gmail.com',
@@ -108,9 +103,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 'password' => Hash::make('password'),
             ],
         );
-        $manager->assignRole($managerRole); // Assign role manager
+        $manager->assignRole($managerRole); 
 
-        // User Employee
         $employee = User::updateOrCreate(
             [
                 'email' => 'employee@gmail.com',
@@ -120,6 +114,6 @@ class RolesAndPermissionsSeeder extends Seeder
                 'password' => Hash::make('password'),
             ],
         );
-        $employee->assignRole($employeeRole); // Assign role employee
+        $employee->assignRole($employeeRole); 
     }
 }

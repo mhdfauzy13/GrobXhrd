@@ -18,7 +18,6 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
-    
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])
         ->name('dashboard.index')
@@ -55,13 +54,15 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::post('/datauser', [DataUserController::class, 'store'])
             ->name('datauser.store')
             ->middleware('permission:user.create');
-        Route::get('/datauser/{id}/edit', [DataUserController::class, 'edit'])
+        Route::get('/datauser/{user_id}/edit', [DataUserController::class, 'edit'])
             ->name('datauser.edit')
             ->middleware('permission:user.edit');
-        Route::put('/datauser/{id}', [DataUserController::class, 'update'])
+
+        Route::put('/datauser/{user_id}', [DataUserController::class, 'update'])
             ->name('datauser.update')
             ->middleware('permission:user.edit');
-        Route::delete('/datauser/{id}', [DataUserController::class, 'destroy'])
+
+        Route::delete('/datauser/{user_id}', [DataUserController::class, 'destroy'])
             ->name('datauser.destroy')
             ->middleware('permission:user.delete');
 
@@ -106,21 +107,33 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->middleware('permission:recruitment.delete');
 
         // Employee
-        Route::resource('/employee', EmployeeController::class)
-            ->names([
-                'index' => 'employee.index',
-                'create' => 'employee.create',
-                'store' => 'employee.store',
-                'edit' => 'employee.edit',
-                'update' => 'employee.update',
-                'destroy' => 'employee.destroy',
-            ])
-            ->middleware([
-                'index' => 'permission:employee.index',
-                'create' => 'permission:employee.create',
-                'edit' => 'permission:employee.edit',
-                'destroy' => 'permission:employee.destroy',
-            ]);
+        Route::get('/employee', [EmployeeController::class, 'index'])
+            ->name('employee.index')
+            ->middleware('permission:employee.index');
+
+        Route::get('/employee/create', [EmployeeController::class, 'create'])
+            ->name('employee.create')
+            ->middleware('permission:employee.create');
+
+        Route::post('/employee', [EmployeeController::class, 'store'])
+            ->name('employee.store')
+            ->middleware('permission:employee.create');
+
+        Route::get('/employee/{id}/edit', [EmployeeController::class, 'edit'])
+            ->name('employee.edit')
+            ->middleware('permission:employee.edit');
+
+        Route::put('/employee/{id}', [EmployeeController::class, 'update'])
+            ->name('employee.update')
+            ->middleware('permission:employee.edit');
+
+        Route::delete('/employee/{id}', [EmployeeController::class, 'destroy'])
+            ->name('employee.destroy')
+            ->middleware('permission:employee.destroy');
+
+        Route::get('/employees/{employee}', [EmployeeController::class, 'show'])
+            ->name('employee.show')
+            ->middleware('permission:employee.show');
     });
 
     // Employee Routes
@@ -133,9 +146,15 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/attandance/scan', [AttandanceController::class, 'scanView'])
             ->name('attandance.scanView')
             ->middleware('permission:attandance.scanView');
+
         Route::post('/attandance/scan', [AttandanceController::class, 'scan'])
             ->name('attandance.scan')
             ->middleware('permission:attandance.scan');
+
+        // Tambahkan rute untuk mendapatkan status kehadiran
+        Route::get('/attandance/state', [AttandanceController::class, 'getAttendanceState'])
+            ->name('attandance.getState')
+            ->middleware('permission:attandance.scan'); // Tambahkan middleware auth jika diperlukan
 
         // Off Request
         Route::get('/offrequest/create', [OffemployeeController::class, 'create'])

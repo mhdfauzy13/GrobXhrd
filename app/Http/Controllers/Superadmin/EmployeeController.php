@@ -4,20 +4,20 @@ namespace App\Http\Controllers\Superadmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
+use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class EmployeeController extends Controller
 {
-    
     public function __construct()
     {
-        // Menambahkan pengecekan permission untuk metode-metode tertentu
         $this->middleware('permission:employee.index')->only('index');
         $this->middleware('permission:employee.create')->only(['create', 'store']);
         $this->middleware('permission:employee.edit')->only(['edit', 'update']);
         $this->middleware('permission:employee.destroy')->only('destroy');
+        $this->middleware('permission:employee.show')->only('show');
     }
     public function index(): View
     {
@@ -32,10 +32,12 @@ class EmployeeController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|email|unique:employees,email',
+            'check_in_time' => 'required|date_format:H:i',
+            'check_out_time' => 'required|date_format:H:i|after:check_in_time', 
             'place_birth' => 'required|string',
             'date_birth' => 'nullable|date',
             'personal_no' => 'nullable|string',
@@ -60,25 +62,40 @@ class EmployeeController extends Controller
             'status' => 'nullable|in:active,inactive',
         ]);
 
-        $employee = Employee::create($request->all());
+        // Membuat employee
+        $employee = Employee::create($validatedData);
 
-        return redirect()->route('Employees.index')->with('success', 'Employee created successfully!');
+        // Membuat user dengan data dari employee
+        $user = User::create([
+            'name' => $request->first_name . ' ' . $request->last_name,
+            'email' => $request->email,
+            'password' => bcrypt('defaultpassword'), // Password default
+            'employee_id' => $employee->employee_id, // Set employee_id di sini
+        ]);
+
+        // Memperbarui `user_id` pada employee
+        $employee->user_id = $user->user_id;
+        $employee->save();
+
+        // Redirect ke halaman edit user (gunakan GET method)
+        return redirect()
+            ->route('datauser.edit', $user->user_id) // Menggunakan datauser.edit
+            ->with('success', 'Employee created. Now configure user details.');
     }
-
     public function edit($employee)
     {
         $employeeModel = Employee::where('employee_id', $employee)->first();
 
         if (!$employeeModel) {
-            return redirect()->route('Employees.index')->with('error', 'Data tidak ditemukan!');
+            return redirect()->route('employee.index')->with('error', 'Data tidak ditemukan!');
         }
 
         return view('Superadmin.Employeedata.Employee.update', compact('employeeModel'));
     }
 
-    public function update(Request $request, $employee)
+    public function update(Request $request, $employeeId)
     {
-        $employeeModel = Employee::where('employee_id', $employee)->first();
+        $employeeModel = Employee::where('employee_id', $employeeId)->first();
 
         if (!$employeeModel) {
             return redirect()->route('Employees.index')->with('error', 'Data tidak ditemukan!');
@@ -88,6 +105,8 @@ class EmployeeController extends Controller
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|email|unique:employees,email,' . $employeeModel->employee_id . ',employee_id',
+            'check_in_time' => 'required|date_format:H:i', 
+            'check_out_time' => 'required|date_format:H:i|after:check_in_time',
             'place_birth' => 'required|string',
             'date_birth' => 'nullable|date',
             'personal_no' => 'nullable|string',
@@ -114,7 +133,15 @@ class EmployeeController extends Controller
 
         $employeeModel->update($request->all());
 
-        return redirect()->route('Employees.index')->with('success', 'Data Berhasil Disimpan!');
+        $user = User::where('employee_id', $employeeModel->employee_id)->first();
+
+        if ($user) {
+            $user->name = $employeeModel->first_name . ' ' . $employeeModel->last_name;
+            $user->email = $employeeModel->email;
+            $user->save();
+        }
+
+        return redirect()->route('employee.index')->with('success', 'Data Berhasil Disimpan!');
     }
 
     public function destroy($employee_id)
@@ -122,7 +149,7 @@ class EmployeeController extends Controller
         $employee = Employee::where('employee_id', $employee_id)->first();
 
         $employee->delete();
-        return redirect()->route('Employees.index')->with('success', 'Data berhasil dihapus!');
+        return redirect()->route('employee.index')->with('success', 'Data berhasil dihapus!');
     }
 
     public function show($employee_id)
@@ -130,13 +157,5 @@ class EmployeeController extends Controller
         $employee = Employee::where('employee_id', $employee_id)->firstOrFail();
 
         return view('Superadmin.Employeedata.Employee.show', compact('employee'));
-    }
-
-    public function showQrCode($employee_id)
-    {
-        $employee = Employee::where('employee_id', $employee_id)->firstOrFail();
-        $qrCode = QrCode::size(200)->generate($employee->employee_id);
-
-        return view('Superadmin.Employeedata.Employee.show', compact('qrCode', 'employee'));
     }
 }

@@ -12,6 +12,8 @@ return new class extends Migration {
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
+            $table->time('check_in_time')->nullable();
+            $table->time('check_out_time')->nullable();
             $table->string('place_birth')->nullable();
             $table->date('date_birth')->nullable();
             $table->string('personal_no')->nullable();
