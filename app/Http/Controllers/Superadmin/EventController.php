@@ -52,4 +52,9 @@ class EventController extends Controller
             'message' => 'Save data successfully'
         ]);
     }
+
+    public function edit(Event $event)
+    {
+        return view('superadmin.event-form', ['data' => $event, 'action' => route('events.update', $event->id)]);
+    }
 }

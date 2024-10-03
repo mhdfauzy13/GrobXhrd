@@ -31,6 +31,7 @@
                 initialView: 'dayGridMonth',
                 themeSystem: 'bootstrap5',
                 events: '{{ route('events.list') }}',
+                editable: true,
                 dateClick: function(info) {
                     console.log(info);
 
@@ -54,7 +55,8 @@
                                     processData: false,
                                     contentType: false,
                                     success: function(res) {
-                                        console.log(res);
+                                        modal.modal('hide')
+                                        calendar.refetchEvents()
                                     }
 
                                 })
@@ -62,8 +64,35 @@
                             })
                         }
                     })
+                },
+                eventClick: function({
+                    event
+                }) {
+                    $.ajax({
+                        url: '{{ url('events') }}/' + event.id + '/edit',
+                        success: function(res) {
+                            modal.html(res).modal('show')
 
-                    $('#modal-action').modal('show')
+                            $('#form-action').on('submit', function(e) {
+                                e.preventDefault()
+                                const form = this
+                                const formData = new FormData(form)
+                                $.ajax({
+                                    url: form.action,
+                                    method: form.method,
+                                    data: formData,
+                                    processData: false,
+                                    contentType: false,
+                                    success: function(res) {
+                                        modal.modal('hide')
+                                        calendar.refetchEvents()
+                                    }
+
+                                })
+
+                            })
+                        }
+                    })
                 }
             });
             calendar.render();
