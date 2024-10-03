@@ -31,7 +31,7 @@ class User extends Authenticatable
 
     public function offrequests()
     {
-        return $this->hasMany(Offrequest::class, 'user_id');
+        return $this->hasMany(Offrequest::class, 'user_id');}
    // Relasi ke Offrequest, di mana user ini bisa menjadi manager dari banyak Offrequest
    public function offrequestsAsManager()
    {
