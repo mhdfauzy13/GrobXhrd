@@ -88,6 +88,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'role.index', 
             'employee.index', 
             'payroll.index', 
+
             'recruitment.index', 
             'offrequest.index', 
             'offrequest.approver', 
