@@ -80,10 +80,36 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('company.index')
             ->middleware('permission:company.index');
 
+        // routes/web.php
+
         // Payroll
-        Route::get('/payroll', [PayrollController::class, 'index'])
+        Route::get('/payrolls', [PayrollController::class, 'index'])
             ->name('payroll.index')
             ->middleware('permission:payroll.index');
+
+        // Menampilkan form create payroll dan menyimpan data payroll
+        Route::get('/payrolls/create', [PayrollController::class, 'create'])
+            ->name('payroll.create')
+            ->middleware('permission:payroll.create');
+
+        Route::post('/payrolls', [PayrollController::class, 'store'])
+            ->name('payroll.store')
+            ->middleware('permission:payroll.create');
+        // Menampilkan form edit payroll dan mengupdate payroll
+        Route::get('/payrolls/{id}/edit', [PayrollController::class, 'edit'])
+            ->name('payroll.edit')
+            ->middleware('permission:payroll.edit');
+
+        Route::put('/payrolls/{id}', [PayrollController::class, 'update'])
+            ->name('payroll.update')
+            ->middleware('permission:payroll.edit');
+
+        // Menghapus payroll
+        Route::delete('/payrolls/{id}', [PayrollController::class, 'destroy'])
+            ->name('payroll.destroy')
+            ->middleware('permission:payroll.delete');
+
+
 
         // Recruitment
         Route::get('/recruitment', [RecruitmentController::class, 'index'])

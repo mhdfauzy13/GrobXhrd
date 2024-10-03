@@ -101,7 +101,8 @@
                 @endcanany
 
                 <!-- Employee Data menu, only visible if user has specific permissions -->
-                @canany(['employee.index', 'attandance.index', 'offrequest.index', 'offrequest.create','offrequest.approver'])
+                @canany(['employee.index', 'attandance.index', 'offrequest.index', 'offrequest.create',
+                    'offrequest.approver','payroll.index'])
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-id-badge"></i>
@@ -166,6 +167,13 @@
                             <p>Payroll</p>
                         </a>
                     </li>
+                    {{-- <li class="nav-item">
+                        <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#payrollModal">
+                            <i class="fas fa-wallet nav-icon"></i>
+                            <p>Payroll</p>
+                        </a>
+                    </li> --}}
+                    
                 @endcan
 
                 <!-- Recruitment menu, only visible if user has permission -->
