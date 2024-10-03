@@ -32,6 +32,7 @@
                                 <input type="email" name="email" id="email" class="form-control" required>
                             </div>
 
+
                             <div class="form-group">
                                 <label for="role">Role</label>
                                 <select name="role" id="role" class="form-control" required>

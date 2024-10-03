@@ -21,11 +21,11 @@
                     <table class="table table-striped projects">
                         <thead>
                             <tr>
-                                <th style="width: 30%">Name</th>
-                                <th style="width: 30%">Check in</th>
-                                <th style="width: 30%">Check out</th>
-                                <th style="width: 30%">Status</th>
-                                <th style="width: 30%" class="text-center">Image</th>
+                                <th style="width: 20%">Name</th>
+                                <th style="width: 20%">Check In</th>
+                                <th style="width: 20%">Check Out</th>
+                                <th style="width: 20%">Status</th>
+                                <th style="width: 20%" class="text-center">Image</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -64,7 +64,7 @@
         </div>
     </section>
 
-    {{-- <!-- Modal image -->
+    <!-- Modal image -->
     <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -76,11 +76,18 @@
                     </button>
                 </div>
                 <div class="modal-body text-center">
-                    <img src="{{ asset('storage/' . $attendance->image) }}" alt="Attendance Image" class="img-fluid" id="modalImage">
+                    <img src="" alt="Attendance Image" class="img-fluid" id="modalImage">
                 </div>
             </div>
         </div>
-    </div> --}}
-@endsection
+    </div>
 
-    
+    <script>
+        $('#imageModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var imageUrl = button.data('image'); 
+            var modal = $(this);
+            modal.find('#modalImage').attr('src', imageUrl);
+        });
+    </script>
+@endsection
