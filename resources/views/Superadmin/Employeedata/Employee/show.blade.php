@@ -34,16 +34,15 @@
                                 <dt class="col-sm-4">Current Address:</dt>
                                 <dd class="col-sm-8">{{ $employee->current_address }}</dd>
                             </dl>
-                            <div class="row">
-                                <div class="col-md-12 text-left">
-                                    <h4>QR Code Attandance</h4>
-                                    {!! QrCode::size(200)->generate($employee->employee_id) !!}
-                                </div>
-                            </div>
                         </div>
                         <div class="col-md-6">
                             <h4>Additional Information</h4>
                             <dl class="row">
+                                <dt class="col-sm-4">Check IN Time:</dt>
+                                <dd class="col-sm-8">{{ $employee->check_in_time }}</dd>
+                                <dt class="col-sm-4">Check OUT Time:</dt>
+                                <dd class="col-sm-8">{{ $employee->check_out_time }}</dd>
+
                                 <dt class="col-sm-4">Blood Type:</dt>
                                 <dd class="col-sm-8">{{ $employee->blood_type }}</dd>
                                 <dt class="col-sm-4">Blood Rhesus:</dt>

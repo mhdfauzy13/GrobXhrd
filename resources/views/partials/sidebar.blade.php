@@ -1,9 +1,9 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
-        <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+    <a href="#" class="brand-link">
+        <img src="../../../dist/img/grob.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
             style="opacity: 0.8" />
-        <span class="brand-text font-weight-light">AdminLTE 3</span>
+        <span class="brand-text font-weight-light">GrobXhrd</span>
     </a>
 
     <!-- Sidebar -->
@@ -11,7 +11,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image" />
+                <img src="../../../dist/img/user.png" class="img-circle elevation-2" alt="User Image" />
             </div>
             <div class="info">
                 <a href="#" class="d-block">{{ auth()->user()->name }}</a>
@@ -36,6 +36,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                 data-accordion="false">
 
+
                 <!-- Menu for all roles -->
                 @canany(['dashboard.view', 'dashboardemployee.view'])
                     @can('dashboard.view')
@@ -56,37 +57,54 @@
                         </li>
                     @endcan
 
+
                 @endcanany
 
 
                 <!-- Master Data menu, only visible if user has specific permissions -->
-                @canany(['user.index', 'role.index', 'company.index'])
+                @canany(['user.index', 'user.create', 'role.index', 'role.create', 'company.index'])
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-folder"></i>
                             <p>
                                 Master Data
+
                                 <i class="fas fa-angle-left right"></i>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
-                            @can('user.index')
-                                <li class="nav-item">
-                                    <a href="{{ route('datauser.index') }}" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>User</p>
-                                    </a>
-                                </li>
-                            @endcan
 
-                            @can('role.index')
+                            @canany(['user.index', 'user.create'])
                                 <li class="nav-item">
-                                    <a href="{{ route('role.index') }}" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Role</p>
-                                    </a>
+                                    @can('user.index')
+                                        <a href="{{ route('datauser.index') }}" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>User</p>
+                                        </a>
+                                    @elsecan('user.create')
+                                        <a href="{{ route('datauser.create') }}" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Create User</p>
+                                        </a>
+                                    @endcan
                                 </li>
-                            @endcan
+                            @endcanany
+
+                            @canany(['role.index', 'role.create'])
+                                <li class="nav-item">
+                                    @can('role.index')
+                                        <a href="{{ route('role.index') }}" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Role</p>
+                                        </a>
+                                    @elsecan('role.create')
+                                        <a href="{{ route('role.create') }}" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Create Role</p>
+                                        </a>
+                                    @endcan
+                                </li>
+                            @endcanany
 
                             @can('company.index')
                                 <li class="nav-item">
@@ -101,8 +119,10 @@
                 @endcanany
 
                 <!-- Employee Data menu, only visible if user has specific permissions -->
-                @canany(['employee.index', 'attandance.index', 'offrequest.index', 'offrequest.create',
-                    'offrequest.approver','payroll.index'])
+
+                @canany(['employee.index', 'employee.create', 'attandance.index', 'attandance.scanView',
+                    'offrequest.index', 'offrequest.create','offrequest.approver', 'payroll.index'])
+
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-id-badge"></i>
@@ -112,23 +132,38 @@
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
-                            @can('employee.index')
+                            @canany(['employee.index', 'employee.create'])
                                 <li class="nav-item">
-                                    <a href="{{ route('employee.index') }}" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Employee</p>
-                                    </a>
+                                    @can('employee.index')
+                                        <a href="{{ route('employee.index') }}" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Employee</p>
+                                        </a>
+                                    @elsecan('employee.create')
+                                        <a href="{{ route('employee.create') }}" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Create Employee</p>
+                                        </a>
+                                    @endcan
                                 </li>
-                            @endcan
+                            @endcanany
 
-                            @can('attandance.index')
+                            @canany(['attandance.index', 'attandance.scanView'])
                                 <li class="nav-item">
-                                    <a href="{{ route('attandance.index') }}" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Attendance</p>
-                                    </a>
+                                    @can('attandance.index')
+                                        <a href="{{ route('attandance.index') }}" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Attendance</p>
+                                        </a>
+                                    @elsecan('attandance.scanView')
+                                        <a href="{{ route('attandance.scanView') }}" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Attendance Scan</p>
+                                        </a>
+                                    @endcan
                                 </li>
-                            @endcan
+                            @endcanany
+
 
                             <!-- Tampilkan menu Off Request jika user memiliki permission offrequest.index atau offrequest.create -->
                             @canany(['offrequest.index', 'offrequest.create'])
@@ -177,14 +212,24 @@
                 @endcan
 
                 <!-- Recruitment menu, only visible if user has permission -->
-                @can('recruitment.index')
+                @canany(['recruitment.index', 'recruitment.create'])
                     <li class="nav-item">
-                        <a href="{{ route('recruitment.index') }}" class="nav-link">
-                            <i class="fas fa-users nav-icon"></i>
-                            <p>Recruitment</p>
-                        </a>
+                        @can('recruitment.index')
+                            <a href="{{ route('recruitment.index') }}" class="nav-link">
+                                <i class="fas fa-users nav-icon"></i>
+                                <p>Recruitment</p>
+                            </a>
+                            @elsecan('recruitment.create')
+                            <a href="{{ route('recruitment.create') }}" class="nav-link">
+                                <i class="fas fa-users nav-icon"></i>
+                                <p>Create Recruitment</p>
+                            </a>
+                        @endcan
                     </li>
-                @endcan
+                @endcanany
+
+            
+
 
                 <!-- Logout -->
                 <li class="nav-item">
