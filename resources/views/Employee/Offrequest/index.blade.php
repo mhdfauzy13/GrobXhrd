@@ -37,12 +37,16 @@
                                 <tr>
                                     <td>{{ $offrequest->user->name ?? 'N/A' }}</td>
                                     <td>{{ $offrequest->user->email ?? 'N/A' }}</td>
-                                    <td>{{ $offrequest->manager->name ?? 'N/A' }}</td>
+                                    <td>{{ $offrequest->manager ? $offrequest->manager->name : 'N/A' }}</td>
                                     <td>{{ $offrequest->title }}</td>
                                     <td>{{ $offrequest->description }}</td>
-                                    <td>{{ $offrequest->start_event->format('Y-m-d') }}</td> <!-- Format tanggal sesuai kebutuhan -->
-                                    <td>{{ $offrequest->end_event->format('Y-m-d') }}</td> <!-- Format tanggal sesuai kebutuhan -->
-                                    <td>{{ ucfirst($offrequest->status) }}</td>
+                                    <td>{{ $offrequest->start_event->format('Y-m-d') }}</td>
+                                    <td>{{ $offrequest->end_event->format('Y-m-d') }}</td>
+                                    <td>
+                                        <span class="badge {{ $offrequest->status == 'approved' ? 'bg-success' : ($offrequest->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
+                                            {{ ucfirst($offrequest->status) }}
+                                        </span>
+                                    </td>                             
                                 </tr>
                             @empty
                                 <tr>

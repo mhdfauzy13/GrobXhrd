@@ -32,7 +32,9 @@ class EmployeeController extends Controller
 
     public function store(Request $request)
     {
+
         $validatedData = $request->validate([
+
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|email|unique:employees,email',

@@ -67,6 +67,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'offrequest.index',
             'offrequest.create',
             'offrequest.store',
+            'offrequest.approver',
+            'offrequest.reject',
         ];
 
         foreach ($permissions as $permission) {
@@ -79,9 +81,18 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $adminRole->givePermissionTo($permissions); // Superadmin mendapatkan semua permission
 
-        $managerRole->givePermissionTo(['user.index', 'user.edit', 'role.index', 'company.index', 'employee.index', 'payroll.index', 'recruitment.index']);
-
-        $employeeRole->givePermissionTo([ 'dashboardemployee.view', 'attandance.scan', 'offrequest.create','attandance.scanView']);
+        $managerRole->givePermissionTo([
+            'dashboardemployee.view', 
+            'user.index', 
+            'user.edit', 
+            'role.index', 
+            'employee.index', 
+            'payroll.index', 
+            'recruitment.index', 
+            'offrequest.index', 
+            'offrequest.approver', 
+        ]);
+        $employeeRole->givePermissionTo(['dashboardemployee.view', 'attandance.scan', 'offrequest.create', 'attandance.scanView']);
 
         $superadmin = User::updateOrCreate(
             [
