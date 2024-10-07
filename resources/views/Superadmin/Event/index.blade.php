@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf_token" content="{{ csrf_token() }}">
 
 
 
@@ -28,7 +28,7 @@
 
     <script>
         const modal = $('#modal-action')
-        const csrfToken = $('meta[name="csrf-token"]').attr('content');
+        const csrfToken = $('meta[name="csrf_token"]').attr('content');
 
 
 
@@ -40,8 +40,6 @@
                 events: '{{ route('events.list') }}',
                 editable: true,
                 dateClick: function(info) {
-
-
                     $.ajax({
                         url: '{{ route('events.create') }}',
                         data: {
@@ -102,21 +100,57 @@
                     })
                 },
 
-                eventDrop: function(event) {
+                eventDrop: function({
+                    event
+                }) {
                     $.ajax({
                         url: '{{ url('events') }}/' + event.id,
                         method: 'PUT',
+                        data: {
+                            id: event.id,
+                            start_date: event.startStr,
+                            end_date: event.end.toISOString().substring(0, 10),
+                            title: event.title,
+                            category: event.extendedProps.category
+
+                        },
                         headers: {
                             'X-CSRF-TOKEN': csrfToken,
                             accept: 'application/json'
                         },
                         success: function(res) {
-                            modal.modal('hide')
+
+
+                        }
+                    })
+
+                },
+                eventResize: function({
+                    event
+                }) {
+                    $.ajax({
+                        url: '{{ url('events') }}/' + event.id,
+                        method: 'PUT',
+                        data: {
+                            id: event.id,
+                            start_date: event.startStr,
+                            end_date: event.end.toISOString().substring(0, 10),
+                            title: event.title,
+                            category: event.extendedProps.category
+
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            accept: 'application/json'
+                        },
+                        success: function(res) {
+
 
                         }
                     })
 
                 }
+
             });
             calendar.render();
         });
