@@ -25,7 +25,7 @@ class EventController extends Controller
                 'id' => $item->id,
                 'title' => $item->title,
                 'start' => $item->start_date,
-                'end' => $item->end_date,
+                'end' => date('Y-m-d', strtotime($item->end_date . '+1 days')),
                 'category' => $item->category
             ]);
 
@@ -40,6 +40,17 @@ class EventController extends Controller
 
     public function store(EventRequest $request, Event $event)
     {
+        return $this->update($request, $event);
+    }
+
+    public function edit(Event $event)
+    {
+        return view('superadmin.event-form', ['data' => $event, 'action' => route('events.update', $event->id)]);
+    }
+
+
+    public function update(EventRequest $request, Event $event)
+    {
         $event->start_date = $request->start_date;
         $event->end_date = $request->end_date;
         $event->title = $request->title;
@@ -51,10 +62,5 @@ class EventController extends Controller
             'status' => 'success',
             'message' => 'Save data successfully'
         ]);
-    }
-
-    public function edit(Event $event)
-    {
-        return view('superadmin.event-form', ['data' => $event, 'action' => route('events.update', $event->id)]);
     }
 }

@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css' rel='stylesheet'>
@@ -24,6 +28,9 @@
 
     <script>
         const modal = $('#modal-action')
+        const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+
 
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
@@ -33,7 +40,7 @@
                 events: '{{ route('events.list') }}',
                 editable: true,
                 dateClick: function(info) {
-                    console.log(info);
+
 
                     $.ajax({
                         url: '{{ route('events.create') }}',
@@ -93,6 +100,22 @@
                             })
                         }
                     })
+                },
+
+                eventDrop: function(event) {
+                    $.ajax({
+                        url: '{{ url('events') }}/' + event.id,
+                        method: 'PUT',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            accept: 'application/json'
+                        },
+                        success: function(res) {
+                            modal.modal('hide')
+
+                        }
+                    })
+
                 }
             });
             calendar.render();
