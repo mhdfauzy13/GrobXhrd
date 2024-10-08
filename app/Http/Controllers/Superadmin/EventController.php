@@ -26,7 +26,8 @@ class EventController extends Controller
                 'title' => $item->title,
                 'start' => $item->start_date,
                 'end' => date('Y-m-d', strtotime($item->end_date . '+1 days')),
-                'category' => $item->category
+                'category' => $item->category,
+                'className' => ['bg-' . $item->category]
             ]);
 
         return response()->json($events);
@@ -51,6 +52,10 @@ class EventController extends Controller
 
     public function update(EventRequest $request, Event $event)
     {
+        if ($request->has('delete')) {
+            return $this->destroy($event);
+        }
+
         $event->start_date = $request->start_date;
         $event->end_date = $request->end_date;
         $event->title = $request->title;
@@ -61,6 +66,15 @@ class EventController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Save data successfully'
+        ]);
+    }
+
+    public function destroy(Event $event)
+    {
+        $event->delete();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Delete data successful'
         ]);
     }
 }
