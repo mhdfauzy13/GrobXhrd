@@ -1,5 +1,5 @@
 <x-modal-action action="{{ $action }}">
-    @if ($data->id)
+    @if ($data->event_id)
         @method('PUT')
     @endif
     <div class="row">

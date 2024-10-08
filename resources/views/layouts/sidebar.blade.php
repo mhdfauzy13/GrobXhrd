@@ -129,17 +129,6 @@
                 <li class="nav-item menu-open">
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('holiday.calendar') }}" class="nav-link">
-                                <i class="fas fa-calendar nav-icon"></i>
-                                <p>Holiday</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="nav-item menu-open">
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
                             <a href="{{ route('events.index') }}" class="nav-link">
                                 <i class="fas fa-calendar nav-icon"></i>
                                 <p>Event</p>

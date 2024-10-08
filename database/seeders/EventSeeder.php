@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Event;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class EventSeeder extends Seeder
@@ -16,8 +15,6 @@ class EventSeeder extends Seeder
         $days = [[1, 3], 5, 6, 9, [12, 13]]; // Hari untuk event
         $fake = fake('idID'); // Menggunakan Faker instance
         $today = date('Y-m-d');
-
-
 
         foreach ($days as $day) {
             if (is_array($day)) { // Jika $day berupa array
@@ -41,6 +38,6 @@ class EventSeeder extends Seeder
             }
         }
 
-        Event::insert($events); // Insert data setelah semua event dibuat
+        Event::insert($events);
     }
 }

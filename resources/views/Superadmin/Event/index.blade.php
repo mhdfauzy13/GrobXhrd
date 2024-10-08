@@ -3,8 +3,6 @@
 @section('content')
     <meta name="csrf_token" content="{{ csrf_token() }}">
 
-
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css' rel='stylesheet'>
@@ -37,8 +35,6 @@
         const modal = $('#modal-action')
         const csrfToken = $('meta[name="csrf_token"]').attr('content');
 
-
-
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -58,9 +54,7 @@
                             $('.datepicker').flatpickr({
                                 todayHighlight: true,
                                 dateFormat: "Y-m-d"
-
                             });
-
 
                             $('#form-action').on('submit', function(e) {
                                 e.preventDefault()
@@ -79,9 +73,7 @@
                                     error: function(res) {
 
                                     }
-
                                 })
-
                             })
                         }
                     })
@@ -90,7 +82,7 @@
                     event
                 }) {
                     $.ajax({
-                        url: '{{ url('events') }}/' + event.id + '/edit',
+                        url: '{{ url('events') }}/' + event.extendedProps.event_id + '/edit',
                         success: function(res) {
                             modal.html(res).modal('show')
 
@@ -108,9 +100,7 @@
                                         modal.modal('hide')
                                         calendar.refetchEvents()
                                     }
-
                                 })
-
                             })
                         }
                     })
@@ -119,15 +109,14 @@
                 eventDrop: function(info) {
                     const event = info.event
                     $.ajax({
-                        url: '{{ url('events') }}/' + event.id,
+                        url: '{{ url('events') }}/' + event.extendedProps.event_id,
                         method: 'PUT',
                         data: {
-                            id: event.id,
+                            event_id: event.extendedProps.event_id,
                             start_date: event.startStr,
                             end_date: event.end.toISOString().substring(0, 10),
                             title: event.title,
                             category: event.extendedProps.category
-
                         },
                         headers: {
                             'X-CSRF-TOKEN': csrfToken,
@@ -139,8 +128,6 @@
                                 message: res.message,
                                 position: 'topRight'
                             });
-
-
                         },
                         error: function(res) {
                             const message = res.responseJSON.message
@@ -152,25 +139,21 @@
                             });
                         }
                     })
-
                 },
-
-
 
                 eventResize: function(info) {
                     const {
                         event
                     } = info
                     $.ajax({
-                        url: '{{ url('events') }}/' + event.id,
+                        url: '{{ url('events') }}/' + event.extendedProps.event_id,
                         method: 'PUT',
                         data: {
-                            id: event.id,
+                            event_id: event.extendedProps.event_id,
                             start_date: event.startStr,
                             end_date: event.end.toISOString().substring(0, 10),
                             title: event.title,
                             category: event.extendedProps.category
-
                         },
                         headers: {
                             'X-CSRF-TOKEN': csrfToken,
@@ -182,7 +165,6 @@
                                 message: res.message,
                                 position: 'topRight'
                             });
-
                         },
                         error: function(res) {
                             const message = res.responseJSON.message
@@ -194,7 +176,6 @@
                             });
                         }
                     })
-
                 }
 
             });

@@ -22,7 +22,7 @@ class EventController extends Controller
         $events = Event::where('start_date', '>=', $start)
             ->where('end_date', '<=', $end)->get()
             ->map(fn($item) => [
-                'id' => $item->id,
+                'event_id' => $item->event_id,
                 'title' => $item->title,
                 'start' => $item->start_date,
                 'end' => date('Y-m-d', strtotime($item->end_date . '+1 days')),
@@ -32,6 +32,7 @@ class EventController extends Controller
 
         return response()->json($events);
     }
+
 
     public function create(Event $event)
     {
@@ -46,9 +47,11 @@ class EventController extends Controller
 
     public function edit(Event $event)
     {
-        return view('superadmin.event-form', ['data' => $event, 'action' => route('events.update', $event->id)]);
+        return view('superadmin.event-form', [
+            'data' => $event,
+            'action' => route('events.update', $event->event_id)
+        ]);
     }
-
 
     public function update(EventRequest $request, Event $event)
     {
@@ -68,6 +71,7 @@ class EventController extends Controller
             'message' => 'Save data successfully'
         ]);
     }
+
 
     public function destroy(Event $event)
     {
