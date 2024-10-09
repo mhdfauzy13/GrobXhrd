@@ -11,15 +11,19 @@ use App\Http\Controllers\Superadmin\PayrollController;
 use App\Http\Controllers\Superadmin\RecruitmentController;
 use App\Http\Controllers\Superadmin\RoleController;
 use App\Http\Controllers\Superadmin\AttandanceController;
+use App\Http\Controllers\Superadmin\EventController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Employee\OffemployeeController;
 use App\Http\Controllers\ProfileController;
+
 
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
 
-Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
+
+    Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
 
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])
@@ -110,6 +114,10 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::delete('/payrolls/{id}', [PayrollController::class, 'destroy'])
             ->name('payroll.destroy')
             ->middleware('permission:payroll.delete');
+      
+      // event
+       Route::get('events/list',  [EventController::class, 'ListEvent'])->name('events.list');
+    Route::resource('events', EventController::class);
 
 
 

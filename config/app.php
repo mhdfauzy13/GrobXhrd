@@ -123,4 +123,7 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'holiday_api_key' => env('HOLIDAY_API_KEY'),
+
+
 ];
