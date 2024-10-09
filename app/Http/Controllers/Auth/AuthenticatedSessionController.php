@@ -28,25 +28,28 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // return redirect()->intended(route('dashboard.index', absolute: false));
-
         return $this->authenticated($request, Auth::user());
-
-
     }
 
-
+    /**
+     * Method yang dipanggil setelah user berhasil login.
+     */
     protected function authenticated(Request $request, $user): RedirectResponse
     {
         foreach ($user->roles as $role) {
             if ($role->status === 'disable') {
                 Auth::logout();
-
                 return redirect('/login')->withErrors('Role Anda tidak aktif. Silakan hubungi admin.');
             }
         }
 
-        return redirect()->intended(route('dashboard.index', absolute: false));
+        if ($user->hasPermissionTo('dashboard.view')) {
+            return redirect()->route('dashboard.index');
+        } elseif ($user->hasPermissionTo('dashboardemployee.view')) {
+            return redirect()->route('dashboardemployee.index');
+        }
+
+        return redirect()->route('dashboard.index');
     }
 
     /**
@@ -62,7 +65,4 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
-
-  
-
 }

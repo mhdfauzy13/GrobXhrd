@@ -21,10 +21,11 @@
                     <table class="table table-striped projects">
                         <thead>
                             <tr>
-                                <th style="width: 30%">Name</th>
-                                <th style="width: 30%">Check in</th>
-                                <th style="width: 30%">Check out</th>
-                                <th style="width: 30%" class="text-center">Status</th>
+                                <th style="width: 20%">Name</th>
+                                <th style="width: 20%">Check In</th>
+                                <th style="width: 20%">Check Out</th>
+                                <th style="width: 20%">Status</th>
+                                <th style="width: 20%" class="text-center">Image</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -33,15 +34,27 @@
                                     <td>{{ $attendance->employee->first_name }} {{ $attendance->employee->last_name }}</td>
                                     <td>{{ $attendance->check_in ? $attendance->check_in->format('H:i:s') : '-' }}</td>
                                     <td>{{ $attendance->check_out ? $attendance->check_out->format('H:i:s') : '-' }}</td>
-                                    <td class="text-center">
+                                    <td>
                                         <span class="badge badge-{{ $attendance->status === 'IN' ? 'success' : 'danger' }}">
                                             {{ $attendance->status }}
                                         </span>
                                     </td>
+                                    <td class="text-center">
+                                        @if ($attendance->image)
+                                            <!-- Make the image clickable and open a modal -->
+                                            <a href="#" data-toggle="modal" data-target="#imageModal"
+                                                data-image="{{ asset('storage/' . $attendance->image) }}">
+                                                <img src="{{ asset('storage/' . $attendance->image) }}"
+                                                    alt="Attendance Image" width="100">
+                                            </a>
+                                        @else
+                                            No Image
+                                        @endif
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="text-center">No data available for selected date.</td>
+                                    <td colspan="5" class="text-center">No data available for selected date.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -50,4 +63,31 @@
             </div>
         </div>
     </section>
+
+    <!-- Modal image -->
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Attendance Image</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="" alt="Attendance Image" class="img-fluid" id="modalImage">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $('#imageModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var imageUrl = button.data('image'); 
+            var modal = $(this);
+            modal.find('#modalImage').attr('src', imageUrl);
+        });
+    </script>
 @endsection

@@ -19,7 +19,7 @@
                         {{-- <h3 class="card-title">Create</h3> --}}
                     </div>
 
-                    <form action="{{ route('Employees.store') }}" method="POST">
+                    <form action="{{ route('employee.store') }}" method="POST">
                         @csrf
                         <div class="card-body">
                             <div class="row">
@@ -39,6 +39,16 @@
                                         <label for="email">Email</label>
                                         <input type="email" name="email" id="email" class="form-control" required>
                                     </div>
+
+                                    <div class="form-group">
+                                        <label>Time Check-In</label>
+                                        <input type="time" name="check_in_time" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Time Check-Out</label>
+                                        <input type="time" name="check_out_time" class="form-control" required>
+                                    </div>
+
 
                                     <div class="form-group">
                                         <label for="place_birth">Place of Birth</label>

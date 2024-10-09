@@ -20,8 +20,10 @@
         <!-- Navbar -->
         @include('layouts.navbar')
 
+
         <!-- Sidebar -->
-        @include('layouts.sidebar')
+        @include('partials.sidebar')
+
 
         <!-- Content Wrapper -->
         <div class="content-wrapper">

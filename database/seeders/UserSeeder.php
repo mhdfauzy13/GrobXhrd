@@ -1,23 +1,57 @@
 <?php
-
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function run()
     {
-        User::create([
+        // Ambil role yang sudah ada
+        $adminRole = Role::where('name', 'superadmin')->first(); // Nama role sesuai di seeder sebelumnya
+        $managerRole = Role::where('name', 'manager')->first();
+        $employeeRole = Role::where('name', 'employee')->first();
+
+        // Menambahkan user Superadmin
+        $superadmin = User::updateOrCreate([
+            'email' => 'superadmin@gmail.com',
+        ], [
             'name' => 'Superadmin',
-            // 'role' => 'admin',
-            'email' => 'Superadmin@gmail.com',
-            'password' => bcrypt(12345678),
+            'password' => Hash::make('password'),
         ]);
+
+        // Assign role Superadmin ke user
+        if ($adminRole) {
+            $superadmin->assignRole($adminRole);
+        }
+
+        // Menambahkan user Manager
+        $manager = User::updateOrCreate([
+            'email' => 'manager@gmail.com',
+        ], [
+            'name' => 'Manager',
+            'password' => Hash::make('password'),
+        ]);
+
+        // Assign role Manager ke user
+        if ($managerRole) {
+            $manager->assignRole($managerRole);
+        }
+
+        // Menambahkan user Employee
+        $employee = User::updateOrCreate([
+            'email' => 'employee@gmail.com',
+        ], [
+            'name' => 'Employee',
+            'password' => Hash::make('password'),
+        ]);
+
+        // Assign role Employee ke user
+        if ($employeeRole) {
+            $employee->assignRole($employeeRole);
+        }
     }
 }

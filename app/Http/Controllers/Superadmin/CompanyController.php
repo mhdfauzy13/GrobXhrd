@@ -8,6 +8,14 @@ use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {
+    public function __construct()
+    {
+        // Menambahkan pengecekan permission untuk metode-metode tertentu
+        $this->middleware('permission:company.index')->only('index');
+        $this->middleware('permission:company.create')->only(['create', 'store']);
+        $this->middleware('permission:company.edit')->only(['edit', 'update']);
+        $this->middleware('permission:company.delete')->only('destroy');
+    }
     public function index()
     {
         $companies = Company::all();

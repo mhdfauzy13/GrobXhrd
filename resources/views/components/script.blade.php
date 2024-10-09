@@ -73,17 +73,78 @@
                 checkbox.checked = !allChecked;
             });
         });
+
+        // Fitur Employee
+        const employeeCheckboxes = document.querySelectorAll('.employee-checkbox');
+        const selectAllEmployee = document.getElementById('selectAllEmployee');
+
+        selectAllEmployee.addEventListener('click', function(event) {
+            event.preventDefault();
+            const allChecked = Array.from(employeeCheckboxes).every(checkbox => checkbox.checked);
+            employeeCheckboxes.forEach((checkbox) => {
+                checkbox.checked = !allChecked;
+            });
+        });
+
+        // Fitur Payroll
+        const payrollCheckboxes = document.querySelectorAll('.payroll-checkbox');
+        const selectAllPayroll = document.getElementById('selectAllPayroll');
+
+        selectAllPayroll.addEventListener('click', function(event) {
+            event.preventDefault();
+            const allChecked = Array.from(payrollCheckboxes).every(checkbox => checkbox.checked);
+            payrollCheckboxes.forEach((checkbox) => {
+                checkbox.checked = !allChecked;
+            });
+        });
+
+        // Fitur Recruitment
+        const recruitmentCheckboxes = document.querySelectorAll('.recruitment-checkbox');
+        const selectAllRecruitment = document.getElementById('selectAllRecruitment');
+
+        selectAllRecruitment.addEventListener('click', function(event) {
+            event.preventDefault();
+            const allChecked = Array.from(recruitmentCheckboxes).every(checkbox => checkbox.checked);
+            recruitmentCheckboxes.forEach((checkbox) => {
+                checkbox.checked = !allChecked;
+            });
+        });
+
+        // Fitur Attendance
+        const attendanceCheckboxes = document.querySelectorAll('.attendance-checkbox');
+        const selectAllAttendance = document.getElementById('selectAllAttendance');
+
+        selectAllAttendance.addEventListener('click', function(event) {
+            event.preventDefault();
+            const allChecked = Array.from(attendanceCheckboxes).every(checkbox => checkbox.checked);
+            attendanceCheckboxes.forEach((checkbox) => {
+                checkbox.checked = !allChecked;
+            });
+        });
+
+        // Fitur Offrequest (tambahkan checkbox class di HTML)
+        const offrequestCheckboxes = document.querySelectorAll('.offrequest-checkbox');
+        const selectAllOffrequest = document.getElementById('selectAllOffrequest');
+
+        selectAllOffrequest.addEventListener('click', function(event) {
+            event.preventDefault();
+            const allChecked = Array.from(offrequestCheckboxes).every(checkbox => checkbox.checked);
+            offrequestCheckboxes.forEach((checkbox) => {
+                checkbox.checked = !allChecked;
+            });
+        });
+
     });
 </script>
 
-{{-- SCRIPT BUAT SCANNER  --}}
+{{-- SCRIPT BUAT MODAL IMAGE --}}
 
-
-
-
-{{-- CSS BUAT SCANNER  --}}
-
-
-
-
+<script>
+    $('#imageModal').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget);
+        var image = button.data('image');
+        var modal = $(this);
+        modal.find('.modal-body #modalImage').attr('src', image);
+    });
+</script>
 

@@ -19,7 +19,7 @@
                         {{-- <h3 class="card-title">Create</h3> --}}
                     </div>
 
-                    <form action="{{ route('datausers.store') }}" method="POST">
+                    <form action="{{ route('datauser.store') }}" method="POST">
                         @csrf
                         <div class="card-body">
                             <div class="form-group">
@@ -31,6 +31,7 @@
                                 <label for="email">Email</label>
                                 <input type="email" name="email" id="email" class="form-control" required>
                             </div>
+
 
                             <div class="form-group">
                                 <label for="role">Role</label>

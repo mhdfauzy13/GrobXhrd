@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('user_id');
-            $table->integer('company_id')->default();
+            $table->integer('company_id')->default(0);
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');

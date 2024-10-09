@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Superadmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Employee;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
@@ -12,6 +13,14 @@ use Illuminate\Validation\Rule;
 
 class DataUserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:user.index')->only(['index']);
+        $this->middleware('permission:user.create')->only(['create', 'store']);
+        $this->middleware('permission:user.edit')->only(['edit', 'update']);
+        $this->middleware('permission:user.delete')->only('destroy');
+    }
+
     public function index(): View
     {
         $users = User::with('roles')->get();
@@ -40,35 +49,26 @@ class DataUserController extends Controller
 
         $user->assignRole($request->input('role'));
 
-        return redirect()->route('datausers.index')->with('success', 'Akun berhasil dibuat');
+        return redirect()->route('datauser.index')->with('success', 'Akun berhasil dibuat');
     }
+
     public function edit($userId)
     {
-        $user = User::where('user_id', $userId)->first();
+        $user = User::findOrFail($userId); // Mencari user berdasarkan user_id, atau tampilkan 404 jika tidak ditemukan
 
-        if (!$user) {
-            return redirect()
-                ->route('datausers.index')
-                ->with(['error' => 'Data tidak ditemukan!']);
-        }
-
-        $roles = Role::all();
+        $roles = Role::all(); // Ambil semua role yang tersedia
+        $isEmployee = $user->employee()->exists(); // Pengecekan apakah user terkait dengan employee
 
         return view('Superadmin.MasterData.user.update', [
             'user' => $user,
             'roles' => $roles,
+            'isEmployee' => $isEmployee, // Berikan info apakah user terkait dengan employee
         ]);
     }
 
     public function update(Request $request, $userId)
     {
-        $user = User::where('user_id', $userId)->first();
-
-        if (!$user) {
-            return redirect()
-                ->route('datausers.index')
-                ->with(['error' => 'Data tidak ditemukan!']);
-        }
+        $user = User::findOrFail($userId); // Perbaikan: Menggunakan findOrFail
 
         $request->validate([
             'name' => 'required|string',
@@ -77,25 +77,32 @@ class DataUserController extends Controller
             'password' => 'nullable|min:8|confirmed',
         ]);
 
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
+        // Mengupdate name dan email jika tidak terhubung dengan employee
+        if (!$user->employee()->exists()) {
+            $user->name = $request->input('name');
+            $user->email = $request->input('email');
+        }
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->input('password'));
         }
 
         $user->save();
+        $user->syncRoles($request->input('role')); // Memastikan role diperbarui secara konsisten
 
-        $user->syncRoles($request->input('role'));
+        // Perbarui `user_id` di tabel employee jika ada relasi
+        if ($user->employee()->exists()) {
+            $user->employee()->update(['user_id' => $user->user_id]);
+        }
 
-        return redirect()
-            ->route('datausers.index')
-            ->with(['success' => 'Data Berhasil Disimpan!']);
+        return redirect()->route('datauser.index')->with('success', 'Data Berhasil Disimpan!');
     }
 
-    public function destroy(User $datauser)
+    public function destroy($userId)
     {
-        $datauser->delete();
-        return redirect()->route('datausers.index')->with('success', 'Data berhasil dihapus!');
+        $user = User::findOrFail($userId); // Perbaikan: Menggunakan findOrFail
+
+        $user->delete();
+        return redirect()->route('datauser.index')->with('success', 'Data berhasil dihapus!');
     }
 }

@@ -40,6 +40,8 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'checkRoleStatus' => \App\Http\Middleware\CheckRoleStatus::class,
+        'checkrole' => \App\Http\Middleware\CheckRole::class, 
+        'permission' => \App\Http\Middleware\CheckPermission::class, 
         // Middleware tambahan yang Anda buat
     ];
 }

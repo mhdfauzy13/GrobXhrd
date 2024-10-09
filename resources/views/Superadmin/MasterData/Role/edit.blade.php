@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- Content Wrapper. Contains page content -->
     <div class="content">
-        <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
@@ -14,13 +12,10 @@
             </div>
         </section>
 
-        <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <!-- left column -->
                     <div class="col-md-12">
-                        <!-- jquery validation -->
                         <div class="card card-primary">
                             <form action="{{ route('role.update', $role->id) }}" method="POST" id="quickForm">
                                 @csrf
@@ -29,83 +24,112 @@
                                     <div class="form-group">
                                         <label for="roleName">Nama Role</label>
                                         <input type="text" name="name" class="form-control" id="roleName"
-                                            placeholder="Masukkan Role" value="{{ $role->name }}">
+                                            value="{{ $role->name }}" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="permissions">Permission yang Diberikan</label>
-
-                                        <!-- Single Checkbox for Select/Deselect All -->
+                                        <label for="permissions">Permissions yang Diberikan</label>
+                                    
+                                        <!-- Select/Deselect All -->
                                         <div class="custom-control custom-checkbox mb-2">
-                                            <input type="checkbox" class="custom-control-input" id="selectAllFeatures">
-                                            <label class="custom-control-label" for="selectAllFeatures">Select All</label>
+                                            <input type="checkbox" class="custom-control-input" id="selectAllPermissions">
+                                            <label class="custom-control-label" for="selectAllPermissions">Select All</label>
                                         </div>
-
+                                    
+                                        <!-- Fitur Dashboard -->
+                                        <div class="card mt-3">
+                                            <div class="card-header">
+                                                <a href="#" id="selectAllDashboard" class="card-title">Fitur Dashboard</a>
+                                            </div>
+                                            <div class="card-body">
+                                                @foreach ($permissions->whereIn('name', ['dashboard.view', 'dashboardemployee.view']) as $permission)
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" name="permissions[]" value="{{ $permission->name }}" class="custom-control-input dashboard-checkbox" id="dashboard_{{ $permission->id }}" {{ in_array($permission->name, $rolePermissions) ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="dashboard_{{ $permission->id }}">
+                                                            {{ ucfirst(str_replace('dashboard.', '', $permission->name)) }}
+                                                        </label>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    
                                         <!-- Fitur Role -->
                                         <div class="card mt-3">
                                             <div class="card-header">
                                                 <a href="#" id="selectAllRole" class="card-title">Fitur Role</a>
                                             </div>
                                             <div class="card-body">
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" name="permissions[]" value="role.index"
-                                                        class="custom-control-input role-checkbox" id="roleIndex"
-                                                        {{ in_array('role.index', $rolePermissions) ? 'checked' : '' }}>
-                                                    <label class="custom-control-label" for="roleIndex">View</label>
-                                                </div>
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" name="permissions[]" value="role.create"
-                                                        class="custom-control-input role-checkbox" id="roleCreate"
-                                                        {{ in_array('role.create', $rolePermissions) ? 'checked' : '' }}>
-                                                    <label class="custom-control-label" for="roleCreate">Create</label>
-                                                </div>
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" name="permissions[]" value="role.edit"
-                                                        class="custom-control-input role-checkbox" id="roleEdit"
-                                                        {{ in_array('role.edit', $rolePermissions) ? 'checked' : '' }}>
-                                                    <label class="custom-control-label" for="roleEdit">Edit</label>
-                                                </div>
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" name="permissions[]" value="role.delete"
-                                                        class="custom-control-input role-checkbox" id="roleDelete"
-                                                        {{ in_array('role.delete', $rolePermissions) ? 'checked' : '' }}>
-                                                    <label class="custom-control-label" for="roleDelete">Delete</label>
-                                                </div>
+                                                @foreach ($permissions->whereIn('name', ['role.index', 'role.create', 'role.edit', 'role.delete']) as $permission)
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" name="permissions[]" value="{{ $permission->name }}" class="custom-control-input role-checkbox" id="role_{{ $permission->id }}" {{ in_array($permission->name, $rolePermissions) ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="role_{{ $permission->id }}">
+                                                            {{ ucfirst(str_replace('role.', '', $permission->name)) }}
+                                                        </label>
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
-
+                                    
                                         <!-- Fitur User -->
                                         <div class="card mt-3">
                                             <div class="card-header">
                                                 <a href="#" id="selectAllUser" class="card-title">Fitur User</a>
                                             </div>
                                             <div class="card-body">
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" name="permissions[]" value="user.index"
-                                                        class="custom-control-input user-checkbox" id="userIndex"
-                                                        {{ in_array('user.index', $rolePermissions) ? 'checked' : '' }}>
-                                                    <label class="custom-control-label" for="userIndex">View</label>
-                                                </div>
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" name="permissions[]" value="user.create"
-                                                        class="custom-control-input user-checkbox" id="userCreate"
-                                                        {{ in_array('user.create', $rolePermissions) ? 'checked' : '' }}>
-                                                    <label class="custom-control-label" for="userCreate">Create</label>
-                                                </div>
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" name="permissions[]" value="user.edit"
-                                                        class="custom-control-input user-checkbox" id="userEdit"
-                                                        {{ in_array('user.edit', $rolePermissions) ? 'checked' : '' }}>
-                                                    <label class="custom-control-label" for="userEdit">Edit</label>
-                                                </div>
-                                                <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" name="permissions[]" value="user.delete"
-                                                        class="custom-control-input user-checkbox" id="userDelete"
-                                                        {{ in_array('user.delete', $rolePermissions) ? 'checked' : '' }}>
-                                                    <label class="custom-control-label" for="userDelete">Delete</label>
-                                                </div>
+                                                @foreach ($permissions->whereIn('name', ['user.index', 'user.create', 'user.edit', 'user.delete']) as $permission)
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" name="permissions[]" value="{{ $permission->name }}" class="custom-control-input user-checkbox" id="user_{{ $permission->id }}" {{ in_array($permission->name, $rolePermissions) ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="user_{{ $permission->id }}">
+                                                            {{ ucfirst(str_replace('user.', '', $permission->name)) }}
+                                                        </label>
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
+                                    
+                                        <!-- Fitur Company -->
+                                        <div class="card mt-3">
+                                            <div class="card-header">
+                                                <a href="#" id="selectAllCompany" class="card-title">Fitur Company</a>
+                                            </div>
+                                            <div class="card-body">
+                                                @foreach ($permissions->whereIn('name', ['company.index', 'company.create', 'company.edit', 'company.delete']) as $permission)
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" name="permissions[]" value="{{ $permission->name }}" class="custom-control-input company-checkbox" id="company_{{ $permission->id }}" {{ in_array($permission->name, $rolePermissions) ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="company_{{ $permission->id }}">
+                                                            {{ ucfirst(str_replace('company.', '', $permission->name)) }}
+                                                        </label>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    
+                                        <!-- Fitur Employee, Payroll, Recruitment, Attendance, dan Offrequest -->
+                                        @foreach ([
+                                            'employee' => ['employee.index', 'employee.create', 'employee.edit', 'employee.destroy'],
+                                            'payroll' => ['payroll.index', 'payroll.create', 'payroll.edit', 'payroll.delete'],
+                                            'recruitment' => ['recruitment.index', 'recruitment.create', 'recruitment.edit', 'recruitment.delete'],
+                                            'attandance' => ['attandance.index', 'attandance.scanView', 'attandance.scan'],
+                                            'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.store', 'offrequest.approver'],
+                                        ] as $feature => $featurePermissions)
+                                            <div class="card mt-3">
+                                                <div class="card-header">
+                                                    <a href="#" id="selectAll{{ ucfirst($feature) }}" class="card-title">Fitur {{ ucfirst($feature) }}</a>
+                                                </div>
+                                                <div class="card-body">
+                                                    @foreach ($permissions->whereIn('name', $featurePermissions) as $permission)
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" name="permissions[]" value="{{ $permission->name }}" class="custom-control-input {{ $feature }}-checkbox" id="{{ $feature }}_{{ $permission->id }}" {{ in_array($permission->name, $rolePermissions) ? 'checked' : '' }}>
+                                                            <label class="custom-control-label" for="{{ $feature }}_{{ $permission->id }}">
+                                                                {{ ucfirst(str_replace($feature . '.', '', $permission->name)) }}
+                                                            </label>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endforeach
                                     </div>
+                                    
+
                                     <div class="form-group">
                                         <label for="status">Status</label>
                                         <select name="status" class="form-control" id="status">
@@ -116,55 +140,101 @@
                                         </select>
                                     </div>
                                 </div>
-                                <!-- /.card-body -->
+
                                 <div class="card-footer">
                                     <a href="{{ route('role.index') }}" class="btn btn-secondary">Back</a>
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </div>
                             </form>
                         </div>
-                        <!-- /.card -->
                     </div>
-                    <!--/.col (left) -->
                 </div>
-                <!-- /.row -->
-            </div><!-- /.container-fluid -->
+            </div>
         </section>
 
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Select/Deselect All Features
-                const selectAllFeatures = document.getElementById('selectAllFeatures');
-                const allFeatureCheckboxes = document.querySelectorAll('input[name="permissions[]"]');
-
-                selectAllFeatures.addEventListener('change', function() {
-                    allFeatureCheckboxes.forEach((checkbox) => {
-                        checkbox.checked = selectAllFeatures.checked;
-                    });
+            document.getElementById('selectAllPermissions').addEventListener('click', function() {
+                let checkboxes = document.querySelectorAll('.custom-control-input');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
                 });
+            });
 
-                // Select/Deselect All Role
-                const selectAllRole = document.getElementById('selectAllRole');
-                const roleCheckboxes = document.querySelectorAll('.role-checkbox');
-
-                selectAllRole.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    const allChecked = Array.from(roleCheckboxes).every(checkbox => checkbox.checked);
-                    roleCheckboxes.forEach((checkbox) => {
-                        checkbox.checked = !allChecked;
-                    });
+            document.getElementById('selectAllDashboard').addEventListener('click', function(e) {
+                e.preventDefault();
+                let checkboxes = document.querySelectorAll('.dashboard-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = !checkbox.checked;
                 });
+            });
 
-                // Select/Deselect All User
-                const selectAllUser = document.getElementById('selectAllUser');
-                const userCheckboxes = document.querySelectorAll('.user-checkbox');
+            document.getElementById('selectAllRole').addEventListener('click', function(e) {
+                e.preventDefault();
+                let checkboxes = document.querySelectorAll('.role-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = !checkbox.checked;
+                });
+            });
 
-                selectAllUser.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    const allChecked = Array.from(userCheckboxes).every(checkbox => checkbox.checked);
-                    userCheckboxes.forEach((checkbox) => {
-                        checkbox.checked = !allChecked;
-                    });
+            document.getElementById('selectAllUser').addEventListener('click', function(e) {
+                e.preventDefault();
+                let checkboxes = document.querySelectorAll('.user-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = !checkbox.checked;
+                });
+            });
+
+            // Event listener untuk fitur Company
+            document.getElementById('selectAllCompany').addEventListener('click', function(e) {
+                e.preventDefault();
+                let checkboxes = document.querySelectorAll('.company-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = !checkbox.checked;
+                });
+            });
+
+            // Event listener untuk fitur Employee
+            document.getElementById('selectAllEmployee').addEventListener('click', function(e) {
+                e.preventDefault();
+                let checkboxes = document.querySelectorAll('.employee-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = !checkbox.checked;
+                });
+            });
+
+            // Event listener untuk fitur Payroll
+            document.getElementById('selectAllPayroll').addEventListener('click', function(e) {
+                e.preventDefault();
+                let checkboxes = document.querySelectorAll('.payroll-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = !checkbox.checked;
+                });
+            });
+
+            // Event listener untuk fitur Recruitment
+            document.getElementById('selectAllRecruitment').addEventListener('click', function(e) {
+                e.preventDefault();
+                let checkboxes = document.querySelectorAll('.recruitment-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = !checkbox.checked;
+                });
+            });
+
+            // Event listener untuk fitur Attandance
+            document.getElementById('selectAllAttandance').addEventListener('click', function(e) {
+                e.preventDefault();
+                let checkboxes = document.querySelectorAll('.attandance-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = !checkbox.checked;
+                });
+            });
+
+            // Event listener untuk fitur Offrequest
+            document.getElementById('selectAllOffrequest').addEventListener('click', function(e) {
+                e.preventDefault();
+                let checkboxes = document.querySelectorAll('.offrequest-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = !checkbox.checked;
                 });
             });
         </script>
