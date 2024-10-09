@@ -44,7 +44,7 @@
                 editable: true,
                 dateClick: function(info) {
                     $.ajax({
-                        url: '{{ route('events.create') }}',
+                        url: '{{ route('event.create') }}',
                         data: {
                             start_date: info.dateStr,
                             end_date: info.dateStr,

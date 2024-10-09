@@ -12,7 +12,6 @@ use App\Http\Controllers\Superadmin\RecruitmentController;
 use App\Http\Controllers\Superadmin\RoleController;
 use App\Http\Controllers\Superadmin\AttandanceController;
 use App\Http\Controllers\Superadmin\EventController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Employee\OffemployeeController;
 use App\Http\Controllers\ProfileController;
 
@@ -23,7 +22,7 @@ Route::get('/', function () {
 
 
 
-    Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
+Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
 
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])
@@ -114,10 +113,44 @@ Route::get('/', function () {
         Route::delete('/payrolls/{id}', [PayrollController::class, 'destroy'])
             ->name('payroll.destroy')
             ->middleware('permission:payroll.delete');
-      
-      // event
-       Route::get('events/list',  [EventController::class, 'ListEvent'])->name('events.list');
-    Route::resource('events', EventController::class);
+
+        // event
+        Route::get('/events', [EventController::class, 'index'])
+            ->name('event.index')
+            ->middleware('permission:event.index');
+
+        // Menampilkan form list event
+        Route::get('events/list',  [EventController::class, 'ListEvent'])
+            ->name('events.list')
+            ->middleware('permission:events.list');
+
+        Route::get('/events/create', [EventController::class, 'create'])
+            ->name('event.create')
+            ->middleware('permission:event.create');
+
+        Route::post('/events', [EventController::class, 'store'])
+            ->name('event.store')
+            ->middleware('permission:event.create');
+
+        Route::get('/events/{event_id}/edit', [EventController::class, 'edit'])
+            ->name('event.edit')
+            ->middleware('permission:event.edit');
+
+        Route::put('/events/{event_id}', [EventController::class, 'update'])
+            ->name('event.update')
+            ->middleware('permission:event.edit');
+
+        Route::delete('/events/{event_id}', [EventController::class, 'destroy'])
+            ->name('event.destroy')
+            ->middleware('permission:event.delete');
+
+
+
+
+
+
+
+        // Route::resource('events', EventController::class);
 
 
 
@@ -222,6 +255,8 @@ Route::get('/', function () {
             ->middleware('permission:offrequest.approver');
     });
 });
+
+
 
 
 

@@ -37,8 +37,10 @@
         <!-- Footer -->
         @include('layouts.footer')
     </div>
-    <script src="{{ asset('adminlte/js/adminlte.min.js') }}"></script>
-    @yield('scripts')
+    @include('components.script')
+
+    {{-- <script src="{{ asset('adminlte/js/adminlte.min.js') }}"></script>
+    @yield('scripts') --}}
 </body>
 
 </html>
