@@ -114,6 +114,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('payroll.destroy')
             ->middleware('permission:payroll.delete');
 
+
         // event
         Route::get('/events', [EventController::class, 'index'])
             ->name('event.index')
@@ -132,20 +133,17 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('event.store')
             ->middleware('permission:event.create');
 
-        Route::get('/events/{event_id}/edit', [EventController::class, 'edit'])
+        Route::get('/events/{event}/edit', [EventController::class, 'edit'])
             ->name('event.edit')
             ->middleware('permission:event.edit');
 
-        Route::put('/events/{event_id}', [EventController::class, 'update'])
+        Route::put('/events/{event}', [EventController::class, 'update'])
             ->name('event.update')
             ->middleware('permission:event.edit');
 
-        Route::delete('/events/{event_id}', [EventController::class, 'destroy'])
+        Route::delete('/events/{event}', [EventController::class, 'destroy'])
             ->name('event.destroy')
             ->middleware('permission:event.delete');
-
-
-
 
 
 
