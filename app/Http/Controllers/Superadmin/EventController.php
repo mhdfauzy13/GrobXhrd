@@ -9,6 +9,15 @@ use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('permission:event.index')->only(['index']);
+        $this->middleware('permission:events.list')->only(['ListEvent']);
+        $this->middleware('permission:event.create')->only(['create', 'store']);
+        $this->middleware('permission:event.edit')->only(['edit', 'update']);
+        $this->middleware('permission:event.delete')->only('destroy');
+    }
     public function index()
     {
         return view('superadmin.event.index');
@@ -20,7 +29,8 @@ class EventController extends Controller
         $end = date('Y-m-d', strtotime($request->end));
 
         $events = Event::where('start_date', '>=', $start)
-            ->where('end_date', '<=', $end)->get()
+            ->where('end_date', '<=', $end)
+            ->get()
             ->map(fn($item) => [
                 'event_id' => $item->event_id,
                 'title' => $item->title,
@@ -34,22 +44,26 @@ class EventController extends Controller
     }
 
 
-    public function create(Event $event)
+    public function create()
     {
-        return view('superadmin.event-form', ['data' => $event, 'action' => route('events.store')]);
+        return view('superadmin.event-form', [
+            'data' => new Event(),
+            'action' => route('event.store') // Perbaiki nama rute
+        ]);
     }
 
-
-    public function store(EventRequest $request, Event $event)
+    public function store(EventRequest $request)
     {
+        $event = new Event();
         return $this->update($request, $event);
     }
+
 
     public function edit(Event $event)
     {
         return view('superadmin.event-form', [
             'data' => $event,
-            'action' => route('events.update', $event->event_id)
+            'action' => route('event.update', $event) // Perbaiki nama rute
         ]);
     }
 
