@@ -4,10 +4,10 @@
     <section class="content">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Off Requests List</h3>
+                <h3 class="card-title">Daftar Permohonan Cuti</h3>
                 <div class="card-tools">
                     <a class="btn btn-primary btn-sm" href="{{ route('offrequest.create') }}">
-                        <i class="fas fa-plus"></i> Add
+                        <i class="fas fa-plus"></i> Tambah
                     </a>
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                         <i class="fas fa-minus"></i>
@@ -17,7 +17,32 @@
                     </button>
                 </div>
             </div>
-            <div class="card-body p-0">
+
+            <div class="card-body">
+                <!-- Menampilkan total cuti berdasarkan tipe -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5>Total Cuti Berdasarkan Tipe</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Jenis Cuti</th>
+                                    <th>Total Hari</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($totals as $total)
+                                    <tr>
+                                        <td>{{ $total->title }}</td>
+                                        <td>{{ $total->total_days }} hari</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tabel untuk daftar permohonan cuti -->
                 <div class="table-responsive">
                     <table class="table table-striped projects">
                         <thead>
@@ -46,15 +71,20 @@
                                         <span class="badge {{ $offrequest->status == 'approved' ? 'bg-success' : ($offrequest->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
                                             {{ ucfirst($offrequest->status) }}
                                         </span>
-                                    </td>                             
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center">No off requests available.</td>
+                                    <td colspan="8" class="text-center">Tidak ada permohonan cuti yang tersedia.</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Navigasi pagination -->
+                <div class="card-footer clearfix">
+                    {{-- {{ $offrequests->links() }}  --}}
                 </div>
             </div>
         </div>

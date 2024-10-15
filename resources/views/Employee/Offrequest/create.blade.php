@@ -15,9 +15,16 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="title">Judul</label>
-                        <input type="text" name="title" class="form-control" id="title" placeholder="Masukkan judul permohonan cuti" required>
+                        <label for="title">Tipe Off</label>
+                        <select class="form-control" id="title" name="title" required>
+                            <option value="Sakit">Sakit</option>
+                            <option value="Liburan">Liburan</option>
+                            <option value="Urusan Keluarga">Urusan Keluarga</option>
+                            <option value="Absence">Absence</option>
+                            <option value="Personal Time">Personal Time</option>
+                        </select>
                     </div>
+                    
 
                     <div class="form-group">
                         <label for="description">Deskripsi</label>

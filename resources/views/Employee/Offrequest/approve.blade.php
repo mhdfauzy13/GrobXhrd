@@ -13,21 +13,6 @@
                     </div>
                 @endif
 
-                @if (Auth::user()->unreadNotifications->count())
-                    <div class="alert alert-info">
-                        Anda memiliki {{ Auth::user()->unreadNotifications->count() }} notifikasi baru.
-                    </div>
-                @endif
-
-                <ul>
-                    @foreach (Auth::user()->notifications as $notification)
-                        <li>
-                            {{ $notification->data['message'] }}
-                            <small>{{ $notification->created_at->diffForHumans() }}</small>
-                        </li>
-                    @endforeach
-                </ul>
-
                 @if ($offrequests->isEmpty())
                     <div class="alert alert-info" role="alert">
                         Tidak ada pengajuan cuti yang perlu disetujui saat ini.
