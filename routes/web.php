@@ -14,8 +14,10 @@ use App\Http\Controllers\Superadmin\AttandanceController;
 use App\Http\Controllers\Superadmin\EventController;
 use App\Http\Controllers\Employee\OffemployeeController;
 use App\Http\Controllers\ProfileController;
+use App\Notifications\LeaveRequestNotification;
 use App\Http\Controllers\Superadmin\EmployeeBookController;
 use App\Http\Controllers\Superadmin\EmployeeBooksController;
+
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -272,6 +274,8 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/offrequest/approver', [OffemployeeController::class, 'approverIndex'])
             ->name('offrequest.approver')
             ->middleware('permission:offrequest.approver');
+
+        
     });
 });
 

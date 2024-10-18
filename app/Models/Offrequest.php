@@ -22,6 +22,8 @@ class Offrequest extends Model
         'manager_id',
         'status',
         'approver_id',
+        'image', 
+
     ];
 
     protected $casts = [
@@ -33,6 +35,11 @@ class Offrequest extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class, 'employee_id');
+    }
 
     public function manager()
     {
@@ -40,20 +47,20 @@ class Offrequest extends Model
     }
 
     public function approver()
-{
-    return $this->belongsTo(User::class, 'approver_id');
-}
+    {
+        return $this->belongsTo(User::class, 'approver_id');
+    }
 
 
-// Menyaring offrequest yang masih pending
-public function scopePending($query)
-{
-    return $query->where('status', 'pending');
-}
+    // Menyaring offrequest yang masih pending
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
 
-// Menyaring offrequest berdasarkan manager
-public function scopeForManager($query, $managerId)
-{
-    return $query->where('manager_id', $managerId);
-}
+    // Menyaring offrequest berdasarkan manager
+    public function scopeForManager($query, $managerId)
+    {
+        return $query->where('manager_id', $managerId);
+    }
 }
