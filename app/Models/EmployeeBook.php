@@ -15,9 +15,9 @@ class EmployeeBook extends Model
 
     protected $fillable = [
         'employee_id',
-        'date',
+        'incident_date',
         'incident_details',
-        'description',
+        'remarks',
         'category',
     ];
 

@@ -27,7 +27,8 @@
                         <tbody>
                             @foreach ($employeeBooks as $employeeBook)
                                 <tr>
-                                    <td>{{ $employeeBook->employee->name }}</td>
+                                    <td>{{ $employeeBook->employee->first_name }} {{ $employeeBook->employee->last_name }}
+                                    </td>
                                     <td>{{ $employeeBook->incident_date }}</td>
                                     <td>{{ $employeeBook->incident_details }}</td>
                                     <td>{{ $employeeBook->remarks }}</td>
@@ -42,7 +43,6 @@
                                             href="{{ route('superadmin.employeebooks.edit', $employeeBook->employeebook_id) }}">
                                             <i class="fas fa-pencil-alt"></i> Edit
                                         </a>
-
                                         <form
                                             action="{{ route('superadmin.employeebooks.destroy', $employeeBook->employeebook_id) }}"
                                             method="POST" style="display:inline;">
@@ -53,18 +53,6 @@
                                                 <i class="fas fa-trash"></i> Delete
                                             </button>
                                         </form>
-                                    </td>
-                                </tr>
-
-                                <!-- Incident Date Form Group -->
-                                <tr>
-                                    <td colspan="6">
-                                        <div class="form-group">
-                                            <label for="incident_date">Incident Date</label>
-                                            <input type="date" class="form-control" id="incident_date"
-                                                name="incident_date"
-                                                value="{{ old('incident_date', $employeeBook->incident_date) }}" required>
-                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

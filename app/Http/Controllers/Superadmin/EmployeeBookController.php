@@ -19,8 +19,9 @@ class EmployeeBookController extends Controller
 
     public function index()
     {
+        $employees = Employee::all();
         $employeeBooks = EmployeeBook::with('employee')->get();
-        return view('superadmin.employeebooks.index', compact('employeeBooks'));
+        return view('superadmin.employeebooks.index', compact('employees', 'employeeBooks'));
     }
 
     public function create()
@@ -68,15 +69,17 @@ class EmployeeBookController extends Controller
         ]);
 
         $employeeBook = EmployeeBook::findOrFail($employeebook_id);
-        $employeeBook->employee_id = $request->input('employee_id');
-        $employeeBook->incident_date = $request->input('incident_date');
-        $employeeBook->incident_details = $request->input('incident_details');
-        $employeeBook->remarks = $request->input('remarks');
-        $employeeBook->category = $request->input('category');
-        $employeeBook->save();
+        $employeeBook->update($request->only([
+            'employee_id',
+            'incident_date',
+            'incident_details',
+            'remarks',
+            'category',
+        ]));
 
         return redirect()->route('superadmin.employeebooks.index')->with('success', 'Employee book successfully updated');
     }
+
 
     public function destroy($employeebook_id)
     {
