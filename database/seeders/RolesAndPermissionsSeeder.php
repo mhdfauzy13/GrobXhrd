@@ -17,7 +17,7 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         // Daftar semua permissions
         $permissions = [
-            //Permission dashboard 
+            //Permission dashboard
             'dashboard.view',
             'dashboardemployee.view',
 
@@ -69,6 +69,22 @@ class RolesAndPermissionsSeeder extends Seeder
             'offrequest.store',
             'offrequest.approver',
             'offrequest.reject',
+
+            //event
+            'event.index',
+            'events.list',
+            'event.create',
+            'event.edit',
+            'event.delete',
+
+            //employee books
+            'employeebook.index',
+            'employeebook.create',
+            'employeebook.edit',
+            'employeebook.delete',
+
+
+
         ];
 
         foreach ($permissions as $permission) {
@@ -82,16 +98,16 @@ class RolesAndPermissionsSeeder extends Seeder
         $adminRole->givePermissionTo($permissions); // Superadmin mendapatkan semua permission
 
         $managerRole->givePermissionTo([
-            'dashboardemployee.view', 
-            'user.index', 
-            'user.edit', 
-            'role.index', 
-            'employee.index', 
-            'payroll.index', 
+            'dashboardemployee.view',
+            'user.index',
+            'user.edit',
+            'role.index',
+            'employee.index',
+            'payroll.index',
 
-            'recruitment.index', 
-            'offrequest.index', 
-            'offrequest.approver', 
+            'recruitment.index',
+            'offrequest.index',
+            'offrequest.approver',
         ]);
         $employeeRole->givePermissionTo(['dashboardemployee.view', 'attandance.scan', 'offrequest.create', 'attandance.scanView']);
 
@@ -115,7 +131,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'password' => Hash::make('password'),
             ],
         );
-        $manager->assignRole($managerRole); 
+        $manager->assignRole($managerRole);
 
         $employee = User::updateOrCreate(
             [
@@ -126,6 +142,6 @@ class RolesAndPermissionsSeeder extends Seeder
                 'password' => Hash::make('password'),
             ],
         );
-        $employee->assignRole($employeeRole); 
+        $employee->assignRole($employeeRole);
     }
 }

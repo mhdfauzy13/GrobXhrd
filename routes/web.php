@@ -11,13 +11,18 @@ use App\Http\Controllers\Superadmin\PayrollController;
 use App\Http\Controllers\Superadmin\RecruitmentController;
 use App\Http\Controllers\Superadmin\RoleController;
 use App\Http\Controllers\Superadmin\AttandanceController;
+use App\Http\Controllers\Superadmin\EventController;
 use App\Http\Controllers\Employee\OffemployeeController;
 use App\Http\Controllers\ProfileController;
 use App\Notifications\LeaveRequestNotification;
+use App\Http\Controllers\Superadmin\EmployeeBookController;
+use App\Http\Controllers\Superadmin\EmployeeBooksController;
+
 
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
 
 
 Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
@@ -112,6 +117,62 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('payroll.destroy')
             ->middleware('permission:payroll.delete');
 
+
+        // event
+        Route::get('/events', [EventController::class, 'index'])
+            ->name('event.index')
+            ->middleware('permission:event.index');
+
+        // Menampilkan form list event
+        Route::get('events/list',  [EventController::class, 'ListEvent'])
+            ->name('events.list')
+            ->middleware('permission:events.list');
+
+        Route::get('/events/create', [EventController::class, 'create'])
+            ->name('event.create')
+            ->middleware('permission:event.create');
+
+        Route::post('/events', [EventController::class, 'store'])
+            ->name('event.store')
+            ->middleware('permission:event.create');
+
+        Route::get('/events/{event}/edit', [EventController::class, 'edit'])
+            ->name('event.edit')
+            ->middleware('permission:event.edit');
+
+        Route::put('/events/{event}', [EventController::class, 'update'])
+            ->name('event.update')
+            ->middleware('permission:event.edit');
+
+        Route::delete('/events/{event}', [EventController::class, 'destroy'])
+            ->name('event.destroy')
+            ->middleware('permission:event.delete');
+
+
+        // employeebooks
+        Route::get('/employeebooks', [EmployeeBookController::class, 'index'])
+            ->name('superadmin.employeebooks.index')
+            ->middleware('permission:employeebook.index');
+
+        Route::get('/employeebooks/create', [EmployeeBookController::class, 'create'])
+            ->name('superadmin.employeebooks.create')
+            ->middleware('permission:employeebook.create');
+
+        Route::post('/employeebooks', [EmployeeBookController::class, 'store'])
+            ->name('superadmin.employeebooks.store')
+            ->middleware('permission:employeebook.create');
+
+        Route::get('/employeebooks/{employeebook_id}/edit', [EmployeeBookController::class, 'edit'])
+            ->name('superadmin.employeebooks.edit')
+            ->middleware('permission:employeebook.edit');
+
+        Route::put('/employeebooks/{employeebook_id}', [EmployeeBookController::class, 'update'])
+            ->name('superadmin.employeebooks.update')
+            ->middleware('permission:employeebook.edit');
+
+        Route::delete('/employeebooks/{employeebook_id}', [EmployeeBookController::class, 'destroy'])
+            ->name('superadmin.employeebooks.destroy')
+            ->middleware('permission:employeebook.delete');
 
 
         // Recruitment
@@ -217,6 +278,8 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         
     });
 });
+
+
 
 
 

@@ -121,7 +121,7 @@
                 <!-- Employee Data menu, only visible if user has specific permissions -->
 
                 @canany(['employee.index', 'employee.create', 'attandance.index', 'attandance.scanView',
-                    'offrequest.index', 'offrequest.create','offrequest.approver', 'payroll.index'])
+                    'offrequest.index', 'offrequest.create', 'offrequest.approver', 'payroll.index'])
 
                     <li class="nav-item">
                         <a href="#" class="nav-link">
@@ -208,7 +208,6 @@
                             <p>Payroll</p>
                         </a>
                     </li> --}}
-                    
                 @endcan
 
                 <!-- Recruitment menu, only visible if user has permission -->
@@ -219,7 +218,7 @@
                                 <i class="fas fa-users nav-icon"></i>
                                 <p>Recruitment</p>
                             </a>
-                            @elsecan('recruitment.create')
+                        @elsecan('recruitment.create')
                             <a href="{{ route('recruitment.create') }}" class="nav-link">
                                 <i class="fas fa-users nav-icon"></i>
                                 <p>Create Recruitment</p>
@@ -228,12 +227,41 @@
                     </li>
                 @endcanany
 
-            
+                @canany(['event.index'])
+
+                    <li class="nav-item menu-open">
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                @can('event.index')
+                                    <a href="{{ route('event.index') }}" class="nav-link">
+                                        <i class="fas fa-calendar nav-icon"></i>
+                                        <p>Event</p>
+                                    </a>
+                                @endcan
+
+                            </li>
+                        </ul>
+                    </li>
+
+                @endcanany
+
+                @canany(['employeebook.index'])
+                    <li class="nav-item">
+                        <a href="{{ route('superadmin.employeebooks.index') }}" class="nav-link">
+                            <i class="fas fa-book nav-icon"></i>
+                            <p>Employee Books</p>
+                        </a>
+                    </li>
+                @endcanany
+
+
+
 
 
                 <!-- Logout -->
                 <li class="nav-item">
-                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                    <a href="#"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                         class="nav-link">
                         <i class="fas fa-sign-out-alt nav-icon"></i>
                         <p>{{ __('Log Out') }}</p>
