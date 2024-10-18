@@ -18,6 +18,19 @@
                 </div>
             </div>
 
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+
             <div class="card-body">
                 <!-- Menampilkan total cuti berdasarkan tipe -->
                 <div class="row mb-4">
@@ -31,7 +44,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($totals as $total)
+                                @foreach ($totals as $total)
                                     <tr>
                                         <td>{{ $total->title }}</td>
                                         <td>{{ $total->total_days }} hari</td>
@@ -55,6 +68,7 @@
                                 <th>Start Event</th>
                                 <th>End Event</th>
                                 <th>Status</th>
+                                <th>Bukti Gambar</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -68,14 +82,25 @@
                                     <td>{{ $offrequest->start_event->format('Y-m-d') }}</td>
                                     <td>{{ $offrequest->end_event->format('Y-m-d') }}</td>
                                     <td>
-                                        <span class="badge {{ $offrequest->status == 'approved' ? 'bg-success' : ($offrequest->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
+                                        <span
+                                            class="badge {{ $offrequest->status == 'approved' ? 'bg-success' : ($offrequest->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
                                             {{ ucfirst($offrequest->status) }}
                                         </span>
+                                    </td>
+                                    <td>
+                                        @if ($offrequest->image)
+                                            <img src="{{ asset('uploads/' . $offrequest->image) }}" alt="Bukti Cuti"
+                                                width="100" style="cursor: pointer;" data-toggle="modal"
+                                                data-target="#imageModal"
+                                                onclick="showImage('{{ asset('uploads/' . $offrequest->image) }}')">
+                                        @else
+                                            Tidak ada bukti cuti
+                                        @endif
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center">Tidak ada permohonan cuti yang tersedia.</td>
+                                    <td colspan="9" class="text-center">Tidak ada permohonan cuti yang tersedia.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -89,4 +114,29 @@
             </div>
         </div>
     </section>
+
+    <!-- Modal untuk menampilkan gambar -->
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Bukti Cuti</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center"> <!-- Tambahkan text-center di sini -->
+                    <img id="previewImage" src="" alt="Preview" class="img-fluid"
+                        style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showImage(src) {
+            document.getElementById('previewImage').src = src;
+        }
+    </script>
 @endsection

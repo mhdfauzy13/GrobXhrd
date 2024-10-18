@@ -29,6 +29,7 @@
                                     <th>Start Event</th>
                                     <th>End Event</th>
                                     <th>Status</th>
+                                    <th>Bukti Gambar</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -44,6 +45,39 @@
                                         <td>{{ $offrequest->end_event ? $offrequest->end_event->format('Y-m-d') : 'N/A' }}
                                         </td>
                                         <td>{{ ucfirst($offrequest->status) }}</td>
+                                        <td>
+                                            @if ($offrequest->image)
+                                                <img src="{{ asset('uploads/' . $offrequest->image) }}" alt="Bukti Gambar"
+                                                    style="max-width: 100px; cursor: pointer;" data-toggle="modal"
+                                                    data-target="#imageModal{{ $offrequest->offrequest_id }}">
+                                                <!-- Modal Trigger -->
+                                                <div class="modal fade" id="imageModal{{ $offrequest->offrequest_id }}"
+                                                    tabindex="-1" role="dialog"
+                                                    aria-labelledby="imageModalLabel{{ $offrequest->offrequest_id }}"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title"
+                                                                    id="imageModalLabel{{ $offrequest->offrequest_id }}">
+                                                                    Bukti Gambar</h5>
+                                                                <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body text-center">
+                                                                <img src="{{ asset('uploads/' . $offrequest->image) }}"
+                                                                    alt="Bukti Gambar" class="img-fluid"
+                                                                    style="max-width: 100%; height: auto;">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                N/A
+                                            @endif
+                                        </td>
                                         <td class="d-flex">
                                             @can('offrequest.approver')
                                                 <form action="{{ route('offrequest.approve', $offrequest->offrequest_id) }}"
@@ -87,6 +121,7 @@
                                     <th>Start Event</th>
                                     <th>End Event</th>
                                     <th>Status</th>
+                                    <th>Bukti Gambar</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -101,17 +136,62 @@
                                         <td>{{ $approvedRequest->end_event ? $approvedRequest->end_event->format('Y-m-d') : 'N/A' }}
                                         </td>
                                         <td>
-                                            <span class="badge {{ $approvedRequest->status == 'approved' ? 'bg-success' : ($approvedRequest->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
+                                            <span
+                                                class="badge {{ $approvedRequest->status == 'approved' ? 'bg-success' : ($approvedRequest->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
                                                 {{ ucfirst($approvedRequest->status) }}
                                             </span>
-                                        </td>                                    </tr>
+                                        </td>
+                                        <td>
+                                            @if ($approvedRequest->image)
+                                                <img src="{{ asset('uploads/' . $approvedRequest->image) }}"
+                                                    alt="Bukti Gambar" style="max-width: 100px; cursor: pointer;"
+                                                    data-toggle="modal"
+                                                    data-target="#imageModalApproved{{ $approvedRequest->offrequest_id }}">
+                                                <!-- Modal Trigger -->
+                                                <div class="modal fade"
+                                                    id="imageModalApproved{{ $approvedRequest->offrequest_id }}"
+                                                    tabindex="-1" role="dialog"
+                                                    aria-labelledby="imageModalApprovedLabel{{ $approvedRequest->offrequest_id }}"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title"
+                                                                    id="imageModalApprovedLabel{{ $approvedRequest->offrequest_id }}">
+                                                                    Bukti Gambar</h5>
+                                                                <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body text-center">
+                                                                <img src="{{ asset('uploads/' . $approvedRequest->image) }}"
+                                                                    alt="Bukti Gambar" class="img-fluid"
+                                                                    style="max-width: 100%; height: auto;">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                N/A
+                                            @endif
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
                 @endif
-
             </div>
         </div>
     </section>
+
+    @push('scripts')
+        <script>
+            $(document).ready(function() {
+                // Initialize Bootstrap tooltips for images
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        </script>
+    @endpush
 @endsection

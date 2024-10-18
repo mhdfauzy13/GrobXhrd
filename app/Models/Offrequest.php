@@ -22,6 +22,8 @@ class Offrequest extends Model
         'manager_id',
         'status',
         'approver_id',
+        'image', 
+
     ];
 
     protected $casts = [

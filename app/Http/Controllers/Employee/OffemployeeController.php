@@ -48,18 +48,20 @@ class OffemployeeController extends Controller
 
     public function store(Request $request)
     {
+        // Validasi input
         $request->validate([
             'title' => 'required|in:Sakit,Liburan,Urusan Keluarga,Absence,Personal Time',
             'description' => 'required|string',
             'start_event' => 'required|date|after_or_equal:today',
             'end_event' => 'required|date|after_or_equal:start_event',
             'manager_id' => 'nullable|exists:users,user_id',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi gambar
         ]);
 
         $user = Auth::user();
 
         // Cek apakah ada cuti yang sudah disetujui atau pending pada tanggal yang sama
-        $existingRequest = Offrequest::where('user_id', $user->id)
+        $existingRequest = Offrequest::where('user_id', $user->user_id) // Menggunakan 'user_id' untuk merujuk ke user yang sedang login
             ->where(function ($query) use ($request) {
                 $query->where(function ($q) use ($request) {
                     $q->where('start_event', '<=', $request->end_event)
@@ -73,17 +75,25 @@ class OffemployeeController extends Controller
         if ($existingRequest) {
             if ($existingRequest->status === 'pending') {
                 return redirect()->route('offrequest.index')
-                    ->with('error', 'You already have a pending leave request on this date. Please wait for approval or rejection.');
+                    ->with('error', 'Anda sudah memiliki pengajuan cuti yang sedang diproses pada tanggal ini. Silakan tunggu hingga disetujui atau ditolak.');
             }
 
             if ($existingRequest->status === 'approved') {
                 return redirect()->route('offrequest.index')
-                    ->with('error', 'You already have an approved leave request on this date.');
+                    ->with('error', 'Anda sudah memiliki pengajuan cuti yang disetujui pada tanggal ini.');
             }
         }
 
+        // Upload file gambar jika ada
+        $imageName = null;
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('uploads'), $imageName);
+        }
+
+        // Simpan data ke database
         $offrequest = new Offrequest();
-        $offrequest->user_id = $user->user_id;
+        $offrequest->user_id = $user->user_id; // pastikan menggunakan 'id' bukan 'user_id' jika itu primary key
         $offrequest->name = $user->name;
         $offrequest->email = $user->email;
         $offrequest->manager_id = $request->manager_id;
@@ -92,10 +102,13 @@ class OffemployeeController extends Controller
         $offrequest->start_event = $request->start_event;
         $offrequest->end_event = $request->end_event;
         $offrequest->status = 'pending';
+        $offrequest->image = $imageName; // Simpan nama file gambar ke database
         $offrequest->save();
 
         return redirect()->route('offrequest.index')->with('success', 'Off request submitted successfully.');
     }
+
+
 
     // Fungsi untuk menampilkan daftar off request untuk approver (sisi manager)
     public function approverIndex()
