@@ -148,8 +148,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
 
 
         // employeebooks
-
-
         Route::get('/employeebooks', [EmployeeBookController::class, 'index'])
             ->name('superadmin.employeebooks.index')
             ->middleware('permission:employeebook.index');
