@@ -11,6 +11,7 @@
 
     <!-- Link to custom.css -->
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
     @include('components.head')
 </head>
@@ -20,10 +21,8 @@
         <!-- Navbar -->
         @include('layouts.navbar')
 
-
         <!-- Sidebar -->
         @include('partials.sidebar')
-
 
         <!-- Content Wrapper -->
         <div class="content-wrapper">
@@ -37,10 +36,13 @@
         <!-- Footer -->
         @include('layouts.footer')
     </div>
+
     @include('components.script')
 
-    {{-- <script src="{{ asset('adminlte/js/adminlte.min.js') }}"></script>
-    @yield('scripts') --}}
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    @yield('scripts')
 </body>
 
 </html>
