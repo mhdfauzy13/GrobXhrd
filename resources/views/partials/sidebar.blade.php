@@ -245,17 +245,6 @@
 
                 @endcanany
 
-                @canany(['employeebook.index'])
-                    <li class="nav-item">
-                        <a href="{{ route('superadmin.employeebooks.index') }}" class="nav-link">
-                            <i class="fas fa-book nav-icon"></i>
-                            <p>Employee Books</p>
-                        </a>
-                    </li>
-                @endcanany
-
-
-
 
 
                 <!-- Logout -->

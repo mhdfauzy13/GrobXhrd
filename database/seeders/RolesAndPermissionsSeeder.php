@@ -76,15 +76,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'event.create',
             'event.edit',
             'event.delete',
-
-            //employee books
-            'employeebook.index',
-            'employeebook.create',
-            'employeebook.edit',
-            'employeebook.delete',
-
-
-
         ];
 
         foreach ($permissions as $permission) {
