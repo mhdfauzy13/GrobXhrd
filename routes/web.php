@@ -153,30 +153,35 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->middleware('permission:event.delete');
 
 
-        // employeebooks
-        Route::get('/employeebooks', [EmployeeBookController::class, 'index'])
-            ->name('superadmin.employeebooks.index')
+        // Route untuk Employee Books
+        Route::get('employeebooks', [EmployeeBooksController::class, 'index'])
+            ->name('employeebooks.index')
             ->middleware('permission:employeebook.index');
 
-        Route::get('/employeebooks/create', [EmployeeBookController::class, 'create'])
-            ->name('superadmin.employeebooks.create')
+        Route::get('employeebooks/create', [EmployeeBooksController::class, 'create'])
+            ->name('employeebooks.create')
             ->middleware('permission:employeebook.create');
 
-        Route::post('/employeebooks', [EmployeeBookController::class, 'store'])
-            ->name('superadmin.employeebooks.store')
+        Route::post('employeebooks', [EmployeeBooksController::class, 'store'])
+            ->name('employeebooks.store')
             ->middleware('permission:employeebook.create');
 
-        Route::get('/employeebooks/{employeebook_id}/edit', [EmployeeBookController::class, 'edit'])
-            ->name('superadmin.employeebooks.edit')
+        Route::get('employeebooks/{employeeBook}/edit', [EmployeeBooksController::class, 'edit'])
+            ->name('employeebooks.edit')
             ->middleware('permission:employeebook.edit');
 
-        Route::put('/employeebooks/{employeebook_id}', [EmployeeBookController::class, 'update'])
-            ->name('superadmin.employeebooks.update')
+        Route::put('employeebooks/{employeeBook}', [EmployeeBooksController::class, 'update'])
+            ->name('employeebooks.update')
             ->middleware('permission:employeebook.edit');
 
-        Route::delete('/employeebooks/{employeebook_id}', [EmployeeBookController::class, 'destroy'])
-            ->name('superadmin.employeebooks.destroy')
+        Route::delete('employeebooks/{employeeBook}', [EmployeeBooksController::class, 'destroy'])
+            ->name('employeebooks.destroy')
             ->middleware('permission:employeebook.delete');
+
+
+
+
+
 
 
         // Recruitment

@@ -9,20 +9,16 @@ class EmployeeBook extends Model
 {
     use HasFactory;
 
-    protected $table = 'employee_books';
-
-    protected $primaryKey = 'employeebook_id';
-
     protected $fillable = [
         'employee_id',
         'incident_date',
-        'incident_details',
+        'incident_detail',
         'remarks',
         'category',
     ];
 
     public function employee()
     {
-        return $this->belongsTo(Employee::class, 'employee_id');
+        return $this->belongsTo(Employee::class, 'employee_id', 'employee_id');
     }
 }

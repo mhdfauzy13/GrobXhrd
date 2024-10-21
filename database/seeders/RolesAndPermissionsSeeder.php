@@ -78,12 +78,11 @@ class RolesAndPermissionsSeeder extends Seeder
             'event.edit',
             'event.delete',
 
-            //employee books
+            // employeebooks
             'employeebook.index',
             'employeebook.create',
             'employeebook.edit',
             'employeebook.delete',
-
 
 
         ];

@@ -1,65 +1,115 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="content">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Employee Book List</h3>
-                <div class="card-tools">
-                    <a class="btn btn-primary btn-sm" href="{{ route('superadmin.employeebooks.create') }}">
-                        <i class="fas fa-plus"></i> Create
-                    </a>
-                </div>
-            </div>
-            <div class="card-body p-0">
+    <div class="container">
+        <h1 class="mb-4">Employee Books</h1>
+
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#violation">Violation</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#warning">Warning</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#reprimand">Reprimand</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="violation" class="tab-pane fade show active">
+                <h3 class="mb-3">Violation</h3>
                 <div class="table-responsive">
-                    <table class="table table-striped projects">
-                        <thead>
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-light">
                             <tr>
-                                <th>Employee</th>
+                                <th>Employee Name</th>
                                 <th>Incident Date</th>
-                                <th>Incident Details</th>
+                                <th>Detail</th>
                                 <th>Remarks</th>
-                                <th>Category</th>
-                                <th class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($employeeBooks as $employeeBook)
+                            @foreach ($violations as $violation)
                                 <tr>
-                                    <td>{{ $employeeBook->employee->first_name }} {{ $employeeBook->employee->last_name }}
-                                    </td>
-                                    <td>{{ $employeeBook->incident_date }}</td>
-                                    <td>{{ $employeeBook->incident_details }}</td>
-                                    <td>{{ $employeeBook->remarks }}</td>
-                                    <td>
-                                        <span
-                                            class="badge badge-{{ $employeeBook->category == 'violation' ? 'danger' : ($employeeBook->category == 'warning' ? 'warning' : 'info') }}">
-                                            {{ ucfirst($employeeBook->category) }}
-                                        </span>
-                                    </td>
-                                    <td class="project-actions text-right">
-                                        <a class="btn btn-info btn-sm"
-                                            href="{{ route('superadmin.employeebooks.edit', $employeeBook->employeebook_id) }}">
-                                            <i class="fas fa-pencil-alt"></i> Edit
-                                        </a>
-                                        <form
-                                            action="{{ route('superadmin.employeebooks.destroy', $employeeBook->employeebook_id) }}"
-                                            method="POST" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Are you sure you want to delete this record?')">
-                                                <i class="fas fa-trash"></i> Delete
-                                            </button>
-                                        </form>
-                                    </td>
+                                    <td>{{ $violation->employee->first_name }} {{ $violation->employee->last_name }}</td>
+                                    <td>{{ $violation->incident_date }}</td>
+                                    <td>{{ $violation->incident_detail }}</td>
+                                    <td>{{ $violation->remarks }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
+                <a href="{{ route('employeebooks.create') }}?category=violation" class="btn btn-primary">Create
+                    Violation</a>
+            </div>
+
+            <div id="warning" class="tab-pane fade">
+                <h3 class="mb-3">Warning</h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Employee Name</th>
+                                <th>Incident Date</th>
+                                <th>Detail</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($warnings as $warning)
+                                <tr>
+                                    <td>{{ $warning->employee->first_name }} {{ $warning->employee->last_name }}</td>
+                                    <td>{{ $warning->incident_date }}</td>
+                                    <td>{{ $warning->incident_detail }}</td>
+                                    <td>{{ $warning->remarks }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{{ route('employeebooks.create') }}?category=warning" class="btn btn-primary">Create Warning</a>
+            </div>
+
+            <div id="reprimand" class="tab-pane fade">
+                <h3 class="mb-3">Reprimand</h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Employee Name</th>
+                                <th>Incident Date</th>
+                                <th>Detail</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($reprimands as $reprimand)
+                                <tr>
+                                    <td>{{ $reprimand->employee->first_name }} {{ $reprimand->employee->last_name }}</td>
+                                    <td>{{ $reprimand->incident_date }}</td>
+                                    <td>{{ $reprimand->incident_detail }}</td>
+                                    <td>{{ $reprimand->remarks }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{{ route('employeebooks.create') }}?category=reprimand" class="btn btn-primary">Create
+                    Reprimand</a>
             </div>
         </div>
-    </section>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category');
+
+            if (category) {
+                $('.nav-tabs a[href="#' + category + '"]').tab('show');
+            }
+        });
+    </script>
 @endsection
