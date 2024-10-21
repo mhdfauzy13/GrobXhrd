@@ -14,7 +14,8 @@ use App\Http\Controllers\Superadmin\AttandanceController;
 use App\Http\Controllers\Superadmin\EventController;
 use App\Http\Controllers\Employee\OffemployeeController;
 use App\Http\Controllers\ProfileController;
-
+use App\Http\Controllers\Superadmin\EmployeeBookController;
+use App\Http\Controllers\Superadmin\EmployeeBooksController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -146,9 +147,34 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->middleware('permission:event.delete');
 
 
+        // Route untuk Employee Books
+        Route::get('employeebooks', [EmployeeBooksController::class, 'index'])
+            ->name('employeebooks.index')
+            ->middleware('permission:employeebook.index');
+
+        Route::get('employeebooks/create', [EmployeeBooksController::class, 'create'])
+            ->name('employeebooks.create')
+            ->middleware('permission:employeebook.create');
+
+        Route::post('employeebooks', [EmployeeBooksController::class, 'store'])
+            ->name('employeebooks.store')
+            ->middleware('permission:employeebook.create');
+
+        Route::get('employeebooks/{employeeBook}/edit', [EmployeeBooksController::class, 'edit'])
+            ->name('employeebooks.edit')
+            ->middleware('permission:employeebook.edit');
+
+        Route::put('employeebooks/{employeeBook}', [EmployeeBooksController::class, 'update'])
+            ->name('employeebooks.update')
+            ->middleware('permission:employeebook.edit');
+
+        Route::delete('employeebooks/{employeeBook}', [EmployeeBooksController::class, 'destroy'])
+            ->name('employeebooks.destroy')
+            ->middleware('permission:employeebook.delete');
 
 
-        // Route::resource('events', EventController::class);
+
+
 
 
 
