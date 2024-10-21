@@ -28,7 +28,7 @@ return new class extends Migration {
             $table->string('degree')->nullable();
             $table->date('starting_date')->nullable();
             $table->string('interview_by')->nullable();
-            $table->integer('current_salary')->nullable();
+            $table->decimal('current_salary', 10, 2); // Menggunakan tipe data desimal untuk gaji
             $table->boolean('insurance')->nullable();
             $table->string('serious_illness')->nullable();
             $table->string('hereditary_disease')->nullable();

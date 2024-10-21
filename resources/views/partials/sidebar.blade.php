@@ -119,8 +119,10 @@
                 @endcanany
 
                 <!-- Employee Data menu, only visible if user has specific permissions -->
+
                 @canany(['employee.index', 'employee.create', 'attandance.index', 'attandance.scanView',
-                    'offrequest.index', 'offrequest.create','offrequest.approver'])
+                    'offrequest.index', 'offrequest.create', 'offrequest.approver', 'payroll.index'])
+
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-id-badge"></i>
@@ -200,6 +202,12 @@
                             <p>Payroll</p>
                         </a>
                     </li>
+                    {{-- <li class="nav-item">
+                        <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#payrollModal">
+                            <i class="fas fa-wallet nav-icon"></i>
+                            <p>Payroll</p>
+                        </a>
+                    </li> --}}
                 @endcan
 
                 <!-- Recruitment menu, only visible if user has permission -->
@@ -219,7 +227,35 @@
                     </li>
                 @endcanany
 
-            
+                @canany(['event.index'])
+
+                    <li class="nav-item menu-open">
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                @can('event.index')
+                                    <a href="{{ route('event.index') }}" class="nav-link">
+                                        <i class="fas fa-calendar nav-icon"></i>
+                                        <p>Event</p>
+                                    </a>
+                                @endcan
+
+                            </li>
+                        </ul>
+                    </li>
+
+                @endcanany
+
+                @canany(['employeebook.index'])
+                    <li class="nav-item">
+                        <a href="{{ route('superadmin.employeebooks.index') }}" class="nav-link">
+                            <i class="fas fa-book nav-icon"></i>
+                            <p>Employee Books</p>
+                        </a>
+                    </li>
+                @endcanany
+
+
+
 
 
                 <!-- Logout -->

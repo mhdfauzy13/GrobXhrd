@@ -31,6 +31,7 @@ class User extends Authenticatable
 
     public function offrequests()
     {
+
         return $this->hasMany(Offrequest::class, 'user_id');
     }
     public function offrequestsAsManager()
@@ -43,6 +44,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Offrequest::class, 'user_id');
     }
+
+       
+  
 
     public function approvedOffrequests()
     {
