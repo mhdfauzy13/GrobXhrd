@@ -50,4 +50,35 @@ class EmployeeBooksController extends Controller
         // Redirect kembali ke halaman index dengan pesan sukses
         return redirect()->route('employeebooks.index')->with('success', 'Employee book created successfully.');
     }
+
+    public function edit(EmployeeBook $employeeBook)
+    {
+        $employees = Employee::all(); // Ambil semua karyawan
+        return view('superadmin.employeebooks.edit', compact('employeeBook', 'employees'));
+    }
+
+    public function update(Request $request, EmployeeBook $employeeBook)
+    {
+        $request->validate([
+            'employee_id' => 'required|exists:employees,employee_id',
+            'incident_date' => 'required|date',
+            'incident_detail' => 'required|string',
+            'remarks' => 'required|string',
+            'category' => 'required|string',
+        ]);
+
+        // Update data di database
+        $employeeBook->update($request->all());
+
+        // Redirect kembali ke halaman index dengan pesan sukses
+        return redirect()->route('employeebooks.index')->with('success', 'Employee book updated successfully.');
+    }
+
+    public function destroy(EmployeeBook $employeeBook)
+    {
+        $employeeBook->delete();
+
+        // Redirect kembali ke halaman index dengan pesan sukses
+        return redirect()->route('employeebooks.index')->with('success', 'Employee book deleted successfully.');
+    }
 }

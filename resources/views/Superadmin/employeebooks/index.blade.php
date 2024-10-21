@@ -27,6 +27,7 @@
                                 <th>Incident Date</th>
                                 <th>Detail</th>
                                 <th>Remarks</th>
+                                <th>Actions</th> <!-- Added column for actions -->
                             </tr>
                         </thead>
                         <tbody>
@@ -36,6 +37,17 @@
                                     <td>{{ $violation->incident_date }}</td>
                                     <td>{{ $violation->incident_detail }}</td>
                                     <td>{{ $violation->remarks }}</td>
+                                    <td>
+                                        <a href="{{ route('employeebooks.edit', $violation->employeebook_id) }}"
+                                            class="btn btn-warning">Edit</a>
+                                        <form action="{{ route('employeebooks.destroy', $violation->employeebook_id) }}"
+                                            method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger"
+                                                onclick="return confirm('Are you sure you want to delete this item?');">Delete</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -55,6 +67,7 @@
                                 <th>Incident Date</th>
                                 <th>Detail</th>
                                 <th>Remarks</th>
+                                <th>Actions</th> <!-- Added column for actions -->
                             </tr>
                         </thead>
                         <tbody>
@@ -64,6 +77,17 @@
                                     <td>{{ $warning->incident_date }}</td>
                                     <td>{{ $warning->incident_detail }}</td>
                                     <td>{{ $warning->remarks }}</td>
+                                    <td>
+                                        <a href="{{ route('employeebooks.edit', $warning->employeebook_id) }}"
+                                            class="btn btn-warning">Edit</a>
+                                        <form action="{{ route('employeebooks.destroy', $warning->employeebook_id) }}"
+                                            method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger"
+                                                onclick="return confirm('Are you sure you want to delete this item?');">Delete</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -82,6 +106,7 @@
                                 <th>Incident Date</th>
                                 <th>Detail</th>
                                 <th>Remarks</th>
+                                <th>Actions</th> <!-- Added column for actions -->
                             </tr>
                         </thead>
                         <tbody>
@@ -91,6 +116,17 @@
                                     <td>{{ $reprimand->incident_date }}</td>
                                     <td>{{ $reprimand->incident_detail }}</td>
                                     <td>{{ $reprimand->remarks }}</td>
+                                    <td>
+                                        <a href="{{ route('employeebooks.edit', $reprimand->employeebook_id) }}"
+                                            class="btn btn-warning">Edit</a>
+                                        <form action="{{ route('employeebooks.destroy', $reprimand->employeebook_id) }}"
+                                            method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger"
+                                                onclick="return confirm('Are you sure you want to delete this item?');">Delete</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
