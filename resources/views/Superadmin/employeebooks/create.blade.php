@@ -31,10 +31,9 @@
                 <textarea name="remarks" class="form-control" required></textarea>
             </div>
 
-            <input type="hidden" name="category" value="{{ request('category') }}">
+            <input type="hidden" name="category" value="{{ $category }}">
 
             <button type="submit" class="btn btn-success">Save</button>
-            <a href="{{ route('employeebooks.index') }}" class="btn btn-danger">Cancel</a>
         </form>
     </div>
 @endsection
