@@ -62,6 +62,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'attandance.index',
             'attandance.scanView',
             'attandance.scan',
+            'attendance.recap',
 
             // Permission terkait Offrequest
             'offrequest.index',

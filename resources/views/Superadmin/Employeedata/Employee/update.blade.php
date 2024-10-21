@@ -22,6 +22,7 @@
                     <form action="{{ route('employee.update', $employeeModel->employee_id) }}" method="POST">
                         @csrf
                         @method('PUT')
+
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6">

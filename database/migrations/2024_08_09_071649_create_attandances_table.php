@@ -15,8 +15,9 @@ return new class extends Migration {
 
             $table->timestamp('check_in')->nullable();
             $table->timestamp('check_out')->nullable();
+            $table->enum('check_in_status', ['IN', 'LATE'])->nullable();
+            $table->enum('check_out_status', ['OUT', 'EARLY'])->nullable();
             $table->string('image')->nullable();
-            $table->enum('status', ['IN', 'LATE', 'OUT'])->nullable();
             $table->timestamps();
         });
     }
