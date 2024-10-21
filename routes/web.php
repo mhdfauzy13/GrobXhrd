@@ -71,6 +71,10 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('attandance.index')
             ->middleware('permission:attandance.index');
 
+        Route::get('/attendance/recap/{employee_id}', [AttandanceController::class, 'recap'])
+            ->name('attendance.recap')
+            ->middleware('permission:attandance.index');
+
         // Off Request
         Route::get('/offrequest', [OffemployeeController::class, 'index'])
             ->name('offrequest.index')
@@ -142,19 +146,18 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('dashboardemployee.index')
             ->middleware('permission:dashboardemployee.view');
 
-        // Attendance Scan
+        // Attendance Scan Routes
         Route::get('/attandance/scan', [AttandanceController::class, 'scanView'])
-            ->name('attandance.scanView')
-            ->middleware('permission:attandance.scanView');
+            ->name('attandance.scanView') // Nama rute untuk tampilan scan
+            ->middleware('permission:attandance.scanView'); // Middleware untuk izin tampilan scan
 
-        Route::post('/attandance/scan', [AttandanceController::class, 'scan'])
-            ->name('attandance.scan')
-            ->middleware('permission:attandance.scan');
+        Route::post('/attandance/check-in', [AttandanceController::class, 'checkIn'])
+            ->name('attandance.checkIn') // Nama rute untuk proses check-in
+            ->middleware('permission:attandance.scan'); // Middleware untuk izin scan (check-in)
 
-        // Tambahkan rute untuk mendapatkan status kehadiran
-        Route::get('/attandance/state', [AttandanceController::class, 'getAttendanceState'])
-            ->name('attandance.getState')
-            ->middleware('permission:attandance.scan'); // Tambahkan middleware auth jika diperlukan
+        Route::post('/attandance/check-out', [AttandanceController::class, 'checkOut'])
+            ->name('attandance.checkOut') // Nama rute untuk proses check-out
+            ->middleware('permission:attandance.scan'); // Middleware untuk izin scan (check-out)
 
         // Off Request
         Route::get('/offrequest/create', [OffemployeeController::class, 'create'])

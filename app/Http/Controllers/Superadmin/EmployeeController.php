@@ -82,6 +82,7 @@ class EmployeeController extends Controller
             ->route('datauser.edit', $user->user_id) // Menggunakan datauser.edit
             ->with('success', 'Employee created. Now configure user details.');
     }
+
     public function edit($employee)
     {
         $employeeModel = Employee::where('employee_id', $employee)->first();
@@ -95,10 +96,12 @@ class EmployeeController extends Controller
 
     public function update(Request $request, $employeeId)
     {
+        // dd($request->all());
         $employeeModel = Employee::where('employee_id', $employeeId)->first();
 
         if (!$employeeModel) {
-            return redirect()->route('Employees.index')->with('error', 'Data tidak ditemukan!');
+            return redirect()->route('employee.index')->with('error', 'Data tidak ditemukan!');
+
         }
 
         $request->validate([

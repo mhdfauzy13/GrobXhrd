@@ -115,8 +115,8 @@
                 @endcanany
 
                 <!-- Employee Data menu, only visible if user has specific permissions -->
-                @canany(['employee.index', 'employee.create', 'attandance.index', 'attandance.scanView',
-                    'offrequest.index', 'offrequest.create'])
+                @canany(['employee.index', 'employee.create', 'attandance.index', 'attendance.recap',
+                    'attandance.scanView', 'offrequest.index', 'offrequest.create'])
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-id-badge"></i>
@@ -158,6 +158,17 @@
                                 </li>
                             @endcanany
 
+                            {{-- @canany(['attendance.recap'])
+                                <li class="nav-item">
+                                    @can('attendance.recap')
+                                        <a href="{{ route('attendance.recap') }}" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Attendance Recap</p>
+                                        </a>
+                                    @endcan
+                                </li>
+                            @endcanany --}}
+
                             <!-- Tampilkan menu Off Request jika user memiliki permission offrequest.index atau offrequest.create -->
                             @canany(['offrequest.index', 'offrequest.create'])
                                 <li class="nav-item">
@@ -197,7 +208,7 @@
                                 <i class="fas fa-users nav-icon"></i>
                                 <p>Recruitment</p>
                             </a>
-                            @elsecan('recruitment.create')
+                        @elsecan('recruitment.create')
                             <a href="{{ route('recruitment.create') }}" class="nav-link">
                                 <i class="fas fa-users nav-icon"></i>
                                 <p>Create Recruitment</p>
@@ -208,7 +219,8 @@
 
                 <!-- Logout -->
                 <li class="nav-item">
-                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                    <a href="#"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                         class="nav-link">
                         <i class="fas fa-sign-out-alt nav-icon"></i>
                         <p>{{ __('Log Out') }}</p>
