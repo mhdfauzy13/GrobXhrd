@@ -36,7 +36,8 @@ class RoleController extends Controller
     public function create()
     {
         $permissions = Permission::all();
-        return view('superadmin.masterdata.role.create', compact('permissions'));
+        $rolePermissions = [];
+        return view('superadmin.masterdata.role.create', compact('permissions', 'rolePermissions'));
     }
 
     public function store(Request $request)

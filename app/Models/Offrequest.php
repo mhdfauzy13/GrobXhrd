@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Offrequest extends Model
 {
+
+    protected $table = 'offrequests';
+    protected $primaryKey = 'offrequest_id'; // Ganti dengan nama kolom primary key yang benar
+    public $incrementing = false; // Jika primary key tidak auto increment, set ke false
+    protected $keyType = 'string';
     protected $fillable = [
         'name',
         'email',
@@ -16,6 +21,12 @@ class Offrequest extends Model
         'user_id',
         'manager_id',
         'status',
+        'approver_id',
+    ];
+
+    protected $casts = [
+        'start_event' => 'datetime',
+        'end_event' => 'datetime',
     ];
 
     public function user()
@@ -27,4 +38,22 @@ class Offrequest extends Model
     {
         return $this->belongsTo(User::class, 'manager_id');
     }
+
+    public function approver()
+{
+    return $this->belongsTo(User::class, 'approver_id');
+}
+
+
+// Menyaring offrequest yang masih pending
+public function scopePending($query)
+{
+    return $query->where('status', 'pending');
+}
+
+// Menyaring offrequest berdasarkan manager
+public function scopeForManager($query, $managerId)
+{
+    return $query->where('manager_id', $managerId);
+}
 }

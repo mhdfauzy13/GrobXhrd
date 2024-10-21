@@ -36,6 +36,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                 data-accordion="false">
 
+
                 <!-- Menu for all roles -->
                 @canany(['dashboard.view', 'dashboardemployee.view'])
                     @can('dashboard.view')
@@ -56,6 +57,7 @@
                         </li>
                     @endcan
 
+
                 @endcanany
 
 
@@ -66,10 +68,12 @@
                             <i class="nav-icon fas fa-folder"></i>
                             <p>
                                 Master Data
+
                                 <i class="fas fa-angle-left right"></i>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
+
                             @canany(['user.index', 'user.create'])
                                 <li class="nav-item">
                                     @can('user.index')
@@ -115,8 +119,8 @@
                 @endcanany
 
                 <!-- Employee Data menu, only visible if user has specific permissions -->
-                @canany(['employee.index', 'employee.create', 'attandance.index', 'attendance.recap',
-                    'attandance.scanView', 'offrequest.index', 'offrequest.create'])
+                @canany(['employee.index', 'employee.create', 'attandance.index', 'attandance.scanView',
+                    'offrequest.index', 'offrequest.create','offrequest.approver'])
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-id-badge"></i>
@@ -158,16 +162,6 @@
                                 </li>
                             @endcanany
 
-                            {{-- @canany(['attendance.recap'])
-                                <li class="nav-item">
-                                    @can('attendance.recap')
-                                        <a href="{{ route('attendance.recap') }}" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Attendance Recap</p>
-                                        </a>
-                                    @endcan
-                                </li>
-                            @endcanany --}}
 
                             <!-- Tampilkan menu Off Request jika user memiliki permission offrequest.index atau offrequest.create -->
                             @canany(['offrequest.index', 'offrequest.create'])
@@ -189,6 +183,14 @@
                         </ul>
                     </li>
                 @endcanany
+                @can('offrequest.approver')
+                    <li class="nav-item">
+                        <a href="{{ route('offrequest.approver') }}" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Off Request Approve</p>
+                        </a>
+                    </li>
+                @endcan
 
                 <!-- Payroll menu, only visible if user has permission -->
                 @can('payroll.index')
@@ -216,6 +218,9 @@
                         @endcan
                     </li>
                 @endcanany
+
+            
+
 
                 <!-- Logout -->
                 <li class="nav-item">
