@@ -26,7 +26,9 @@
             <div id="violation" class="tab-pane fade show active">
                 <h3 class="mb-3">Violation</h3>
                 <a id="create-button" href="{{ route('employeebooks.create') }}?category=violation"
-                    class="btn btn-primary mb-3">Create Violation</a>
+                    class="btn btn-primary mb-3">
+                    <i class="fas fa-plus"></i> Create
+                </a>
                 <div class="table-responsive">
                     <table class="table table-striped projects">
                         <thead class="thead-light">
@@ -43,8 +45,8 @@
                                 <tr>
                                     <td>{{ $violation->employee->first_name }} {{ $violation->employee->last_name }}</td>
                                     <td>{{ $violation->incident_date }}</td>
-                                    <td>{{ cutText($violation->incident_detail, 50) }}</td> <!-- Memotong teks -->
-                                    <td>{{ cutText($violation->remarks, 50) }}</td> <!-- Memotong teks -->
+                                    <td>{{ cutText($violation->incident_detail, 50) }}</td>
+                                    <td>{{ cutText($violation->remarks, 50) }}</td>
                                     <td>
                                         <a class="btn btn-info btn-sm"
                                             href="{{ route('employeebooks.edit', $violation->employeebook_id) }}">
@@ -75,7 +77,9 @@
             <div id="warning" class="tab-pane fade">
                 <h3 class="mb-3">Warning</h3>
                 <a id="create-button" href="{{ route('employeebooks.create') }}?category=warning"
-                    class="btn btn-primary mb-3">Create Warning</a>
+                    class="btn btn-primary mb-3">
+                    <i class="fas fa-plus"></i> Create
+                </a>
                 <div class="table-responsive">
                     <table class="table table-striped projects">
                         <thead class="thead-light">
@@ -92,8 +96,8 @@
                                 <tr>
                                     <td>{{ $warning->employee->first_name }} {{ $warning->employee->last_name }}</td>
                                     <td>{{ $warning->incident_date }}</td>
-                                    <td>{{ cutText($warning->incident_detail, 50) }}</td> <!-- Memotong teks -->
-                                    <td>{{ cutText($warning->remarks, 50) }}</td> <!-- Memotong teks -->
+                                    <td>{{ cutText($warning->incident_detail, 50) }}</td>
+                                    <td>{{ cutText($warning->remarks, 50) }}</td>
                                     <td>
                                         <a class="btn btn-info btn-sm"
                                             href="{{ route('employeebooks.edit', $warning->employeebook_id) }}">
@@ -124,7 +128,9 @@
             <div id="reprimand" class="tab-pane fade">
                 <h3 class="mb-3">Reprimand</h3>
                 <a id="create-button" href="{{ route('employeebooks.create') }}?category=reprimand"
-                    class="btn btn-primary mb-3">Create Reprimand</a>
+                    class="btn btn-primary mb-3">
+                    <i class="fas fa-plus"></i> Create
+                </a>
                 <div class="table-responsive">
                     <table class="table table-striped projects">
                         <thead class="thead-light">
@@ -141,8 +147,8 @@
                                 <tr>
                                     <td>{{ $reprimand->employee->first_name }} {{ $reprimand->employee->last_name }}</td>
                                     <td>{{ $reprimand->incident_date }}</td>
-                                    <td>{{ cutText($reprimand->incident_detail, 50) }}</td> <!-- Memotong teks -->
-                                    <td>{{ cutText($reprimand->remarks, 50) }}</td> <!-- Memotong teks -->
+                                    <td>{{ cutText($reprimand->incident_detail, 50) }}</td>
+                                    <td>{{ cutText($reprimand->remarks, 50) }}</td>
                                     <td>
                                         <a class="btn btn-info btn-sm"
                                             href="{{ route('employeebooks.edit', $reprimand->employeebook_id) }}">
