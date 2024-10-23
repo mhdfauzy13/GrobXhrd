@@ -153,7 +153,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->middleware('permission:event.delete');
 
 
-        // Route untuk Employee Books
+        // employee books
         Route::get('employeebooks', [EmployeeBooksController::class, 'index'])
             ->name('employeebooks.index')
             ->middleware('permission:employeebook.index');
@@ -177,6 +177,11 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::delete('employeebooks/{employeeBook}', [EmployeeBooksController::class, 'destroy'])
             ->name('employeebooks.destroy')
             ->middleware('permission:employeebook.delete');
+
+        Route::get('employeebooks/{employeeBook}/detail', [EmployeeBooksController::class, 'detail'])
+            ->name('employeebooks.detail')
+            ->middleware('permission:employeebook.detail');
+
 
 
 
@@ -286,8 +291,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/offrequest/approver', [OffemployeeController::class, 'approverIndex'])
             ->name('offrequest.approver')
             ->middleware('permission:offrequest.approver');
-
-        
     });
 });
 

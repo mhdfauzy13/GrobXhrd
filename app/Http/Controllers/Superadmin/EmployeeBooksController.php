@@ -15,6 +15,7 @@ class EmployeeBooksController extends Controller
         $this->middleware('permission:employeebook.create')->only(['create', 'store']);
         $this->middleware('permission:employeebook.edit')->only(['edit', 'update']);
         $this->middleware('permission:employeebook.delete')->only('destroy');
+        $this->middleware('permission:employeebook.detail')->only('detail');
     }
 
     public function index()
@@ -47,8 +48,7 @@ class EmployeeBooksController extends Controller
         // Simpan data ke database
         EmployeeBook::create($request->all());
 
-        // Redirect kembali ke halaman index dengan pesan sukses
-        return redirect()->route('employeebooks.index')->with('success', 'Employee book created successfully.');
+        return redirect()->route('employeebooks.index', ['category' => $request->category])->with('success', 'Employee book created successfully.');
     }
 
     public function edit(EmployeeBook $employeeBook)
@@ -80,5 +80,11 @@ class EmployeeBooksController extends Controller
 
         // Redirect kembali ke halaman index dengan pesan sukses
         return redirect()->route('employeebooks.index')->with('success', 'Employee book deleted successfully.');
+    }
+
+    // Method untuk menampilkan detail EmployeeBook
+    public function detail(EmployeeBook $employeeBook)
+    {
+        return view('superadmin.employeebooks.detail', compact('employeeBook'));
     }
 }

@@ -83,6 +83,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'employeebook.create',
             'employeebook.edit',
             'employeebook.delete',
+            'employeebook.detail',
 
 
         ];
