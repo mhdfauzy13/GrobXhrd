@@ -182,17 +182,18 @@
                                     @endcan
                                 </li>
                             @endcanany
+
+                            @can('offrequest.approver')
+                                <li class="nav-item">
+                                    <a href="{{ route('offrequest.approver') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Off Request Approve</p>
+                                    </a>
+                                </li>
+                            @endcan
                         </ul>
                     </li>
                 @endcanany
-                @can('offrequest.approver')
-                    <li class="nav-item">
-                        <a href="{{ route('offrequest.approver') }}" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Off Request Approve</p>
-                        </a>
-                    </li>
-                @endcan
 
                 <!-- Payroll menu, only visible if user has permission -->
                 @can('payroll.index')
@@ -247,10 +248,14 @@
 
                 @canany(['employeebook.index'])
                     <li class="nav-item menu-open">
-                        <a href="{{ route('employeebooks.index') }}" class="nav-link">
-                            <i class="fas fa-book nav-icon"></i>
-                            <p>Employee Books</p>
-                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('employeebooks.index') }}" class="nav-link">
+                                    <i class="fas fa-book nav-icon"></i>
+                                    <p>Employee Books</p>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 @endcanany
 

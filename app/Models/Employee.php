@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Attendance; // Periksa apakah nama model benar
-use App\Models\Payroll; // Tambahkan import untuk Payroll
+use App\Models\Attandance; // Periksa apakah nama model benar
+use App\Models\Payroll; 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,6 +23,8 @@ class Employee extends Model
         'first_name',
         'last_name',
         'email',
+        'check_in_time',
+        'check_out_time',
         'place_birth',
         'date_birth',
         'personal_no',
