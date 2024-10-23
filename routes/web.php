@@ -18,15 +18,11 @@ use App\Notifications\LeaveRequestNotification;
 use App\Http\Controllers\Superadmin\EmployeeBookController;
 use App\Http\Controllers\Superadmin\EmployeeBooksController;
 
-
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-
-
 Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
-
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])
         ->name('dashboard.index')
@@ -80,13 +76,21 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('attandance.index')
             ->middleware('permission:attandance.index');
 
+        // // Route untuk check-in
+        // Route::post('/attendance/check-in', [AttandanceController::class, 'checkIn'])
+        //     ->name('attandance.check-in')
+        //     ->middleware('permission:attandance.scan');
+
+        // // Route untuk check-out
+        // Route::post('/attendance/check-out', [AttandanceController::class, 'checkOut'])
+        //     ->name('attandance.check-out')
+        //     ->middleware('permission:attandance.scan');
+
         Route::get('/attendance/recap/{employee_id}', [AttandanceController::class, 'recap'])
             ->name('attendance.recap')
             ->middleware('permission:attandance.index');
 
         // Off Request
-
-
 
         Route::get('/company', [CompanyController::class, 'index'])
             ->name('company.index')
@@ -121,14 +125,13 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('payroll.destroy')
             ->middleware('permission:payroll.delete');
 
-
         // event
         Route::get('/events', [EventController::class, 'index'])
             ->name('event.index')
             ->middleware('permission:event.index');
 
         // Menampilkan form list event
-        Route::get('events/list',  [EventController::class, 'ListEvent'])
+        Route::get('events/list', [EventController::class, 'ListEvent'])
             ->name('events.list')
             ->middleware('permission:events.list');
 
@@ -151,7 +154,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::delete('/events/{event}', [EventController::class, 'destroy'])
             ->name('event.destroy')
             ->middleware('permission:event.delete');
-
 
         // Route untuk Employee Books
         Route::get('employeebooks', [EmployeeBooksController::class, 'index'])
@@ -177,12 +179,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::delete('employeebooks/{employeeBook}', [EmployeeBooksController::class, 'destroy'])
             ->name('employeebooks.destroy')
             ->middleware('permission:employeebook.delete');
-
-
-
-
-
-
 
         // Recruitment
         Route::get('/recruitment', [RecruitmentController::class, 'index'])
@@ -256,10 +252,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('attandance.scan')
             ->middleware('permission:attandance.scan');
 
-
-
         // Off Request
-
 
         Route::get('/offrequest', [OffemployeeController::class, 'index'])
             ->name('offrequest.index')
@@ -286,13 +279,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/offrequest/approver', [OffemployeeController::class, 'approverIndex'])
             ->name('offrequest.approver')
             ->middleware('permission:offrequest.approver');
-
-        
     });
 });
-
-
-
-
 
 require __DIR__ . '/auth.php';
