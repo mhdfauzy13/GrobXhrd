@@ -2,11 +2,11 @@
 
 @section('content')
     <div class="container">
-        <h1>Create Employee Book</h1>
+        <h1>Create {{ ucfirst($category) }}</h1> <!-- Judul dinamis sesuai kategori -->
 
         <form action="{{ route('employeebooks.store') }}" method="POST">
             @csrf
-            <input type="hidden" name="category" value="{{ request('category') }}">
+            <input type="hidden" name="category" value="{{ $category }}"> <!-- Kategori disembunyikan dalam input -->
             <div class="form-group">
                 <label for="employee_id">Select Employee</label>
                 <select name="employee_id" id="employee_id" class="form-control" required>
@@ -29,7 +29,7 @@
                 <label for="remarks">Remarks</label>
                 <textarea name="remarks" id="remarks" class="form-control" required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Create</button>
+            <button type="submit" class="btn btn-primary">Create {{ ucfirst($category) }}</button>
             <a href="{{ route('employeebooks.index') }}" class="btn btn-secondary">Back</a>
         </form>
     </div>
