@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Mail\OffRequestStatusMail;
 use App\Models\Offrequest;
 use App\Models\User;
+use App\Notifications\OffRequestEmailNotification;
+use App\Notifications\OffRequestNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -104,6 +106,13 @@ class OffemployeeController extends Controller
         $offrequest->status = 'pending';
         $offrequest->image = $imageName; // Simpan nama file gambar ke database
         $offrequest->save();
+
+        // Kirim notifikasi email ke manager
+        $managers = User::role('manager')->get(); // Ambil semua user dengan role 'manager'
+        foreach ($managers as $manager) {
+            $manager->notify(new OffRequestEmailNotification($offrequest)); // Kirim notifikasi email ke setiap manager
+        }
+
 
         return redirect()->route('offrequest.index')->with('success', 'Off request submitted successfully.');
     }

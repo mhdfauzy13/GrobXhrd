@@ -143,5 +143,22 @@ class RolesAndPermissionsSeeder extends Seeder
             ],
         );
         $employee->assignRole($employeeRole);
+
+
+
+        $employee = User::updateOrCreate(
+            [
+                'email' => 'bungadevtri@gmail.com',
+            ],
+            [
+                'name' => 'Bunga Putri',
+                'password' => Hash::make('password'),
+            ]
+        );
+        // Assign role Manager ke user Bunga Putri
+        $employee->assignRole($managerRole);
     }
+
+
+
 }
