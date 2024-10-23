@@ -12,17 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('payrolls', function (Blueprint $table) {
-            $table->bigIncrements('payroll_id');
-            $table->unsignedBigInteger('employee_id'); // Relasi ke employees
-            $table->decimal('allowance', 10, 2)->nullable(); // Tunjangan bersifat opsional
-            $table->decimal('overtime', 10, 2)->nullable();  // Lembur bersifat opsional
-            $table->decimal('deductions', 10, 2)->nullable();  // Potongan bersifat opsional
-            $table->decimal('total_salary', 10, 2); // Total gaji setelah perhitungan
+            $table->id('payroll_id');
+            $table->unsignedBigInteger('employee_id');
+            $table->integer('total_days_worked');
+            $table->integer('total_days_off');
+            $table->integer('effective_work_days');
+            $table->integer('current_salary');
+            $table->boolean('is_validated')->default(false); // HR validation
             $table->timestamps();
-
-            // Foreign key untuk relasi dengan employees
+        
+            // Relasi dengan tabel employees
             $table->foreign('employee_id')->references('employee_id')->on('employees')->onDelete('cascade');
         });
+        
     }
 
     /**

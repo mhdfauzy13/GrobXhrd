@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -52,6 +53,18 @@ class UserSeeder extends Seeder
         // Assign role Employee ke user
         if ($employeeRole) {
             $employee->assignRole($employeeRole);
+        }
+
+        // Menambahkan user bunga
+        $employee = User::updateOrCreate([
+            'email' => 'bungadevtri@gmail.com',
+        ], [
+            'name' => 'Bunga Putri',
+            'password' => Hash::make('password'),
+        ]);
+        // Assign role Bunga ke user
+        if ($managerRole) {
+            $manager->assignRole($managerRole);
         }
     }
 }
