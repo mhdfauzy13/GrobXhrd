@@ -174,11 +174,24 @@ class AttandanceController extends Controller
         foreach ($attendances as $attendance) {
             // Cek apakah employee melakukan check-in dan check-out dengan benar
             if ($attendance->check_in && $attendance->check_out) {
+                // Selalu tambah ke total present jika ada check-in dan check-out
+                $totalPresent++;
+
                 if ($attendance->check_in_status == 'IN' && $attendance->check_out_status == 'OUT') {
-                    $totalPresent++;
-                } elseif ($attendance->check_in_status == 'LATE' && $attendance->check_out_status == 'OUT') {
+                    // Kehadiran normal
+                    // Sudah dihitung di totalPresent
+                }
+                if ($attendance->check_in_status == 'LATE' && $attendance->check_out_status == 'OUT') {
+                    // Terlambat saat check-in tapi pulang tepat waktu
                     $totalLate++;
-                } elseif ($attendance->check_in_status == 'IN' && $attendance->check_out_status == 'EARLY') {
+                }
+                if ($attendance->check_in_status == 'IN' && $attendance->check_out_status == 'EARLY') {
+                    // Tepat waktu saat check-in tapi pulang lebih awal
+                    $totalEarly++;
+                }
+                if ($attendance->check_in_status == 'LATE' && $attendance->check_out_status == 'EARLY') {
+                    // Terlambat saat check-in dan pulang lebih awal
+                    $totalLate++;
                     $totalEarly++;
                 }
             } else {
