@@ -2,7 +2,18 @@
 
 @section('content')
     <div class="container">
-        <h1>Detail Employee Book</h1>
+        <!-- Judul dinamis berdasarkan kategori -->
+        <h1>
+            @if ($employeeBook->category == 'violation')
+                Detail Violation
+            @elseif($employeeBook->category == 'warning')
+                Detail Warning
+            @elseif($employeeBook->category == 'reprimand')
+                Detail Reprimand
+            @else
+                Detail Employee Book
+            @endif
+        </h1>
 
         <form>
             <div class="form-group">
