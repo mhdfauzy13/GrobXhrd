@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Superadmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AttandanceRecap;
 use App\Models\Employee;
 use App\Models\Payroll;
 use Illuminate\Http\Request;
@@ -30,91 +31,94 @@ class PayrollController extends Controller
         return view('Superadmin.payroll.create', compact('employees'));
     }
 
-    // Menyimpan payroll baru
     public function store(Request $request)
     {
-        // Validasi input
-        $request->validate([
-            'employee_id' => 'required',
-            'allowance' => 'nullable|numeric',
-            'overtime' => 'nullable|numeric',
-            'deductions' => 'nullable|numeric',
-        ]);
-
-        // Ambil current_salary dari employee
         $employee = Employee::findOrFail($request->employee_id);
-        $basic_salary = $employee->current_salary;
 
-        // Set nilai default untuk tunjangan, lembur, dan potongan jika tidak diisi
-        $allowance = $request->allowance ?? 0;
-        $overtime = $request->overtime ?? 0;
-        $deductions = $request->deductions ?? 0;
+        // Ambil data kehadiran dan cuti
+        $attendanceRecap = AttandanceRecap::where('employee_id', $employee->employee_id)->first();
+        $total_days_worked = $attendanceRecap->total_present;
+        $total_days_off = $attendanceRecap->total_absent;
 
-        // Hitung total gaji
-        $total_salary = $basic_salary + $allowance + $overtime - $deductions;
+        // Lakukan perhitungan payroll
+        $effective_work_days = $total_days_worked; // Logika bisa lebih detail
+        $current_salary = $employee->current_salary;
+        $total_salary = ($effective_work_days / $total_days_worked) * $current_salary;
 
-        // Simpan payroll ke database
+        // Simpan data payroll
         Payroll::create([
-            'employee_id' => $request->employee_id,
-            'allowance' => $allowance,
-            'overtime' => $overtime,
-            'deductions' => $deductions,
-            'total_salary' => $total_salary,
+            'employee_id' => $employee->employee_id,
+            'total_days_worked' => $total_days_worked,
+            'total_days_off' => $total_days_off,
+            'effective_work_days' => $effective_work_days,
+            'current_salary' => $current_salary,
+            'is_validated' => false, // Belum divalidasi
         ]);
 
         return redirect()->route('payroll.index')->with('success', 'Payroll berhasil ditambahkan');
     }
 
-    public function edit($id)
+    public function validatePayroll($id)
     {
-        $payroll = Payroll::with('employee')->findOrFail($id); // Ambil data payroll berdasarkan ID
-        $employees = Employee::all(); // Ambil data semua karyawan untuk dropdown
-        return view('payroll.edit', compact('payroll', 'employees'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        // Validasi input
-        $request->validate([
-            'employee_id' => 'required|exists:employees,id',
-            'allowance' => 'nullable|numeric',
-            'overtime' => 'nullable|numeric',
-            'deductions' => 'nullable|numeric',
-        ]);
-
-        // Ambil payroll yang ingin diperbarui
         $payroll = Payroll::findOrFail($id);
+        $payroll->is_validated = true;
+        $payroll->save();
 
-        // Ambil current_salary dari employee
-        $employee = Employee::findOrFail($request->employee_id);
-        $basic_salary = $employee->current_salary;
-
-        // Set nilai default untuk tunjangan, lembur, dan potongan jika tidak diisi
-        $allowance = $request->allowance ?? 0;
-        $overtime = $request->overtime ?? 0;
-        $deductions = $request->deductions ?? 0;
-
-        // Hitung total gaji
-        $total_salary = $basic_salary + $allowance + $overtime - $deductions;
-
-        // Update data payroll
-        $payroll->update([
-            'employee_id' => $request->employee_id,
-            'allowance' => $allowance,
-            'overtime' => $overtime,
-            'deductions' => $deductions,
-            'total_salary' => $total_salary,
-        ]);
-
-        return redirect()->route('payroll.index')->with('success', 'Payroll berhasil diperbarui');
+        return redirect()->route('payroll.index')->with('success', 'Payroll berhasil divalidasi');
     }
 
-    public function destroy($id)
-    {
-        // Ambil payroll berdasarkan ID
-        $payroll = Payroll::findOrFail($id);
-        $payroll->delete(); // Hapus payroll
 
-        return redirect()->route('payroll.index')->with('success', 'Payroll berhasil dihapus');
-    }
+
+    // public function edit($id)
+    // {
+    //     $payroll = Payroll::with('employee')->findOrFail($id); // Ambil data payroll berdasarkan ID
+    //     $employees = Employee::all(); // Ambil data semua karyawan untuk dropdown
+    //     return view('payroll.edit', compact('payroll', 'employees'));
+    // }
+
+    // public function update(Request $request, $id)
+    // {
+    //     // Validasi input
+    //     $request->validate([
+    //         'employee_id' => 'required|exists:employees,id',
+    //         'allowance' => 'nullable|numeric',
+    //         'overtime' => 'nullable|numeric',
+    //         'deductions' => 'nullable|numeric',
+    //     ]);
+
+    //     // Ambil payroll yang ingin diperbarui
+    //     $payroll = Payroll::findOrFail($id);
+
+    //     // Ambil current_salary dari employee
+    //     $employee = Employee::findOrFail($request->employee_id);
+    //     $basic_salary = $employee->current_salary;
+
+    //     // Set nilai default untuk tunjangan, lembur, dan potongan jika tidak diisi
+    //     $allowance = $request->allowance ?? 0;
+    //     $overtime = $request->overtime ?? 0;
+    //     $deductions = $request->deductions ?? 0;
+
+    //     // Hitung total gaji
+    //     $total_salary = $basic_salary + $allowance + $overtime - $deductions;
+
+    //     // Update data payroll
+    //     $payroll->update([
+    //         'employee_id' => $request->employee_id,
+    //         'allowance' => $allowance,
+    //         'overtime' => $overtime,
+    //         'deductions' => $deductions,
+    //         'total_salary' => $total_salary,
+    //     ]);
+
+    //     return redirect()->route('payroll.index')->with('success', 'Payroll berhasil diperbarui');
+    // }
+
+    // public function destroy($id)
+    // {
+    //     // Ambil payroll berdasarkan ID
+    //     $payroll = Payroll::findOrFail($id);
+    //     $payroll->delete(); // Hapus payroll
+
+    //     return redirect()->route('payroll.index')->with('success', 'Payroll berhasil dihapus');
+    // }
 }

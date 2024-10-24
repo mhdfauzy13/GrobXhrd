@@ -10,9 +10,7 @@
                 <h3 class="card-title">Payroll</h3>
 
                 <div class="card-tools">
-                    <a href="{{ route('payroll.create') }}" class="btn btn-primary" title="Create Payroll">
-                        <i class="fas fa-plus"></i> Create Payroll
-                    </a>
+                 
 
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                         <i class="fas fa-minus"></i>
@@ -31,16 +29,16 @@
                                     Employee Name
                                 </th>
                                 <th style="width: 15%" class="text-center">
-                                    Allowance
+                                    Total Days Worked
                                 </th>
                                 <th style="width: 15%" class="text-center">
-                                    Overtime
+                                    Total Days Off
                                 </th>
                                 <th style="width: 15%" class="text-center">
-                                    Deductions
+                                    Current Salary
                                 </th>
                                 <th style="width: 15%" class="text-center">
-                                    Total Salary
+                                    Status Validasi
                                 </th>
                                 <th style="width: 15%" class="text-right">
                                     Actions
@@ -51,22 +49,18 @@
                         <tbody>
                             @foreach ($payrolls as $payroll)
                             <tr>  
-                                <td>{{ $payroll->employee->name }}</td>
-                                <td class="text-center">{{ number_format($payroll->allowance, 2) }}</td>
-                                <td class="text-center">{{ number_format($payroll->overtime, 2) }}</td>
-                                <td class="text-center">{{ number_format($payroll->deductions, 2) }}</td>
-                                <td class="text-center">{{ number_format($payroll->total_salary, 2) }}</td>
-                                <td class="project-actions text-right">  
-                                    <a class="btn btn-info btn-sm" href="{{ route('payroll.edit', $payroll->id) }}">
-                                        <i class="fas fa-pencil-alt"></i> Edit
-                                    </a>
-                                    <form action="{{ route('payroll.destroy', $payroll->id) }}" method="POST" style="display:inline;">
+                                <td>{{ $payroll->employee->first_name }} {{ $payroll->employee->last_name }}</td>
+                                <td>{{ $payroll->total_days_worked }}</td>
+                                <td>{{ $payroll->total_days_off }}</td>
+                                <td>{{ $payroll->current_salary }}</td>
+                                <td>{{ $payroll->is_validated ? 'Tervalidasi' : 'Belum Divalidasi' }}</td>
+                                <td>
+                                    @if (!$payroll->is_validated)
+                                    <form action="{{ route('payroll.validate', $payroll->payroll_id) }}" method="POST">
                                         @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm"> 
-                                            <i class="fas fa-trash"></i> Delete
-                                        </button>
+                                        <button type="submit" class="btn btn-success">Validasi</button>
                                     </form>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach 
