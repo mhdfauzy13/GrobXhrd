@@ -50,12 +50,14 @@ class EmployeeBooksController extends Controller
 
         return redirect()->route('employeebooks.index', ['category' => $request->category])->with('success', 'Employee book created successfully.');
     }
-
-    public function edit(EmployeeBook $employeeBook)
+    public function edit($id)
     {
-        $employees = Employee::all(); // Ambil semua karyawan
+        $employeeBook = EmployeeBook::findOrFail($id);
+        $employees = Employee::all(); // Ambil data karyawan untuk dropdown
+
         return view('superadmin.employeebooks.edit', compact('employeeBook', 'employees'));
     }
+
 
     public function update(Request $request, EmployeeBook $employeeBook)
     {

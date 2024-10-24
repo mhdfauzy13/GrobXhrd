@@ -2,7 +2,20 @@
 
 @section('content')
     <div class="container">
-        <h1>Edit Employee Book</h1>
+        {{-- Tentukan judul berdasarkan kategori yang dipilih --}}
+        @php
+            $categoryTitle = '';
+            if ($employeeBook->category === 'violation') {
+                $categoryTitle = 'Edit Violation';
+            } elseif ($employeeBook->category === 'warning') {
+                $categoryTitle = 'Edit Warning';
+            } elseif ($employeeBook->category === 'reprimand') {
+                $categoryTitle = 'Edit Reprimand';
+            }
+        @endphp
+
+        {{-- Judul dinamis --}}
+        <h1>{{ $categoryTitle }}</h1>
 
         <form action="{{ route('employeebooks.update', $employeeBook->employeebook_id) }}" method="POST">
             @csrf
