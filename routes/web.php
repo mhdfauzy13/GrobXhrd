@@ -138,6 +138,8 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('event.index')
             ->middleware('permission:event.index');
 
+
+
         // Menampilkan form list event
         Route::get('events/list', [EventController::class, 'ListEvent'])
             ->name('events.list')
@@ -164,6 +166,8 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->middleware('permission:event.delete');
 
 
+
+        // Employee Books
         Route::get('employeebooks', [EmployeeBooksController::class, 'index'])
             ->name('employeebooks.index')
             ->middleware('permission:employeebook.index');

@@ -24,7 +24,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap5@6.1.15/index.global.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"
@@ -121,13 +120,12 @@
                         },
                         error: function(xhr) {
                             console.error(xhr.responseText);
-                            // Tambahkan notifikasi error jika diperlukan
                         }
-                    })
+                    });
                 },
 
                 eventDrop: function(info) {
-                    const event = info.event
+                    const event = info.event;
                     $.ajax({
                         url: '{{ route('event.update', ':id') }}'.replace(':id', event
                             .extendedProps.event_id),
@@ -152,21 +150,21 @@
                             });
                         },
                         error: function(res) {
-                            const message = res.responseJSON.message
-                            event.revert()
+                            const message = res.responseJSON.message;
+                            event.revert();
                             iziToast.error({
                                 title: 'Error',
                                 message: message ?? 'Something Wrong',
                                 position: 'topRight'
                             });
                         }
-                    })
+                    });
                 },
 
                 eventResize: function(info) {
                     const {
                         event
-                    } = info
+                    } = info;
                     $.ajax({
                         url: '{{ route('event.update', ':id') }}'.replace(':id', event
                             .extendedProps.event_id),
@@ -191,17 +189,16 @@
                             });
                         },
                         error: function(res) {
-                            const message = res.responseJSON.message
-                            info.revert()
+                            const message = res.responseJSON.message;
+                            info.revert();
                             iziToast.error({
                                 title: 'Error',
                                 message: message ?? 'Something Wrong',
                                 position: 'topRight'
                             });
                         }
-                    })
+                    });
                 }
-
             });
             calendar.render();
         });
