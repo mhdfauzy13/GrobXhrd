@@ -137,9 +137,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/events', [EventController::class, 'index'])
             ->name('event.index')
             ->middleware('permission:event.index');
-
-
-
         // Menampilkan form list event
         Route::get('events/list', [EventController::class, 'ListEvent'])
             ->name('events.list')
