@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+    
     public function run()
     {
         // Daftar semua permissions
@@ -84,6 +82,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'employeebook.edit',
             'employeebook.delete',
             'employeebook.detail',
+
+            // setting
+            'settings.index',
+            'settings.storeOrUpdate',
 
 
         ];
