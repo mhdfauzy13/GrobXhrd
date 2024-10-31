@@ -15,7 +15,13 @@
     <main class="w-full max-w-md mx-auto p-6">
         <div class="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <div class="flex flex-col items-center mx-auto">
-                <img src="dist/img/grob.png" class="w-20 md:w-32 lg:w-48">
+                {{-- <img src="{{ asset('dist/img/grob.png') }}" class="w-20 md:w-32 lg:w-48" alt="Logo Perusahaan"> --}}
+                @if (isset($companyname) && $companyname->image)
+                    <div class="mt-4">
+                        <img src="{{ asset('storage/' . $companyname->image) }}" alt="Current Image"
+                            class="img-fluid img-thumbnail" width="150">
+                    </div>
+                @endif
             </div>
 
             <div class="p-4 sm:p-7">

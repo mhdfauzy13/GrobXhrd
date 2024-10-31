@@ -7,17 +7,15 @@ use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class EmployeeController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:employee.index')->only('index');
+        $this->middleware('permission:employee.index')->only('index', 'show');
         $this->middleware('permission:employee.create')->only(['create', 'store']);
         $this->middleware('permission:employee.edit')->only(['edit', 'update']);
         $this->middleware('permission:employee.destroy')->only('destroy');
-        $this->middleware('permission:employee.show')->only('show');
     }
     public function index(): View
     {
@@ -32,14 +30,12 @@ class EmployeeController extends Controller
 
     public function store(Request $request)
     {
-
         $validatedData = $request->validate([
-
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|email|unique:employees,email',
             'check_in_time' => 'required|date_format:H:i',
-            'check_out_time' => 'required|date_format:H:i|after:check_in_time', 
+            'check_out_time' => 'required|date_format:H:i|after:check_in_time',
             'place_birth' => 'required|string',
             'date_birth' => 'nullable|date',
             'personal_no' => 'nullable|string',
@@ -103,14 +99,13 @@ class EmployeeController extends Controller
 
         if (!$employeeModel) {
             return redirect()->route('employee.index')->with('error', 'Data tidak ditemukan!');
-
         }
 
         $request->validate([
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|email|unique:employees,email,' . $employeeModel->employee_id . ',employee_id',
-            'check_in_time' => 'required|date_format:H:i', 
+            'check_in_time' => 'required|date_format:H:i',
             'check_out_time' => 'required|date_format:H:i|after:check_in_time',
             'place_birth' => 'required|string',
             'date_birth' => 'nullable|date',
