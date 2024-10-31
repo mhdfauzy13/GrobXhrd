@@ -15,6 +15,7 @@
 <!--  Script for Show/Hide Password -->
 <script src="{{ asset('dist/js/password-toggle.js') }}"></script>
 
+
 {{-- Script buat klik employee detail --}}
 
 <style>
@@ -38,7 +39,7 @@
 
 {{-- Script buat create role --}}
 
-<script>
+{{-- <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Select/Deselect All Features
         const selectAllFeatures = document.getElementById('selectAllFeatures');
@@ -135,7 +136,7 @@
         });
 
     });
-</script>
+</script> --}}
 
 {{-- SCRIPT BUAT MODAL IMAGE --}}
 
@@ -148,3 +149,48 @@
     });
 </script>
 
+{{-- SCRIPT BUAT CREATE EMPLOYE CURRENT SALARY --}}
+
+<script>
+    function formatCurrency(input) {
+        // Hapus karakter non-digit
+        let value = input.value.replace(/\D/g, '');
+
+        // Tambahkan titik sebagai pemisah ribuan
+        if (value) {
+            input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        } else {
+            input.value = ''; // Mengosongkan input jika tidak ada nilai
+        }
+    }
+</script>
+
+{{-- SCRIPT BUAT UPDATE EMPLOYE CURRENT SALARY --}}
+
+<script>
+    function formatCurrency(input) {
+        // Hapus karakter non-digit
+        let value = input.value.replace(/\D/g, '');
+
+        // Tambahkan titik sebagai pemisah ribuan
+        if (value) {
+            input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        } else {
+            input.value = ''; // Mengosongkan input jika tidak ada nilai
+        }
+    }
+</script>
+
+{{-- SCRIPT BUAT FORM LATE DEDUCTIONS DAN EARLY DEDUCTIONS --}}
+
+<script>
+    function formatNumber(input) {
+        // Menghapus semua karakter yang bukan angka
+        let value = input.value.replace(/[^0-9]/g, '');
+
+        // Format angka dengan titik
+        value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+        input.value = value;
+    }
+</script>

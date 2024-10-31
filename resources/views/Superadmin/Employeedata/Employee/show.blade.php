@@ -62,7 +62,7 @@
                                 <dt class="col-sm-4">Interview By:</dt>
                                 <dd class="col-sm-8">{{ $employee->interview_by }}</dd>
                                 <dt class="col-sm-4">Current Salary:</dt>
-                                <dd class="col-sm-8">{{ $employee->current_salary }}</dd>
+                                <dd class="col-sm-8">{{ number_format($employee->current_salary, 0, ',', '.') }}</dd>
                                 <dt class="col-sm-4">Insurance:</dt>
                                 <dd class="col-sm-8">{{ $employee->insurance ? 'Yes' : 'No' }}</dd>
                                 <dt class="col-sm-4">Serious Illness:</dt>

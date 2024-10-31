@@ -132,7 +132,10 @@
             'recruitment' => ['recruitment.index', 'recruitment.create', 'recruitment.edit', 'recruitment.delete'],
             'attandance' => ['attandance.index', 'attandance.scanView', 'attandance.scan'],
             'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.store', 'offrequest.approver'],
+            'employeebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
             'event' => ['event.index', 'events.list', 'event.create', 'event.edit', 'event.delete'],
+            'setting' => ['settings.index',  'settings.company',  'settings.deductions'],
+
         ] as $feature => $featurePermissions)
                                             <div class="card mt-3">
                                                 <div class="card-header">
@@ -157,10 +160,6 @@
                                             </div>
                                         @endforeach
                                     </div>
-
-
-
-
                                     <div class="form-group">
                                         <label for="status">Status</label>
                                         <select name="status" class="form-control" id="status">
@@ -265,6 +264,33 @@
         document.getElementById('selectAllOffrequest').addEventListener('click', function(e) {
             e.preventDefault();
             let checkboxes = document.querySelectorAll('.offrequest-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !checkbox.checked;
+            });
+        });
+
+         // Event listener untuk fitur employeebook
+        document.getElementById('selectAllemployeebook').addEventListener('click', function(e) {
+            e.preventDefault();
+            let checkboxes = document.querySelectorAll('.employeebook-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !checkbox.checked;
+            });
+        });
+
+         // Event listener untuk fitur event
+        document.getElementById('selectAllEvent').addEventListener('click', function(e) {
+            e.preventDefault();
+            let checkboxes = document.querySelectorAll('.event-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !checkbox.checked;
+            });
+        });
+
+         // Event listener untuk fitur setting
+        document.getElementById('selectAllSetting').addEventListener('click', function(e) {
+            e.preventDefault();
+            let checkboxes = document.querySelectorAll('.setting-checkbox');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = !checkbox.checked;
             });
