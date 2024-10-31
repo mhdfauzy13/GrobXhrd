@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Superadmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attandance;
 use App\Models\AttandanceRecap;
 use App\Models\Employee;
 use App\Models\Payroll;
@@ -13,7 +14,7 @@ class PayrollController extends Controller
     public function __construct()
     {
         $this->middleware('permission:payroll.index')->only('index');
-        $this->middleware('permission:payroll.create')->only(['create', 'store']);
+        $this->middleware('permission:payroll.create')->only(['create', 'store', 'updateValidationStatus']);
         $this->middleware('permission:payroll.edit')->only(['edit', 'update']);
         $this->middleware('permission:payroll.delete')->only('destroy');
     }
@@ -33,39 +34,60 @@ class PayrollController extends Controller
 
     public function store(Request $request)
     {
-        $employee = Employee::findOrFail($request->employee_id);
-
-        // Ambil data kehadiran dan cuti
-        $attendanceRecap = AttandanceRecap::where('employee_id', $employee->employee_id)->first();
-        $total_days_worked = $attendanceRecap->total_present;
-        $total_days_off = $attendanceRecap->total_absent;
-
-        // Lakukan perhitungan payroll
-        $effective_work_days = $total_days_worked; // Logika bisa lebih detail
-        $current_salary = $employee->current_salary;
-        $total_salary = ($effective_work_days / $total_days_worked) * $current_salary;
-
-        // Simpan data payroll
-        Payroll::create([
-            'employee_id' => $employee->employee_id,
-            'total_days_worked' => $total_days_worked,
-            'total_days_off' => $total_days_off,
-            'effective_work_days' => $effective_work_days,
-            'current_salary' => $current_salary,
-            'is_validated' => false, // Belum divalidasi
+        $request->validate([
+            'employee_id' => 'required|exists:employees,id',
         ]);
 
-        return redirect()->route('payroll.index')->with('success', 'Payroll berhasil ditambahkan');
+        $payroll = $this->calculatePayroll($request->employee_id);
+
+        return redirect()->route('payroll.index')->with('success', 'Payroll berhasil dibuat');
     }
 
-    public function validatePayroll($id)
+
+    public function calculatePayroll($employeeId)
     {
-        $payroll = Payroll::findOrFail($id);
-        $payroll->is_validated = true;
-        $payroll->save();
+        // Ambil data karyawan, termasuk current_salary dari model Employee
+        $employee = Employee::findOrFail($employeeId);
+        $currentSalary = $employee->current_salary;
 
-        return redirect()->route('payroll.index')->with('success', 'Payroll berhasil divalidasi');
+        // Ambil semua catatan attendance untuk karyawan ini
+        $attendanceRecords = Attandance::where('employee_id', $employeeId)->get();
+
+        // Hitung total kehadiran, cuti, dan hari kerja efektif
+        $daysPresent = $attendanceRecords->where('check_in_status', 'present')->count();
+        $totalLeave = $attendanceRecords->where('check_in_status', 'leave')->count();
+        $effectiveWorkDays = $daysPresent - $totalLeave;
+
+        // Hitung total gaji berdasarkan hari kerja efektif
+        $totalSalary = $effectiveWorkDays * ($currentSalary / 30); // Gaji harian dihitung dari gaji bulanan
+
+        // Simpan data payroll
+        return Payroll::create([
+            'employee_id' => $employeeId,
+            'employee_name' => $employee->name,
+            'days_present' => $daysPresent,
+            'total_leave' => $totalLeave,
+            'effective_work_days' => $effectiveWorkDays,
+            'current_salary' => $currentSalary,
+            'total_salary' => $totalSalary,
+            'validation_status' => 'not_validated'
+        ]);
     }
+
+    public function updateStatus(Request $request, $payrollId)
+    {
+        $request->validate([
+            'validation_status' => 'required|in:validated,not_validated'
+        ]);
+
+        $payroll = Payroll::findOrFail($payrollId);
+        $payroll->update([
+            'validation_status' => $request->validation_status,
+        ]);
+
+        return redirect()->back()->with('success', 'Status validasi berhasil diperbarui');
+    }
+
 
 
 

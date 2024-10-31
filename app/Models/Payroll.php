@@ -8,19 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Payroll extends Model
 {
     use HasFactory;
-    protected $table = 'payrolls';
+    protected $primaryKey = 'payroll_id'; 
 
     protected $fillable = [
-        'employee_id',
-        'total_days_worked',
-        'total_days_off',
-        'effective_work_days',
-        'current_salary',
-        'is_validated',
+        'employee_id', 'employee_name', 'days_present', 'total_leave', 
+        'effective_work_days', 'current_salary', 'total_salary', 'validation_status'
     ];
 
     public function employee()
     {
-        return $this->belongsTo(Employee::class, 'employee_id', 'employee_id');
+        return $this->belongsTo(Employee::class, 'employee_id', 'id');
     }
 }

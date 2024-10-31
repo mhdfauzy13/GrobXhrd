@@ -107,9 +107,10 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('payroll.store')
             ->middleware('permission:payroll.store');
 
-        Route::post('/payrolls/validate/{id}', [PayrollController::class, 'validatePayroll'])
+
+        Route::patch('/payrolls/validate/{id}', [PayrollController::class, 'updateValidationStatus'])
             ->name('payroll.validate')
-            ->middleware('permission:payroll.validate');
+            ->middleware('permission:payroll.create');
 
         // Menampilkan form create payroll dan menyimpan data payroll
         Route::get('/payrolls/create', [PayrollController::class, 'create'])
