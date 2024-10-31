@@ -236,7 +236,7 @@
                                 @can('event.index')
                                     <a href="{{ route('event.index') }}" class="nav-link">
                                         <i class="fas fa-calendar nav-icon"></i>
-                                        <p>Event</p>
+                                        <p>Holiday</p>
                                     </a>
                                 @endcan
 
