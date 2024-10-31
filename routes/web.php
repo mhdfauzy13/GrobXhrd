@@ -80,8 +80,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('attendance.recap')
             ->middleware('permission:attandance.index');
 
-        // Off Request
-
         // Payroll
         Route::get('/payrolls', [PayrollController::class, 'index'])
             ->name('payroll.index')
@@ -145,8 +143,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::delete('/events/{event}', [EventController::class, 'destroy'])
             ->name('event.destroy')
             ->middleware('permission:event.delete');
-
-
 
         // Employee Books
         Route::get('employeebooks', [EmployeeBooksController::class, 'index'])
@@ -227,20 +223,25 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->middleware('permission:employee.index');
 
         // Setting
-
         Route::get('settings', [SettingController::class, 'index'])
             ->name('settings.index')
             ->middleware('permission:settings.index');
 
-        // Untuk membuat data baru (POST)
         Route::post('settings', [SettingController::class, 'store'])
             ->name('settings.store')
-            ->middleware('permission:settings.storeOrUpdate');
+            ->middleware('permission:settings.company');
 
-        // Untuk memperbarui data yang ada (PUT)
         Route::put('settings/{id}', [SettingController::class, 'update'])
             ->name('settings.update')
-            ->middleware('permission:settings.storeOrUpdate');
+            ->middleware('permission:settings.company');
+
+        Route::post('settings/update-late-deduction', [SettingController::class, 'updateLateDeduction'])
+        ->name('settings.updateLateDeduction')
+        ->middleware('permission:settings.deductions');
+
+        Route::post('settings/update-early-deduction', [SettingController::class, 'updateEarlyDeduction'])
+        ->name('settings.updateEarlyDeduction')
+        ->middleware('permission:settings.deductions');
     });
 
     // Employee Routes

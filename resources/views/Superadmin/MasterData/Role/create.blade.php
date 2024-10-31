@@ -134,7 +134,7 @@
             'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.store', 'offrequest.approver'],
             'employeebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
             'event' => ['event.index', 'events.list', 'event.create', 'event.edit', 'event.delete'],
-            'setting' => ['settings.index', 'settings.storeOrUpdate'],
+            'setting' => ['settings.index',  'settings.company',  'settings.deductions'],
 
         ] as $feature => $featurePermissions)
                                             <div class="card mt-3">

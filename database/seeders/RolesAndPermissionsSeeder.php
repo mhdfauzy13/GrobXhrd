@@ -85,7 +85,8 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // setting
             'settings.index',
-            'settings.storeOrUpdate',
+            'settings.company',
+            'settings.deductions',
 
 
         ];

@@ -134,7 +134,7 @@
             'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.store', 'offrequest.approver'],
             'employebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
             'event' => ['event.index', 'events.list', 'event.create', 'event.edit', 'event.delete'],
-            'setting' => ['settings.index', 'settings.storeOrUpdate'],
+            'setting' => ['settings.index', 'settings.company', 'settings.deductions'],
         ] as $feature => $featurePermissions)
                                             <div class="card mt-3">
                                                 <div class="card-header">
@@ -269,7 +269,7 @@
                 });
             });
 
-             // Event listener untuk fitur employebbok
+            // Event listener untuk fitur employebbok
             document.getElementById('selectAllEmployeebook').addEventListener('click', function(e) {
                 e.preventDefault();
                 let checkboxes = document.querySelectorAll('.employeebook-checkbox');
@@ -278,7 +278,7 @@
                 });
             });
 
-             // Event listener untuk fitur Event
+            // Event listener untuk fitur Event
             document.getElementById('selectEvent').addEventListener('click', function(e) {
                 e.preventDefault();
                 let checkboxes = document.querySelectorAll('.event-checkbox');
@@ -287,7 +287,7 @@
                 });
             });
 
-             // Event listener untuk fitur setting
+            // Event listener untuk fitur setting
             document.getElementById('selectAllSetting').addEventListener('click', function(e) {
                 e.preventDefault();
                 let checkboxes = document.querySelectorAll('.setting-checkbox');

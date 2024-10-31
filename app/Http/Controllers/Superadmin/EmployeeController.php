@@ -19,7 +19,7 @@ class EmployeeController extends Controller
     }
     public function index(): View
     {
-        $employees = Employee::all();
+        $employees = Employee::paginate(1);
         return view('Superadmin.Employeedata.Employee.index', compact('employees'));
     }
 
@@ -50,7 +50,7 @@ class EmployeeController extends Controller
             'degree' => 'nullable|string',
             'starting_date' => 'nullable|date',
             'interview_by' => 'nullable|string',
-            'current_salary' => 'nullable|integer',
+            'current_salary' => 'nullable|string',
             'insurance' => 'nullable|boolean',
             'serious_illness' => 'nullable|string',
             'hereditary_disease' => 'nullable|string',
@@ -60,6 +60,10 @@ class EmployeeController extends Controller
             'status' => 'nullable|in:active,inactive',
         ]);
 
+        // Hapus titik pada `current_salary` dan konversi ke integer
+        if (isset($request->current_salary)) {
+            $validatedData['current_salary'] = (int) str_replace('.', '', $request->current_salary);
+        }
         // Membuat employee
         $employee = Employee::create($validatedData);
 
@@ -88,6 +92,9 @@ class EmployeeController extends Controller
         if (!$employeeModel) {
             return redirect()->route('employee.index')->with('error', 'Data tidak ditemukan!');
         }
+
+        // Format `current_salary` untuk tampilan di view
+        $employeeModel->current_salary = number_format($employeeModel->current_salary, 0, ',', '.');
 
         return view('Superadmin.Employeedata.Employee.update', compact('employeeModel'));
     }
@@ -121,7 +128,7 @@ class EmployeeController extends Controller
             'degree' => 'nullable|string',
             'starting_date' => 'nullable|date',
             'interview_by' => 'nullable|string',
-            'current_salary' => 'nullable|integer',
+            'current_salary' => 'nullable|string',
             'insurance' => 'nullable|boolean',
             'serious_illness' => 'nullable|string',
             'hereditary_disease' => 'nullable|string',
@@ -130,6 +137,11 @@ class EmployeeController extends Controller
             'emergency_number' => 'nullable|string',
             'status' => 'nullable|in:active,inactive',
         ]);
+        // Hapus titik pada `current_salary` dan konversi ke integer
+        if (isset($request->current_salary)) {
+            $current_salary = (int) str_replace('.', '', $request->current_salary);
+            $validatedData['current_salary'] = $current_salary; // Simpan ke validatedData
+        }
 
         $employeeModel->update($request->all());
 
