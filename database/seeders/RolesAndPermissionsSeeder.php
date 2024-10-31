@@ -159,7 +159,4 @@ class RolesAndPermissionsSeeder extends Seeder
         // Assign role Manager ke user Bunga Putri
         $employee->assignRole($managerRole);
     }
-
-
-
 }

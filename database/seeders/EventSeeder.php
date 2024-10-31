@@ -12,8 +12,8 @@ class EventSeeder extends Seeder
      */
     public function run(): void
     {
-        Event::truncate(); // Menghapus semua data di tabel events
-        $startDate = date('Y-01-01'); // Awal tahun
+        Event::truncate();
+        $startDate = date('Y-01-01');
         $endDate = date('Y-12-31'); // Akhir tahun
 
         $events = []; // Inisialisasi array untuk menyimpan event

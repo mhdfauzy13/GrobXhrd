@@ -48,7 +48,7 @@ class EventController extends Controller
     {
         return view('superadmin.event-form', [
             'data' => new Event(),
-            'action' => route('event.store')
+            'action' => route('event.store') // Perbaiki nama rute
         ]);
     }
 
