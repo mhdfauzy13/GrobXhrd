@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Event;
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 
 class EventSeeder extends Seeder
 {
@@ -12,42 +13,40 @@ class EventSeeder extends Seeder
      */
     public function run(): void
     {
-        $fake = fake('idID'); // Menggunakan Faker instance
-        $startDate = date('Y-01-01'); // Awal tahun
-        $endDate = date('Y-12-31'); // Akhir tahun
 
-        $events = []; // Inisialisasi array untuk menyimpan event
+        $startYear = date('Y') - 100;
+        $endYear = date('Y') + 100;
 
-        // Loop dari awal tahun ke akhir tahun
-        $currentDate = $startDate;
-        while ($currentDate <= $endDate) {
-            $dayOfWeek = date('w', strtotime($currentDate)); // Mengambil hari dalam format numerik (0 = Sunday, 6 = Saturday)
+        for ($year = $startYear; $year <= $endYear; $year++) {
+            $startDate = "$year-01-01"; // Awal tahun
+            $endDate = "$year-12-31"; // Akhir tahun
 
-            // Hanya untuk hari Minggu
-            if ($dayOfWeek == 0) {
+            $currentDate = Carbon::createFromFormat('Y-m-d', $startDate);
 
-                $existingEvent = array_filter($events, function ($event) use ($currentDate) {
-                    return $event['start_date'] === $currentDate;
-                });
+            while ($currentDate->format('Y-m-d') <= $endDate) {
+                // Memeriksa apakah hari ini adalah hari Minggu
+                if ($currentDate->dayOfWeek === 0) {
+                    // Memeriksa apakah event sudah ada untuk tanggal ini
+                    $existingEvent = Event::where('start_date', $currentDate->format('Y-m-d'))
+                        ->where('title', 'holiday')
+                        ->first();
 
-                // Jika belum ada, tambahkan event
-                if (empty($existingEvent)) {
-                    $events[] = [
-                        'title' => 'holiday', // Judul event
-                        'start_date' => $currentDate,
-                        'end_date' => $currentDate,
-                        'category' => 'danger', // Kategori untuk hari Minggu
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ];
+
+                    if (!$existingEvent) {
+                        Event::create([
+                            'title' => 'holiday',
+                            'start_date' => $currentDate->format('Y-m-d'),
+                            'end_date' => $currentDate->format('Y-m-d'),
+                            'category' => 'danger', // Kategori 'danger'
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    }
                 }
+
+                // Mengupdate tanggal ke hari berikutnya
+                $currentDate->addDay();
             }
-
-            // Tambahkan satu hari
-            $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
         }
-
-        // Hanya simpan event yang unik
-        Event::insert($events); // Menyimpan semua event ke database
     }
 }

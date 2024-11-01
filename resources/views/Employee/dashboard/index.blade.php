@@ -11,7 +11,8 @@
                 <ul>
                     @foreach (Auth::user()->unreadNotifications as $notification)
                         <li>
-                            {{ $notification->data['status'] }}: Pengajuan cuti ID #{{ $notification->data['offrequest_id'] }}
+                            {{ $notification->data['status'] }}: Pengajuan cuti ID
+                            #{{ $notification->data['offrequest_id'] }}
                         </li>
                     @endforeach
                 </ul>
