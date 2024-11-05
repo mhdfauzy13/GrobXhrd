@@ -6,22 +6,27 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\CompanyName;
 use App\Models\SalaryDeduction;
+use App\Models\WorkdaySetting;
 
 class SettingController extends Controller
 {
     public function __construct()
     {
         $this->middleware('permission:settings.index')->only('index');
-        $this->middleware('permission:settings.company')->only(['store', 'update']);
-        $this->middleware('permission:settings.deductions')->only(['salarydeductions']);
+        $this->middleware('permission:settings.company')->only(['store','update']);
+        $this->middleware('permission:settings.deductions')->only(['updateLateDeduction','updateEarlyDeduction']);
+        $this->middleware('permission:settings.worksdays')->only(['updateWorkdays']);
+
+
     }
 
     public function index()
     {
         $companyNames = CompanyName::all();
-        $salaryDeduction = SalaryDeduction::first();
+        $salaryDeduction = SalaryDeduction::first(); // Mengambil data potongan gaji (hanya satu record)
+        $workdaySetting = WorkdaySetting::first(); 
 
-        return view('Superadmin.Setting.index', compact('companyNames', 'salaryDeduction'));
+        return view('Superadmin.Setting.index', compact('companyNames', 'salaryDeduction', 'workdaySetting'));
     }
 
     public function store(Request $request)
@@ -84,6 +89,27 @@ class SettingController extends Controller
         $salaryDeduction->early_deduction = $validatedData['early_deduction'];
         $salaryDeduction->save();
 
-        return redirect()->route('settings.index')->with('success', 'Deductions updated successfully');
+        return redirect()->route('settings.index')->with('success', 'Early deduction updated successfully');
     }
+
+    public function updateWorkdays(Request $request)
+    {
+        $validatedData = $request->validate([
+            'effective_days' => 'required|array',
+            'effective_days.*' => 'in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
+        ]);
+    
+        $workdaySetting = WorkdaySetting::firstOrCreate([]);
+        $workdaySetting->effective_days = $validatedData['effective_days'];
+        
+        // Hitung jumlah hari kerja efektif per bulan
+        $weeklyWorkdays = count($validatedData['effective_days']);
+        $monthlyWorkdays = $weeklyWorkdays * 4; // Asumsi 4 minggu per bulan
+        $workdaySetting->monthly_workdays = $monthlyWorkdays;
+    
+        $workdaySetting->save();
+    
+        return redirect()->route('settings.index')->with('success', 'Workday settings updated successfully');
+    }
+    
 }

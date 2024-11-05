@@ -116,7 +116,7 @@
                 <!-- Employee Data menu, only visible if user has specific permissions -->
 
                 @canany(['employee.index', 'employee.create', 'attandance.index', 'attandance.scanView',
-                    'offrequest.index', 'offrequest.create', 'offrequest.approver', 'payroll.index'])
+                    'offrequest.index', 'offrequest.create', 'offrequest.approver', 'payroll.index','payroll.create'])
 
                     <li class="nav-item">
                         <a href="#" class="nav-link">
@@ -191,20 +191,23 @@
                 @endcanany
 
                 <!-- Payroll menu, only visible if user has permission -->
-                @can('payroll.index')
-                    <li class="nav-item">
+        
+
+                @canany(['payroll.index', 'payroll.create'])
+                <li class="nav-item">
+                    @can('payroll.index')
                         <a href="{{ route('payroll.index') }}" class="nav-link">
-                            <i class="fas fa-wallet nav-icon"></i>
+                            <i class="far fa-circle nav-icon"></i>
                             <p>Payroll</p>
                         </a>
-                    </li>
-                    {{-- <li class="nav-item">
-                        <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#payrollModal">
-                            <i class="fas fa-wallet nav-icon"></i>
-                            <p>Payroll</p>
+                    @elsecan('payroll.create')
+                        <a href="{{ route('payroll.create') }}" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Create payroll</p>
                         </a>
-                    </li> --}}
-                @endcan
+                    @endcan
+                </li>
+            @endcanany
 
                 <!-- Recruitment menu, only visible if user has permission -->
                 @canany(['recruitment.index', 'recruitment.create'])
