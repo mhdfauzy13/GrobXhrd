@@ -23,7 +23,7 @@ class DataUserController extends Controller
 
     public function index(): View
     {
-        $users = User::with('roles')->get();
+        $users = User::with('roles')->paginate(10);
         return view('Superadmin.MasterData.user.index', ['users' => $users]);
     }
 

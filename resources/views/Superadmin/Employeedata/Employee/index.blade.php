@@ -61,20 +61,9 @@
                 </div>
 
                 <div class="card-footer clearfix">
-                    <style>
-                        .pagination .page-link {
-                            font-size: 0.87rem; /* Ukuran font sama dengan tulisan */
-                            padding: 0.25rem 0.5rem; /* Padding */
-                        }
-
-                        .pagination .page-link .fas {
-                            font-size: 0.87rem; /* Ukuran ikon sama dengan tulisan */
-                            vertical-align: middle; /* Memastikan ikon sejajar dengan teks */
-                            margin-left: 0.25rem; /* Ruang antara teks dan ikon */
-                            margin-right: 0.25rem; /* Ruang antara teks dan ikon */
-                        }
-                    </style>
-                   
+                    <div class="pagination-container">
+                        {{ $employees->links('vendor.pagination.adminlte') }}
+                    </div>
                 </div>
             </div>
         </div>

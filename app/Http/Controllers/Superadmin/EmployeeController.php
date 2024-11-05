@@ -19,7 +19,7 @@ class EmployeeController extends Controller
     }
     public function index(): View
     {
-        $employees = Employee::get();
+        $employees = Employee::paginate(10);
         return view('Superadmin.Employeedata.Employee.index', compact('employees'));
     }
 

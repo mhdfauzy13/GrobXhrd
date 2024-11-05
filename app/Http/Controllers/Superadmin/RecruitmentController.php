@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 class RecruitmentController extends Controller
 {
-     public function __construct()
+    public function __construct()
     {
         $this->middleware('permission:recruitment.index')->only('index');
         $this->middleware('permission:recruitment.create')->only(['create', 'store']);
@@ -19,6 +19,8 @@ class RecruitmentController extends Controller
     public function index()
     {
         $recruitments = Recruitment::all();
+        $recruitments = Recruitment::paginate(10);
+
         return view('superadmin.recruitment.index', compact('recruitments'));
     }
 
@@ -65,9 +67,7 @@ class RecruitmentController extends Controller
     public function update(Request $request, $recruitment_id)
     {
         // Validasi custom untuk memastikan email unik
-        $count = Recruitment::where('email', $request->input('email'))
-            ->where('recruitment_id', '<>', $recruitment_id)
-            ->count();
+        $count = Recruitment::where('email', $request->input('email'))->where('recruitment_id', '<>', $recruitment_id)->count();
 
         if ($count > 0) {
             return redirect()->back()->withErrors('Email sudah digunakan.');
@@ -76,11 +76,7 @@ class RecruitmentController extends Controller
         // Validasi form lainnya
         $request->validate([
             'name' => 'required|string',
-            'email' => [
-                'required',
-                'email',
-                \Illuminate\Validation\Rule::unique('recruitments', 'email')->ignore($recruitment_id, 'recruitment_id'),
-            ],
+            'email' => ['required', 'email', \Illuminate\Validation\Rule::unique('recruitments', 'email')->ignore($recruitment_id, 'recruitment_id')],
             'phone_number' => 'required|string',
             'date_of_birth' => 'required|date',
             'last_education' => 'required|string',
@@ -112,7 +108,6 @@ class RecruitmentController extends Controller
 
         return redirect()->route('recruitment.index')->with('success', 'Recruitment successfully updated');
     }
-
 
     public function destroy($recruitment_id)
     {
