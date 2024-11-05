@@ -84,7 +84,34 @@
                     </button>
                 </form>
             </div>
-
         </div>
+
+        <!-- Card untuk form pengaturan hari kerja -->
+        <!-- Form untuk pengaturan hari kerja -->
+        <!-- Card untuk form pengaturan hari kerja -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3 class="card-title">Workday Settings</h3>
+            </div>
+            <div class="card-body">
+                <form action="{{ route('settings.updateWorkdays') }}" method="POST">
+                    @csrf
+                    <label for="effective_days">Select Effective Workdays:</label><br>
+
+                    @foreach (['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as $day)
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="effective_days[]"
+                                value="{{ $day }}"
+                                {{ in_array($day, $workdaySetting->effective_days ?? []) ? 'checked' : '' }}>
+                            <label class="form-check-label">{{ $day }}</label>
+                        </div>
+                    @endforeach
+
+                    <button type="submit" class="btn btn-primary mt-3">Update Workdays</button>
+                </form>
+            </div>
+
+
+
     </section>
 @endsection

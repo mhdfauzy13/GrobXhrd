@@ -87,6 +87,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'settings.index',
             'settings.company',
             'settings.deductions',
+            'settings.worksdays',
 
 
         ];

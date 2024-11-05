@@ -149,6 +149,30 @@
     });
 </script>
 
+<<<<<<< HEAD
+
+<script>
+function updateValidationStatus(employeeId, status) {
+    fetch(`/payroll/validate/${employeeId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ status })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+    })
+    .then(data => {
+        alert('Status berhasil diperbarui: ' + data.message);
+    })
+    .catch(error => {
+        console.error('Ada masalah dengan permintaan:', error);
+    });
+}
+=======
 {{-- SCRIPT BUAT CREATE EMPLOYE CURRENT SALARY --}}
 
 <script>
@@ -193,4 +217,5 @@
 
         input.value = value;
     }
+>>>>>>> 01b3144b0b74cf8fa4e67320746ecdd34a0367a0
 </script>

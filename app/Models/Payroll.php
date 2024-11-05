@@ -8,15 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Payroll extends Model
 {
     use HasFactory;
-    protected $table = 'payrolls';
+
+    protected $primaryKey = 'payroll_id';
 
     protected $fillable = [
         'employee_id',
-        'total_days_worked',
-        'total_days_off',
-        'effective_work_days',
+        'days_present',
+        'total_leave',
+        'effective_workdays',
         'current_salary',
-        'is_validated',
+        'total_salary',
+        'validation_status'
     ];
 
     public function employee()

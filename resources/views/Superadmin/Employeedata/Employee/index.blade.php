@@ -74,7 +74,7 @@
                             margin-right: 0.25rem; /* Ruang antara teks dan ikon */
                         }
                     </style>
-                    {{ $employees->links() }}
+                   
                 </div>
             </div>
         </div>

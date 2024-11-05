@@ -85,30 +85,21 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('payroll.index')
             ->middleware('permission:payroll.index');
 
-        Route::post('/payrolls/store', [PayrollController::class, 'store'])
-            ->name('payroll.store')
-            ->middleware('permission:payroll.store');
-
-        Route::post('/payrolls/validate/{id}', [PayrollController::class, 'validatePayroll'])
-            ->name('payroll.validate')
-            ->middleware('permission:payroll.validate');
-
-        // Menampilkan form create payroll dan menyimpan data payroll
         Route::get('/payrolls/create', [PayrollController::class, 'create'])
             ->name('payroll.create')
             ->middleware('permission:payroll.create');
 
-        Route::post('/payrolls', [PayrollController::class, 'store'])
-            ->name('payroll.store')
-            ->middleware('permission:payroll.create');
-        // Menampilkan form edit payroll dan mengupdate payroll
-        Route::get('/payrolls/{id}/edit', [PayrollController::class, 'edit'])
-            ->name('payroll.edit')
-            ->middleware('permission:payroll.edit');
+        Route::get('/payroll/calculate', [PayrollController::class, 'calculatePayroll'])
+        ->name('payroll.calculate')
+        ->middleware('permission:payroll.index');
 
-        Route::put('/payrolls/{id}', [PayrollController::class, 'update'])
-            ->name('payroll.update')
-            ->middleware('permission:payroll.edit');
+        Route::post('/payroll/validate/{employee_id}', [PayrollController::class, 'validatePayroll'])
+        ->name('payroll.validate')
+        ->middleware('permission:payroll.index');
+
+
+
+
 
         // Menghapus payroll
         Route::delete('/payrolls/{id}', [PayrollController::class, 'destroy'])
@@ -236,12 +227,16 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->middleware('permission:settings.company');
 
         Route::post('settings/update-late-deduction', [SettingController::class, 'updateLateDeduction'])
-        ->name('settings.updateLateDeduction')
-        ->middleware('permission:settings.deductions');
+            ->name('settings.updateLateDeduction')
+            ->middleware('permission:settings.deductions');
 
         Route::post('settings/update-early-deduction', [SettingController::class, 'updateEarlyDeduction'])
-        ->name('settings.updateEarlyDeduction')
-        ->middleware('permission:settings.deductions');
+            ->name('settings.updateEarlyDeduction')
+            ->middleware('permission:settings.deductions');
+
+        Route::post('/settings/update-workdays', [SettingController::class, 'updateWorkdays'])
+            ->name('settings.updateWorkdays')
+            ->middleware('permission:settings.worksdays');
     });
 
     // Employee Routes
