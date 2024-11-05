@@ -235,13 +235,9 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('settings.update')
             ->middleware('permission:settings.company');
 
-        Route::post('settings/update-late-deduction', [SettingController::class, 'updateLateDeduction'])
-        ->name('settings.updateLateDeduction')
-        ->middleware('permission:settings.deductions');
-
-        Route::post('settings/update-early-deduction', [SettingController::class, 'updateEarlyDeduction'])
-        ->name('settings.updateEarlyDeduction')
-        ->middleware('permission:settings.deductions');
+        Route::post('/settings/salary-deductions', [SettingController::class, 'salarydeductions'])
+            ->name('settings.salarydeductions')
+            ->middleware('permission:settings.deductions');
     });
 
     // Employee Routes

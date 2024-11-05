@@ -79,7 +79,9 @@
                     </table>
                 </div>
                 <div class="card-footer clearfix">
-                    {{ $roles->links() }}
+                    <div class="pagination-container">
+                        {{ $roles->links('vendor.pagination.adminlte') }}
+                    </div>
                 </div>
             </div>
         </div>

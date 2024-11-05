@@ -107,9 +107,10 @@
                     </table>
                 </div>
 
-                <!-- Navigasi pagination -->
                 <div class="card-footer clearfix">
-                    {{-- {{ $offrequests->links() }}  --}}
+                    <div class="pagination-container">
+                        {{ $offrequests->links('vendor.pagination.adminlte') }}
+                    </div>
                 </div>
             </div>
         </div>

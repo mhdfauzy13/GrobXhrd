@@ -52,8 +52,7 @@
             </div>
 
             <div class="card-body">
-                <!-- Form untuk Late Deduction -->
-                <form action="{{ route('settings.updateLateDeduction') }}" method="POST">
+                <form action="{{ route('settings.salarydeductions') }}" method="POST">
                     @csrf
 
                     <div class="form-group mb-4">
@@ -62,15 +61,6 @@
                             value="{{ isset($salaryDeduction) ? number_format($salaryDeduction->late_deduction, 0, ',', '.') : '' }}"
                             required onkeyup="formatNumber(this)">
                     </div>
-
-                    <button type="submit" class="btn btn-primary">
-                        Save
-                    </button>
-                </form>
-
-                <!-- Form untuk Early Deduction -->
-                <form action="{{ route('settings.updateEarlyDeduction') }}" method="POST" class="mt-4">
-                    @csrf
 
                     <div class="form-group mb-4">
                         <label for="early_deduction" class="form-label">Early Deduction</label>
@@ -84,7 +74,7 @@
                     </button>
                 </form>
             </div>
-
         </div>
+
     </section>
 @endsection

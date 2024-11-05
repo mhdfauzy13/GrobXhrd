@@ -270,7 +270,7 @@
 
 
                 <!-- Logout -->
-                <li class="nav-item">
+                <li class="nav-item mt-3">
                     <a href="#"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                         class="nav-link">

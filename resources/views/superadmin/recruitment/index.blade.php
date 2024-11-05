@@ -69,6 +69,11 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="card-footer clearfix">
+                    <div class="pagination-container">
+                        {{ $recruitments->links('vendor.pagination.adminlte') }}
+                    </div>
+                </div>
             </div>
         </div>
     </section>

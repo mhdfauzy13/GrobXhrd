@@ -172,14 +172,12 @@ class AttandanceController extends Controller
         $totalAbsent = 0;
 
         foreach ($attendances as $attendance) {
-            // Cek apakah employee melakukan check-in dan check-out dengan benar
             if ($attendance->check_in && $attendance->check_out) {
                 // Selalu tambah ke total present jika ada check-in dan check-out
                 $totalPresent++;
 
                 if ($attendance->check_in_status == 'IN' && $attendance->check_out_status == 'OUT') {
                     // Kehadiran normal
-                    // Sudah dihitung di totalPresent
                 }
                 if ($attendance->check_in_status == 'LATE' && $attendance->check_out_status == 'OUT') {
                     // Terlambat saat check-in tapi pulang tepat waktu
@@ -200,7 +198,12 @@ class AttandanceController extends Controller
             }
         }
 
-        // Simpan atau update data rekap ke database
+        $totalAbsent = $attendances
+            ->filter(function ($attendance) {
+                return !$attendance->check_in && !$attendance->check_out;
+            })
+            ->count();
+
         AttandanceRecap::updateOrCreate(
             ['employee_id' => $employee_id, 'month' => $month],
             [
