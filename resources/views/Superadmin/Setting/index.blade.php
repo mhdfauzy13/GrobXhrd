@@ -77,8 +77,6 @@
         </div>
 
         <!-- Card untuk form pengaturan hari kerja -->
-        <!-- Form untuk pengaturan hari kerja -->
-        <!-- Card untuk form pengaturan hari kerja -->
         <div class="card mt-4">
             <div class="card-header">
                 <h3 class="card-title">Workday Settings</h3>
