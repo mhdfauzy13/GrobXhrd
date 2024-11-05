@@ -43,10 +43,13 @@
                                     <td class="text-center">{{ $employee->email }}</td>
                                     <td class="text-center">{{ $employee->address }}</td>
                                     <td class="project-actions text-right">
-                                        <a class="btn btn-info btn-sm" href="{{ route('employee.edit', $employee->employee_id) }}">
+                                        <a class="btn btn-info btn-sm"
+                                            href="{{ route('employee.edit', $employee->employee_id) }}">
                                             <i class="fas fa-pencil-alt"></i> Edit
                                         </a>
-                                        <form method="POST" action="{{ route('employee.destroy', $employee->employee_id) }}" style="display:inline;">
+                                        <form method="POST"
+                                            action="{{ route('employee.destroy', $employee->employee_id) }}"
+                                            style="display:inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm">

@@ -226,14 +226,10 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('settings.update')
             ->middleware('permission:settings.company');
 
-        Route::post('settings/update-late-deduction', [SettingController::class, 'updateLateDeduction'])
-            ->name('settings.updateLateDeduction')
+        Route::post('/settings/salary-deductions', [SettingController::class, 'salarydeductions'])
+            ->name('settings.salarydeductions')
             ->middleware('permission:settings.deductions');
-
-        Route::post('settings/update-early-deduction', [SettingController::class, 'updateEarlyDeduction'])
-            ->name('settings.updateEarlyDeduction')
-            ->middleware('permission:settings.deductions');
-
+            
         Route::post('/settings/update-workdays', [SettingController::class, 'updateWorkdays'])
             ->name('settings.updateWorkdays')
             ->middleware('permission:settings.worksdays');

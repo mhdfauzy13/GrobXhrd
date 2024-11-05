@@ -14,7 +14,7 @@ class SettingController extends Controller
     {
         $this->middleware('permission:settings.index')->only('index');
         $this->middleware('permission:settings.company')->only(['store','update']);
-        $this->middleware('permission:settings.deductions')->only(['updateLateDeduction','updateEarlyDeduction']);
+        $this->middleware('permission:settings.deductions')->only(['salarydeductions']);
         $this->middleware('permission:settings.worksdays')->only(['updateWorkdays']);
 
 
