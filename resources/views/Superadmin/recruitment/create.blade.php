@@ -79,10 +79,16 @@
                             <div class="form-group">
                                 <label for="status">Status</label>
                                 <select name="status" id="status" class="form-control" required>
-                                    <option value="accepted">Accepted</option>
-                                    <option value="rejected">Rejected</option>
+                                    <option value="Initial Interview">Initial Interview</option>
+                                    <option value="User Interview 1">User Interview 1</option>
+                                    <option value="User Interview 2">User Interview 2</option>
+                                    <option value="Background Check">Background Check</option>
+                                    <option value="Offering letter">Offering letter</option>
+                                    <option value="Accept">Accept</option>
+                                    <option value="Decline">Decline</option>
                                 </select>
                             </div>
+
 
                             <div class="card-footer">
                                 <button type="submit" class="btn btn-primary">Save</button>

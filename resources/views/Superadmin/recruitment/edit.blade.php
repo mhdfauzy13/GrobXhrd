@@ -12,7 +12,6 @@
                     @csrf
                     @method('PUT')
 
-                    <!-- Form fields here -->
                     <div class="form-group">
                         <label for="name">Name</label>
                         <input type="text" class="form-control" id="name" name="name"
@@ -64,18 +63,30 @@
 
                     <div class="form-group">
                         <label for="status">Status</label>
-                        <select class="form-control" id="status" name="status" required>
-                            <option value="accepted"
-                                {{ old('status', $recruitment->status) === 'accepted' ? 'selected' : '' }}>Accepted</option>
-                            <option value="rejected"
-                                {{ old('status', $recruitment->status) === 'rejected' ? 'selected' : '' }}>Rejected
-                            </option>
+                        <select name="status" id="status" class="form-control" required>
+                            <option value="Initial Interview"
+                                {{ old('status', $recruitment->status) === 'Initial Interview' ? 'selected' : '' }}>Initial
+                                Interview</option>
+                            <option value="User Interview 1"
+                                {{ old('status', $recruitment->status) === 'User Interview 1' ? 'selected' : '' }}>User
+                                Interview 1</option>
+                            <option value="User Interview 2"
+                                {{ old('status', $recruitment->status) === 'User Interview 2' ? 'selected' : '' }}>User
+                                Interview 2</option>
+                            <option value="Background Check"
+                                {{ old('status', $recruitment->status) === 'Background Check' ? 'selected' : '' }}>
+                                Background Check</option>
+                            <option value="Offering letter"
+                                {{ old('status', $recruitment->status) === 'Offering letter' ? 'selected' : '' }}>Offering
+                                letter</option>
+                            <option value="Accept"
+                                {{ old('status', $recruitment->status) === 'Accept' ? 'selected' : '' }}>Accept</option>
+                            <option value="Decline"
+                                {{ old('status', $recruitment->status) === 'Decline' ? 'selected' : '' }}>Decline</option>
                         </select>
                     </div>
 
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Update</button>
-                    </div>
+                    <button type="submit" class="btn btn-primary">Update</button>
                 </form>
             </div>
         </div>

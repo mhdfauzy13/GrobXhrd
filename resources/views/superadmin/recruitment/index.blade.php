@@ -43,10 +43,25 @@
                                     <td>{{ $recruitment->comment }}</td>
                                     <td class="project-state">
                                         <span
-                                            class="badge badge-{{ $recruitment->status == 'accepted' ? 'success' : 'danger' }}">
-                                            {{ $recruitment->status == 'accepted' ? 'Accepted' : 'Rejected' }}
+                                            class="badge badge-{{ $recruitment->status == 'Accept'
+                                                ? 'success'
+                                                : ($recruitment->status == 'Decline'
+                                                    ? 'danger'
+                                                    : ($recruitment->status == 'Initial Interview'
+                                                        ? 'primary'
+                                                        : ($recruitment->status == 'User Interview 1'
+                                                            ? 'info'
+                                                            : ($recruitment->status == 'User Interview 2'
+                                                                ? 'secondary'
+                                                                : ($recruitment->status == 'Background Check'
+                                                                    ? 'warning'
+                                                                    : ($recruitment->status == 'Offering Letter'
+                                                                        ? 'dark'
+                                                                        : 'light')))))) }}">
+                                            {{ $recruitment->status }}
                                         </span>
                                     </td>
+
                                     <td class="project-actions text-right">
                                         <a class="btn btn-info btn-sm"
                                             href="{{ route('recruitment.edit', $recruitment->recruitment_id) }}">
