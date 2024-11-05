@@ -5,7 +5,6 @@ use App\Http\Controllers\Employee\DashboardEmployeeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Superadmin\DashboardController;
 use App\Http\Controllers\Superadmin\DataUserController;
-use App\Http\Controllers\Superadmin\CompanyController;
 use App\Http\Controllers\Superadmin\EmployeeController;
 use App\Http\Controllers\Superadmin\PayrollController;
 use App\Http\Controllers\Superadmin\RecruitmentController;
@@ -17,6 +16,7 @@ use App\Http\Controllers\ProfileController;
 use App\Notifications\LeaveRequestNotification;
 use App\Http\Controllers\Superadmin\EmployeeBookController;
 use App\Http\Controllers\Superadmin\EmployeeBooksController;
+use App\Http\Controllers\Superadmin\SettingController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -76,58 +76,30 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('attandance.index')
             ->middleware('permission:attandance.index');
 
-        // // Route untuk check-in
-        // Route::post('/attendance/check-in', [AttandanceController::class, 'checkIn'])
-        //     ->name('attandance.check-in')
-        //     ->middleware('permission:attandance.scan');
-
-        // // Route untuk check-out
-        // Route::post('/attendance/check-out', [AttandanceController::class, 'checkOut'])
-        //     ->name('attandance.check-out')
-        //     ->middleware('permission:attandance.scan');
-
         Route::get('/attendance/recap/{employee_id}', [AttandanceController::class, 'recap'])
             ->name('attendance.recap')
             ->middleware('permission:attandance.index');
-
-        // Off Request
-
-        Route::get('/company', [CompanyController::class, 'index'])
-            ->name('company.index')
-            ->middleware('permission:company.index');
-
-        // routes/web.php
 
         // Payroll
         Route::get('/payrolls', [PayrollController::class, 'index'])
             ->name('payroll.index')
             ->middleware('permission:payroll.index');
 
-        Route::post('/payrolls/store', [PayrollController::class, 'store'])
-            ->name('payroll.store')
-            ->middleware('permission:payroll.store');
-
-
-        Route::patch('/payrolls/validate/{id}', [PayrollController::class, 'updateValidationStatus'])
-            ->name('payroll.validate')
-            ->middleware('permission:payroll.create');
-
-        // Menampilkan form create payroll dan menyimpan data payroll
         Route::get('/payrolls/create', [PayrollController::class, 'create'])
             ->name('payroll.create')
             ->middleware('permission:payroll.create');
 
-        Route::post('/payrolls', [PayrollController::class, 'store'])
-            ->name('payroll.store')
-            ->middleware('permission:payroll.create');
-        // Menampilkan form edit payroll dan mengupdate payroll
-        Route::get('/payrolls/{id}/edit', [PayrollController::class, 'edit'])
-            ->name('payroll.edit')
-            ->middleware('permission:payroll.edit');
+        Route::get('/payroll/calculate', [PayrollController::class, 'calculatePayroll'])
+        ->name('payroll.calculate')
+        ->middleware('permission:payroll.index');
 
-        Route::put('/payrolls/{id}', [PayrollController::class, 'update'])
-            ->name('payroll.update')
-            ->middleware('permission:payroll.edit');
+        Route::post('/payroll/validate/{employee_id}', [PayrollController::class, 'validatePayroll'])
+        ->name('payroll.validate')
+        ->middleware('permission:payroll.index');
+
+
+
+
 
         // Menghapus payroll
         Route::delete('/payrolls/{id}', [PayrollController::class, 'destroy'])
@@ -138,7 +110,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/events', [EventController::class, 'index'])
             ->name('event.index')
             ->middleware('permission:event.index');
-
         // Menampilkan form list event
         Route::get('events/list', [EventController::class, 'ListEvent'])
             ->name('events.list')
@@ -164,7 +135,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('event.destroy')
             ->middleware('permission:event.delete');
 
-
+        // Employee Books
         Route::get('employeebooks', [EmployeeBooksController::class, 'index'])
             ->name('employeebooks.index')
             ->middleware('permission:employeebook.index');
@@ -192,8 +163,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('employeebooks/{employeeBook}/detail', [EmployeeBooksController::class, 'detail'])
             ->name('employeebooks.detail')
             ->middleware('permission:employeebook.detail');
-
-
 
         // Recruitment
         Route::get('/recruitment', [RecruitmentController::class, 'index'])
@@ -242,7 +211,32 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
 
         Route::get('/employees/{employee}', [EmployeeController::class, 'show'])
             ->name('employee.show')
-            ->middleware('permission:employee.show');
+            ->middleware('permission:employee.index');
+
+        // Setting
+        Route::get('settings', [SettingController::class, 'index'])
+            ->name('settings.index')
+            ->middleware('permission:settings.index');
+
+        Route::post('settings', [SettingController::class, 'store'])
+            ->name('settings.store')
+            ->middleware('permission:settings.company');
+
+        Route::put('settings/{id}', [SettingController::class, 'update'])
+            ->name('settings.update')
+            ->middleware('permission:settings.company');
+
+        Route::post('settings/update-late-deduction', [SettingController::class, 'updateLateDeduction'])
+            ->name('settings.updateLateDeduction')
+            ->middleware('permission:settings.deductions');
+
+        Route::post('settings/update-early-deduction', [SettingController::class, 'updateEarlyDeduction'])
+            ->name('settings.updateEarlyDeduction')
+            ->middleware('permission:settings.deductions');
+
+        Route::post('/settings/update-workdays', [SettingController::class, 'updateWorkdays'])
+            ->name('settings.updateWorkdays')
+            ->middleware('permission:settings.worksdays');
     });
 
     // Employee Routes

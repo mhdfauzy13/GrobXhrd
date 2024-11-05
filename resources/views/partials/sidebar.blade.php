@@ -1,10 +1,16 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="#" class="brand-link">
-        <img src="../../../dist/img/grob.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
-            style="opacity: 0.8" />
-        <span class="brand-text font-weight-light">GrobXhrd</span>
+    <a class="brand-link">
+        @if ($companyname && $companyname->image)
+            <img src="{{ asset('storage/' . $companyname->image) }}" alt="{{ $companyname->name_company }}"
+                class="brand-image img-circle elevation-3" style="opacity: 0.8" />
+        @else
+            <img src="dist/img/AdminLTELogo.png" alt="Default Logo" class="brand-image img-circle elevation-3"
+                style="opacity: 0.8" />
+        @endif
+        <span class="brand-text font-weight-light">{{ $companyname ? $companyname->name_company : 'AdminLTE 3' }}</span>
     </a>
+
 
     <!-- Sidebar -->
     <div class="sidebar">
@@ -56,13 +62,11 @@
                             </a>
                         </li>
                     @endcan
-
-
                 @endcanany
 
 
                 <!-- Master Data menu, only visible if user has specific permissions -->
-                @canany(['user.index', 'user.create', 'role.index', 'role.create', 'company.index'])
+                @canany(['user.index', 'user.create', 'role.index', 'role.create'])
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-folder"></i>
@@ -105,15 +109,6 @@
                                     @endcan
                                 </li>
                             @endcanany
-
-                            @can('company.index')
-                                <li class="nav-item">
-                                    <a href="{{ route('company.index') }}" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Company</p>
-                                    </a>
-                                </li>
-                            @endcan
                         </ul>
                     </li>
                 @endcanany
@@ -239,7 +234,7 @@
                                 @can('event.index')
                                     <a href="{{ route('event.index') }}" class="nav-link">
                                         <i class="fas fa-calendar nav-icon"></i>
-                                        <p>Event</p>
+                                        <p>Holiday</p>
                                     </a>
                                 @endcan
 
@@ -260,6 +255,20 @@
                             </li>
                         </ul>
                     </li>
+                @endcanany
+
+                @canany(['settings.index'])
+
+                <li class="nav-item menu-open">
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('settings.index') }}" class="nav-link">
+                                <i class="fas fa-cog nav-icon"></i>
+                                <p>Setting</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 @endcanany
 
 

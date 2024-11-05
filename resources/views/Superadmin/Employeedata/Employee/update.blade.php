@@ -203,10 +203,11 @@
 
                                     <div class="form-group">
                                         <label for="current_salary">Current Salary</label>
-                                        <input type="number" name="current_salary" id="current_salary" class="form-control"
-                                            value="{{ old('current_salary', $employeeModel->current_salary) }}">
+                                        <input type="text" name="current_salary" id="current_salary"
+                                            class="form-control" oninput="formatCurrency(this)"
+                                            value="{{ old('current_salary', number_format($employeeModel->current_salary, 0, ',', '.')) }}"
+                                            required>
                                     </div>
-
                                     <div class="form-group">
                                         <label for="insurance">Insurance</label>
                                         <select name="insurance" id="insurance" class="form-control">
