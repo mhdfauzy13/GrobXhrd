@@ -8,7 +8,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-xl-6">
-                        <h1>Create Recruitment</h1>
+                        <h1>Add Recruitment</h1>
                     </div>
                 </div>
             </div>
@@ -65,6 +65,13 @@
                                 <label for="last_position">Last Position</label>
                                 <input type="text" name="last_position" id="last_position" class="form-control" required>
                             </div>
+
+                            <div class="form-group">
+                                <label for="apply_position">Apply Position</label>
+                                <input type="text" name="apply_position" id="apply_position" class="form-control"
+                                    value="{{ old('apply_position', $recruitment->apply_position ?? '') }}" required>
+                            </div>
+
 
                             <div class="form-group">
                                 <label for="cv_file">CV File</label>

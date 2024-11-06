@@ -49,6 +49,13 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="apply_position">Apply Position</label>
+                        <input type="text" name="apply_position" id="apply_position" class="form-control"
+                            value="{{ old('apply_position', $recruitment->apply_position ?? '') }}" required>
+                    </div>
+
+
+                    <div class="form-group">
                         <label for="cv_file">CV File</label>
                         <input type="file" class="form-control" id="cv_file" name="cv_file">
                         @if ($recruitment->cv_file)

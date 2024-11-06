@@ -16,10 +16,11 @@ class CreateRecruitmentsTable extends Migration
             $table->date('date_of_birth');
             $table->string('last_education');
             $table->string('last_position');
+            $table->string('apply_position'); // Field baru
             $table->string('cv_file');
             $table->text('comment')->nullable();
 
-            // Ubah enum status untuk menerima nilai baru
+            // Status enum yang sudah ada
             $table->enum('status', [
                 'Initial Interview',
                 'User Interview 1',
@@ -33,6 +34,7 @@ class CreateRecruitmentsTable extends Migration
             $table->timestamps();
         });
     }
+
 
     public function down()
     {
