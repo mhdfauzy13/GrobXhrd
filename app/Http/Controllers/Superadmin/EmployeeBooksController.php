@@ -30,10 +30,13 @@ class EmployeeBooksController extends Controller
 
     public function create(Request $request)
     {
-        $employees = Employee::all(); // Ambil semua karyawan
+        // Urutkan karyawan berdasarkan nama depan dan nama belakang
+        $employees = Employee::orderBy('first_name')->orderBy('last_name')->get();
+
         $category = $request->query('category', 'violation'); // Set kategori default
         return view('superadmin.employeebooks.create', compact('employees', 'category'));
     }
+
 
     public function store(Request $request)
     {

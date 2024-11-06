@@ -2,17 +2,18 @@
 
 @section('content')
     <div class="container">
-        <h1>Create {{ ucfirst($category) }}</h1> <!-- Judul dinamis sesuai kategori -->
+        <h1>Add {{ ucfirst($category) }}</h1> <!-- Judul dinamis sesuai kategori -->
 
         <form action="{{ route('employeebooks.store') }}" method="POST">
             @csrf
             <input type="hidden" name="category" value="{{ $category }}"> <!-- Kategori disembunyikan dalam input -->
             <div class="form-group">
-                <label for="employee_id">Select Employee</label>
+                <label for="employee_id">Add Employee</label>
                 <select name="employee_id" id="employee_id" class="form-control" required>
-                    <option value="">-- Select Employee --</option>
+                    <option value="">-- Add Employee --</option>
                     @foreach ($employees as $employee)
-                        <option value="{{ $employee->employee_id }}">{{ $employee->first_name }} {{ $employee->last_name }}
+                        <option value="{{ $employee->employee_id }}">
+                            {{ $employee->first_name }} {{ $employee->last_name }}
                         </option>
                     @endforeach
                 </select>
@@ -29,7 +30,7 @@
                 <label for="remarks">Remarks</label>
                 <textarea name="remarks" id="remarks" class="form-control" required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Create {{ ucfirst($category) }}</button>
+            <button type="submit" class="btn btn-primary">Add {{ ucfirst($category) }}</button>
             <a href="{{ route('employeebooks.index') }}" class="btn btn-secondary">Back</a>
         </form>
     </div>

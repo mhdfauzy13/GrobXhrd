@@ -27,7 +27,7 @@
                 <h3 class="mb-3">Violation</h3>
                 <a id="create-button" href="{{ route('employeebooks.create') }}?category=violation"
                     class="btn btn-primary mb-3">
-                    <i class="fas fa-plus"></i> Create Violation
+                    <i class="fas fa-plus"></i> Add Violation
                 </a>
                 <div class="table-responsive">
                     <table class="table table-striped projects">
@@ -78,7 +78,7 @@
                 <h3 class="mb-3">Warning</h3>
                 <a id="create-button" href="{{ route('employeebooks.create') }}?category=warning"
                     class="btn btn-primary mb-3">
-                    <i class="fas fa-plus"></i> Create Warning
+                    <i class="fas fa-plus"></i> Add Warning
                 </a>
                 <div class="table-responsive">
                     <table class="table table-striped projects">
@@ -129,7 +129,7 @@
                 <h3 class="mb-3">Reprimand</h3>
                 <a id="create-button" href="{{ route('employeebooks.create') }}?category=reprimand"
                     class="btn btn-primary mb-3">
-                    <i class="fas fa-plus"></i> Create Reprimand
+                    <i class="fas fa-plus"></i> Add Reprimand
                 </a>
                 <div class="table-responsive">
                     <table class="table table-striped projects">
