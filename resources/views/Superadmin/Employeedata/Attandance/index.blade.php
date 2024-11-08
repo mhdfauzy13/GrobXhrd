@@ -5,7 +5,7 @@
     <section class="content">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Absensi</h3>
+                <h3 class="card-title">Attendance</h3>
 
                 <div class="card-tools">
                     <form method="GET" action="{{ route('attandance.index') }}" class="form-inline">
@@ -21,12 +21,12 @@
                     <table class="table table-striped projects">
                         <thead>
                             <tr>
-                                <th style="width: 20%" class="text-left">Nama</th>
-                                <th style="width: 20%" class="text-center">Check In</th>
-                                <th style="width: 20%" class="text-center">Check Out</th>
-                                <th style="width: 20%" class="text-center" >Status Checkin</th>
-                                <th style="width: 20%" class="text-center">Status Checkout</th>
-                                <th style="width: 20%" class="text-right">Gambar</th>
+                                <th style="width: 20%" class="text-left">Name</th>
+                                <th style="width: 20%" class="text-center">Check-In</th>
+                                <th style="width: 20%" class="text-center">Check-Out</th>
+                                <th style="width: 20%" class="text-center" >Status Check-In</th>
+                                <th style="width: 20%" class="text-center">Status Check-Out</th>
+                                <th style="width: 20%" class="text-right">Image</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -60,17 +60,22 @@
                                                     alt="Gambar Absensi" width="100">
                                             </a>
                                         @else
-                                            Tidak Ada Gambar
+                                            No Image
                                         @endif
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center">Tidak ada data untuk tanggal yang dipilih.</td>
+                                    <td colspan="5" class="text-center">No data for the selected date.</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+                <div class="card-footer clearfix">
+                    <div class="pagination-container">
+                        {{ $attendances->links('vendor.pagination.adminlte') }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -82,7 +87,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="imageModalLabel">Gambar Absensi</h5>
+                    <h5 class="modal-title" id="imageModalLabel">Image of Attendance</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

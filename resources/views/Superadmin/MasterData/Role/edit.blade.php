@@ -22,25 +22,23 @@
                                 @method('PUT')
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label for="roleName">Nama Role</label>
+                                        <label for="roleName">Name Role</label>
                                         <input type="text" name="name" class="form-control" id="roleName"
                                             value="{{ $role->name }}" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="permissions">Permissions yang Diberikan</label>
+                                        <label for="permissions">Permissions Granted</label>
 
                                         <!-- Select/Deselect All -->
                                         <div class="custom-control custom-checkbox mb-2">
                                             <input type="checkbox" class="custom-control-input" id="selectAllPermissions">
-                                            <label class="custom-control-label" for="selectAllPermissions">Select
-                                                All</label>
+                                            <label class="custom-control-label" for="selectAllPermissions">Select All</label>
                                         </div>
 
                                         <!-- Fitur Dashboard -->
                                         <div class="card mt-3">
                                             <div class="card-header">
-                                                <a href="#" id="selectAllDashboard" class="card-title">Fitur
-                                                    Dashboard</a>
+                                                <a href="#" id="selectAllDashboard" class="card-title">Fitur Dashboard</a>
                                             </div>
                                             <div class="card-body">
                                                 @foreach ($permissions->whereIn('name', ['dashboard.view', 'dashboardemployee.view']) as $permission)
@@ -103,43 +101,20 @@
                                             </div>
                                         </div>
 
-                                        <!-- Fitur Company -->
-                                        <div class="card mt-3">
-                                            <div class="card-header">
-                                                <a href="#" id="selectAllCompany" class="card-title">Fitur Company</a>
-                                            </div>
-                                            <div class="card-body">
-                                                @foreach ($permissions->whereIn('name', ['company.index', 'company.create', 'company.edit', 'company.delete']) as $permission)
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" name="permissions[]"
-                                                            value="{{ $permission->name }}"
-                                                            class="custom-control-input company-checkbox"
-                                                            id="company_{{ $permission->id }}"
-                                                            {{ in_array($permission->name, $rolePermissions) ? 'checked' : '' }}>
-                                                        <label class="custom-control-label"
-                                                            for="company_{{ $permission->id }}">
-                                                            {{ ucfirst(str_replace('company.', '', $permission->name)) }}
-                                                        </label>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-
-                                        <!-- Fitur Employee, Payroll, Recruitment, Attendance, dan Offrequest -->
+                                        <!-- Fitur lainnya (loop) -->
                                         @foreach ([
-            'employee' => ['employee.index', 'employee.create', 'employee.edit', 'employee.destroy'],
-            'payroll' => ['payroll.index', 'payroll.create', 'payroll.edit', 'payroll.delete'],
-            'recruitment' => ['recruitment.index', 'recruitment.create', 'recruitment.edit', 'recruitment.delete'],
-            'attandance' => ['attandance.index', 'attandance.scanView', 'attandance.scan'],
-            'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.store', 'offrequest.approver'],
-            'employebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
-            'event' => ['event.index', 'events.list', 'event.create', 'event.edit', 'event.delete'],
-            'setting' => ['settings.index', 'settings.company', 'settings.deductions','settings.worksdays'],
-        ] as $feature => $featurePermissions)
+                                            'employee' => ['employee.index', 'employee.create', 'employee.edit', 'employee.delete'],
+                                            'payroll' => ['payroll.index', 'payroll.create', 'payroll.edit', 'payroll.delete'],
+                                            'recruitment' => ['recruitment.index', 'recruitment.create', 'recruitment.edit', 'recruitment.delete'],
+                                            'attandance' => ['attandance.index', 'attandance.scanView', 'attandance.scan'],
+                                            'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.approver'],
+                                            'employeebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
+                                            'event' => ['event.index', 'event.lists', 'event.create', 'event.edit', 'event.delete'],
+                                            'settings' => ['settings.index', 'settings.company', 'settings.deductions', 'settings.worksdays'],
+                                        ] as $feature => $featurePermissions)
                                             <div class="card mt-3">
                                                 <div class="card-header">
-                                                    <a href="#" id="selectAll{{ ucfirst($feature) }}"
-                                                        class="card-title">Fitur {{ ucfirst($feature) }}</a>
+                                                    <a href="#" id="selectAll{{ ucfirst($feature) }}" class="card-title">Fitur {{ ucfirst($feature) }}</a>
                                                 </div>
                                                 <div class="card-body">
                                                     @foreach ($permissions->whereIn('name', $featurePermissions) as $permission)
@@ -160,21 +135,18 @@
                                         @endforeach
                                     </div>
 
-
                                     <div class="form-group">
                                         <label for="status">Status</label>
                                         <select name="status" class="form-control" id="status">
-                                            <option value="enable" {{ $role->status == 'enable' ? 'selected' : '' }}>
-                                                Enable</option>
-                                            <option value="disable" {{ $role->status == 'disable' ? 'selected' : '' }}>
-                                                Disable</option>
+                                            <option value="enable" {{ $role->status == 'enable' ? 'selected' : '' }}>Enable</option>
+                                            <option value="disable" {{ $role->status == 'disable' ? 'selected' : '' }}>Disable</option>
                                         </select>
                                     </div>
                                 </div>
 
                                 <div class="card-footer">
                                     <a href="{{ route('role.index') }}" class="btn btn-secondary">Back</a>
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="submit" id="saveButton" class="btn btn-primary">Save</button>
                                 </div>
                             </form>
                         </div>
@@ -184,6 +156,7 @@
         </section>
 
         <script>
+            // Select/Deselect All Permissions
             document.getElementById('selectAllPermissions').addEventListener('click', function() {
                 let checkboxes = document.querySelectorAll('.custom-control-input');
                 checkboxes.forEach(checkbox => {
@@ -191,109 +164,21 @@
                 });
             });
 
-            document.getElementById('selectAllDashboard').addEventListener('click', function(e) {
-                e.preventDefault();
-                let checkboxes = document.querySelectorAll('.dashboard-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = !checkbox.checked;
-                });
-            });
+            // Add event listeners for each feature select all
+            const features = [
+                'dashboard', 'role', 'user', 'employee', 'payroll', 'recruitment', 'attandance', 
+                'offrequest', 'employeebook', 'event', 'settings'
+            ];
 
-            document.getElementById('selectAllRole').addEventListener('click', function(e) {
-                e.preventDefault();
-                let checkboxes = document.querySelectorAll('.role-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = !checkbox.checked;
-                });
-            });
-
-            document.getElementById('selectAllUser').addEventListener('click', function(e) {
-                e.preventDefault();
-                let checkboxes = document.querySelectorAll('.user-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = !checkbox.checked;
-                });
-            });
-
-            // Event listener untuk fitur Company
-            document.getElementById('selectAllCompany').addEventListener('click', function(e) {
-                e.preventDefault();
-                let checkboxes = document.querySelectorAll('.company-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = !checkbox.checked;
-                });
-            });
-
-            // Event listener untuk fitur Employee
-            document.getElementById('selectAllEmployee').addEventListener('click', function(e) {
-                e.preventDefault();
-                let checkboxes = document.querySelectorAll('.employee-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = !checkbox.checked;
-                });
-            });
-
-            // Event listener untuk fitur Payroll
-            document.getElementById('selectAllPayroll').addEventListener('click', function(e) {
-                e.preventDefault();
-                let checkboxes = document.querySelectorAll('.payroll-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = !checkbox.checked;
-                });
-            });
-
-            // Event listener untuk fitur Recruitment
-            document.getElementById('selectAllRecruitment').addEventListener('click', function(e) {
-                e.preventDefault();
-                let checkboxes = document.querySelectorAll('.recruitment-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = !checkbox.checked;
-                });
-            });
-
-            // Event listener untuk fitur Attandance
-            document.getElementById('selectAllAttandance').addEventListener('click', function(e) {
-                e.preventDefault();
-                let checkboxes = document.querySelectorAll('.attandance-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = !checkbox.checked;
-                });
-            });
-
-            // Event listener untuk fitur Offrequest
-            document.getElementById('selectAllOffrequest').addEventListener('click', function(e) {
-                e.preventDefault();
-                let checkboxes = document.querySelectorAll('.offrequest-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = !checkbox.checked;
-                });
-            });
-
-            // Event listener untuk fitur employebbok
-            document.getElementById('selectAllEmployeebook').addEventListener('click', function(e) {
-                e.preventDefault();
-                let checkboxes = document.querySelectorAll('.employeebook-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = !checkbox.checked;
-                });
-            });
-
-            // Event listener untuk fitur Event
-            document.getElementById('selectEvent').addEventListener('click', function(e) {
-                e.preventDefault();
-                let checkboxes = document.querySelectorAll('.event-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = !checkbox.checked;
-                });
-            });
-
-            // Event listener untuk fitur setting
-            document.getElementById('selectAllSetting').addEventListener('click', function(e) {
-                e.preventDefault();
-                let checkboxes = document.querySelectorAll('.setting-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = !checkbox.checked;
-                });
+            features.forEach(feature => {
+                document.getElementById(`selectAll${feature.charAt(0).toUpperCase() + feature.slice(1)}`)
+                    .addEventListener('click', function(e) {
+                        e.preventDefault();
+                        let checkboxes = document.querySelectorAll(`.${feature}-checkbox`);
+                        checkboxes.forEach(checkbox => {
+                            checkbox.checked = !checkbox.checked;
+                        });
+                    });
             });
         </script>
     </div>

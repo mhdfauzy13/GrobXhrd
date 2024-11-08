@@ -6,7 +6,7 @@
             <div class="card-header">
                 <h3 class="card-title">Company Settings</h3>
             </div>
-
+            <!-- Card untuk form company name -->
             <div class="card-body">
                 <form
                     action="{{ isset($companyname) ? route('settings.update', $companyname->id) : route('settings.store') }}"
@@ -56,14 +56,14 @@
                     @csrf
 
                     <div class="form-group mb-4">
-                        <label for="late_deduction" class="form-label">Late Deduction</label>
+                        <label for="late_deduction" class="form-label">Late Check-in Deduction</label>
                         <input type="text" class="form-control" name="late_deduction" id="late_deduction"
                             value="{{ isset($salaryDeduction) ? number_format($salaryDeduction->late_deduction, 0, ',', '.') : '' }}"
                             required onkeyup="formatNumber(this)">
                     </div>
 
                     <div class="form-group mb-4">
-                        <label for="early_deduction" class="form-label">Early Deduction</label>
+                        <label for="early_deduction" class="form-label">Early Check-out Deduction</label>
                         <input type="text" class="form-control" name="early_deduction" id="early_deduction"
                             value="{{ isset($salaryDeduction) ? number_format($salaryDeduction->early_deduction, 0, ',', '.') : '' }}"
                             required onkeyup="formatNumber(this)">
@@ -95,7 +95,7 @@
                         </div>
                     @endforeach
 
-                    <button type="submit" class="btn btn-primary mt-3">Update Workdays</button>
+                    <button type="submit" class="btn btn-primary mt-3">Save</button>
                 </form>
             </div>
 

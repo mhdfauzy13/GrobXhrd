@@ -41,14 +41,17 @@ class DataUserController extends Controller
             'password' => 'required|min:8|confirmed',
         ]);
 
+        // Membuat user baru
         $user = User::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
         ]);
 
+        // Menetapkan role untuk user
         $user->assignRole($request->input('role'));
 
+        // Redirect kembali dengan session success
         return redirect()->route('datauser.index')->with('success', 'Akun berhasil dibuat');
     }
 

@@ -27,7 +27,7 @@ class Employee extends Model
         'check_out_time',
         'place_birth',
         'date_birth',
-        'personal_no',
+        'identity_number',
         'address',
         'current_address',
         'blood_type',

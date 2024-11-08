@@ -24,6 +24,8 @@ class AttandanceController extends Controller
     {
         $date = $request->input('date', now()->format('Y-m-d'));
         $attendances = Attandance::with('employee')->whereDate('created_at', $date)->orderBy('created_at', 'desc')->get();
+        $attendances = Attandance::paginate(15);
+
 
         return view('Superadmin.Employeedata.Attandance.index', compact('attendances', 'date'));
     }

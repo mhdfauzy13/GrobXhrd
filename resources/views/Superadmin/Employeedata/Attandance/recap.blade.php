@@ -4,7 +4,7 @@
     <section class="content">
         <div class="card shadow-sm">
             <div class="card-header bg-primary text-white py-3">
-                <h3 class="card-title">Rekap Absensi {{ $employee->first_name }} {{ $employee->last_name }}</h3>
+                <h3 class="card-title">Attendance Recap {{ $employee->first_name }} {{ $employee->last_name }}</h3>
 
                 <div class="card-tools">
                     <form method="GET" action="{{ route('attendance.recap', ['employee_id' => $employee->employee_id]) }}" class="form-inline">
@@ -19,9 +19,9 @@
                 <table class="table table-bordered table-hover" style="border-radius: 10px; overflow: hidden;">
                     <thead class="thead-dark">
                         <tr>
-                            <th>Tanggal</th>
-                            <th>Check In</th>
-                            <th>Check Out</th>
+                            <th>Date</th>
+                            <th>Check-In</th>
+                            <th>Check-Out</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -44,7 +44,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center">Tidak ada data absensi.</td>
+                                <td colspan="4" class="text-center">No attendance data .</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -52,18 +52,18 @@
 
                 <!-- Rekap Total Statistik -->
                 <div class="mt-4">
-                    <h5>Rekap Total untuk Bulan: {{ $month }}</h5>
+                    <h5>Recap Total for Month: {{ $month }}</h5>
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Total Present
                             <span class="badge badge-primary badge-pill">{{ $totalPresent }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Total Late checkin
+                            Total Late check-in
                             <span class="badge badge-warning badge-pill">{{ $totalLate }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Total Early checkout
+                            Total Early check-out
                             <span class="badge badge-info badge-pill">{{ $totalEarly }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">

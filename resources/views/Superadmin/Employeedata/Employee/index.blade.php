@@ -1,19 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- Main content -->
     <section class="content">
-
-        <!-- Default box -->
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Employee</h3>
-
                 <div class="card-tools">
                     <a href="{{ route('employee.create') }}" class="btn btn-primary" title="Create Employee">
-                        <i class="fas fa-plus"></i> Create
+                        <i class="fas fa-plus"></i> Add
                     </a>
-
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                         <i class="fas fa-minus"></i>
                     </button>
@@ -34,7 +29,6 @@
                                 <th style="width: 20%" class="text-right">Actions</th>
                             </tr>
                         </thead>
-
                         <tbody>
                             @foreach ($employees as $employee)
                                 <tr data-url="{{ route('employee.show', $employee->employee_id) }}" class="clickable-row">
@@ -47,12 +41,10 @@
                                             href="{{ route('employee.edit', $employee->employee_id) }}">
                                             <i class="fas fa-pencil-alt"></i> Edit
                                         </a>
-                                        <form method="POST"
-                                            action="{{ route('employee.destroy', $employee->employee_id) }}"
-                                            style="display:inline;">
+                                        <form method="POST" action="{{ route('employee.destroy', $employee->employee_id) }}" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">
+                                            <button type="button" class="deletebutton btn btn-danger btn-sm">
                                                 <i class="fas fa-trash"></i> Delete
                                             </button>
                                         </form>
@@ -62,7 +54,6 @@
                         </tbody>
                     </table>
                 </div>
-
                 <div class="card-footer clearfix">
                     <div class="pagination-container">
                         {{ $employees->links('vendor.pagination.adminlte') }}
@@ -71,4 +62,5 @@
             </div>
         </div>
     </section>
+
 @endsection
