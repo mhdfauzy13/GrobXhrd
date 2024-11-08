@@ -12,16 +12,32 @@ class EmployeeController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:employee.index')->only('index', 'show');
+        $this->middleware('permission:employee.index')->only('index', 'show', 'searchEmployees');
         $this->middleware('permission:employee.create')->only(['create', 'store']);
         $this->middleware('permission:employee.edit')->only(['edit', 'update']);
         $this->middleware('permission:employee.destroy')->only('destroy');
     }
-    public function index(): View
+    public function index(Request $request)
     {
-        $employees = Employee::paginate(10);
+        $search = $request->get('search');
+    
+        // Ambil data employee berdasarkan pencarian dengan urutan yang benar
+        $employees = Employee::query()
+            ->where('first_name', 'like', "%$search%")
+            ->orWhere('last_name', 'like', "%$search%")
+            ->orWhere('email', 'like', "%$search%")
+            ->orWhere('address', 'like', "%$search%")
+            ->paginate(10); // Paginasi setelah query selesai
+    
+        if ($request->ajax()) {
+            return response()->json([
+                'employees' => $employees
+            ]);
+        }
+    
         return view('Superadmin.Employeedata.Employee.index', compact('employees'));
     }
+    
 
     public function create(): View
     {
@@ -169,5 +185,23 @@ class EmployeeController extends Controller
         $employee = Employee::where('employee_id', $employee_id)->firstOrFail();
 
         return view('Superadmin.Employeedata.Employee.show', compact('employee'));
+    }
+
+
+    public function searchEmployees(Request $request)
+    {
+        $query = $request->get('query');
+        $employees = Employee::where('first_name', 'LIKE', "%{$query}%")
+            ->orWhere('last_name', 'LIKE', "%{$query}%")
+            ->orderBy('first_name')  // Mengurutkan berdasarkan first_name
+            ->get(['employee_id', 'first_name', 'last_name']); // Ambil kolom yang dibutuhkan
+
+        // Gabungkan nama depan dan nama belakang sebagai nama lengkap
+        $employees = $employees->map(function ($employee) {
+            $employee->full_name = $employee->first_name . ' ' . $employee->last_name;
+            return $employee;
+        });
+
+        return response()->json($employees);
     }
 }

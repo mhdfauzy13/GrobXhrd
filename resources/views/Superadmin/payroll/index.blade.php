@@ -8,19 +8,21 @@
                 <div class="col-md-4">
                     <form action="{{ route('payroll.index') }}" method="GET">
                         <div class="input-group">
-                            <select name="month" class="form-control">
-                                <option value="">Select Month</option>
-                                @for ($i = 1; $i <= 12; $i++)
-                                    <option value="{{ $i }}" {{ $month == $i ? 'selected' : '' }}>
-                                        {{ \Carbon\Carbon::create()->month($i)->format('F') }}
+                            <label for="month">Month:</label>
+                            <select name="month" id="month">
+                                @foreach (range(1, 12) as $m)
+                                    <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
+                                        {{ DateTime::createFromFormat('!m', $m)->format('F') }}
                                     </option>
-                                @endfor
+                                @endforeach
                             </select>
-                            <select name="year" class="form-control">
-                                <option value="">Select Year</option>
-                                @foreach (range(date('Y') - 5, date('Y')) as $yearOption)
-                                    <option value="{{ $yearOption }}" {{ $year == $yearOption ? 'selected' : '' }}>
-                                        {{ $yearOption }}
+
+                            <label for="year">Year:</label>
+                            <select name="year" id="year">
+                                @foreach (range(date('Y') - 5, date('Y')) as $y)
+                                    <!-- Menampilkan tahun dari 5 tahun lalu hingga sekarang -->
+                                    <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
+                                        {{ $y }}
                                     </option>
                                 @endforeach
                             </select>
@@ -28,7 +30,13 @@
                         </div>
                     </form>
                 </div>
+                
+            <form method="GET" action="{{ route('payroll.export') }}">
+                <button type="submit" class="btn btn-primary">Export to CSV</button>
+            </form>
             </div>
+
+
 
             <!-- Default box -->
             <div class="card">
@@ -49,45 +57,39 @@
                         <table class="table table-striped projects">
                             <thead>
                                 <tr>
-                                    <th style="width: 25%">Employee Name</th>
-                                    <th style="width: 15%" class="text-center">Total Days Worked</th>
-                                    <th style="width: 15%" class="text-center">Total Days Off</th>
-                                    <th style="width: 15%" class="text-center">Total Late Check In</th>
-                                    <th style="width: 15%" class="text-center">Total Early Check Out</th>
-                                    <th style="width: 15%" class="text-center">Effective Work Days</th>
-                                    <th style="width: 15%" class="text-center">Current Salary</th>
-                                    <th style="width: 15%" class="text-center">Total Salary</th>
-                                    <th style="width: 15%" class="text-center">Validation Status</th>
-                                    <th style="width: 15%" class="text-right">Actions</th>
+                                    <th style="width: 20%">Employee Name</th>
+                                    <th style="width: 10%" class="text-center">Total Days Worked</th>
+                                    <th style="width: 10%" class="text-center">Total Days Off</th>
+                                    <th style="width: 10%" class="text-center">Total Late Check In</th>
+                                    <th style="width: 10%" class="text-center">Total Early Check Out</th>
+                                    <th style="width: 10%" class="text-center">Effective Work Days</th>
+                                    <th style="width: 10%" class="text-center">Current Salary</th>
+                                    <th style="width: 10%" class="text-center">Overtime Pay</th>
+                                    <th style="width: 10%" class="text-center">Total Salary</th>
+                                    <th style="width: 10%" class="text-center">Validation Status</th>
                                 </tr>
                             </thead>
-
                             <tbody>
                                 @foreach ($payrolls as $payroll)
-                                    <tr>  
-                                        <td>{{ $payroll->employee->name }}</td>
-                                        <td class="text-center">{{ $payroll->days_present }}</td>
-                                        <td class="text-center">{{ $payroll->total_leave }}</td>
-                                        <td class="text-center">{{ $payroll->total_late }}</td>
-                                        <td class="text-center">{{ $payroll->total_early }}</td>
-                                        <td class="text-center">{{ $payroll->effective_work_days }}</td>
-                                        <td class="text-center">Rp {{ number_format($payroll->current_salary, 0, ',', '.') }}</td>
-                                        <td class="text-center">Rp {{ number_format($payroll->total_salary, 0, ',', '.') }}</td>
-                                        <td class="text-center">
-                                            <form method="POST" action="{{ route('payroll.validate', $payroll->id) }}">
-                                                @csrf
-                                                @method('PUT')
-                                                <select name="validation_status" class="form-select" onchange="this.form.submit()">
-                                                    <option value="not_validated" {{ $payroll->validation_status == 'not_validated' ? 'selected' : '' }}>Not Validated</option>
-                                                    <option value="validated" {{ $payroll->validation_status == 'validated' ? 'selected' : '' }}>Validated</option>
-                                                </select>
-                                            </form>
-                                        </td>
-                                        <td class="text-right">
-                                            {{-- Additional action buttons can be added here --}}
+                                    <tr>
+                                        <td>{{ $payroll->employee->first_name }} {{ $payroll->employee->last_name }}</td>
+                                        <td>{{ $payroll->attandanceRecap->total_present }}</td>
+                                        <td>{{ $payroll->attandanceRecap->total_absent }}</td>
+                                        <td>{{ $payroll->attandanceRecap->total_late }}</td>
+                                        <td>{{ $payroll->attandanceRecap->total_early }}</td>
+                                        <td>{{ $payroll->workdaySetting->monthly_workdays }}</td>
+                                        <td>{{ $payroll->employee->current_salary }}</td>
+                                        <td>{{ $payroll->overtime_pay }}</td>
+                                        <td>{{ $payroll->total_salary }}</td>
+                                        <td>
+                                            @if ($payroll->validation_status)
+                                                <button disabled>Valid</button>
+                                            @else
+                                                <button onclick="validatePayroll({{ $payroll->id }})">Validate</button>
+                                            @endif
                                         </td>
                                     </tr>
-                                @endforeach 
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

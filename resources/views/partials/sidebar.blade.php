@@ -116,7 +116,7 @@
                 <!-- Employee Data menu, only visible if user has specific permissions -->
 
                 @canany(['employee.index', 'employee.create', 'attandance.index', 'attandance.scanView',
-                    'offrequest.index', 'offrequest.create', 'offrequest.approver', 'payroll.index','payroll.create'])
+                    'offrequest.index', 'offrequest.create', 'offrequest.approver', 'payroll.index'])
 
                     <li class="nav-item">
                         <a href="#" class="nav-link">
@@ -191,23 +191,20 @@
                 @endcanany
 
                 <!-- Payroll menu, only visible if user has permission -->
-        
 
-                @canany(['payroll.index', 'payroll.create'])
-                <li class="nav-item">
-                    @can('payroll.index')
-                        <a href="{{ route('payroll.index') }}" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Payroll</p>
-                        </a>
-                    @elsecan('payroll.create')
-                        <a href="{{ route('payroll.create') }}" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Create payroll</p>
-                        </a>
-                    @endcan
-                </li>
-            @endcanany
+
+                @canany(['payroll.index'])
+                    <li class="nav-item menu-open">
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('payroll.index') }}" class="nav-link">
+                                    <i class="fas fa-book nav-icon"></i>
+                                    <p>Payroll</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcanany
 
                 <!-- Recruitment menu, only visible if user has permission -->
                 @canany(['recruitment.index', 'recruitment.create'])
@@ -244,6 +241,23 @@
 
                 @endcanany
 
+                @canany(['overtime.create'])
+
+                    <li class="nav-item menu-open">
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                @can('overtime.create')
+                                    <a href="{{ route('overtime.index') }}" class="nav-link">
+                                        <i class="fas fa-calendar nav-icon"></i>
+                                        <p>Overtime</p>
+                                    </a>
+                                @endcan
+                            </li>
+                        </ul>
+                    </li>
+
+                @endcanany
+
                 @canany(['employeebook.index'])
                     <li class="nav-item menu-open">
                         <ul class="nav nav-treeview">
@@ -258,17 +272,16 @@
                 @endcanany
 
                 @canany(['settings.index'])
-
-                <li class="nav-item menu-open">
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('settings.index') }}" class="nav-link">
-                                <i class="fas fa-cog nav-icon"></i>
-                                <p>Setting</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                    <li class="nav-item menu-open">
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('settings.index') }}" class="nav-link">
+                                    <i class="fas fa-cog nav-icon"></i>
+                                    <p>Setting</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 @endcanany
 
 

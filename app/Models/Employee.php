@@ -2,73 +2,74 @@
 
 namespace App\Models;
 
-use App\Models\Attandance; // Periksa apakah nama model benar
+use App\Models\Attandance; // Pastikan nama model sudah benar
 use App\Models\Payroll; 
+use App\Models\Overtime; // Menambahkan relasi ke model Overtime
+use App\Models\WorkdaySetting; // Menambahkan relasi ke WorkdaySetting jika diperlukan
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
 {
-    protected $table = 'employees';
+    protected $table = 'employees'; // Nama tabel
 
-    protected $primaryKey = 'employee_id';
+    protected $primaryKey = 'employee_id'; // Primary key jika berbeda dari default 'id'
 
-    protected $keyType = 'int';
+    protected $keyType = 'int'; // Tipe primary key
 
-    public $incrementing = true;
+    public $incrementing = true; // Auto increment
 
-    public $timestamps = true;
+    public $timestamps = true; // Menyimpan timestamp
 
     protected $fillable = [
-        'first_name',
-        'last_name',
-        'email',
-        'check_in_time',
-        'check_out_time',
-        'place_birth',
-        'date_birth',
-        'personal_no',
-        'address',
-        'current_address',
-        'blood_type',
-        'blood_rhesus',
-        'phone_number',
-        'hp_number',
-        'marital_status',
-        'last_education',
-        'degree',
-        'starting_date',
-        'interview_by',
-        'current_salary',
-        'insurance',
-        'serious_illness',
-        'hereditary_disease',
-        'emergency_contact',
-        'relations',
-        'emergency_number',
-        'status'
+        'first_name', 'last_name', 'email', 'check_in_time', 'check_out_time', 
+        'place_birth', 'date_birth', 'personal_no', 'address', 'current_address', 
+        'blood_type', 'blood_rhesus', 'phone_number', 'hp_number', 'marital_status', 
+        'last_education', 'degree', 'starting_date', 'interview_by', 'current_salary', 
+        'insurance', 'serious_illness', 'hereditary_disease', 'emergency_contact', 
+        'relations', 'emergency_number', 'status'
     ];
 
-    protected $hidden = [];
-    
+    protected $hidden = []; // Kolom yang tidak ingin ditampilkan (opsional)
+
     protected $casts = [
-        'insurance' => 'boolean',
-        'current_salary' => 'integer',
+        'insurance' => 'boolean', // Untuk konversi tipe data boolean
+        'current_salary' => 'decimal:2', // Untuk memastikan salary adalah tipe decimal dengan 2 desimal
     ];
 
+    // Relasi dengan Attendance
     public function attendances(): HasMany
     {
         return $this->hasMany(Attandance::class, 'employee_id', 'employee_id');
     }
 
-    public function payrolls(): HasMany // Menambahkan tipe kembalian
+    public function attendancerecaps(): HasMany
     {
-        return $this->hasMany(Payroll::class, 'employee_id', 'employee_id'); // Pastikan ada relasi yang tepat
+        return $this->hasMany(AttandanceRecap::class, 'employee_id', 'employee_id');
     }
 
-  
+    // Relasi dengan Payroll
+    public function payrolls(): HasMany
+    {
+        return $this->hasMany(Payroll::class, 'employee_id', 'employee_id');
+    }
+
+    // Relasi dengan Overtime
+    public function overtimes(): HasMany
+    {
+        return $this->hasMany(Overtime::class, 'employee_id', 'employee_id');
+    }
+
+    // Relasi dengan WorkdaySetting (Jika ada)
+    public function workdaySetting(): HasOne
+    {
+        return $this->hasOne(WorkdaySetting::class, 'employee_id', 'employee_id');
+    }
+
+    // Relasi dengan User
     public function user()
     {
-        return $this->hasOne(User::class, 'email', 'email'); // Menghubungkan berdasarkan email
+        return $this->hasOne(User::class, 'email', 'email');
     }
 }

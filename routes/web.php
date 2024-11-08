@@ -16,6 +16,7 @@ use App\Http\Controllers\ProfileController;
 use App\Notifications\LeaveRequestNotification;
 use App\Http\Controllers\Superadmin\EmployeeBookController;
 use App\Http\Controllers\Superadmin\EmployeeBooksController;
+use App\Http\Controllers\Superadmin\OvertimeController;
 use App\Http\Controllers\Superadmin\SettingController;
 
 Route::get('/', function () {
@@ -80,31 +81,42 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('attendance.recap')
             ->middleware('permission:attandance.index');
 
+        //overtime
+        // Menampilkan daftar overtime
+        Route::get('/overtime', [OvertimeController::class, 'index'])
+            ->name('overtime.index')
+            ->middleware('permission:overtime.create');
+
+
+        Route::get('/overtime/create', [OvertimeController::class, 'create'])
+            ->name('overtime.create')
+            ->middleware('permission:overtime.create');
+
+        Route::post('/overtime', [OvertimeController::class, 'store'])
+            ->name('overtime.store')
+            ->middleware('permission:overtime.create');
+
+
+
+
         // Payroll
         Route::get('/payrolls', [PayrollController::class, 'index'])
             ->name('payroll.index')
             ->middleware('permission:payroll.index');
 
-        Route::get('/payrolls/create', [PayrollController::class, 'create'])
-            ->name('payroll.create')
-            ->middleware('permission:payroll.create');
+        Route::post('/payroll/{id}/validate', [PayrollController::class, 'validatePayroll'])
+            ->name('payroll.validate')
+            ->middleware('permission:payroll.index');
 
-        Route::get('/payroll/calculate', [PayrollController::class, 'calculatePayroll'])
-        ->name('payroll.calculate')
-        ->middleware('permission:payroll.index');
 
-        Route::post('/payroll/validate/{employee_id}', [PayrollController::class, 'validatePayroll'])
-        ->name('payroll.validate')
-        ->middleware('permission:payroll.index');
+        Route::get('/payroll/export', [PayrollController::class, 'exportToCsv'])
+            ->name('payroll.export')
+            ->middleware('permission:payroll.index');
 
 
 
 
 
-        // Menghapus payroll
-        Route::delete('/payrolls/{id}', [PayrollController::class, 'destroy'])
-            ->name('payroll.destroy')
-            ->middleware('permission:payroll.delete');
 
         // event
         Route::get('/events', [EventController::class, 'index'])
@@ -213,6 +225,8 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('employee.show')
             ->middleware('permission:employee.index');
 
+
+
         // Setting
         Route::get('settings', [SettingController::class, 'index'])
             ->name('settings.index')
@@ -229,7 +243,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::post('/settings/salary-deductions', [SettingController::class, 'salarydeductions'])
             ->name('settings.salarydeductions')
             ->middleware('permission:settings.deductions');
-            
+
         Route::post('/settings/update-workdays', [SettingController::class, 'updateWorkdays'])
             ->name('settings.updateWorkdays')
             ->middleware('permission:settings.worksdays');

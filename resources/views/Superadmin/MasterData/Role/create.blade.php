@@ -134,6 +134,7 @@
             'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.store', 'offrequest.approver'],
             'employeebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
             'event' => ['event.index', 'events.list', 'event.create', 'event.edit', 'event.delete'],
+            'overtime' => ['overtime.create'],
             'setting' => ['settings.index',  'settings.company',  'settings.deductions', 'settings.worksdays'],
 
         ] as $feature => $featurePermissions)
@@ -282,6 +283,15 @@
         document.getElementById('selectAllEvent').addEventListener('click', function(e) {
             e.preventDefault();
             let checkboxes = document.querySelectorAll('.event-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !checkbox.checked;
+            });
+        });
+
+        // Event listener untuk fitur overtime
+        document.getElementById('selectAllOvertime').addEventListener('click', function(e) {
+            e.preventDefault();
+            let checkboxes = document.querySelectorAll('.overtime-checkbox');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = !checkbox.checked;
             });
