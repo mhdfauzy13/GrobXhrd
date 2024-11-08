@@ -66,9 +66,14 @@ class Employee extends Model
         return $this->hasMany(Payroll::class, 'employee_id', 'employee_id'); // Pastikan ada relasi yang tepat
     }
 
-  
     public function user()
     {
         return $this->hasOne(User::class, 'email', 'email'); // Menghubungkan berdasarkan email
     }
+
+    public function offrequests()
+    {
+    return $this->hasMany(Offrequest::class, 'user_id', 'user_id');
+    }   
+
 }

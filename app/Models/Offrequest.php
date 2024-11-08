@@ -3,28 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Builder;
 class Offrequest extends Model
 {
-
     protected $table = 'offrequests';
     protected $primaryKey = 'offrequest_id'; // Ganti dengan nama kolom primary key yang benar
     public $incrementing = false; // Jika primary key tidak auto increment, set ke false
     protected $keyType = 'string';
-    protected $fillable = [
-        'name',
-        'email',
-        'title',
-        'description',
-        'start_event',
-        'end_event',
-        'user_id',
-        'manager_id',
-        'status',
-        'approver_id',
-        'image', 
-
-    ];
+    protected $fillable = ['name', 'email', 'title', 'description', 'start_event', 'end_event', 'user_id', 'manager_id', 'status', 'approver_id', 'image'];
 
     protected $casts = [
         'start_event' => 'datetime',
@@ -35,7 +21,7 @@ class Offrequest extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    
+
     public function employee()
     {
         return $this->belongsTo(Employee::class, 'employee_id');
@@ -51,7 +37,6 @@ class Offrequest extends Model
         return $this->belongsTo(User::class, 'approver_id');
     }
 
-
     // Menyaring offrequest yang masih pending
     public function scopePending($query)
     {
@@ -62,5 +47,10 @@ class Offrequest extends Model
     public function scopeForManager($query, $managerId)
     {
         return $query->where('manager_id', $managerId);
+    }
+
+    public function scopeIsOnLeave(Builder $query, $employeeId, $date): Builder
+    {
+        return $query->where('user_id', $employeeId)->where('status', 'approved')->whereDate('start_event', '<=', $date)->whereDate('end_event', '>=', $date);
     }
 }

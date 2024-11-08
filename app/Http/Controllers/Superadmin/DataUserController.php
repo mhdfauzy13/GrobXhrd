@@ -71,7 +71,7 @@ class DataUserController extends Controller
 
     public function update(Request $request, $userId)
     {
-        $user = User::findOrFail($userId); // Perbaikan: Menggunakan findOrFail
+        $user = User::findOrFail($userId); 
 
         $request->validate([
             'name' => 'required|string',
@@ -80,7 +80,6 @@ class DataUserController extends Controller
             'password' => 'nullable|min:8|confirmed',
         ]);
 
-        // Mengupdate name dan email jika tidak terhubung dengan employee
         if (!$user->employee()->exists()) {
             $user->name = $request->input('name');
             $user->email = $request->input('email');
@@ -91,9 +90,8 @@ class DataUserController extends Controller
         }
 
         $user->save();
-        $user->syncRoles($request->input('role')); // Memastikan role diperbarui secara konsisten
+        $user->syncRoles($request->input('role')); 
 
-        // Perbarui `user_id` di tabel employee jika ada relasi
         if ($user->employee()->exists()) {
             $user->employee()->update(['user_id' => $user->user_id]);
         }

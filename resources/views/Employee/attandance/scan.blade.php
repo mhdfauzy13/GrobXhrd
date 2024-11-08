@@ -70,17 +70,33 @@
                 </div>
                 <div class="card-body">
                     <div id="alert-container"></div>
-                    <div id="camera-container">
-                        <video id="video" autoplay></video>
-                        <div id="my_camera" style="display: none;"></div>
-                    </div>
-                    <canvas id="canvas" style="display: none;"></canvas>
-                    <div class="button-container">
-                        <button id="btn-checkin" onclick="takeSnapshot('checkin')"
-                            class="btn btn-dark btn-checkin">Capture Image</button>
-                        <button id="btn-checkout" onclick="takeSnapshot('checkout')"
-                            class="btn btn-dark btn-checkout">Capture Image</button>
-                    </div>
+
+                    <!-- Jika karyawan sedang cuti, tampilkan alert -->
+                    @if (isset($onLeave) && $onLeave)
+                        <div class="alert alert-warning text-center">
+                            You are on leave today.
+                        </div>
+                        <!-- Sembunyikan tombol check-in dan check-out jika cuti -->
+                        <script>
+                            document.getElementById('btn-checkin').style.display = 'none';
+                            document.getElementById('btn-checkout').style.display = 'none';
+                        </script>
+                    @else
+                        <div id="camera-container">
+                            <video id="video" autoplay></video>
+                            <div id="my_camera" style="display: none;"></div>
+                        </div>
+                        <canvas id="canvas" style="display: none;"></canvas>
+                        <div class="button-container">
+                            <button id="btn-checkin" onclick="takeSnapshot('checkin')" class="btn btn-dark btn-checkin">
+                                Capture Image
+                            </button>
+                            <button id="btn-checkout" onclick="takeSnapshot('checkout')"
+                                class="btn btn-dark btn-checkout">
+                                Capture Image
+                            </button>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -95,9 +111,17 @@
         const btnCheckOut = document.getElementById('btn-checkout');
 
         let attendanceStatus = {
-            isCheckIn: {{ json_encode($hasCheckedIn) }},
-            isCheckOut: {{ json_encode($hasCheckedOut) }}
+            isCheckIn: {!! isset($hasCheckedIn) ? json_encode($hasCheckedIn) : 'false' !!},
+            isCheckOut: {!! isset($hasCheckedOut) ? json_encode($hasCheckedOut) : 'false' !!},
         };
+
+        // Menambahkan pengecekan untuk onLeave
+        if ({!! json_encode($onLeave) !!}) {
+            alertContainer.innerHTML =
+                '<div class="alert alert-warning text-center" role="alert">You are on leave today!</div>';
+            btnCheckIn.style.display = 'none';
+            btnCheckOut.style.display = 'none';
+        }
 
         // Fungsi untuk memperbarui visibilitas tombol
         function updateButtonVisibility() {

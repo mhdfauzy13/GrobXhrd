@@ -85,7 +85,7 @@ class OffemployeeController extends Controller
 
         // Simpan data ke database
         $offrequest = new Offrequest();
-        $offrequest->user_id = $user->user_id; // pastikan menggunakan 'id' bukan 'user_id' jika itu primary key
+        $offrequest->user_id = $user->user_id;
         $offrequest->name = $user->name;
         $offrequest->email = $user->email;
         $offrequest->manager_id = $request->manager_id;
@@ -133,6 +133,7 @@ class OffemployeeController extends Controller
         $offrequest->approver_id = auth()->user()->user_id;
         $offrequest->save();
 
+        // Mengirim notifikasi email ke pengguna
         Mail::to($offrequest->user->email)->send(new OffrequestStatusMail($offrequest, 'approved'));
 
         return redirect()->route('offrequest.approver')->with('success', 'Off request approved successfully.');

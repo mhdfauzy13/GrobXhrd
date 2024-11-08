@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Employee;
 use App\Models\Attandance;
 use App\Models\AttandanceRecap;
+use App\Models\Offrequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,9 +24,7 @@ class AttandanceController extends Controller
     public function index(Request $request)
     {
         $date = $request->input('date', now()->format('Y-m-d'));
-        $attendances = Attandance::with('employee')->whereDate('created_at', $date)->orderBy('created_at', 'desc')->get();
-        $attendances = Attandance::paginate(15);
-
+        $attendances = Attandance::with('employee')->whereDate('created_at', $date)->orderBy('created_at', 'desc')->paginate(15); // Hapus duplikasi query
 
         return view('Superadmin.Employeedata.Attandance.index', compact('attendances', 'date'));
     }
@@ -35,15 +34,20 @@ class AttandanceController extends Controller
         $employee = Employee::where('user_id', Auth::id())->first();
         $today = now()->format('Y-m-d');
 
-        // Ambil data absensi karyawan untuk hari ini dari database
-        $attendance = $employee->attendances()->whereDate('created_at', $today)->first();
+        // Periksa apakah karyawan sedang cuti untuk hari ini
+        $onLeave = Offrequest::where('user_id', Auth::id())->where('status', 'approved')->whereDate('start_event', '<=', $today)->whereDate('end_event', '>=', $today)->exists();
 
-        // Tentukan apakah karyawan sudah check-in dan check-out
+        if ($onLeave) {
+            // Jika karyawan sedang cuti, langsung kirimkan status cuti
+            return view('Employee.attandance.scan', ['onLeave' => true]);
+        }
+
+        // Ambil data absensi karyawan untuk hari ini
+        $attendance = $employee->attendances()->whereDate('created_at', $today)->first();
         $hasCheckedIn = $attendance && $attendance->check_in;
         $hasCheckedOut = $attendance && $attendance->check_out;
 
-        // Kirim status check-in/check-out dan data absensi ke view
-        return view('Employee.attandance.scan', compact('hasCheckedIn', 'hasCheckedOut', 'attendance'));
+        return view('Employee.attandance.scan', compact('hasCheckedIn', 'hasCheckedOut', 'attendance', 'onLeave'));
     }
 
     // Fungsi untuk Check-in
@@ -58,12 +62,18 @@ class AttandanceController extends Controller
             return response()->json(['success' => false, 'message' => 'Employee not found']);
         }
 
+        // Periksa apakah karyawan sedang cuti
         $today = now()->format('Y-m-d');
+        $onLeave = Offrequest::where('user_id', Auth::id())->where('status', 'approved')->whereDate('start_event', '<=', $today)->whereDate('end_event', '>=', $today)->exists();
+
+        if ($onLeave) {
+            return response()->json(['success' => false, 'message' => 'You are on leave today']);
+        }
         $attendance = $employee->attendances()->whereDate('created_at', $today)->first();
 
         // Jika sudah check-in, tidak perlu check-in lagi
         if ($attendance && $attendance->check_in) {
-            return response()->json(['success' => false, 'message' => 'Anda sudah absen hari ini']);
+            return response()->json(['success' => false, 'message' => 'You are already absent today']);
         }
 
         // Simpan gambar yang diupload
@@ -100,6 +110,7 @@ class AttandanceController extends Controller
     }
 
     // Fungsi untuk Check-out
+
     public function checkOut(Request $request)
     {
         $request->validate([
@@ -111,7 +122,13 @@ class AttandanceController extends Controller
             return response()->json(['success' => false, 'message' => 'Employee not found']);
         }
 
+        // Periksa apakah karyawan sedang cuti
         $today = now()->format('Y-m-d');
+        $onLeave = Offrequest::where('user_id', Auth::id())->where('status', 'approved')->whereDate('start_event', '<=', $today)->whereDate('end_event', '>=', $today)->exists();
+
+        if ($onLeave) {
+            return response()->json(['success' => false, 'message' => 'You are on leave today']);
+        }
         $attendance = $employee->attendances()->whereDate('created_at', $today)->first();
 
         // Jika belum check-in atau sudah check-out, tampilkan pesan yang sesuai
@@ -119,7 +136,7 @@ class AttandanceController extends Controller
             return response()->json(['success' => false, 'message' => 'Anda belum check-in hari ini']);
         }
         if ($attendance->check_out) {
-            return response()->json(['success' => false, 'message' => 'Anda sudah absen hari ini']);
+            return response()->json(['success' => false, 'message' => 'You are already absent today']);
         }
 
         // Cek apakah sudah mencapai waktu check-out yang dijadwalkan
