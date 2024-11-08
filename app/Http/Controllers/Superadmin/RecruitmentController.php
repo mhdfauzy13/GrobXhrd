@@ -16,11 +16,10 @@ class RecruitmentController extends Controller
         $this->middleware('permission:recruitment.edit')->only(['edit', 'update']);
         $this->middleware('permission:recruitment.delete')->only('destroy');
     }
+
     public function index()
     {
-        $recruitments = Recruitment::all();
         $recruitments = Recruitment::paginate(10);
-
         return view('superadmin.recruitment.index', compact('recruitments'));
     }
 
@@ -31,16 +30,16 @@ class RecruitmentController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string',
-            'email' => 'required|email|unique:recruitments,email|min:8',
+            'email' => 'required|email',
             'phone_number' => 'required|string',
             'date_of_birth' => 'required|date',
-            'last_education' => 'required|string',
+            'last_education' => 'required|string|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelor’s Degree,Master’s Degree,Doctoral Degree',
             'last_position' => 'required|string',
-            'cv_file' => 'required|file|mimes:pdf,doc,docx|max:2048',
-            'comment' => 'nullable|string',
-            'status' => 'required|in:accepted,rejected',
+            'apply_position' => 'required|string',
+            'cv_file' => 'required|file',
+            'status' => 'required|string',
         ]);
 
         Recruitment::create([
@@ -50,6 +49,7 @@ class RecruitmentController extends Controller
             'date_of_birth' => $request->input('date_of_birth'),
             'last_education' => $request->input('last_education'),
             'last_position' => $request->input('last_position'),
+            'apply_position' => $request->input('apply_position'), // Menyimpan data apply position
             'cv_file' => $request->file('cv_file')->store('cv_files', 'public'),
             'comment' => $request->input('comment'),
             'status' => $request->input('status'),
@@ -66,34 +66,29 @@ class RecruitmentController extends Controller
 
     public function update(Request $request, $recruitment_id)
     {
-        // Validasi custom untuk memastikan email unik
-        $count = Recruitment::where('email', $request->input('email'))->where('recruitment_id', '<>', $recruitment_id)->count();
+        $recruitment = Recruitment::findOrFail($recruitment_id);
 
-        if ($count > 0) {
-            return redirect()->back()->withErrors('Email sudah digunakan.');
-        }
-
-        // Validasi form lainnya
-        $request->validate([
-            'name' => 'required|string',
-            'email' => ['required', 'email', \Illuminate\Validation\Rule::unique('recruitments', 'email')->ignore($recruitment_id, 'recruitment_id')],
-            'phone_number' => 'required|string',
-            'date_of_birth' => 'required|date',
-            'last_education' => 'required|string',
-            'last_position' => 'required|string',
-            'cv_file' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-            'comment' => 'nullable|string',
-            'status' => 'required|in:accepted,rejected',
+        $validated = $request->validate([
+            'name' => 'nullable|string',
+            'email' => 'nullable|email|unique:recruitments,email,' . $recruitment_id . ',recruitment_id|min:8',
+            'phone_number' => 'nullable|string',
+            'date_of_birth' => 'nullable|date',
+            'last_education' => 'nullable|string|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelor’s Degree,Master’s Degree,Doctoral Degree',
+            'last_position' => 'nullable|string',
+            'apply_position' => 'nullable|string',
+            'cv_file' => 'nullable|file|mimes:pdf,doc,docx|max:2048', // Validasi untuk file jika ada
+            'status' => 'nullable|string|in:Initial Interview,User Interview 1,User Interview 2,Background Check,Offering letter,Accept,Decline',
         ]);
 
-        // Proses update data
-        $recruitment = Recruitment::findOrFail($recruitment_id);
-        $recruitment->name = $request->input('name');
-        $recruitment->email = $request->input('email');
-        $recruitment->phone_number = $request->input('phone_number');
-        $recruitment->date_of_birth = $request->input('date_of_birth');
-        $recruitment->last_education = $request->input('last_education');
-        $recruitment->last_position = $request->input('last_position');
+        // Update data recruitment dengan validasi yang sudah dilakukan
+        $recruitment->name = $validated['name'] ?? $recruitment->name;
+        $recruitment->email = $validated['email'] ?? $recruitment->email;
+        $recruitment->phone_number = $validated['phone_number'] ?? $recruitment->phone_number;
+        $recruitment->date_of_birth = $validated['date_of_birth'] ?? $recruitment->date_of_birth;
+        $recruitment->last_education = $validated['last_education'] ?? $recruitment->last_education;
+        $recruitment->last_position = $validated['last_position'] ?? $recruitment->last_position;
+        $recruitment->apply_position = $validated['apply_position'] ?? $recruitment->apply_position;
+        $recruitment->status = $validated['status'] ?? $recruitment->status;
 
         if ($request->hasFile('cv_file')) {
             if ($recruitment->cv_file) {
@@ -102,12 +97,11 @@ class RecruitmentController extends Controller
             $recruitment->cv_file = $request->file('cv_file')->store('cv_files', 'public');
         }
 
-        $recruitment->comment = $request->input('comment');
-        $recruitment->status = $request->input('status');
         $recruitment->save();
 
-        return redirect()->route('recruitment.index')->with('success', 'Recruitment successfully updated');
+        return redirect()->route('recruitment.index')->with('success', 'Recruitment updated successfully');
     }
+
 
     public function destroy($recruitment_id)
     {

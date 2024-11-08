@@ -13,6 +13,8 @@ class Recruitment extends Model
 
     protected $primaryKey = 'recruitment_id';
     public $incrementing = true;
+
+    // Menambahkan 'apply_position' ke dalam $fillable
     protected $fillable = [
         'name',
         'email',
@@ -20,6 +22,7 @@ class Recruitment extends Model
         'date_of_birth',
         'last_education',
         'last_position',
+        'apply_position', // Menambahkan kolom apply_position
         'cv_file',
         'comment',
         'status',

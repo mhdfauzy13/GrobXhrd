@@ -16,12 +16,25 @@ class CreateRecruitmentsTable extends Migration
             $table->date('date_of_birth');
             $table->string('last_education');
             $table->string('last_position');
+            $table->string('apply_position'); // Field baru
             $table->string('cv_file');
             $table->text('comment')->nullable();
-            $table->enum('status', ['accepted', 'rejected'])->default('accepted'); // Ubah status di sini
+
+            // Status enum yang sudah ada
+            $table->enum('status', [
+                'Initial Interview',
+                'User Interview 1',
+                'User Interview 2',
+                'Background Check',
+                'Offering letter',
+                'Accept',
+                'Decline'
+            ])->default('Initial Interview');
+
             $table->timestamps();
         });
     }
+
 
     public function down()
     {

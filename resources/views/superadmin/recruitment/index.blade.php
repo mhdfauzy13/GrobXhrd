@@ -7,7 +7,7 @@
                 <h3 class="card-title">Recruitment List</h3>
                 <div class="card-tools">
                     <a class="btn btn-primary btn-sm" href="{{ route('recruitment.create') }}">
-                        <i class="fas fa-plus"></i> Create
+                        <i class="fas fa-plus"></i> Add
                     </a>
                 </div>
             </div>
@@ -22,6 +22,7 @@
                                 <th>Date of Birth</th>
                                 <th>Last Education</th>
                                 <th>Last Position</th>
+                                <th>Apply Position</th>
                                 <th>CV File</th>
                                 <th>Comment</th>
                                 <th class="text-center">Status</th>
@@ -37,16 +38,32 @@
                                     <td>{{ $recruitment->date_of_birth }}</td>
                                     <td>{{ $recruitment->last_education }}</td>
                                     <td>{{ $recruitment->last_position }}</td>
+                                    <td>{{ $recruitment->apply_position }}</td>
                                     <td>
                                         <a href="{{ Storage::url($recruitment->cv_file) }}" target="_blank">Download CV</a>
                                     </td>
                                     <td>{{ $recruitment->comment }}</td>
                                     <td class="project-state">
                                         <span
-                                            class="badge badge-{{ $recruitment->status == 'accepted' ? 'success' : 'danger' }}">
-                                            {{ $recruitment->status == 'accepted' ? 'Accepted' : 'Rejected' }}
+                                            class="badge badge-{{ $recruitment->status == 'Accept'
+                                                ? 'success'
+                                                : ($recruitment->status == 'Decline'
+                                                    ? 'danger'
+                                                    : ($recruitment->status == 'Initial Interview'
+                                                        ? 'primary'
+                                                        : ($recruitment->status == 'User Interview 1'
+                                                            ? 'info'
+                                                            : ($recruitment->status == 'User Interview 2'
+                                                                ? 'secondary'
+                                                                : ($recruitment->status == 'Background Check'
+                                                                    ? 'warning'
+                                                                    : ($recruitment->status == 'Offering Letter'
+                                                                        ? 'dark'
+                                                                        : 'light')))))) }}">
+                                            {{ $recruitment->status }}
                                         </span>
                                     </td>
+
                                     <td class="project-actions text-right">
                                         <a class="btn btn-info btn-sm"
                                             href="{{ route('recruitment.edit', $recruitment->recruitment_id) }}">
