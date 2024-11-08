@@ -41,7 +41,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'employee.index',
             'employee.create',
             'employee.edit',
-            'employee.destroy',
+            'employee.delete',
             'employee.show',
 
             // Permission terkait Payroll
@@ -65,13 +65,11 @@ class RolesAndPermissionsSeeder extends Seeder
             // Permission terkait Offrequest
             'offrequest.index',
             'offrequest.create',
-            'offrequest.store',
             'offrequest.approver',
-            'offrequest.reject',
 
             //event
             'event.index',
-            'events.list',
+            'event.lists',
             'event.create',
             'event.edit',
             'event.delete',

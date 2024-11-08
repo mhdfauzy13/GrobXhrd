@@ -6,7 +6,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-xl-6">
-                        <h1>Create User</h1>
+                        <h1>Add User</h1>
                     </div>
                 </div>
             </div>
@@ -19,7 +19,7 @@
                         {{-- <h3 class="card-title">Create</h3> --}}
                     </div>
 
-                    <form action="{{ route('datauser.store') }}" method="POST">
+                    <form action="{{ route('datauser.store') }}" method="POST" id="userForm">
                         @csrf
                         <div class="card-body">
                             <div class="form-group">
@@ -31,7 +31,6 @@
                                 <label for="email">Email</label>
                                 <input type="email" name="email" id="email" class="form-control" required>
                             </div>
-
 
                             <div class="form-group">
                                 <label for="role">Role</label>
@@ -65,11 +64,28 @@
                         </div>
 
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
                         </div>
                     </form>
                 </div>
             </div>
         </section>
     </div>
+
+
+    <script>
+        document.getElementById('saveBtn').addEventListener('click', function(event) {
+            event.preventDefault();
+            Swal.fire({
+                position: 'top-center',
+                icon: 'success',
+                title: 'Your work has been saved',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(function() {
+                // Submit form setelah alert selesai
+                document.getElementById('userForm').submit();
+            });
+        });
+    </script>
 @endsection

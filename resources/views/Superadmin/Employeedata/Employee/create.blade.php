@@ -6,7 +6,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-xl-6">
-                        <h1>Create Employee</h1>
+                        <h1>Add Employee</h1>
                     </div>
                 </div>
             </div>
@@ -21,6 +21,7 @@
 
                     <form action="{{ route('employee.store') }}" method="POST">
                         @csrf
+
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6">
@@ -42,11 +43,13 @@
 
                                     <div class="form-group">
                                         <label>Time Check-In</label>
-                                        <input type="time" name="check_in_time" class="form-control" required>
+                                        <input type="time" name="check_in_time" class="form-control" required
+                                            value="10:00">
                                     </div>
                                     <div class="form-group">
                                         <label>Time Check-Out</label>
-                                        <input type="time" name="check_out_time" class="form-control" required>
+                                        <input type="time" name="check_out_time" class="form-control" required
+                                            value="17:00">
                                     </div>
 
 
@@ -62,8 +65,9 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="personal_no">Personal Number</label>
-                                        <input type="number" name="personal_no" id="personal_no" class="form-control">
+                                        <label for="identity_number">Identity Number</label>
+                                        <input type="text" name="identity_number" id="identity_number"
+                                            class="form-control">
                                     </div>
 
                                     <div class="form-group">
@@ -109,10 +113,10 @@
                                         <label for="marital_status">Marital Status</label>
                                         <select name="marital_status" id="marital_status" class="form-control">
                                             <option value="">Select</option>
-                                            <option value="single">Single</option>
-                                            <option value="married">Married</option>
-                                            <option value="widow">Widow</option>
-                                            <option value="widower">Widower</option>
+                                            <option value="Single">Single</option>
+                                            <option value="Married">Married</option>
+                                            <option value="Widow">Widow</option>
+                                            <option value="Widower">Widower</option>
                                         </select>
                                     </div>
 
@@ -120,16 +124,16 @@
                                         <label for="last_education">Last Education</label>
                                         <select name="last_education" id="last_education" class="form-control">
                                             <option value="">Select</option>
-                                            <option value="SD">SD</option>
-                                            <option value="SMP">SMP</option>
-                                            <option value="SMA">SMA</option>
-                                            <option value="SMK">SMK</option>
-                                            <option value="D1">D1</option>
-                                            <option value="D2">D2</option>
-                                            <option value="D3">D3</option>
-                                            <option value="S1">S1</option>
-                                            <option value="S2">S2</option>
-                                            <option value="S3">S3</option>
+                                            <option value="Elementary School">Elementary School</option>
+                                            <option value="Junior High School">Junior High School</option>
+                                            <option value="Senior High School">Senior High School</option>
+                                            <option value="Vocational High School">Vocational High School</option>
+                                            <option value="Associate Degree 1">Associate Degree 1</option>
+                                            <option value="Associate Degree 2">Associate Degree 2</option>
+                                            <option value="Associate Degree 3">Associate Degree 3</option>
+                                            <option value="Bachelors Degree">Bachelors Degree</option>
+                                            <option value="Masters Degree">Masters Degree</option>
+                                            <option value="Doctoral Degree">Doctoral Degree</option>
                                         </select>
                                     </div>
 
@@ -184,7 +188,14 @@
 
                                     <div class="form-group">
                                         <label for="relations">Relations</label>
-                                        <input type="text" name="relations" id="relations" class="form-control">
+                                        <select name="relations" id="relations" class="form-control">
+                                            <option value="">Select</option>
+                                            <option value="Parent">Parent</option>
+                                            <option value="Guardian">Guardian</option>
+                                            <option value="Husband">Husband</option>
+                                            <option value="Wife">Wife</option>
+                                            <option value="Sibling">Sibling</option>
+                                        </select>
                                     </div>
 
                                     <div class="form-group">
@@ -197,8 +208,8 @@
                                         <label for="status">Status</label>
                                         <select name="status" id="status" class="form-control">
                                             <option value="">Select</option>
-                                            <option value="active">Active</option>
-                                            <option value="inactive">Inactive</option>
+                                            <option value="Active">Active</option>
+                                            <option value="Inactive">Inactive</option>
                                         </select>
                                     </div>
                                 </div>
@@ -213,4 +224,5 @@
             </div>
         </section>
     </div>
+
 @endsection

@@ -90,16 +90,12 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->middleware('permission:payroll.create');
 
         Route::get('/payroll/calculate', [PayrollController::class, 'calculatePayroll'])
-        ->name('payroll.calculate')
-        ->middleware('permission:payroll.index');
+            ->name('payroll.calculate')
+            ->middleware('permission:payroll.index');
 
         Route::post('/payroll/validate/{employee_id}', [PayrollController::class, 'validatePayroll'])
-        ->name('payroll.validate')
-        ->middleware('permission:payroll.index');
-
-
-
-
+            ->name('payroll.validate')
+            ->middleware('permission:payroll.index');
 
         // Menghapus payroll
         Route::delete('/payrolls/{id}', [PayrollController::class, 'destroy'])
@@ -110,10 +106,10 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/events', [EventController::class, 'index'])
             ->name('event.index')
             ->middleware('permission:event.index');
-        // Menampilkan form list event
+
         Route::get('events/list', [EventController::class, 'ListEvent'])
             ->name('events.list')
-            ->middleware('permission:events.list');
+            ->middleware('permission:event.lists');
 
         Route::get('/events/create', [EventController::class, 'create'])
             ->name('event.create')
@@ -207,7 +203,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
 
         Route::delete('/employee/{id}', [EmployeeController::class, 'destroy'])
             ->name('employee.destroy')
-            ->middleware('permission:employee.destroy');
+            ->middleware('permission:employee.delete');
 
         Route::get('/employees/{employee}', [EmployeeController::class, 'show'])
             ->name('employee.show')
@@ -229,7 +225,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::post('/settings/salary-deductions', [SettingController::class, 'salarydeductions'])
             ->name('settings.salarydeductions')
             ->middleware('permission:settings.deductions');
-            
+
         Route::post('/settings/update-workdays', [SettingController::class, 'updateWorkdays'])
             ->name('settings.updateWorkdays')
             ->middleware('permission:settings.worksdays');
@@ -268,7 +264,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->middleware('permission:offrequest.create');
         Route::post('/offrequest', [OffemployeeController::class, 'store'])
             ->name('offrequest.store')
-            ->middleware('permission:offrequest.store');
+            ->middleware('permission:offrequest.create');
         Route::post('/offrequest/{offrequest_id}/approve', [OffemployeeController::class, 'approve'])
             ->name('offrequest.approve')
             ->middleware('permission:offrequest.approver');

@@ -69,9 +69,10 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="personal_no">Personal Number</label>
-                                        <input type="number" name="personal_no" id="personal_no" class="form-control"
-                                            value="{{ old('personal_no', $employeeModel->personal_no) }}">
+                                        <label for="identity_number">Identity Number</label>
+                                        <input type="text" name="identity_number" id="identity_number"
+                                            class="form-control"
+                                            value="{{ old('identity_number', $employeeModel->identity_number) }}">
                                     </div>
 
                                     <div class="form-group">
@@ -130,17 +131,17 @@
                                         <label for="marital_status">Marital Status</label>
                                         <select name="marital_status" id="marital_status" class="form-control">
                                             <option value="">Select</option>
-                                            <option value="single"
-                                                {{ old('marital_status', $employeeModel->marital_status) == 'single' ? 'selected' : '' }}>
+                                            <option value="Single"
+                                                {{ old('marital_status', $employeeModel->marital_status) == 'Single' ? 'selected' : '' }}>
                                                 Single</option>
-                                            <option value="married"
-                                                {{ old('marital_status', $employeeModel->marital_status) == 'married' ? 'selected' : '' }}>
+                                            <option value="Married"
+                                                {{ old('marital_status', $employeeModel->marital_status) == 'Married' ? 'selected' : '' }}>
                                                 Married</option>
-                                            <option value="widow"
-                                                {{ old('marital_status', $employeeModel->marital_status) == 'widow' ? 'selected' : '' }}>
+                                            <option value="Widow"
+                                                {{ old('marital_status', $employeeModel->marital_status) == 'Widow' ? 'selected' : '' }}>
                                                 Widow</option>
-                                            <option value="widower"
-                                                {{ old('marital_status', $employeeModel->marital_status) == 'widower' ? 'selected' : '' }}>
+                                            <option value="Widower"
+                                                {{ old('marital_status', $employeeModel->marital_status) == 'Widower' ? 'selected' : '' }}>
                                                 Widower</option>
                                         </select>
                                     </div>
@@ -149,36 +150,36 @@
                                         <label for="last_education">Last Education</label>
                                         <select name="last_education" id="last_education" class="form-control">
                                             <option value="">Select</option>
-                                            <option value="SD"
-                                                {{ old('last_education', $employeeModel->last_education) == 'SD' ? 'selected' : '' }}>
-                                                SD</option>
-                                            <option value="SMP"
-                                                {{ old('last_education', $employeeModel->last_education) == 'SMP' ? 'selected' : '' }}>
-                                                SMP</option>
-                                            <option value="SMA"
-                                                {{ old('last_education', $employeeModel->last_education) == 'SMA' ? 'selected' : '' }}>
-                                                SMA</option>
-                                            <option value="SMK"
-                                                {{ old('last_education', $employeeModel->last_education) == 'SMK' ? 'selected' : '' }}>
-                                                SMK</option>
-                                            <option value="D1"
-                                                {{ old('last_education', $employeeModel->last_education) == 'D1' ? 'selected' : '' }}>
-                                                D1</option>
-                                            <option value="D2"
-                                                {{ old('last_education', $employeeModel->last_education) == 'D2' ? 'selected' : '' }}>
-                                                D2</option>
-                                            <option value="D3"
-                                                {{ old('last_education', $employeeModel->last_education) == 'D3' ? 'selected' : '' }}>
-                                                D3</option>
-                                            <option value="S1"
-                                                {{ old('last_education', $employeeModel->last_education) == 'S1' ? 'selected' : '' }}>
-                                                S1</option>
-                                            <option value="S2"
-                                                {{ old('last_education', $employeeModel->last_education) == 'S2' ? 'selected' : '' }}>
-                                                S2</option>
-                                            <option value="S3"
-                                                {{ old('last_education', $employeeModel->last_education) == 'S3' ? 'selected' : '' }}>
-                                                S3</option>
+                                            <option value="Elementary School"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Elementary School' ? 'selected' : '' }}>
+                                                Elementary School</option>
+                                            <option value="Junior High School"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Junior High School' ? 'selected' : '' }}>
+                                                Junior High School</option>
+                                            <option value="Senior High School"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Senior High School' ? 'selected' : '' }}>
+                                                Senior High School</option>
+                                            <option value="Vocational High School"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Vocational High School' ? 'selected' : '' }}>
+                                                Vocational High School</option>
+                                            <option value="Associate Degree 1"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Associate Degree 1' ? 'selected' : '' }}>
+                                                Associate Degree 1</option>
+                                            <option value="Associate Degree 2"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Associate Degree 2' ? 'selected' : '' }}>
+                                                Associate Degree 2</option>
+                                            <option value="Associate Degree 3"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Associate Degree 3' ? 'selected' : '' }}>
+                                                Associate Degree 3</option>
+                                            <option value="Bachelors Degree"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Bachelors Degree' ? 'selected' : '' }}>
+                                                Bachelors Degree</option>
+                                            <option value="Masters Degree"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Masters Degree' ? 'selected' : '' }}>
+                                                Masters Degree</option>
+                                            <option value="Doctoral Degree"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Doctoral Degree' ? 'selected' : '' }}>
+                                                Doctoral Degree</option>
                                         </select>
                                     </div>
 
@@ -244,8 +245,24 @@
 
                                     <div class="form-group">
                                         <label for="relations">Relations</label>
-                                        <input type="text" name="relations" id="relations" class="form-control"
-                                            value="{{ old('relations', $employeeModel->relations) }}">
+                                        <select name="relations" id="relations" class="form-control">
+                                            <option value="">Select</option>
+                                            <option value="Parent"
+                                                {{ old('relations', $employeeModel->relations) == 'Parent' ? 'selected' : '' }}>
+                                                Parent</option>
+                                            <option value="Guardian"
+                                                {{ old('relations', $employeeModel->relations) == 'Guardian' ? 'selected' : '' }}>
+                                                Guardian</option>
+                                            <option value="Husband"
+                                                {{ old('relations', $employeeModel->relations) == 'Husband' ? 'selected' : '' }}>
+                                                Husband</option>
+                                            <option value="Wife"
+                                                {{ old('relations', $employeeModel->relations) == 'Wife' ? 'selected' : '' }}>
+                                                Wife</option>
+                                            <option value="Sibling"
+                                                {{ old('relations', $employeeModel->relations) == 'Sibling' ? 'selected' : '' }}>
+                                                Sibling</option>
+                                        </select>
                                     </div>
 
                                     <div class="form-group">
@@ -259,11 +276,11 @@
                                         <label for="status">Status</label>
                                         <select name="status" id="status" class="form-control">
                                             <option value="">Select</option>
-                                            <option value="active"
-                                                {{ old('status', $employeeModel->status) == 'active' ? 'selected' : '' }}>
+                                            <option value="Active"
+                                                {{ old('status', $employeeModel->status) == 'Active' ? 'selected' : '' }}>
                                                 Active</option>
-                                            <option value="inactive"
-                                                {{ old('status', $employeeModel->status) == 'inactive' ? 'selected' : '' }}>
+                                            <option value="Inactive"
+                                                {{ old('status', $employeeModel->status) == 'Inactive' ? 'selected' : '' }}>
                                                 Inactive</option>
                                         </select>
                                     </div>

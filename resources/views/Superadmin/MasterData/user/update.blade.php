@@ -19,7 +19,7 @@
                         {{-- <h3 class="card-title">Edit</h3> --}}
                     </div>
 
-                    <form action="{{ route('datauser.update', $user->user_id) }}" method="POST">
+                    <form id="editUserForm" action="{{ route('datauser.update', $user->user_id) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="card-body">
@@ -69,11 +69,30 @@
                             </div>
                         </div>
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Update</button>
+                            <button type="button" id="updateButton" class="btn btn-primary">Update</button>
                         </div>
                     </form>
                 </div>
             </div>
         </section>
     </div>
+
+    <script>
+        document.getElementById('updateButton').addEventListener('click', function (e) {
+            Swal.fire({
+                title: "Do you want to save the changes?",
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: "Save",
+                denyButtonText: `Don't save`
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('editUserForm').submit();
+                    Swal.fire("Saved!", "", "success");
+                } else if (result.isDenied) {
+                    Swal.fire("Changes are not saved", "", "info");
+                }
+            });
+        });
+    </script>
 @endsection
