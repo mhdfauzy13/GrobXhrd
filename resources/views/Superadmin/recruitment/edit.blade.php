@@ -38,8 +38,39 @@
 
                     <div class="form-group">
                         <label for="last_education">Last Education</label>
-                        <input type="text" class="form-control" id="last_education" name="last_education"
-                            value="{{ old('last_education', $recruitment->last_education) }}" required>
+                        <select name="last_education" id="last_education" class="form-control" required>
+                            <option value="">-- Select Education Level --</option>
+                            <option value="Elementary School"
+                                {{ old('last_education', $recruitment->last_education) == 'Elementary School' ? 'selected' : '' }}>
+                                Elementary School</option>
+                            <option value="Junior High School"
+                                {{ old('last_education', $recruitment->last_education) == 'Junior High School' ? 'selected' : '' }}>
+                                Junior High School</option>
+                            <option value="Senior High School"
+                                {{ old('last_education', $recruitment->last_education) == 'Senior High School' ? 'selected' : '' }}>
+                                Senior High School</option>
+                            <option value="Vocational High School"
+                                {{ old('last_education', $recruitment->last_education) == 'Vocational High School' ? 'selected' : '' }}>
+                                Vocational High School</option>
+                            <option value="Associate Degree 1"
+                                {{ old('last_education', $recruitment->last_education) == 'Associate Degree 1' ? 'selected' : '' }}>
+                                Associate Degree 1</option>
+                            <option value="Associate Degree 2"
+                                {{ old('last_education', $recruitment->last_education) == 'Associate Degree 2' ? 'selected' : '' }}>
+                                Associate Degree 2</option>
+                            <option value="Associate Degree 3"
+                                {{ old('last_education', $recruitment->last_education) == 'Associate Degree 3' ? 'selected' : '' }}>
+                                Associate Degree 3</option>
+                            <option value="Bachelor’s Degree"
+                                {{ old('last_education', $recruitment->last_education) == 'Bachelor’s Degree' ? 'selected' : '' }}>
+                                Bachelor’s Degree</option>
+                            <option value="Master’s Degree"
+                                {{ old('last_education', $recruitment->last_education) == 'Master’s Degree' ? 'selected' : '' }}>
+                                Master’s Degree</option>
+                            <option value="Doctoral Degree"
+                                {{ old('last_education', $recruitment->last_education) == 'Doctoral Degree' ? 'selected' : '' }}>
+                                Doctoral Degree</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
@@ -51,45 +82,41 @@
                     <div class="form-group">
                         <label for="apply_position">Apply Position</label>
                         <input type="text" name="apply_position" id="apply_position" class="form-control"
-                            value="{{ old('apply_position', $recruitment->apply_position ?? '') }}" required>
+                            value="{{ old('apply_position', $recruitment->apply_position) }}" required>
                     </div>
-
 
                     <div class="form-group">
                         <label for="cv_file">CV File</label>
-                        <input type="file" class="form-control" id="cv_file" name="cv_file">
-                        @if ($recruitment->cv_file)
-                            <a href="{{ Storage::url($recruitment->cv_file) }}" target="_blank">Current CV</a>
-                        @endif
+                        <input type="file" name="cv_file" id="cv_file" class="form-control">
                     </div>
 
                     <div class="form-group">
                         <label for="comment">Comment</label>
-                        <textarea class="form-control" id="comment" name="comment">{{ old('comment', $recruitment->comment) }}</textarea>
+                        <textarea name="comment" id="comment" class="form-control">{{ old('comment', $recruitment->comment) }}</textarea>
                     </div>
 
                     <div class="form-group">
                         <label for="status">Status</label>
                         <select name="status" id="status" class="form-control" required>
                             <option value="Initial Interview"
-                                {{ old('status', $recruitment->status) === 'Initial Interview' ? 'selected' : '' }}>Initial
+                                {{ old('status', $recruitment->status) == 'Initial Interview' ? 'selected' : '' }}>Initial
                                 Interview</option>
                             <option value="User Interview 1"
-                                {{ old('status', $recruitment->status) === 'User Interview 1' ? 'selected' : '' }}>User
+                                {{ old('status', $recruitment->status) == 'User Interview 1' ? 'selected' : '' }}>User
                                 Interview 1</option>
                             <option value="User Interview 2"
-                                {{ old('status', $recruitment->status) === 'User Interview 2' ? 'selected' : '' }}>User
+                                {{ old('status', $recruitment->status) == 'User Interview 2' ? 'selected' : '' }}>User
                                 Interview 2</option>
                             <option value="Background Check"
-                                {{ old('status', $recruitment->status) === 'Background Check' ? 'selected' : '' }}>
+                                {{ old('status', $recruitment->status) == 'Background Check' ? 'selected' : '' }}>
                                 Background Check</option>
                             <option value="Offering letter"
-                                {{ old('status', $recruitment->status) === 'Offering letter' ? 'selected' : '' }}>Offering
+                                {{ old('status', $recruitment->status) == 'Offering letter' ? 'selected' : '' }}>Offering
                                 letter</option>
-                            <option value="Accept"
-                                {{ old('status', $recruitment->status) === 'Accept' ? 'selected' : '' }}>Accept</option>
+                            <option value="Accept" {{ old('status', $recruitment->status) == 'Accept' ? 'selected' : '' }}>
+                                Accept</option>
                             <option value="Decline"
-                                {{ old('status', $recruitment->status) === 'Decline' ? 'selected' : '' }}>Decline</option>
+                                {{ old('status', $recruitment->status) == 'Decline' ? 'selected' : '' }}>Decline</option>
                         </select>
                     </div>
 
