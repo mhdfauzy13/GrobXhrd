@@ -3,21 +3,11 @@
 @section('content')
     <div class="content">
 
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-xl-6">
-                        <h1>Add Recruitment</h1>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <section class="content">
             <div class="container-fluid">
                 <div class="card card-primary">
                     <div class="card-header">
-                        {{-- <h3 class="card-title">Create</h3> --}}
+                        <h3 class="card-title">Add Recruitment</h3>
                     </div>
 
                     <!-- Form utama -->
