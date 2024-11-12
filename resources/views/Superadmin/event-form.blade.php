@@ -24,25 +24,30 @@
         </div>
         <div class="col-12">
             <div class="mb-3">
+                <label>Category</label>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" {{ $data->category == 'success' ? 'checked' : null }} type="radio"
                         name="category" id="category-success" value="success" required>
-                    <label class="form-check-label" for="category-success">Success</label>
+                    <label class="form-check-label" for="category-success"
+                        style="background-color: green; color: white; padding: 5px 10px; border-radius: 5px;">&nbsp;</label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" {{ $data->category == 'danger' ? 'checked' : null }} type="radio"
                         name="category" id="category-danger" value="danger" required>
-                    <label class="form-check-label" for="category-danger">Danger</label>
+                    <label class="form-check-label" for="category-danger"
+                        style="background-color: red; color: white; padding: 5px 10px; border-radius: 5px;">&nbsp;</label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" {{ $data->category == 'warning' ? 'checked' : null }} type="radio"
                         name="category" id="category-warning" value="warning" required>
-                    <label class="form-check-label" for="category-warning">Warning</label>
+                    <label class="form-check-label" for="category-warning"
+                        style="background-color: yellow; color: black; padding: 5px 10px; border-radius: 5px;">&nbsp;</label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" {{ $data->category == 'info' ? 'checked' : null }} type="radio"
                         name="category" id="category-info" value="info" required>
-                    <label class="form-check-label" for="category-info">Info</label>
+                    <label class="form-check-label" for="category-info"
+                        style="background-color: blue; color: white; padding: 5px 10px; border-radius: 5px;">&nbsp;</label>
                 </div>
             </div>
         </div>

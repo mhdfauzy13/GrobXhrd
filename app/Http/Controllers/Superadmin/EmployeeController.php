@@ -15,7 +15,7 @@ class EmployeeController extends Controller
         $this->middleware('permission:employee.index')->only('index', 'show', 'searchEmployees');
         $this->middleware('permission:employee.create')->only(['create', 'store']);
         $this->middleware('permission:employee.edit')->only(['edit', 'update']);
-        $this->middleware('permission:employee.destroy')->only('destroy');
+        $this->middleware('permission:employee.delete')->only('destroy');
     }
     public function index(Request $request)
     {
@@ -46,6 +46,7 @@ class EmployeeController extends Controller
 
     public function store(Request $request)
     {
+        // Validasi input
         $validatedData = $request->validate([
             'first_name' => 'required|string',
             'last_name' => 'required|string',
@@ -54,15 +55,15 @@ class EmployeeController extends Controller
             'check_out_time' => 'required|date_format:H:i|after:check_in_time',
             'place_birth' => 'required|string',
             'date_birth' => 'nullable|date',
-            'personal_no' => 'nullable|string',
+            'identity_number' => 'nullable|string',
             'address' => 'nullable|string',
             'current_address' => 'nullable|string',
             'blood_type' => 'nullable|in:A,B,AB,O',
             'blood_rhesus' => 'nullable|string',
             'phone_number' => 'nullable|string',
             'hp_number' => 'nullable|string',
-            'marital_status' => 'nullable|in:single,married,widow,widower',
-            'last_education' => 'nullable|in:SD,SMP,SMA,SMK,D1,D2,D3,S1,S2,S3',
+            'marital_status' => 'nullable|in:Single,Married,Widow,Widower',
+            'last_education' => 'nullable|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelors Degree,Masters Degree,Doctoral Degree',
             'degree' => 'nullable|string',
             'starting_date' => 'nullable|date',
             'interview_by' => 'nullable|string',
@@ -71,15 +72,16 @@ class EmployeeController extends Controller
             'serious_illness' => 'nullable|string',
             'hereditary_disease' => 'nullable|string',
             'emergency_contact' => 'nullable|string',
-            'relations' => 'nullable|string',
+            'relations' => 'nullable|in:Parent,Guardian,Husband,Wife,Sibling',
             'emergency_number' => 'nullable|string',
-            'status' => 'nullable|in:active,inactive',
+            'status' => 'nullable|in:Active,Inactive',
         ]);
 
         // Hapus titik pada `current_salary` dan konversi ke integer
         if (isset($request->current_salary)) {
             $validatedData['current_salary'] = (int) str_replace('.', '', $request->current_salary);
         }
+
         // Membuat employee
         $employee = Employee::create($validatedData);
 
@@ -95,7 +97,6 @@ class EmployeeController extends Controller
         $employee->user_id = $user->user_id;
         $employee->save();
 
-        // Redirect ke halaman edit user (gunakan GET method)
         return redirect()
             ->route('datauser.edit', $user->user_id) // Menggunakan datauser.edit
             ->with('success', 'Employee created. Now configure user details.');
@@ -117,7 +118,6 @@ class EmployeeController extends Controller
 
     public function update(Request $request, $employeeId)
     {
-        // dd($request->all());
         $employeeModel = Employee::where('employee_id', $employeeId)->first();
 
         if (!$employeeModel) {
@@ -132,15 +132,15 @@ class EmployeeController extends Controller
             'check_out_time' => 'required|date_format:H:i|after:check_in_time',
             'place_birth' => 'required|string',
             'date_birth' => 'nullable|date',
-            'personal_no' => 'nullable|string',
+            'identity_number' => 'nullable|string',
             'address' => 'nullable|string',
             'current_address' => 'nullable|string',
             'blood_type' => 'nullable|in:A,B,AB,O',
             'blood_rhesus' => 'nullable|string',
             'phone_number' => 'nullable|string',
             'hp_number' => 'nullable|string',
-            'marital_status' => 'nullable|in:single,married,widow,widower',
-            'last_education' => 'nullable|in:SD,SMP,SMA,SMK,D1,D2,D3,S1,S2,S3',
+            'marital_status' => 'nullable|in:Single,Married,Widow,Widower',
+            'last_education' => 'nullable|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelors Degree,Masters Degree,Doctoral Degree',
             'degree' => 'nullable|string',
             'starting_date' => 'nullable|date',
             'interview_by' => 'nullable|string',
@@ -149,14 +149,14 @@ class EmployeeController extends Controller
             'serious_illness' => 'nullable|string',
             'hereditary_disease' => 'nullable|string',
             'emergency_contact' => 'nullable|string',
-            'relations' => 'nullable|string',
+            'relations' => 'nullable|in:Parent,Guardian,Husband,Wife,Sibling',
             'emergency_number' => 'nullable|string',
-            'status' => 'nullable|in:active,inactive',
+            'status' => 'nullable|in:Active,Inactive',
         ]);
         // Hapus titik pada `current_salary` dan konversi ke integer
         if (isset($request->current_salary)) {
             $current_salary = (int) str_replace('.', '', $request->current_salary);
-            $validatedData['current_salary'] = $current_salary; // Simpan ke validatedData
+            $validatedData['current_salary'] = $current_salary;
         }
 
         $employeeModel->update($request->all());

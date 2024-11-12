@@ -1,10 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- Main content -->
     <section class="content">
-
-        <!-- Default box -->
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between w-100 align-items-center">
@@ -62,12 +59,10 @@
                                             href="{{ route('employee.edit', $employee->employee_id) }}">
                                             <i class="fas fa-pencil-alt"></i> Edit
                                         </a>
-                                        <form method="POST"
-                                            action="{{ route('employee.destroy', $employee->employee_id) }}"
-                                            style="display:inline;">
+                                        <form method="POST" action="{{ route('employee.destroy', $employee->employee_id) }}" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">
+                                            <button type="button" class="deletebutton btn btn-danger btn-sm">
                                                 <i class="fas fa-trash"></i> Delete
                                             </button>
                                         </form>
@@ -77,7 +72,6 @@
                         </tbody>
                     </table>
                 </div>
-
                 <div class="card-footer clearfix">
                     <div class="pagination-container">
                         {{ $employees->links('vendor.pagination.adminlte') }}
@@ -87,4 +81,5 @@
         </div>
 
     </section>
+
 @endsection

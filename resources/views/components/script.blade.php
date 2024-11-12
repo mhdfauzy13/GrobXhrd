@@ -5,7 +5,6 @@
 <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- AdminLTE -->
 <script src="{{ asset('dist/js/adminlte.js') }}"></script>
-
 <!-- OPTIONAL SCRIPTS -->
 <script src="{{ asset('plugins/chart.js/Chart.min.js') }}"></script>
 <!-- AdminLTE for demo purposes -->
@@ -14,9 +13,11 @@
 <script src="{{ asset('dist/js/pages/dashboard3.js') }}"></script>
 <!--  Script for Show/Hide Password -->
 <script src="{{ asset('dist/js/password-toggle.js') }}"></script>
+<!-- Script Switch alert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-{{-- Script buat klik employee detail --}}
+{{-- SCRIPT BUAT KLIK EMPLOYEE DETAIL DAN DELETE --}}
 
 <style>
     .clickable-row {
@@ -28,115 +29,44 @@
     document.addEventListener('DOMContentLoaded', function() {
         const rows = document.querySelectorAll('.clickable-row');
         rows.forEach(row => {
-            row.addEventListener('click', function() {
-                window.location.href = this.dataset.url;
+            row.addEventListener('click', function(event) {
+                if (!event.target.closest('.deletebutton')) {
+                    // Pastikan ini bukan klik pada tombol delete
+                    window.location.href = this.dataset.url;
+                }
             });
         });
+    });
+
+    document.addEventListener("click", function(e) {
+        if (e.target.classList.contains("deletebutton")) {
+            e.preventDefault(); // Mencegah pengiriman form default
+            e.stopPropagation(); // Hentikan event klik pada baris
+            const form = e.target.closest("form"); // Ambil form terdekat
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                    }).then(() => {
+                        form.submit(); // Kirim form setelah konfirmasi
+                    });
+                }
+            });
+        }
     });
 </script>
 
-
-
-{{-- Script buat create role --}}
-
-{{-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Select/Deselect All Features
-        const selectAllFeatures = document.getElementById('selectAllFeatures');
-        const allFeatureCheckboxes = document.querySelectorAll('input[name="permissions[]"]');
-
-        selectAllFeatures.addEventListener('change', function() {
-            allFeatureCheckboxes.forEach((checkbox) => {
-                checkbox.checked = selectAllFeatures.checked;
-            });
-        });
-
-        // Select/Deselect All Role
-        const selectAllRole = document.getElementById('selectAllRole');
-        const roleCheckboxes = document.querySelectorAll('.role-checkbox');
-
-        selectAllRole.addEventListener('click', function(event) {
-            event.preventDefault();
-            const allChecked = Array.from(roleCheckboxes).every(checkbox => checkbox.checked);
-            roleCheckboxes.forEach((checkbox) => {
-                checkbox.checked = !allChecked;
-            });
-        });
-
-        // Select/Deselect All User
-        const selectAllUser = document.getElementById('selectAllUser');
-        const userCheckboxes = document.querySelectorAll('.user-checkbox');
-
-        selectAllUser.addEventListener('click', function(event) {
-            event.preventDefault();
-            const allChecked = Array.from(userCheckboxes).every(checkbox => checkbox.checked);
-            userCheckboxes.forEach((checkbox) => {
-                checkbox.checked = !allChecked;
-            });
-        });
-
-        // Fitur Employee
-        const employeeCheckboxes = document.querySelectorAll('.employee-checkbox');
-        const selectAllEmployee = document.getElementById('selectAllEmployee');
-
-        selectAllEmployee.addEventListener('click', function(event) {
-            event.preventDefault();
-            const allChecked = Array.from(employeeCheckboxes).every(checkbox => checkbox.checked);
-            employeeCheckboxes.forEach((checkbox) => {
-                checkbox.checked = !allChecked;
-            });
-        });
-
-        // Fitur Payroll
-        const payrollCheckboxes = document.querySelectorAll('.payroll-checkbox');
-        const selectAllPayroll = document.getElementById('selectAllPayroll');
-
-        selectAllPayroll.addEventListener('click', function(event) {
-            event.preventDefault();
-            const allChecked = Array.from(payrollCheckboxes).every(checkbox => checkbox.checked);
-            payrollCheckboxes.forEach((checkbox) => {
-                checkbox.checked = !allChecked;
-            });
-        });
-
-        // Fitur Recruitment
-        const recruitmentCheckboxes = document.querySelectorAll('.recruitment-checkbox');
-        const selectAllRecruitment = document.getElementById('selectAllRecruitment');
-
-        selectAllRecruitment.addEventListener('click', function(event) {
-            event.preventDefault();
-            const allChecked = Array.from(recruitmentCheckboxes).every(checkbox => checkbox.checked);
-            recruitmentCheckboxes.forEach((checkbox) => {
-                checkbox.checked = !allChecked;
-            });
-        });
-
-        // Fitur Attendance
-        const attendanceCheckboxes = document.querySelectorAll('.attendance-checkbox');
-        const selectAllAttendance = document.getElementById('selectAllAttendance');
-
-        selectAllAttendance.addEventListener('click', function(event) {
-            event.preventDefault();
-            const allChecked = Array.from(attendanceCheckboxes).every(checkbox => checkbox.checked);
-            attendanceCheckboxes.forEach((checkbox) => {
-                checkbox.checked = !allChecked;
-            });
-        });
-
-        // Fitur Offrequest (tambahkan checkbox class di HTML)
-        const offrequestCheckboxes = document.querySelectorAll('.offrequest-checkbox');
-        const selectAllOffrequest = document.getElementById('selectAllOffrequest');
-
-        selectAllOffrequest.addEventListener('click', function(event) {
-            event.preventDefault();
-            const allChecked = Array.from(offrequestCheckboxes).every(checkbox => checkbox.checked);
-            offrequestCheckboxes.forEach((checkbox) => {
-                checkbox.checked = !allChecked;
-            });
-        });
-
-    });
-</script> --}}
 
 {{-- SCRIPT BUAT MODAL IMAGE --}}
 
@@ -219,6 +149,80 @@
 
         input.value = value;
     }
+</script>
+
+{{-- SCRIPT ALERT BUAT SAVE --}}
+
+<script>
+    document.getElementById("saveButton").addEventListener("click", function(e) {
+        e.preventDefault(); // Mencegah pengiriman form default
+
+        Swal.fire({
+            title: "Do you want to save the changes?",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Save",
+            denyButtonText: `Don't save`
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Jika user mengkonfirmasi, submit form
+                Swal.fire("Saved!", "", "success").then(() => {
+                    document.getElementById("quickForm")
+                        .submit(); // Kirim form setelah alert konfirmasi
+                });
+            } else if (result.isDenied) {
+                Swal.fire("Changes are not saved", "", "info");
+            }
+        });
+    });
+</script>
+
+{{-- SCRIPT ALERT BUAT DELETE --}}
+
+<script>
+    // Menangani event klik pada tombol delete
+    document.addEventListener("click", function(e) {
+        if (e.target.classList.contains("deleteButton")) {
+            e.preventDefault(); // Mencegah pengiriman form default
+            const form = e.target.closest("form"); // Ambil form terdekat
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                    }).then(() => {
+                        form.submit(); // Kirim form setelah konfirmasi
+                    });
+                }
+            });
+        }
+    });
+</script>
+
+
+{{-- SCRIPT BUAT HURUF PERTAMA KAPITAL SEMUA FORM --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const textInputs = document.querySelectorAll('input[type="text"]');
+
+        textInputs.forEach(input => {
+            input.addEventListener('input', function() {
+                if (input.value.length > 0) {
+                    input.value = input.value.charAt(0).toUpperCase() + input.value.slice(1);
+                }
+            });
+        });
+    });
 </script>
 
 

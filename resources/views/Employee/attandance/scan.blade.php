@@ -70,17 +70,33 @@
                 </div>
                 <div class="card-body">
                     <div id="alert-container"></div>
-                    <div id="camera-container">
-                        <video id="video" autoplay></video>
-                        <div id="my_camera" style="display: none;"></div>
-                    </div>
-                    <canvas id="canvas" style="display: none;"></canvas>
-                    <div class="button-container">
-                        <button id="btn-checkin" onclick="takeSnapshot('checkin')"
-                            class="btn btn-dark btn-checkin">Ambil Gambar</button>
-                        <button id="btn-checkout" onclick="takeSnapshot('checkout')"
-                            class="btn btn-dark btn-checkout">Ambil Gambar</button>
-                    </div>
+
+                    <!-- Jika karyawan sedang cuti, tampilkan alert -->
+                    @if (isset($onLeave) && $onLeave)
+                        <div class="alert alert-warning text-center">
+                            You are on leave today.
+                        </div>
+                        <!-- Sembunyikan tombol check-in dan check-out jika cuti -->
+                        <script>
+                            document.getElementById('btn-checkin').style.display = 'none';
+                            document.getElementById('btn-checkout').style.display = 'none';
+                        </script>
+                    @else
+                        <div id="camera-container">
+                            <video id="video" autoplay></video>
+                            <div id="my_camera" style="display: none;"></div>
+                        </div>
+                        <canvas id="canvas" style="display: none;"></canvas>
+                        <div class="button-container">
+                            <button id="btn-checkin" onclick="takeSnapshot('checkin')" class="btn btn-dark btn-checkin">
+                                Capture Image
+                            </button>
+                            <button id="btn-checkout" onclick="takeSnapshot('checkout')"
+                                class="btn btn-dark btn-checkout">
+                                Capture Image
+                            </button>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -94,25 +110,32 @@
         const btnCheckIn = document.getElementById('btn-checkin');
         const btnCheckOut = document.getElementById('btn-checkout');
 
-        // Mengambil status check-in dan check-out dari backend
         let attendanceStatus = {
-            isCheckIn: {{ json_encode($hasCheckedIn) }},
-            isCheckOut: {{ json_encode($hasCheckedOut) }} // Tambahkan status check-out
+            isCheckIn: {!! isset($hasCheckedIn) ? json_encode($hasCheckedIn) : 'false' !!},
+            isCheckOut: {!! isset($hasCheckedOut) ? json_encode($hasCheckedOut) : 'false' !!},
         };
+
+        // Menambahkan pengecekan untuk onLeave
+        if ({!! json_encode($onLeave) !!}) {
+            alertContainer.innerHTML =
+                '<div class="alert alert-warning text-center" role="alert">You are on leave today!</div>';
+            btnCheckIn.style.display = 'none';
+            btnCheckOut.style.display = 'none';
+        }
 
         // Fungsi untuk memperbarui visibilitas tombol
         function updateButtonVisibility() {
             if (attendanceStatus.isCheckIn) {
-                btnCheckIn.style.display = 'none'; // Sembunyikan tombol check-in
-                btnCheckOut.style.display = 'block'; // Tampilkan tombol check-out
+                btnCheckIn.style.display = 'none';
+                btnCheckOut.style.display = 'block';
             } else {
-                btnCheckIn.style.display = 'block'; // Tampilkan tombol check-in
-                btnCheckOut.style.display = 'none'; // Sembunyikan tombol check-out
+                btnCheckIn.style.display = 'block';
+                btnCheckOut.style.display = 'none';
             }
         }
 
         window.onload = function() {
-            updateButtonVisibility(); // Perbarui tampilan tombol saat halaman dimuat
+            updateButtonVisibility();
             // Akses kamera
             navigator.mediaDevices.getUserMedia({
                     video: {
@@ -167,25 +190,30 @@
                     if (data.success) {
                         if (action === 'checkin') {
                             alertContainer.innerHTML = `<div class="alert alert-success text-center" role="alert">
-                    <i class="fas fa-check-circle"></i> Anda telah berhasil Check-In!
-                </div>`;
+                        <i class="fas fa-check-circle"></i> You have successfully Check-In!
+                    </div>`;
                             attendanceStatus.isCheckIn = true; // Ubah status menjadi check-in
                         } else if (action === 'checkout') {
                             alertContainer.innerHTML = `<div class="alert alert-danger text-center" role="alert">
-                    <i class="fas fa-check-circle"></i> Anda telah berhasil Check-Out!
-                </div>`;
+                        <i class="fas fa-check-circle"></i> You have successfully Check-Out!
+                    </div>`;
                             attendanceStatus.isCheckIn = false; // Ubah status menjadi check-out
                         }
+
+                        // Arahkan kembali ke halaman sebelumnya
+                        setTimeout(() => {
+                            window.history.back();
+                        }, 3000); // 3 detik sebelum redirect
                     } else {
                         alertContainer.innerHTML = `<div class="alert alert-warning text-center" role="alert">
-                ${data.message}
-            </div>`;
+                    ${data.message}
+                </div>`;
                     }
 
                     // Perbarui visibilitas tombol
                     updateButtonVisibility();
 
-                    // Hapus alert setelah beberapa detik
+                    // Hapus alert setelah beberapa detik jika terjadi kesalahan
                     setTimeout(() => {
                         alertContainer.innerHTML = '';
                     }, 3000);
@@ -193,8 +221,8 @@
                 .catch(error => {
                     console.error('Error:', error);
                     alertContainer.innerHTML = `<div class="alert alert-danger text-center" role="alert">
-            Terjadi kesalahan. Silakan coba lagi.
-        </div>`;
+                An error occurred. Please try again.
+            </div>`;
                 });
         }
     </script>

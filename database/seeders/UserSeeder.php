@@ -23,12 +23,15 @@ class UserSeeder extends Seeder
         $employeeRole = Role::where('name', 'employee')->first();
 
         // Menambahkan Superadmin hanya ke tabel User
-        $superadminUser = User::updateOrCreate([
-            'email' => 'superadmin@gmail.com',
-        ], [
-            'name' => 'Superadmin',
-            'password' => Hash::make('password'),
-        ]);
+        $superadminUser = User::updateOrCreate(
+            [
+                'email' => 'superadmin@gmail.com',
+            ],
+            [
+                'name' => 'Superadmin',
+                'password' => Hash::make('password'),
+            ],
+        );
 
         // Assign role Superadmin ke user
         if ($adminRole) {
@@ -42,7 +45,7 @@ class UserSeeder extends Seeder
             'email' => 'manager@gmail.com',
             'place_birth' => $faker->city,
             'date_birth' => $faker->date,
-            'personal_no' => 'P-000002',
+            'identity_number' => 'P-000002',
             'address' => $faker->address,
             'current_address' => $faker->address,
             'blood_type' => $faker->randomElement(['A', 'B', 'AB', 'O']),
@@ -50,8 +53,8 @@ class UserSeeder extends Seeder
             'phone_number' => $faker->phoneNumber,
             'hp_number' => $faker->phoneNumber,
             'marital_status' => $faker->randomElement(['Married', 'Single']),
-            'last_education' => $faker->randomElement(['SD', 'SMP', 'SMA', 'SMK', 'D1', 'D2', 'D3', 'S1']),
-            'degree' => $faker->randomElement(['SMA', 'S1']),
+            'last_education' => $faker->randomElement(['Elementary School','Junior High School','Senior High School','Vocational High School','Associate Degree 1','Associate Degree 2','Associate Degree 3','Bachelors Degree','Masters Degree','Doctoral Degree']),
+            'degree' => $faker->randomElement(['S,Kom', 'S,Ak']),
             'starting_date' => $faker->date,
             'interview_by' => $faker->name,
             'current_salary' => $faker->numberBetween(3000000, 15000000),
@@ -59,18 +62,21 @@ class UserSeeder extends Seeder
             'serious_illness' => 'None',
             'hereditary_disease' => 'None',
             'emergency_contact' => $faker->name,
-            'relations' => $faker->randomElement(['Spouse', 'Parent']),
+            'relations' => $faker->randomElement(['Parent', 'Guardian', 'Husband', 'Wife', 'Sibling']),
             'emergency_number' => $faker->phoneNumber,
-            'status' => 'active',
+            'status' => 'Active',
         ]);
 
         // Membuat pengguna Manager di tabel User
-        $managerUser = User::updateOrCreate([
-            'email' => 'manager@gmail.com',
-        ], [
-            'name' => 'Manager Example',
-            'password' => Hash::make('password'),
-        ]);
+        $managerUser = User::updateOrCreate(
+            [
+                'email' => 'manager@gmail.com',
+            ],
+            [
+                'name' => 'Manager Example',
+                'password' => Hash::make('password'),
+            ],
+        );
 
         // Assign role Manager ke user
         if ($managerRole) {
@@ -86,7 +92,7 @@ class UserSeeder extends Seeder
                 'email' => $faker->unique()->safeEmail,
                 'place_birth' => $faker->city,
                 'date_birth' => $faker->date,
-                'personal_no' => $faker->unique()->numerify('P-######'),
+                'identity_number' => $faker->unique()->numerify('P-######'),
                 'address' => $faker->address,
                 'current_address' => $faker->address,
                 'blood_type' => $faker->randomElement(['A', 'B', 'AB', 'O']),
@@ -94,8 +100,8 @@ class UserSeeder extends Seeder
                 'phone_number' => $faker->phoneNumber,
                 'hp_number' => $faker->phoneNumber,
                 'marital_status' => $faker->randomElement(['Married', 'Single', 'widow', 'widower']),
-                'last_education' => $faker->randomElement(['SD', 'SMP', 'SMA', 'SMK', 'D1', 'D2', 'D3', 'S1']),
-                'degree' => $faker->randomElement(['SMA', 'S1', 'S2']),
+                'last_education' => $faker->randomElement(['Elementary School','Junior High School','Senior High School','Vocational High School','Associate Degree 1','Associate Degree 2','Associate Degree 3','Bachelors Degree','Masters Degree','Doctoral Degree']),
+                'degree' => $faker->randomElement(['S,Kom', 'S,Ak']),
                 'starting_date' => $faker->date,
                 'interview_by' => $faker->name,
                 'current_salary' => $faker->numberBetween(3000000, 15000000),
@@ -103,7 +109,7 @@ class UserSeeder extends Seeder
                 'serious_illness' => $faker->randomElement(['None', 'Diabetes', 'Hypertension']),
                 'hereditary_disease' => $faker->randomElement(['None', 'Heart Disease']),
                 'emergency_contact' => $faker->name,
-                'relations' => $faker->randomElement(['Spouse', 'Parent']),
+                'relations' => $faker->randomElement(['Parent', 'Guardian', 'Husband', 'Wife', 'Sibling']),
                 'emergency_number' => $faker->phoneNumber,
                 'status' => 'active',
                 'check_in_time' => Carbon::now()->setTime(rand(7, 9), 0), // Set ke jam dengan menit 0
@@ -111,12 +117,15 @@ class UserSeeder extends Seeder
             ]);
 
             // Membuat pengguna untuk karyawan ini di tabel User
-            $user = User::updateOrCreate([
-                'email' => $employee->email,
-            ], [
-                'name' => $employee->first_name . ' ' . $employee->last_name,
-                'password' => Hash::make('password'), // Password default
-            ]);
+            $user = User::updateOrCreate(
+                [
+                    'email' => $employee->email,
+                ],
+                [
+                    'name' => $employee->first_name . ' ' . $employee->last_name,
+                    'password' => Hash::make('password'), // Password default
+                ],
+            );
 
             // Assign role Employee ke user
             if ($employeeRole) {

@@ -2,16 +2,15 @@
 
 @section('content')
     <section class="content">
+        {{-- @can('update companyname') --}}
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Company Settings</h3>
             </div>
-
             <div class="card-body">
                 <form
                     action="{{ isset($companyname) ? route('settings.update', $companyname->id) : route('settings.store') }}"
                     method="POST" enctype="multipart/form-data">
-
                     @csrf
                     @if (isset($companyname))
                         @method('PUT')
@@ -38,45 +37,39 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">
-                        {{ isset($companyname) ? 'Update' : 'Create' }}
-                    </button>
+                    <button type="submit" class="btn btn-primary">{{ isset($companyname) ? 'Update' : 'Create' }}</button>
                 </form>
             </div>
         </div>
+        {{-- @endcan --}}
 
-        <!-- Card untuk form potongan gaji -->
         <div class="card mt-4">
             <div class="card-header">
                 <h3 class="card-title">Salary Deduction Settings</h3>
             </div>
-
             <div class="card-body">
                 <form action="{{ route('settings.salarydeductions') }}" method="POST">
                     @csrf
 
                     <div class="form-group mb-4">
-                        <label for="late_deduction" class="form-label">Late Deduction</label>
+                        <label for="late_deduction" class="form-label">Late Check-in Deduction</label>
                         <input type="text" class="form-control" name="late_deduction" id="late_deduction"
                             value="{{ isset($salaryDeduction) ? number_format($salaryDeduction->late_deduction, 0, ',', '.') : '' }}"
                             required onkeyup="formatNumber(this)">
                     </div>
 
                     <div class="form-group mb-4">
-                        <label for="early_deduction" class="form-label">Early Deduction</label>
+                        <label for="early_deduction" class="form-label">Early Check-out Deduction</label>
                         <input type="text" class="form-control" name="early_deduction" id="early_deduction"
                             value="{{ isset($salaryDeduction) ? number_format($salaryDeduction->early_deduction, 0, ',', '.') : '' }}"
                             required onkeyup="formatNumber(this)">
                     </div>
 
-                    <button type="submit" class="btn btn-primary">
-                        Save
-                    </button>
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </form>
             </div>
         </div>
 
-        <!-- Card untuk form pengaturan hari kerja -->
         <div class="card mt-4">
             <div class="card-header">
                 <h3 class="card-title">Workday Settings</h3>
@@ -95,11 +88,26 @@
                         </div>
                     @endforeach
 
-                    <button type="submit" class="btn btn-primary mt-3">Update Workdays</button>
+                    <button type="submit" class="btn btn-primary mt-3">Save</button>
                 </form>
             </div>
-
-
-
+        </div>
     </section>
+
+    <script>
+        document.querySelectorAll('form button[type="submit"]').forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                Swal.fire({
+                    position: 'top-center',
+                    icon: 'success',
+                    title: 'Your work has been saved',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    this.closest('form').submit();
+                });
+            });
+        });
+    </script>
 @endsection
