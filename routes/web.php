@@ -90,12 +90,12 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->middleware('permission:payroll.create');
 
         Route::get('/payroll/calculate', [PayrollController::class, 'calculatePayroll'])
-        ->name('payroll.calculate')
-        ->middleware('permission:payroll.index');
+            ->name('payroll.calculate')
+            ->middleware('permission:payroll.index');
 
         Route::post('/payroll/validate/{employee_id}', [PayrollController::class, 'validatePayroll'])
-        ->name('payroll.validate')
-        ->middleware('permission:payroll.index');
+            ->name('payroll.validate')
+            ->middleware('permission:payroll.index');
 
 
 
@@ -229,7 +229,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::post('/settings/salary-deductions', [SettingController::class, 'salarydeductions'])
             ->name('settings.salarydeductions')
             ->middleware('permission:settings.deductions');
-            
+
         Route::post('/settings/update-workdays', [SettingController::class, 'updateWorkdays'])
             ->name('settings.updateWorkdays')
             ->middleware('permission:settings.worksdays');
@@ -240,6 +240,9 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('dashboard', [DashboardEmployeeController::class, 'index'])
             ->name('dashboardemployee.index')
             ->middleware('permission:dashboardemployee.view');
+
+        Route::get('events/list', [DashboardEmployeeController::class, 'ListEvent'])
+            ->name('employee.events.list');
 
         // Attendance Scan Routes
         Route::get('/attandance/scan', [AttandanceController::class, 'scanView'])
