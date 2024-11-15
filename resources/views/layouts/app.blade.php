@@ -17,6 +17,10 @@
     <!-- Link to custom.css -->
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
     @include('components.head')
 </head>
 

@@ -126,6 +126,15 @@
                     </form>
                 </div>
             </div>
-        </div>
     </section>
+    </div>
+    @if ($errors->has('phone_number'))
+        <script>
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "{{ $errors->first('phone_number') }}", // Pesan error dari backend
+            });
+        </script>
+    @endif
 @endsection

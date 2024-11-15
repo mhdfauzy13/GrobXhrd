@@ -33,13 +33,15 @@ class RecruitmentController extends Controller
         $validated = $request->validate([
             'name' => 'required|string',
             'email' => 'required|email',
-            'phone_number' => 'required|string',
+            'phone_number' => 'required|numeric',
             'date_of_birth' => 'required|date',
             'last_education' => 'required|string|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelor’s Degree,Master’s Degree,Doctoral Degree',
             'last_position' => 'required|string',
             'apply_position' => 'required|string',
-            'cv_file' => 'required|file',
+            'cv_file' => 'required|file|mimes:pdf,doc,docx',  // Added mimes validation here
             'status' => 'required|string',
+        ], [
+            'phone_number.numeric' => 'Phone number must contain only numbers.', // Pesan error khusus
         ]);
 
         Recruitment::create([
@@ -71,13 +73,16 @@ class RecruitmentController extends Controller
         $validated = $request->validate([
             'name' => 'nullable|string',
             'email' => 'nullable|email|unique:recruitments,email,' . $recruitment_id . ',recruitment_id|min:8',
-            'phone_number' => 'nullable|string',
+            'phone_number' => 'nullable|numeric',
             'date_of_birth' => 'nullable|date',
             'last_education' => 'nullable|string|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelor’s Degree,Master’s Degree,Doctoral Degree',
             'last_position' => 'nullable|string',
             'apply_position' => 'nullable|string',
             'cv_file' => 'nullable|file|mimes:pdf,doc,docx|max:2048', // Validasi untuk file jika ada
             'status' => 'nullable|string|in:Initial Interview,User Interview 1,User Interview 2,Background Check,Offering letter,Accept,Decline',
+
+        ], [
+            'phone_number.numeric' => 'Phone number must contain only numbers.', // Pesan error khusus
         ]);
 
         // Update data recruitment dengan validasi yang sudah dilakukan
