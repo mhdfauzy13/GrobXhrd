@@ -23,6 +23,7 @@ class Payroll extends Model
         'overtime_pay',
         'total_salary',
         'validation_status',
+
     ];
 
     public function employee()
@@ -49,5 +50,6 @@ class Payroll extends Model
       public function offRequests()
       {
           return $this->hasMany(Offrequest::class, 'employee_id', 'employee_id');
+
       }
 }

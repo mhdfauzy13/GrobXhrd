@@ -23,7 +23,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(RolesAndPermissionsSeeder::class);
         $this->call(WorkdaySettingsSeeder::class);
-
         $this->call(UserSeeder::class);
         $this->call(SeedersAttendanceSeeder::class);
         $this->call([EventSeeder::class]);

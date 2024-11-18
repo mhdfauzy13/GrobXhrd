@@ -1,19 +1,28 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="content">
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>Add Role</h1>
-                    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Add Role</h3>
                 </div>
-            </div>
-        </section>
+                @if ($errors->any())
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            let errorMessages = '';
+                            @foreach ($errors->all() as $error)
+                                errorMessages += '{{ $error }}\n';
+                            @endforeach
 
-        <section class="content">
-            <div class="container-fluid">
+                            Swal.fire({
+                                icon: "error",
+                                title: "Oops...",
+                                text: errorMessages,
+                            });
+                        });
+                    </script>
+                @endif
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card card-primary">
@@ -23,7 +32,7 @@
                                     <div class="form-group">
                                         <label for="roleName">Name Role</label>
                                         <input type="text" name="name" class="form-control" id="roleName"
-                                            placeholder="Masukkan Role" required>
+                                            value="{{ old('name') }}" required>
                                     </div>
 
                                     <div class="form-group">
@@ -109,10 +118,9 @@
             'attandance' => ['attandance.index', 'attandance.scanView', 'attandance.scan'],
             'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.approver'],
             'employeebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
-            'event' => ['event.index', 'events.list', 'event.create', 'event.edit', 'event.delete'],
+            'event' => ['event.index', 'event.lists', 'event.create', 'event.edit', 'event.delete'],
             'overtime' => ['overtime.create'],
-            'setting' => ['settings.index',  'settings.company',  'settings.deductions', 'settings.worksdays'],
-
+            'settings' => ['settings.index', 'settings.company', 'settings.deductions', 'settings.worksdays'],
         ] as $feature => $featurePermissions)
                                             <div class="card mt-3">
                                                 <div class="card-header">
@@ -156,8 +164,8 @@
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
 
     <script>
         document.getElementById('selectAllPermissions').addEventListener('click', function() {
@@ -263,8 +271,17 @@
             });
         });
 
-         // Event listener untuk fitur setting
-        document.getElementById('selectAllSetting').addEventListener('click', function(e) {
+        // Event listener untuk fitur overtime
+        document.getElementById('selectAllOvertime').addEventListener('click', function(e) {
+            e.preventDefault();
+            let checkboxes = document.querySelectorAll('.overtime-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !checkbox.checked;
+            });
+        });
+
+        // Event listener untuk fitur Settings
+        document.getElementById('selectAllSettings').addEventListener('click', function(e) {
             e.preventDefault();
             let checkboxes = document.querySelectorAll('.settings-checkbox');
             checkboxes.forEach(checkbox => {

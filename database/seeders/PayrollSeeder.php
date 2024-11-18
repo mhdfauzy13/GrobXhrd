@@ -10,6 +10,7 @@ use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
+
 class PayrollSeeder extends Seeder
 {
     public function run()
@@ -21,8 +22,9 @@ class PayrollSeeder extends Seeder
         $workdaySetting = WorkdaySetting::first();
         $monthlyWorkdays = $workdaySetting ? $workdaySetting->monthly_workdays : 0;
 
+
         // Loop untuk setiap employee
-        foreach ($employees as $employee) {
+
 
             // Ambil data dari AttandanceRecap untuk karyawan ini
             $attendanceRecap = AttandanceRecap::where('employee_id', $employee->id)

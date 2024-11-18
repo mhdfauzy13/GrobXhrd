@@ -7,35 +7,8 @@
             <div class="row mb-3">
                 <div class="col-md-4">
                     <form action="{{ route('payroll.index') }}" method="GET">
-                        {{-- <div class="input-group">
-                            <label for="month">Month:</label>
-                            <select name="month" id="month">
-                                @foreach (range(1, 12) as $m)
-                                    <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
-                                        {{ DateTime::createFromFormat('!m', $m)->format('F') }}
-                                    </option>
-                                @endforeach
-                            </select>
-
-                            <label for="year">Year:</label>
-                            <select name="year" id="year">
-                                @foreach (range(date('Y') - 5, date('Y')) as $y)
-                                    <!-- Menampilkan tahun dari 5 tahun lalu hingga sekarang -->
-                                    <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
-                                        {{ $y }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <button type="submit" class="btn btn-primary">Filter</button>
-                        </div> --}}
-                    </form>
-                </div>
-                
-
-            </div>
-
-
-
+  
+             
             <!-- Default box -->
             <div class="card">
                 <div class="card-header">
@@ -66,7 +39,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($payrollData as $data)
+                                  @foreach ($payrollData as $data)
                                 <tr>
                                     <td>{{ $data['employee_name'] }}</td>
                                     <td>{{ number_format($data['current_salary'], 0, ',', '.') }}</td>
@@ -77,6 +50,7 @@
                                     <td>{{ $data['monthly_workdays'] }}</td>
                                     {{-- <td>{{ $data['overtime_pay'] }}</td> --}}
                                 </tr>
+
                                 @endforeach
                             </tbody>
                         </table>

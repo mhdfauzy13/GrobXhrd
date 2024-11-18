@@ -61,7 +61,7 @@
                                 <dt class="col-sm-4">Interview By:</dt>
                                 <dd class="col-sm-8">{{ $employee->interview_by }}</dd>
                                 <dt class="col-sm-4">Current Salary:</dt>
-                                <dd class="col-sm-8">Rp {{ number_format($employee->current_salary, 0, ',', '.') }}</dd>                                
+                                <dd class="col-sm-8">Rp {{ number_format($employee->current_salary, 0, ',', '.') }}</dd>
                                 <dt class="col-sm-4">Insurance:</dt>
                                 <dd class="col-sm-8">{{ $employee->insurance ? 'Yes' : 'No' }}</dd>
                                 <dt class="col-sm-4">Serious Illness:</dt>
@@ -75,12 +75,15 @@
                                 <dt class="col-sm-4">Emergency Number:</dt>
                                 <dd class="col-sm-8">{{ $employee->emergency_number }}</dd>
                                 <dt class="col-sm-4">Status:</dt>
-                                <dd class="col-sm-8">{{ $employee->status }}</dd>
+                                <dd class="col-sm-8">
+                                    <span
+                                        class="badge {{ $employee->status == 'Active' ? 'badge-success' : 'badge-danger' }}">
+                                        {{ ucfirst($employee->status) }}
+                                    </span>
+                                </dd>
                             </dl>
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>

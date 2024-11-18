@@ -23,6 +23,7 @@ class CreatePayrollsTable extends Migration
             $table->timestamps();
 
             // Foreign Key relation dengan tabel employees
+
             $table->foreign('employee_id')->references('employee_id')->on('employees')->onDelete('cascade');
         });
         

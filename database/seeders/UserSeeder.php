@@ -125,7 +125,10 @@ class UserSeeder extends Seeder
                 'emergency_contact' => $faker->name,
                 'relations' => $faker->randomElement(['Parent', 'Guardian', 'Husband', 'Wife', 'Sibling']),
                 'emergency_number' => $faker->phoneNumber,
-                'status' => 'active',
+                'status' => 'Active',
+                'check_in_time' => Carbon::now()->setTime(rand(7, 9), 0), // Set ke jam dengan menit 0
+                'check_out_time' => Carbon::now()->setTime(rand(17, 19), 0), // Set ke jam dengan menit 0
+
             ]);
 
             // Membuat pengguna untuk karyawan ini di tabel User
@@ -145,7 +148,10 @@ class UserSeeder extends Seeder
                 $user->assignRole($employeeRole);
             } else {
                 $this->command->warn('Role "employee" not found.');
+
             }
+
+
         }
 
         $this->command->info('Users and roles seeded successfully.');

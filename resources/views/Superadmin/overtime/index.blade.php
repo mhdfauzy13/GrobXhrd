@@ -54,6 +54,7 @@
                                     <td>{{ $overtime->notes }}</td>
                                     <td class="text-center">{{ number_format($overtime->employee->current_salary,  0, ',', '.') }}</td>
 
+
                                 </tr>
                             @endforeach
                         </tbody>

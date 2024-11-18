@@ -151,6 +151,153 @@
     }
 </script>
 
+
+{{-- SCRIPT BUAT FORM SEARCH EMPLOYEE NAME --}}
+
+@if (Route::is('overtime.create'))
+    <script>
+        // Data karyawan dari backend
+        const employees = @json($employees);
+
+        // Fungsi untuk memfilter karyawan berdasarkan input nama
+        function filterEmployees() {
+            const query = document.getElementById('employee_name').value.toLowerCase();
+            const list = document.getElementById('employee-list');
+            list.innerHTML = ''; // Kosongkan list sebelum diisi
+
+            // Filter karyawan berdasarkan nama yang cocok dengan input
+            const filteredEmployees = employees.filter(employee => {
+                const fullName = `${employee.first_name} ${employee.last_name}`.toLowerCase();
+                return fullName.includes(query);
+            });
+
+            // Tampilkan hasil pencarianf
+            filteredEmployees.forEach(employee => {
+                const item = document.createElement('a');
+                item.classList.add('list-group-item', 'list-group-item-action');
+                item.textContent = `${employee.first_name} ${employee.last_name}`; // Tampilkan nama lengkap
+                item.onclick = () => selectEmployee(employee.employee_id,
+                    `${employee.first_name} ${employee.last_name}`);
+                list.appendChild(item);
+            });
+
+            // Tampilkan atau sembunyikan daftar berdasarkan hasil pencarian
+            list.style.display = filteredEmployees.length > 0 ? 'block' : 'none';
+        }
+
+        // Fungsi untuk memilih nama karyawan dari daftar
+        function selectEmployee(id, name) {
+            document.getElementById('employee_name').value = name;
+            document.getElementById('employee_id').value = id;
+            document.getElementById('employee-list').style.display = 'none'; // Sembunyikan daftar setelah memilih
+        }
+
+        // Fungsi untuk memastikan input hanya berasal dari daftar karyawan yang ada
+        document.getElementById('employee_name').addEventListener('blur', function() {
+            const inputName = this.value.toLowerCase();
+            const matchedEmployee = employees.find(employee => {
+                const fullName = `${employee.first_name} ${employee.last_name}`.toLowerCase();
+                return fullName === inputName; // Cocokkan dengan nama lengkap
+            });
+
+            if (!matchedEmployee) {
+            // Tampilkan alert SweetAlert2
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Employee name not found. Please select a name from the list.',
+            });
+
+            // Kosongkan input jika tidak ada yang cocok
+            this.value = ''; 
+            document.getElementById('employee_id').value = ''; // Kosongkan ID juga
+        }
+        });
+
+        // Event listener untuk menangani pencarian saat mengetik
+        document.getElementById('employee_name').addEventListener('keyup', filterEmployees);
+    </script>
+@endif
+
+
+
+
+
+{{-- SCRIPT BUAT DURATION TIME OVERTIME --}}
+
+
+<script>
+    document.getElementById('duration').addEventListener('input', function() {
+        const value = this.value;
+        const feedback = document.getElementById('duration-feedback');
+
+        // Memastikan bahwa input adalah angka bulat dan dalam rentang 1 hingga 8
+        if (!Number.isInteger(Number(value)) || Number(value) < 1 || Number(value) > 8) {
+            feedback.style.display = 'block'; // Tampilkan pesan kesalahan
+            this.classList.add('is-invalid'); // Tambahkan kelas invalid
+        } else {
+            feedback.style.display = 'none'; // Sembunyikan pesan kesalahan
+            this.classList.remove('is-invalid'); // Hapus kelas invalid
+        }
+    });
+</script>
+
+
+
+{{-- SCRIPT UNTUK SEARCH INPUTAN DI TABEL EMPLOYEE --}}
+
+<script>
+    // Event listener untuk menangani pencarian saat mengetik
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        let query = this.value;
+
+        // Kirimkan request AJAX jika query tidak kosong
+        if (query.length > 2 || query === '') {
+            fetchEmployees(query);
+        }
+    });
+
+    // Fungsi untuk mendapatkan dan menampilkan data karyawan berdasarkan query
+    function fetchEmployees(query) {
+        fetch("{{ route('employee.index') }}?search=" + query, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            let tableBody = document.querySelector('tbody');
+            tableBody.innerHTML = ''; // Bersihkan tabel
+
+            data.employees.forEach(employee => {
+                let row = `
+                    <tr>
+                        <td class="text-left">${employee.first_name}</td>
+                        <td class="text-center">${employee.last_name}</td>
+                        <td class="text-center">${employee.email}</td>
+                        <td class="text-center">${employee.address}</td>
+                        <td class="project-actions text-right">
+                            <a class="btn btn-info btn-sm" href="/employee/${employee.employee_id}/edit">
+                                <i class="fas fa-pencil-alt"></i> Edit
+                            </a>
+                            <form method="POST" action="/employee/${employee.employee_id}" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                `;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+        })
+        .catch(error => console.log(error));
+    }
+</script>
+
 {{-- SCRIPT ALERT BUAT SAVE --}}
 
 <script>
@@ -373,6 +520,7 @@
 </script>
 
 
+
 {{-- SCRIPT UNTUK PAYROLL --}}
 
 <script>
@@ -386,4 +534,3 @@
             if (response.ok) location.reload();
         });
     }
-</script>

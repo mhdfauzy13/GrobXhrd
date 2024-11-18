@@ -275,8 +275,8 @@
                             </li>
                         </ul>
                     </li>
-
                 @endcanany
+
 
                     @canany(['employeebook.index'])
                         <li class="nav-item menu-open">
