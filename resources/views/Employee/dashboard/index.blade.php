@@ -17,18 +17,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Another column for other content can be added here -->
-            <div class="col-lg-6 col-md-6 col-sm-12 mt-3">
-                <!-- Other content for the dashboard can go here -->
-                <div class="card card-info">
-                    <div class="card-header">
-                        <h3 class="card-title">Other Dashboard Info</h3>
-                    </div>
-                    <div class="card-body">
-                        <!-- Content goes here -->
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -42,13 +30,13 @@
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                themeSystem: 'bootstrap5', // Ensure Bootstrap 5 theme is used
-                events: '{{ route('employee.events.list') }}', // Fetch events
-                editable: false, // Disable event editing
-                droppable: false, // Disable event dragging
-                contentHeight: 'auto', // Make the calendar height dynamic
-                height: 'auto', // Adjust height based on the content
-                aspectRatio: 1.5, // Adjust the aspect ratio if necessary (controls width/height ratio)
+                themeSystem: 'bootstrap5',
+                events: '{{ route('employee.events.list') }}',
+                editable: false,
+                droppable: false,
+                contentHeight: 'auto',
+                height: 'auto',
+                aspectRatio: 1.5,
             });
             calendar.render();
         });
