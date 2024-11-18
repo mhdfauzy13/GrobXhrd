@@ -52,7 +52,7 @@
                                     <td>{{ \Carbon\Carbon::parse($overtime->overtime_date)->format('d-m-Y') }}</td>
                                     <td class="text-center">{{ $overtime->duration }} hours</td>
                                     <td>{{ $overtime->notes }}</td>
-                                    <td class="text-center">{{ number_format($overtime->employee->current_salary, 2) }}</td>
+                                    <td class="text-center">{{ number_format($overtime->employee->current_salary,  0, ',', '.') }}</td>
 
                                 </tr>
                             @endforeach

@@ -2,89 +2,68 @@
 
 namespace Database\Seeders;
 
-use App\Models\Employee;
-use App\Models\Payroll;
+use App\Models\User;
 use App\Models\AttandanceRecap;
-use App\Models\Overtime;
+use App\Models\Offrequest;
 use App\Models\WorkdaySetting;
-use App\Models\OffRequest;
-use Carbon\Carbon;
-use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class PayrollSeeder extends Seeder
 {
     public function run()
     {
-        $faker = Faker::create();
+        // Ambil semua data karyawan
+        $employees = User::all();
 
-        // Loop through each employee and create payroll data
-        $employees = Employee::all(); // Fetch all employees
+        // Ambil data workday_setting
+        $workdaySetting = WorkdaySetting::first();
+        $monthlyWorkdays = $workdaySetting ? $workdaySetting->monthly_workdays : 0;
 
+        // Loop untuk setiap employee
         foreach ($employees as $employee) {
-            // Get current year and month
-            $year = Carbon::now()->format('Y');
-            $month = Carbon::now()->format('m');
-            $monthYear = $year . $month;  // Format as YYYYMM
 
-            // Create attendance recap
-            $attandanceRecap = AttandanceRecap::create([
+            // Ambil data dari AttandanceRecap untuk karyawan ini
+            $attendanceRecap = AttandanceRecap::where('employee_id', $employee->id)
+                                               ->where('month', now()->format('Y-m')) // Ambil bulan ini
+                                               ->first();
+
+            // Jika tidak ada data kehadiran, set default 0
+            $totalPresent = $attendanceRecap ? $attendanceRecap->total_present : 0;
+            $totalLate = $attendanceRecap ? $attendanceRecap->total_late : 0;
+            $totalEarly = $attendanceRecap ? $attendanceRecap->total_early : 0;
+
+            // Ambil total days off dari offrequest yang statusnya approved
+            $totalDaysOff = Offrequest::where('user_id', $employee->id)
+                                      ->where('status', 'approved')
+                                      ->get()
+                                      ->sum(function ($offrequest) {
+                                          return $offrequest->start_event->diffInDays($offrequest->end_event) + 1;
+                                      });
+
+            // Hitung total hari yang bekerja (perbedaan antara hari kerja dan hari libur)
+            $totalWorkedDays = $monthlyWorkdays - $totalDaysOff;
+
+            // Hitung gaji berdasarkan kehadiran (asumsi dasar untuk contoh ini)
+            $salaryPerDay = $employee->current_salary / $monthlyWorkdays;
+            $totalSalary = $totalWorkedDays * $salaryPerDay;
+
+            // Membuat data payroll untuk employee ini
+            DB::table('payrolls')->insert([
                 'employee_id' => $employee->id,
-                'month' => $monthYear,  // Use the YYYYMM format for month
-                'total_present' => $faker->numberBetween(15, 22), // Random days worked
-                'total_late' => $faker->numberBetween(0, 5), // Random late days
-                'total_early' => $faker->numberBetween(0, 5), // Random early leave days
+                'salary' => $totalSalary,
+                'total_days_worked' => $totalWorkedDays,
+                'total_days_off' => $totalDaysOff,
+                'total_late_check_in' => $totalLate,
+                'total_early_check_out' => $totalEarly,
+                'month' => now()->format('F Y'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
-
-            // Create overtime records for employee (dummy data)
-            $overtime = Overtime::create([
-                'employee_id' => $employee->id,
-                'month' => $monthYear,  // Use the YYYYMM format for month
-                'duration' => $faker->numberBetween(1, 5), // Random overtime hours
-            ]);
-
-            // Workday settings (assuming there is one set of settings for all employees)
-            $workdaySetting = WorkdaySetting::first(); // Get the first workday setting record
-
-            // OffRequests (dummy data for 2 approved off requests)
-            $offRequest1 = OffRequest::create([
-                'employee_id' => $employee->id,
-                'start_event' => Carbon::now()->subDays(10)->format('Y-m-d'),
-                'end_event' => Carbon::now()->subDays(9)->format('Y-m-d'),
-                'status' => 'approved',
-            ]);
-            $offRequest2 = OffRequest::create([
-                'employee_id' => $employee->id,
-                'start_event' => Carbon::now()->subDays(5)->format('Y-m-d'),
-                'end_event' => Carbon::now()->subDays(4)->format('Y-m-d'),
-                'status' => 'approved',
-            ]);
-
-            // Create payroll record for employee
-            $payroll = Payroll::create([
-                'employee_id' => $employee->id,
-                'attandance_recap_id' => $attandanceRecap->id,
-                'overtime_id' => $overtime->id,
-                'workday_setting_id' => $workdaySetting->id,
-            ]);
-
-            // Logic to calculate payroll based on attendance recap, off requests, overtime, etc.
-            $payroll->total_days_worked = $attandanceRecap->total_present;
-            $payroll->total_days_off = $offRequest1->getApprovedOffDays() + $offRequest2->getApprovedOffDays();
-            $payroll->total_late_check_in = $attandanceRecap->total_late;
-            $payroll->total_early_check_out = $attandanceRecap->total_early;
-            $payroll->effective_work_days = $workdaySetting->monthly_workdays;
-            $payroll->current_salary = $employee->current_salary;
-
-            // Calculate overtime pay
-            $hourlyRate = $employee->current_salary / ($workdaySetting->monthly_workdays * 8); // Assuming 8 hours per day
-            $overtimePay = $overtime->duration * $hourlyRate;
-            $payroll->overtime_pay = $overtimePay;
-
-            // Total salary calculation
-            $payroll->total_salary = (($employee->current_salary / $workdaySetting->monthly_workdays) * $payroll->total_days_worked) + $overtimePay;
-
-            $payroll->save();
         }
+
+        // Menampilkan pesan berhasil
+        $this->command->info('Payroll seeder berhasil dijalankan!');
     }
 }

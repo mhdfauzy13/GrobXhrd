@@ -7,7 +7,7 @@
             <div class="row mb-3">
                 <div class="col-md-4">
                     <form action="{{ route('payroll.index') }}" method="GET">
-                        <div class="input-group">
+                        {{-- <div class="input-group">
                             <label for="month">Month:</label>
                             <select name="month" id="month">
                                 @foreach (range(1, 12) as $m)
@@ -27,13 +27,11 @@
                                 @endforeach
                             </select>
                             <button type="submit" class="btn btn-primary">Filter</button>
-                        </div>
+                        </div> --}}
                     </form>
                 </div>
                 
-            <form method="GET" action="{{ route('payroll.export') }}">
-                <button type="submit" class="btn btn-primary">Export to CSV</button>
-            </form>
+
             </div>
 
 
@@ -42,14 +40,12 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Payroll</h3>
-
+                
                     <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                        <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-                            <i class="fas fa-times"></i>
-                        </button>
+                        <form method="GET" action="{{ route('payroll.export') }}">
+                            <button type="submit" class="btn btn-primary">Export to CSV</button>
+                        </form>
+                      
                     </div>
                 </div>
                 <div class="card-body p-0">
@@ -58,37 +54,29 @@
                             <thead>
                                 <tr>
                                     <th style="width: 20%">Employee Name</th>
+                                    <th style="width: 10%" class="text-center">Current Salary</th>
                                     <th style="width: 10%" class="text-center">Total Days Worked</th>
                                     <th style="width: 10%" class="text-center">Total Days Off</th>
                                     <th style="width: 10%" class="text-center">Total Late Check In</th>
                                     <th style="width: 10%" class="text-center">Total Early Check Out</th>
                                     <th style="width: 10%" class="text-center">Effective Work Days</th>
-                                    <th style="width: 10%" class="text-center">Current Salary</th>
                                     <th style="width: 10%" class="text-center">Overtime Pay</th>
                                     <th style="width: 10%" class="text-center">Total Salary</th>
                                     <th style="width: 10%" class="text-center">Validation Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($payrolls as $payroll)
-                                    <tr>
-                                        <td>{{ $payroll->employee->first_name }} {{ $payroll->employee->last_name }}</td>
-                                        <td>{{ $payroll->attandanceRecap->total_present }}</td>
-                                        <td>{{ $payroll->attandanceRecap->total_absent }}</td>
-                                        <td>{{ $payroll->attandanceRecap->total_late }}</td>
-                                        <td>{{ $payroll->attandanceRecap->total_early }}</td>
-                                        <td>{{ $payroll->workdaySetting->monthly_workdays }}</td>
-                                        <td>{{ $payroll->employee->current_salary }}</td>
-                                        <td>{{ $payroll->overtime_pay }}</td>
-                                        <td>{{ $payroll->total_salary }}</td>
-                                        <td>
-                                            @if ($payroll->validation_status)
-                                                <button disabled>Valid</button>
-                                            @else
-                                                <button onclick="validatePayroll({{ $payroll->id }})">Validate</button>
-                                            @endif
-                                        </td>
-                                    </tr>
+                                @foreach ($payrollData as $data)
+                                <tr>
+                                    <td>{{ $data['employee_name'] }}</td>
+                                    <td>{{ number_format($data['current_salary'], 0, ',', '.') }}</td>
+                                    <td>{{ $data['total_days_worked'] }}</td>
+                                    <td>{{ $data['total_days_off'] }}</td>
+                                    <td>{{ $data['total_late_check_in'] }}</td>
+                                    <td>{{ $data['total_early_check_out'] }}</td>
+                                    <td>{{ $data['monthly_workdays'] }}</td>
+                                    {{-- <td>{{ $data['overtime_pay'] }}</td> --}}
+                                </tr>
                                 @endforeach
                             </tbody>
                         </table>

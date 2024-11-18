@@ -10,41 +10,41 @@
             <form action="{{ route('offrequest.store') }}" method="POST" enctype="multipart/form-data"> <!-- tambahkan enctype -->
                 @csrf
                 <div class="form-group">
-                    <label for="name">Nama</label>
+                    <label for="name">Name</label>
                     <input type="text" class="form-control" id="name" value="{{ Auth::user()->name }}" readonly>
                 </div>
 
                 <div class="form-group">
-                    <label for="title">Tipe Off</label>
+                    <label for="title">Tipe Off Request</label>
                     <select class="form-control" id="title" name="title" required>
-                        <option value="Sakit">Sakit</option>
-                        <option value="Liburan">Liburan</option>
-                        <option value="Urusan Keluarga">Urusan Keluarga</option>
+                        <option value="Sakit">Sick</option>
+                        <option value="Liburan">Holiday</option>
+                        <option value="Urusan Keluarga">Family Matters</option>
                         <option value="Absence">Absence</option>
                         <option value="Personal Time">Personal Time</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Deskripsi</label>
+                    <label for="description">Description</label>
                     <textarea name="description" class="form-control" id="description" rows="4"
-                        placeholder="Masukkan deskripsi permohonan cuti" required></textarea>
+                        placeholder="Enter the leave request description" required></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="start_event">Tanggal Mulai</label>
+                    <label for="start_event">Start Event</label>
                     <input type="date" name="start_event" class="form-control" id="start_event" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="end_event">Tanggal Selesai</label>
+                    <label for="end_event">End Event</label>
                     <input type="date" name="end_event" class="form-control" id="end_event" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="manager_id">Pilih Manager</label>
+                    <label for="manager_id">Select Manager</label>
                     <select name="manager_id" id="manager_id" class="form-control" required>
-                        <option value="">Pilih Manager</option>
+                        <option value="">Select Manager</option>
                         @foreach ($approvers as $approver)
                             <option value="{{ $approver->user_id }}">{{ $approver->name }}</option>
                         @endforeach
@@ -52,7 +52,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="image">Upload Bukti Cuti</label>
+                    <label for="image">Upload Off Request Proof</label>
                     <div class="input-group">
                         <div class="custom-file">
                             <input type="file" name="image" class="custom-file-input @error('image') is-invalid @enderror" id="image" required>

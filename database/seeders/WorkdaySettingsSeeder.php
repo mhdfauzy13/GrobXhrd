@@ -17,10 +17,13 @@ class WorkdaySettingsSeeder extends Seeder
         $weeklyWorkdays = count($effectiveDays);
         $monthlyWorkdays = $weeklyWorkdays * 4;
 
-        // Buat data default di tabel workday_settings
-        WorkdaySetting::create([
+       // Cek apakah data sudah ada sebelum membuat
+       WorkdaySetting::updateOrCreate(
+        ['id' => 1], // ID unik agar hanya ada satu pengaturan
+        [
             'effective_days' => $effectiveDays,
             'monthly_workdays' => $monthlyWorkdays,
-        ]);
+        ]
+    );
     }
 }
