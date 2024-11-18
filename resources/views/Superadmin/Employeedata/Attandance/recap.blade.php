@@ -7,11 +7,14 @@
                 <h3 class="card-title">Attendance Recap {{ $employee->first_name }} {{ $employee->last_name }}</h3>
 
                 <div class="card-tools">
-                    <form method="GET" action="{{ route('attendance.recap', ['employee_id' => $employee->employee_id]) }}" class="form-inline">
+                    <form method="GET" action="{{ route('attendance.recap', ['employee_id' => $employee->employee_id]) }}"
+                        class="form-inline">
                         <div class="form-group mr-2">
-                            <input type="month" name="month" class="form-control" value="{{ $month }}" style="border-radius: 10px;">
+                            <input type="month" name="month" class="form-control" value="{{ $month }}"
+                                style="border-radius: 10px;">
                         </div>
-                        <button type="submit" class="btn btn-light" style="border-radius: 10px; padding: 5px 15px;">Filter</button>
+                        <button type="submit" class="btn btn-light"
+                            style="border-radius: 10px; padding: 5px 15px;">Filter</button>
                     </form>
                 </div>
             </div>
@@ -31,7 +34,7 @@
                                 <td>{{ $attendance->created_at->format('Y-m-d') }}</td>
                                 <td>{{ $attendance->check_in ? $attendance->check_in->format('H:i:s') : '-' }}</td>
                                 <td>{{ $attendance->check_out ? $attendance->check_out->format('H:i:s') : '-' }}</td>
-                                
+
                                 <td>
                                     @if ($attendance->check_in_status && !$attendance->check_out)
                                         {{ $attendance->check_in_status }}
@@ -50,7 +53,6 @@
                     </tbody>
                 </table>
 
-                <!-- Rekap Total Statistik -->
                 <div class="mt-4">
                     <h5>Recap Total for Month: {{ $month }}</h5>
                     <ul class="list-group">
@@ -70,6 +72,7 @@
                             Total Absent
                             <span class="badge badge-danger badge-pill">{{ $totalAbsent }}</span>
                         </li>
+
                     </ul>
                 </div>
             </div>

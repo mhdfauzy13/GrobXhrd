@@ -40,63 +40,83 @@ class DataUserController extends Controller
             'role' => 'required|string',
             'password' => 'required|min:8|confirmed',
         ]);
+        try {
+            // Membuat user baru
+            $user = User::create([
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'password' => Hash::make($request->input('password')),
+            ]);
 
-        // Membuat user baru
-        $user = User::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
-        ]);
+            // Menetapkan role untuk user
+            $user->assignRole($request->input('role'));
 
-        // Menetapkan role untuk user
-        $user->assignRole($request->input('role'));
-
-        // Redirect kembali dengan session success
-        return redirect()->route('datauser.index')->with('success', 'Akun berhasil dibuat');
+            // Redirect kembali dengan session success
+            return redirect()->route('datauser.index')->with('success', 'Akun berhasil dibuat');
+        } catch (\Exception $e) {
+            return back()->withErrors($e->getMessage());
+        }
     }
 
     public function edit($userId)
     {
-        $user = User::findOrFail($userId); // Mencari user berdasarkan user_id, atau tampilkan 404 jika tidak ditemukan
+        $user = User::findOrFail($userId); // Temukan user berdasarkan user_id atau tampilkan 404 jika tidak ditemukan
 
         $roles = Role::all(); // Ambil semua role yang tersedia
-        $isEmployee = $user->employee()->exists(); // Pengecekan apakah user terkait dengan employee
+        $isEmployee = $user->employee()->exists(); // Cek apakah user terkait dengan employee
 
         return view('Superadmin.MasterData.user.update', [
             'user' => $user,
             'roles' => $roles,
-            'isEmployee' => $isEmployee, // Berikan info apakah user terkait dengan employee
+            'isEmployee' => $isEmployee,
         ]);
     }
 
     public function update(Request $request, $userId)
     {
-        $user = User::findOrFail($userId); 
+        $user = User::findOrFail($userId);
 
-        $request->validate([
+        // Validasi input
+        $validatedData = $request->validate([
             'name' => 'required|string',
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($user->user_id, 'user_id')],
             'role' => 'required|string',
             'password' => 'nullable|min:8|confirmed',
         ]);
 
-        if (!$user->employee()->exists()) {
-            $user->name = $request->input('name');
-            $user->email = $request->input('email');
+        try {
+            // Cek apakah user memiliki hubungan dengan employee
+            $isEmployee = $user->employee()->exists();
+
+            if ($isEmployee) {
+                // Jika user terkait dengan employee, jangan perbolehkan update name dan email
+                $user->role()->sync($validatedData['role']);
+
+                // Update password jika ada
+                if (!empty($validatedData['password'])) {
+                    $user->password = Hash::make($validatedData['password']);
+                }
+            } else {
+                // Jika user tidak terkait dengan employee, perbolehkan update name dan email
+                $user->name = $validatedData['name'];
+                $user->email = $validatedData['email'];
+
+                // Update password jika ada
+                if (!empty($validatedData['password'])) {
+                    $user->password = Hash::make($validatedData['password']);
+                }
+
+                // Sinkronisasi role
+                $user->syncRoles($validatedData['role']);
+            }
+
+            // Simpan perubahan
+            $user->save();
+
+            return redirect()->route('datauser.index')->with('success', 'Data berhasil disimpan!');
+        } catch (\Exception $e) {
+            return back()->withErrors($e->getMessage());
         }
-
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->input('password'));
-        }
-
-        $user->save();
-        $user->syncRoles($request->input('role')); 
-
-        if ($user->employee()->exists()) {
-            $user->employee()->update(['user_id' => $user->user_id]);
-        }
-
-        return redirect()->route('datauser.index')->with('success', 'Data Berhasil Disimpan!');
     }
 
     public function destroy($userId)

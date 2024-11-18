@@ -48,15 +48,18 @@ class RoleController extends Controller
             'permissions.*' => 'string|exists:permissions,name',
             'status' => 'required|string|in:enable,disable',
         ]);
+        try {
+            $role = Role::create([
+                'name' => $validatedData['name'],
+                'status' => $validatedData['status'],
+            ]);
 
-        $role = Role::create([
-            'name' => $validatedData['name'],
-            'status' => $validatedData['status'],
-        ]);
+            $role->syncPermissions($validatedData['permissions']);
 
-        $role->syncPermissions($validatedData['permissions']);
-
-        return redirect()->route('role.index')->with('success', 'Role berhasil dibuat.');
+            return redirect()->route('role.index')->with('success', 'Role berhasil dibuat.');
+        } catch (\Exception $e) {
+            return back()->withErrors($e->getMessage());
+        }
     }
 
     public function edit($id)
@@ -76,16 +79,19 @@ class RoleController extends Controller
             'permissions.*' => 'string|exists:permissions,name',
             'status' => 'required|string|in:enable,disable',
         ]);
+        try {
+            $role = Role::findOrFail($id);
+            $role->update([
+                'name' => $validatedData['name'],
+                'status' => $validatedData['status'],
+            ]);
 
-        $role = Role::findOrFail($id);
-        $role->update([
-            'name' => $validatedData['name'],
-            'status' => $validatedData['status'],
-        ]);
+            $role->syncPermissions($validatedData['permissions']);
 
-        $role->syncPermissions($validatedData['permissions']);
-
-        return redirect()->route('role.index')->with('success', 'Role berhasil diperbarui.');
+            return redirect()->route('role.index')->with('success', 'Role berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return back()->withErrors($e->getMessage());
+        }
     }
 
     public function destroy($id)

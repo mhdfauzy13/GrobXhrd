@@ -6,7 +6,6 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-xl-6">
-                        <h1>Edit Employee</h1>
                     </div>
                 </div>
             </div>
@@ -16,10 +15,27 @@
             <div class="container-fluid">
                 <div class="card card-primary">
                     <div class="card-header">
-                        {{-- <h3 class="card-title">Edit</h3> --}}
+                        <h3 class="card-title">Edit Employee</h3>
                     </div>
+                    @if ($errors->any())
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                let errorMessages = '';
+                                @foreach ($errors->all() as $error)
+                                    errorMessages += '{{ $error }}\n';
+                                @endforeach
+                                
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: errorMessages,
+                                });
+                            });
+                        </script>
+                    @endif
 
-                    <form action="{{ route('employee.update', $employeeModel->employee_id) }}" method="POST">
+                    <form id="update-form" action="{{ route('employee.update', $employeeModel->employee_id) }}"
+                        method="POST">
                         @csrf
                         @method('PUT')
 
@@ -46,13 +62,13 @@
 
                                     <div class="form-group">
                                         <label for="check_in_time">Time Check-In</label>
-                                        <input type="time" name="check_in_time" id="check_in_time" class="form-control"
+                                        <input type="time" name="check_in_time" class="form-control"
                                             value="{{ old('check_in_time', $employeeModel->check_in_time) }}" required>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="check_out_time">Time Check-Out</label>
-                                        <input type="time" name="check_out_time" id="check_out_time" class="form-control"
+                                        <input type="time" name="check_out_time" class="form-control"
                                             value="{{ old('check_out_time', $employeeModel->check_out_time) }}" required>
                                     </div>
 
@@ -70,7 +86,7 @@
 
                                     <div class="form-group">
                                         <label for="identity_number">Identity Number</label>
-                                        <input type="text" name="identity_number" id="identity_number"
+                                        <input type="number" name="identity_number" id="identity_number"
                                             class="form-control"
                                             value="{{ old('identity_number', $employeeModel->identity_number) }}">
                                     </div>
@@ -115,7 +131,7 @@
 
                                     <div class="form-group">
                                         <label for="phone_number">Phone Number</label>
-                                        <input type="text" name="phone_number" id="phone_number" class="form-control"
+                                        <input type="number" name="phone_number" id="phone_number" class="form-control"
                                             value="{{ old('phone_number', $employeeModel->phone_number) }}">
                                     </div>
                                 </div>
@@ -123,7 +139,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="hp_number">HP Number</label>
-                                        <input type="text" name="hp_number" id="hp_number" class="form-control"
+                                        <input type="number" name="hp_number" id="hp_number" class="form-control"
                                             value="{{ old('hp_number', $employeeModel->hp_number) }}">
                                     </div>
 
@@ -205,10 +221,11 @@
                                     <div class="form-group">
                                         <label for="current_salary">Current Salary</label>
                                         <input type="text" name="current_salary" id="current_salary"
-                                            class="form-control" oninput="formatCurrency(this)"
+                                            class="form-control"
                                             value="{{ old('current_salary', number_format($employeeModel->current_salary, 0, ',', '.')) }}"
-                                            required>
+                                            oninput="formatCurrency(this)" required>
                                     </div>
+
                                     <div class="form-group">
                                         <label for="insurance">Insurance</label>
                                         <select name="insurance" id="insurance" class="form-control">
@@ -267,7 +284,7 @@
 
                                     <div class="form-group">
                                         <label for="emergency_number">Emergency Number</label>
-                                        <input type="text" name="emergency_number" id="emergency_number"
+                                        <input type="number" name="emergency_number" id="emergency_number"
                                             class="form-control"
                                             value="{{ old('emergency_number', $employeeModel->emergency_number) }}">
                                     </div>
@@ -289,11 +306,56 @@
                         </div>
 
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Update</button>
+                            <button type="button" class="btn btn-primary" id="submit-btn">Update</button>
                         </div>
                     </form>
+                    <script>
+                        function formatCurrency(input) {
+                            // Menghapus semua karakter selain angka dan koma
+                            let value = input.value.replace(/[^\d]/g, '');
+
+                            // Memasukkan pemisah ribuan
+                            value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+                            // Memperbarui nilai input
+                            input.value = value;
+                        }
+                    </script>
+
+                    <script>
+                        document.getElementById('submit-btn').addEventListener('click', function() {
+                            Swal.fire({
+                                title: "Do you want to save the changes?",
+                                showDenyButton: true,
+                                showCancelButton: true,
+                                confirmButtonText: "Save",
+                                denyButtonText: `Don't save`
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    Swal.fire("Saved!", "", "success").then(() => {
+                                        document.getElementById('update-form').submit();
+                                    });
+                                } else if (result.isDenied) {
+                                    Swal.fire("Changes are not saved", "", "info");
+                                }
+                            });
+                        });
+                    </script>
                 </div>
             </div>
         </section>
     </div>
+@endsection
+@section('scripts')
+    <script>
+        // Cek jika ada pesan error di session
+        @if (session('error'))
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "{{ session('error') }}",
+                footer: '<a href="#">Why do I have this issue?</a>'
+            });
+        @endif
+    </script>
 @endsection

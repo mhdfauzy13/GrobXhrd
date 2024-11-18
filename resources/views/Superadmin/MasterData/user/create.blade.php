@@ -2,39 +2,46 @@
 
 @section('content')
     <div class="content">
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-xl-6">
-                        <h1>Add User</h1>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <section class="content">
             <div class="container-fluid">
                 <div class="card card-primary">
                     <div class="card-header">
-                        {{-- <h3 class="card-title">Create</h3> --}}
+                        <h3 class="card-title">Add User</h3>
                     </div>
+                    @if ($errors->any())
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                let errorMessages = '';
+                                @foreach ($errors->all() as $error)
+                                    errorMessages += '{{ $error }}\n';
+                                @endforeach
 
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: errorMessages,
+                                });
+                            });
+                        </script>
+                    @endif
                     <form action="{{ route('datauser.store') }}" method="POST" id="userForm">
                         @csrf
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="name">Name</label>
-                                <input type="text" name="name" id="name" class="form-control" required>
+                                <input type="text" name="name" id="name" class="form-control"
+                                    value="{{ old('name') }}" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" name="email" id="email" class="form-control" required>
+                                <input type="email" name="email" id="email" class="form-control"
+                                    value="{{ old('email') }}" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="role">Role</label>
-                                <select name="role" id="role" class="form-control" required>
+                                <select name="role" id="role" class="form-control" value="{{ old('role') }}" required>
                                     @foreach (\Spatie\Permission\Models\Role::all() as $role)
                                         <option value="{{ $role->name }}">{{ $role->name }}</option>
                                     @endforeach

@@ -31,59 +31,74 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         // Validasi input
-        $validatedData = $request->validate([
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'email' => 'required|email|unique:employees,email',
-            'check_in_time' => 'required|date_format:H:i',
-            'check_out_time' => 'required|date_format:H:i|after:check_in_time',
-            'place_birth' => 'required|string',
-            'date_birth' => 'nullable|date',
-            'identity_number' => 'nullable|string',
-            'address' => 'nullable|string',
-            'current_address' => 'nullable|string',
-            'blood_type' => 'nullable|in:A,B,AB,O',
-            'blood_rhesus' => 'nullable|string',
-            'phone_number' => 'nullable|string',
-            'hp_number' => 'nullable|string',
-            'marital_status' => 'nullable|in:Single,Married,Widow,Widower',
-            'last_education' => 'nullable|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelors Degree,Masters Degree,Doctoral Degree',
-            'degree' => 'nullable|string',
-            'starting_date' => 'nullable|date',
-            'interview_by' => 'nullable|string',
-            'current_salary' => 'nullable|string',
-            'insurance' => 'nullable|boolean',
-            'serious_illness' => 'nullable|string',
-            'hereditary_disease' => 'nullable|string',
-            'emergency_contact' => 'nullable|string',
-            'relations' => 'nullable|in:Parent,Guardian,Husband,Wife,Sibling',
-            'emergency_number' => 'nullable|string',
-            'status' => 'nullable|in:Active,Inactive',
-        ]);
+        $validatedData = $request->validate(
+            [
+                'first_name' => 'required|string',
+                'last_name' => 'required|string',
+                'email' => 'required|email|unique:employees,email',
+                'check_in_time' => 'required|date_format:H:i',
+                'check_out_time' => 'required|date_format:H:i|after:check_in_time',
+                'place_birth' => 'required|string',
+                'date_birth' => 'nullable|date',
+                'identity_number' => 'nullable|regex:/^[0-9]+$/|max:20',
+                'address' => 'nullable|string',
+                'current_address' => 'nullable|string',
+                'blood_type' => 'nullable|in:A,B,AB,O',
+                'blood_rhesus' => 'nullable|string',
+                'phone_number' => 'nullable|regex:/^[0-9]+$/|max:15',
+                'hp_number' => 'nullable|regex:/^[0-9]+$/|max:15',
+                'marital_status' => 'nullable|in:Single,Married,Widow,Widower',
+                'last_education' => 'nullable|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelors Degree,Masters Degree,Doctoral Degree',
+                'degree' => 'nullable|string',
+                'starting_date' => 'nullable|date',
+                'interview_by' => 'nullable|string',
+                'current_salary' => 'nullable|string',
+                'insurance' => 'nullable|boolean',
+                'serious_illness' => 'nullable|string',
+                'hereditary_disease' => 'nullable|string',
+                'emergency_contact' => 'nullable|string',
+                'relations' => 'nullable|in:Parent,Guardian,Husband,Wife,Sibling',
+                'emergency_number' => 'nullable|regex:/^[0-9]+$/|max:15',
+                'status' => 'nullable|in:Active,Inactive',
+            ],
+            [
+                'identity_number.regex' => 'Identity number must only contain numbers.',
+                'identity_number.max' => 'Identity number cannot exceed 20 digits.',
+                'phone_number.regex' => 'Phone number must only contain numbers.',
+                'phone_number.max' => 'Phone number cannot exceed 15 digits.',
+                'hp_number.regex' => 'HP number must only contain numbers.',
+                'hp_number.max' => 'HP number cannot exceed 15 digits.',
+                'emergency_number.regex' => 'Emergency number must only contain numbers.',
+                'emergency_number.max' => 'Emergency number cannot exceed 15 digits.',
+            ],
+        );
 
         // Hapus titik pada `current_salary` dan konversi ke integer
         if (isset($request->current_salary)) {
             $validatedData['current_salary'] = (int) str_replace('.', '', $request->current_salary);
         }
 
-        // Membuat employee
-        $employee = Employee::create($validatedData);
+        try {
+            // Proses penyimpanan data employee
+            $employee = Employee::create($validatedData);
 
-        // Membuat user dengan data dari employee
-        $user = User::create([
-            'name' => $request->first_name . ' ' . $request->last_name,
-            'email' => $request->email,
-            'password' => bcrypt('defaultpassword'), // Password default
-            'employee_id' => $employee->employee_id, // Set employee_id di sini
-        ]);
+            // Proses penyimpanan data user
+            $user = User::create([
+                'name' => $request->first_name . ' ' . $request->last_name,
+                'email' => $request->email,
+                'password' => bcrypt('defaultpassword'),
+                'employee_id' => $employee->employee_id,
+            ]);
 
-        // Memperbarui `user_id` pada employee
-        $employee->user_id = $user->user_id;
-        $employee->save();
+            $employee->user_id = $user->user_id;
+            $employee->save();
 
-        return redirect()
-            ->route('datauser.edit', $user->user_id) // Menggunakan datauser.edit
-            ->with('success', 'Employee created. Now configure user details.');
+            return redirect()
+                ->route('datauser.edit', $user->user_id)
+                ->with('success', 'Employee created successfully.');
+        } catch (\Exception $e) {
+            return back()->withErrors($e->getMessage());
+        }
     }
 
     public function edit($employee)
@@ -94,66 +109,79 @@ class EmployeeController extends Controller
             return redirect()->route('employee.index')->with('error', 'Data tidak ditemukan!');
         }
 
-        // Format `current_salary` untuk tampilan di view
-        $employeeModel->current_salary = number_format($employeeModel->current_salary, 0, ',', '.');
-
+        // Tidak perlu memformat current_salary di sini
         return view('Superadmin.Employeedata.Employee.update', compact('employeeModel'));
     }
 
     public function update(Request $request, $employeeId)
     {
-        $employeeModel = Employee::where('employee_id', $employeeId)->first();
+        $employeeModel = Employee::findOrFail($employeeId);
 
-        if (!$employeeModel) {
-            return redirect()->route('employee.index')->with('error', 'Data tidak ditemukan!');
-        }
+        // Validasi input
+        $validatedData = $request->validate(
+            [
+                'first_name' => 'required|string',
+                'last_name' => 'required|string',
+                'email' => 'required|email|unique:employees,email,' . $employeeModel->employee_id . ',employee_id',
+                'check_in_time' => 'nullable|date_format:H:i:s',
+                'check_out_time' => 'nullable|date_format:H:i:s|after:check_in_time',
+                'place_birth' => 'required|string',
+                'date_birth' => 'nullable|date',
+                'identity_number' => 'nullable|regex:/^[0-9]+$/|max:20',
+                'address' => 'nullable|string',
+                'current_address' => 'nullable|string',
+                'blood_type' => 'nullable|in:A,B,AB,O',
+                'blood_rhesus' => 'nullable|string',
+                'phone_number' => 'nullable|regex:/^[0-9]+$/|max:15',
+                'hp_number' => 'nullable|regex:/^[0-9]+$/|max:15',
+                'marital_status' => 'nullable|in:Single,Married,Widow,Widower',
+                'last_education' => 'nullable|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelors Degree,Masters Degree,Doctoral Degree',
+                'degree' => 'nullable|string',
+                'starting_date' => 'nullable|date',
+                'interview_by' => 'nullable|string',
+                'current_salary' => 'nullable|string',
+                'insurance' => 'nullable|boolean',
+                'serious_illness' => 'nullable|string',
+                'hereditary_disease' => 'nullable|string',
+                'emergency_contact' => 'nullable|string',
+                'relations' => 'nullable|in:Parent,Guardian,Husband,Wife,Sibling',
+                'emergency_number' => 'nullable|regex:/^[0-9]+$/|max:15',
+                'status' => 'nullable|in:Active,Inactive',
+            ],
+            [
+                'identity_number.regex' => 'Identity number must only contain numbers.',
+                'identity_number.max' => 'Identity number cannot exceed 20 digits.',
+                'phone_number.regex' => 'Phone number must only contain numbers.',
+                'phone_number.max' => 'Phone number cannot exceed 15 digits.',
+                'hp_number.regex' => 'HP number must only contain numbers.',
+                'hp_number.max' => 'HP number cannot exceed 15 digits.',
+                'emergency_number.regex' => 'Emergency number must only contain numbers.',
+                'emergency_number.max' => 'Emergency number cannot exceed 15 digits.',
+            ],
+        );
 
-        $request->validate([
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'email' => 'required|email|unique:employees,email,' . $employeeModel->employee_id . ',employee_id',
-            'check_in_time' => 'required|date_format:H:i',
-            'check_out_time' => 'required|date_format:H:i|after:check_in_time',
-            'place_birth' => 'required|string',
-            'date_birth' => 'nullable|date',
-            'identity_number' => 'nullable|string',
-            'address' => 'nullable|string',
-            'current_address' => 'nullable|string',
-            'blood_type' => 'nullable|in:A,B,AB,O',
-            'blood_rhesus' => 'nullable|string',
-            'phone_number' => 'nullable|string',
-            'hp_number' => 'nullable|string',
-            'marital_status' => 'nullable|in:Single,Married,Widow,Widower',
-            'last_education' => 'nullable|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelors Degree,Masters Degree,Doctoral Degree',
-            'degree' => 'nullable|string',
-            'starting_date' => 'nullable|date',
-            'interview_by' => 'nullable|string',
-            'current_salary' => 'nullable|string',
-            'insurance' => 'nullable|boolean',
-            'serious_illness' => 'nullable|string',
-            'hereditary_disease' => 'nullable|string',
-            'emergency_contact' => 'nullable|string',
-            'relations' => 'nullable|in:Parent,Guardian,Husband,Wife,Sibling',
-            'emergency_number' => 'nullable|string',
-            'status' => 'nullable|in:Active,Inactive',
-        ]);
-        // Hapus titik pada `current_salary` dan konversi ke integer
+        // Menghapus pemisah ribuan dan mengonversi ke integer
         if (isset($request->current_salary)) {
-            $current_salary = (int) str_replace('.', '', $request->current_salary);
-            $validatedData['current_salary'] = $current_salary;
+            $validatedData['current_salary'] = (int) str_replace('.', '', $request->input('current_salary'));
         }
 
-        $employeeModel->update($request->all());
+        // Update semua field lainnya
+        $employeeModel->fill($validatedData);
 
-        $user = User::where('employee_id', $employeeModel->employee_id)->first();
+        try {
+            $employeeModel->save();
 
-        if ($user) {
-            $user->name = $employeeModel->first_name . ' ' . $employeeModel->last_name;
-            $user->email = $employeeModel->email;
-            $user->save();
+            // Update data User yang terkait
+            if ($employeeModel->user) {
+                $employeeModel->user->name = $request->input('first_name') . ' ' . $request->input('last_name');
+                $employeeModel->user->email = $request->input('email');
+                $employeeModel->user->save();
+            }
+
+            return redirect()->route('employee.index')->with('success', 'Data Employee berhasil diperbarui!');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
         }
-
-        return redirect()->route('employee.index')->with('success', 'Data Berhasil Disimpan!');
     }
 
     public function destroy($employee_id)
