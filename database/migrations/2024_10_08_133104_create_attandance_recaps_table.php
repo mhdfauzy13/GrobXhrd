@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('employee_id');
             $table->foreign('employee_id')->references('employee_id')->on('employees')->onDelete('cascade');
-            $table->string('month'); // Simpan bulan dalam format Y-m misal "2023-01"
+            $table->string('month'); 
             $table->integer('total_present')->default(0);
             $table->integer('total_late')->default(0);
             $table->integer('total_early')->default(0);

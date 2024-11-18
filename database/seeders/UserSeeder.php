@@ -112,6 +112,8 @@ class UserSeeder extends Seeder
                 'relations' => $faker->randomElement(['Parent', 'Guardian', 'Husband', 'Wife', 'Sibling']),
                 'emergency_number' => $faker->phoneNumber,
                 'status' => 'Active',
+                'check_in_time' => Carbon::now()->setTime(rand(7, 9), 0), // Set ke jam dengan menit 0
+                'check_out_time' => Carbon::now()->setTime(rand(17, 19), 0), // Set ke jam dengan menit 0
             ]);
 
             // Membuat pengguna untuk karyawan ini di tabel User
@@ -131,9 +133,11 @@ class UserSeeder extends Seeder
             }
 
             // Tambah data absensi untuk karyawan ini
-            for ($j = 1; $j <= 5; $j++) {
-                // 5 hari absensi dummy per karyawan
-                $checkIn = Carbon::now()->subDays(rand(1, 30))->setTime(rand(7, 9), rand(0, 59));
+            for ($j = 1; $j <= 5; $j++) { // 5 hari absensi dummy per karyawan
+                // Set waktu check-in dengan jam bulat antara 7 hingga 9
+                $checkIn = Carbon::now()->subDays(rand(1, 30))->setHour(rand(7, 9))->minute(0)->second(0);
+
+                // Set waktu check-out dengan jam bulat antara 17 hingga 19
                 $checkOut = (clone $checkIn)->addHours(rand(8, 10)); // Waktu checkout acak antara 8-10 jam setelah checkin
 
                 Attandance::create([

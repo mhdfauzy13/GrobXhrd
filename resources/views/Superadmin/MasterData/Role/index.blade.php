@@ -5,8 +5,10 @@
     <section class="content">
         <!-- Default box -->
         <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Role</h3>
+            {{-- <div class="card-header"> --}}
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <!-- Title Role -->
+                <h3 class="card-title mb-0">Role</h3>
 
                 <div class="card-tools">
                     <a href="{{ route('role.create') }}" class="btn btn-primary" title="Create Role">

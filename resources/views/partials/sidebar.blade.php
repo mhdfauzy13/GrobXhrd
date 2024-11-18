@@ -256,6 +256,23 @@
                             </ul>
                         </li>
 
+                @endcanany
+
+                @canany(['overtime.create'])
+
+                    <li class="nav-item menu-open">
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                @can('overtime.create')
+                                    <a href="{{ route('overtime.index') }}" class="nav-link">
+                                        <i class="fas fa-calendar nav-icon"></i>
+                                        <p>Overtime</p>
+                                    </a>
+                                @endcan
+                            </li>
+                        </ul>
+                    </li>
+
                     @endcanany
 
                     @canany(['employeebook.index'])
