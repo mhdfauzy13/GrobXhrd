@@ -7,7 +7,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Employee Details</h3>
                     <div class="card-tools">
-                        <a href="{{ route('employee.index') }}" class="btn btn-primary" title="Back to List">
+                        <a href="{{ route('employee.index') }}" class="btn btn-secondary" title="Back to List">
                             <i class="fas fa-arrow-left"></i> Back
                         </a>
                     </div>
@@ -27,8 +27,8 @@
                                 <dd class="col-sm-8">{{ $employee->place_birth }}</dd>
                                 <dt class="col-sm-4">Date of Birth:</dt>
                                 <dd class="col-sm-8">{{ $employee->date_birth }}</dd>
-                                <dt class="col-sm-4">Personal No:</dt>
-                                <dd class="col-sm-8">{{ $employee->personal_no }}</dd>
+                                <dt class="col-sm-4">Identity Number:</dt>
+                                <dd class="col-sm-8">{{ $employee->identity_number }}</dd>
                                 <dt class="col-sm-4">Address:</dt>
                                 <dd class="col-sm-8">{{ $employee->address }}</dd>
                                 <dt class="col-sm-4">Current Address:</dt>
@@ -42,7 +42,6 @@
                                 <dd class="col-sm-8">{{ $employee->check_in_time }}</dd>
                                 <dt class="col-sm-4">Check OUT Time:</dt>
                                 <dd class="col-sm-8">{{ $employee->check_out_time }}</dd>
-
                                 <dt class="col-sm-4">Blood Type:</dt>
                                 <dd class="col-sm-8">{{ $employee->blood_type }}</dd>
                                 <dt class="col-sm-4">Blood Rhesus:</dt>
@@ -62,7 +61,7 @@
                                 <dt class="col-sm-4">Interview By:</dt>
                                 <dd class="col-sm-8">{{ $employee->interview_by }}</dd>
                                 <dt class="col-sm-4">Current Salary:</dt>
-                                <dd class="col-sm-8">Rp {{ number_format($employee->current_salary, 0, ',', '.') }}</dd>                                
+                                <dd class="col-sm-8">Rp {{ number_format($employee->current_salary, 0, ',', '.') }}</dd>
                                 <dt class="col-sm-4">Insurance:</dt>
                                 <dd class="col-sm-8">{{ $employee->insurance ? 'Yes' : 'No' }}</dd>
                                 <dt class="col-sm-4">Serious Illness:</dt>
@@ -76,12 +75,15 @@
                                 <dt class="col-sm-4">Emergency Number:</dt>
                                 <dd class="col-sm-8">{{ $employee->emergency_number }}</dd>
                                 <dt class="col-sm-4">Status:</dt>
-                                <dd class="col-sm-8">{{ $employee->status }}</dd>
+                                <dd class="col-sm-8">
+                                    <span
+                                        class="badge {{ $employee->status == 'Active' ? 'badge-success' : 'badge-danger' }}">
+                                        {{ ucfirst($employee->status) }}
+                                    </span>
+                                </dd>
                             </dl>
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>

@@ -15,21 +15,21 @@
 
                 @if ($offrequests->isEmpty())
                     <div class="alert alert-info" role="alert">
-                        Tidak ada pengajuan cuti yang perlu disetujui saat ini.
+                        There are no off requests that need approval at the moment.
                     </div>
                 @else
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Nama</th>
+                                    <th>Name</th>
                                     <th>Email</th>
                                     <th>Title</th>
                                     <th>Description</th>
                                     <th>Start Event</th>
                                     <th>End Event</th>
                                     <th>Status</th>
-                                    <th>Bukti Gambar</th>
+                                    <th>Image</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -103,11 +103,12 @@
                 @endif
 
                 <hr>
-
-                <h4>Riwayat Pengajuan Cuti</h4>
+                <div class="card-header">
+                    <h3 class="card-title">Leave Request History</h3>
+                </div>
                 @if ($approvedRequests->isEmpty())
                     <div class="alert alert-info" role="alert">
-                        Tidak ada riwayat pengajuan cuti.
+                        No off request history.
                     </div>
                 @else
                     <div class="table-responsive">
@@ -121,7 +122,7 @@
                                     <th>Start Event</th>
                                     <th>End Event</th>
                                     <th>Status</th>
-                                    <th>Bukti Gambar</th>
+                                    <th>Image</th>
                                 </tr>
                             </thead>
                             <tbody>

@@ -1,12 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="content">
-        <div class="container-fluid">
-            <div class="card card-primary">
-                <div class="card-header">
-                    <h3 class="card-title">Edit Recruitment</h3>
+    <div class="content">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-xl-6">
+                    </div>
                 </div>
+
                 @if ($errors->any())
                     <script>
                         document.addEventListener('DOMContentLoaded', function() {
@@ -141,10 +143,14 @@
                             </select>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Update</button>
-                    </form>
+
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </form>
+                    </div>
                 </div>
             </div>
     </section>
     </div>
 @endsection
+
+       

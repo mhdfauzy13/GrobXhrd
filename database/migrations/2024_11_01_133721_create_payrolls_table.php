@@ -8,20 +8,25 @@ class CreatePayrollsTable extends Migration
     public function up()
     {
         Schema::create('payrolls', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('payroll_id');
             $table->unsignedBigInteger('employee_id');
-            $table->decimal('total_salary', 10, 2);
-            $table->boolean('is_validated')->default(false); // Status validasi
-            $table->integer('days_present')->default(0); // Menambahkan kolom
-            $table->integer('total_leave')->default(0); // Menambahkan kolom
-            $table->integer('total_late')->default(0); // Menambahkan kolom
-            $table->integer('total_early')->default(0); // Menambahkan kolom
-            $table->integer('effective_work_days')->default(0); // Menambahkan kolom
-            $table->decimal('current_salary', 10, 2)->nullable(); // Menambahkan kolom
+            $table->string('month'); // Bulan perhitungan payroll
+            $table->integer('total_worked_days');
+            $table->integer('total_days_off');
+            $table->integer('total_late');
+            $table->integer('total_early');
+            $table->integer('effective_work_days');
+            $table->integer('current_salary');
+            $table->integer('overtime_pay')->default(0); // Gaji lembur
+            $table->integer('total_salary'); // Gaji total setelah lembur
+            // $table->enum('validation_status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
-        
+
+            // Foreign Key relation dengan tabel employees
+
             $table->foreign('employee_id')->references('employee_id')->on('employees')->onDelete('cascade');
         });
+        
         
         
         

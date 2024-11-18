@@ -16,6 +16,7 @@ use App\Http\Controllers\ProfileController;
 use App\Notifications\LeaveRequestNotification;
 use App\Http\Controllers\Superadmin\EmployeeBookController;
 use App\Http\Controllers\Superadmin\EmployeeBooksController;
+use App\Http\Controllers\Superadmin\OvertimeController;
 use App\Http\Controllers\Superadmin\SettingController;
 
 Route::get('/', function () {
@@ -71,7 +72,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('datauser.destroy')
             ->middleware('permission:user.delete');
 
-        // Attendance
+         // Attendance
         Route::get('/attendance', [AttandanceController::class, 'index'])
             ->name('attandance.index')
             ->middleware('permission:attandance.index');
@@ -80,40 +81,52 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('attendance.recap')
             ->middleware('permission:attandance.index');
 
+        //overtime
+        // Menampilkan daftar overtime
+        Route::get('/overtime', [OvertimeController::class, 'index'])
+            ->name('overtime.index')
+            ->middleware('permission:overtime.create');
+
+
+        Route::get('/overtime/create', [OvertimeController::class, 'create'])
+            ->name('overtime.create')
+            ->middleware('permission:overtime.create');
+
+        Route::post('/overtime', [OvertimeController::class, 'store'])
+            ->name('overtime.store')
+            ->middleware('permission:overtime.create');
+
+
+
+
+
         // Payroll
         Route::get('/payrolls', [PayrollController::class, 'index'])
             ->name('payroll.index')
             ->middleware('permission:payroll.index');
 
-        Route::get('/payrolls/create', [PayrollController::class, 'create'])
-            ->name('payroll.create')
-            ->middleware('permission:payroll.create');
-
-        Route::get('/payroll/calculate', [PayrollController::class, 'calculatePayroll'])
-            ->name('payroll.calculate')
-            ->middleware('permission:payroll.index');
-
-        Route::post('/payroll/validate/{employee_id}', [PayrollController::class, 'validatePayroll'])
+        Route::post('/payroll/{id}/validate', [PayrollController::class, 'validatePayroll'])
             ->name('payroll.validate')
             ->middleware('permission:payroll.index');
 
+        Route::get('/payroll/export', [PayrollController::class, 'exportToCsv'])
+            ->name('payroll.export')
+
+            ->middleware('permission:payroll.index');
 
 
 
 
-        // Menghapus payroll
-        Route::delete('/payrolls/{id}', [PayrollController::class, 'destroy'])
-            ->name('payroll.destroy')
-            ->middleware('permission:payroll.delete');
+
 
         // event
         Route::get('/events', [EventController::class, 'index'])
             ->name('event.index')
             ->middleware('permission:event.index');
-        // Menampilkan form list event
+
         Route::get('events/list', [EventController::class, 'ListEvent'])
             ->name('events.list')
-            ->middleware('permission:events.list');
+            ->middleware('permission:event.lists');
 
         Route::get('/events/create', [EventController::class, 'create'])
             ->name('event.create')
@@ -207,11 +220,13 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
 
         Route::delete('/employee/{id}', [EmployeeController::class, 'destroy'])
             ->name('employee.destroy')
-            ->middleware('permission:employee.destroy');
+            ->middleware('permission:employee.delete');
 
         Route::get('/employees/{employee}', [EmployeeController::class, 'show'])
             ->name('employee.show')
             ->middleware('permission:employee.index');
+
+
 
         // Setting
         Route::get('settings', [SettingController::class, 'index'])
@@ -271,7 +286,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->middleware('permission:offrequest.create');
         Route::post('/offrequest', [OffemployeeController::class, 'store'])
             ->name('offrequest.store')
-            ->middleware('permission:offrequest.store');
+            ->middleware('permission:offrequest.create');
         Route::post('/offrequest/{offrequest_id}/approve', [OffemployeeController::class, 'approve'])
             ->name('offrequest.approve')
             ->middleware('permission:offrequest.approver');

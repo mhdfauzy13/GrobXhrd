@@ -1,19 +1,28 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="content">
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>New Role</h1>
-                    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Add Role</h3>
                 </div>
-            </div>
-        </section>
+                @if ($errors->any())
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            let errorMessages = '';
+                            @foreach ($errors->all() as $error)
+                                errorMessages += '{{ $error }}\n';
+                            @endforeach
 
-        <section class="content">
-            <div class="container-fluid">
+                            Swal.fire({
+                                icon: "error",
+                                title: "Oops...",
+                                text: errorMessages,
+                            });
+                        });
+                    </script>
+                @endif
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card card-primary">
@@ -21,13 +30,13 @@
                                 @csrf
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label for="roleName">Nama Role</label>
+                                        <label for="roleName">Name Role</label>
                                         <input type="text" name="name" class="form-control" id="roleName"
-                                            placeholder="Masukkan Role" required>
+                                            value="{{ old('name') }}" required>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="permissions">Permissions yang Diberikan</label>
+                                        <label for="permissions">Permissions Granted</label>
 
                                         <!-- Select/Deselect All -->
                                         <div class="custom-control custom-checkbox mb-2">
@@ -102,40 +111,16 @@
                                                 @endforeach
                                             </div>
                                         </div>
-
-                                        <!-- Fitur Company -->
-                                        <div class="card mt-3">
-                                            <div class="card-header">
-                                                <a href="#" id="selectAllCompany" class="card-title">Fitur Company</a>
-                                            </div>
-                                            <div class="card-body">
-                                                @foreach ($permissions->whereIn('name', ['company.index', 'company.create', 'company.edit', 'company.delete']) as $permission)
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" name="permissions[]"
-                                                            value="{{ $permission->name }}"
-                                                            class="custom-control-input company-checkbox"
-                                                            id="company_{{ $permission->id }}"
-                                                            {{ in_array($permission->name, $rolePermissions) ? 'checked' : '' }}>
-                                                        <label class="custom-control-label"
-                                                            for="company_{{ $permission->id }}">
-                                                            {{ ucfirst(str_replace('company.', '', $permission->name)) }}
-                                                        </label>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-
-                                        <!-- Fitur Employee, Payroll, Recruitment, Attendance, dan Offrequest -->
                                         @foreach ([
-            'employee' => ['employee.index', 'employee.create', 'employee.edit', 'employee.destroy'],
+            'employee' => ['employee.index', 'employee.create', 'employee.edit', 'employee.delete'],
             'payroll' => ['payroll.index', 'payroll.create', 'payroll.edit', 'payroll.delete'],
             'recruitment' => ['recruitment.index', 'recruitment.create', 'recruitment.edit', 'recruitment.delete'],
             'attandance' => ['attandance.index', 'attandance.scanView', 'attandance.scan'],
-            'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.store', 'offrequest.approver'],
+            'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.approver'],
             'employeebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
-            'event' => ['event.index', 'events.list', 'event.create', 'event.edit', 'event.delete'],
-            'setting' => ['settings.index',  'settings.company',  'settings.deductions', 'settings.worksdays'],
-
+            'event' => ['event.index', 'event.lists', 'event.create', 'event.edit', 'event.delete'],
+            'overtime' => ['overtime.create'],
+            'settings' => ['settings.index', 'settings.company', 'settings.deductions', 'settings.worksdays'],
         ] as $feature => $featurePermissions)
                                             <div class="card mt-3">
                                                 <div class="card-header">
@@ -171,18 +156,17 @@
 
                                 <div class="card-footer">
                                     <a href="{{ route('role.index') }}" class="btn btn-secondary">Back</a>
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="button" id="saverole" class="btn btn-primary">Save</button>
                                 </div>
+
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
-    {{-- @endsection --}}
+        </div>
+    </section>
 
-    {{-- @section('scripts') --}}
     <script>
         document.getElementById('selectAllPermissions').addEventListener('click', function() {
             let checkboxes = document.querySelectorAll('.custom-control-input');
@@ -210,15 +194,6 @@
         document.getElementById('selectAllUser').addEventListener('click', function(e) {
             e.preventDefault();
             let checkboxes = document.querySelectorAll('.user-checkbox');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = !checkbox.checked;
-            });
-        });
-
-        // Event listener untuk fitur Company
-        document.getElementById('selectAllCompany').addEventListener('click', function(e) {
-            e.preventDefault();
-            let checkboxes = document.querySelectorAll('.company-checkbox');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = !checkbox.checked;
             });
@@ -269,8 +244,8 @@
             });
         });
 
-         // Event listener untuk fitur employeebook
-        document.getElementById('selectAllemployeebook').addEventListener('click', function(e) {
+        // Event listener untuk fitur EmployeeBook
+        document.getElementById('selectAllEmployeebook').addEventListener('click', function(e) {
             e.preventDefault();
             let checkboxes = document.querySelectorAll('.employeebook-checkbox');
             checkboxes.forEach(checkbox => {
@@ -278,7 +253,7 @@
             });
         });
 
-         // Event listener untuk fitur event
+        // Event listener untuk fitur Event
         document.getElementById('selectAllEvent').addEventListener('click', function(e) {
             e.preventDefault();
             let checkboxes = document.querySelectorAll('.event-checkbox');
@@ -287,12 +262,49 @@
             });
         });
 
-         // Event listener untuk fitur setting
-        document.getElementById('selectAllSetting').addEventListener('click', function(e) {
+        // Event listener untuk fitur overtime
+        document.getElementById('selectAllOvertime').addEventListener('click', function(e) {
             e.preventDefault();
-            let checkboxes = document.querySelectorAll('.setting-checkbox');
+            let checkboxes = document.querySelectorAll('.overtime-checkbox');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = !checkbox.checked;
+            });
+        });
+
+        // Event listener untuk fitur overtime
+        document.getElementById('selectAllOvertime').addEventListener('click', function(e) {
+            e.preventDefault();
+            let checkboxes = document.querySelectorAll('.overtime-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !checkbox.checked;
+            });
+        });
+
+        // Event listener untuk fitur Settings
+        document.getElementById('selectAllSettings').addEventListener('click', function(e) {
+            e.preventDefault();
+            let checkboxes = document.querySelectorAll('.settings-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !checkbox.checked;
+            });
+        });
+    </script>
+
+    <script>
+        // Handle the button click for Save
+        document.getElementById('saverole').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Menampilkan SweetAlert setelah tombol Save diklik
+            Swal.fire({
+                position: 'top-center',
+                icon: 'success',
+                title: 'Your work has been saved',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(function() {
+                // Submit form setelah alert selesai
+                document.getElementById('quickForm').submit(); // Ensure form ID is correct
             });
         });
     </script>

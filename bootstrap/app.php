@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckAbsent;
 use App\Http\Middleware\CheckPermission;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Foundation\Application;
@@ -27,6 +28,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'checkRoleStatus' => CheckRoleStatus::class,
             'checkrole' => CheckRole::class,
             'permission' => CheckPermission::class,
+            // 'checkabsent' => CheckAbsent::class,
+
 
         ]);
     }

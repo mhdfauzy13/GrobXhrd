@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('offrequests', function (Blueprint $table) {
             $table->bigIncrements('offrequest_id'); // Primary key kolom 'offrequest_id'
-            $table->unsignedBigInteger('user_id'); // Kolom foreign key
+            $table->unsignedBigInteger('employee_id');
             $table->unsignedBigInteger('manager_id')->nullable(); // Kolom foreign key opsional
             $table->string('name');
             $table->string('email')->unique();
@@ -22,9 +22,9 @@ return new class extends Migration
             $table->timestamps();
 
             // Foreign key constraints
-            $table->foreign('user_id')
-                ->references('user_id') // Mengacu ke kolom 'user_id' di tabel 'users'
-                ->on('users')
+            $table->foreign('employee_id')
+                ->references('employee_id') // Mengacu ke kolom 'employee_id' di tabel 'employees'
+                ->on('employees')
                 ->onDelete('cascade');
 
             $table->foreign('manager_id')

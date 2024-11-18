@@ -3,112 +3,146 @@
 namespace App\Http\Controllers\Superadmin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Attandance;
 use App\Models\AttandanceRecap;
 use App\Models\Employee;
+use App\Models\Offrequest;
+
+use App\Models\Overtime;
 use App\Models\Payroll;
+use App\Models\SalaryDeduction;
 use App\Models\WorkdaySetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class PayrollController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:payroll.index')->only(['index', 'calculatePayroll', 'validatePayroll']);
-        $this->middleware('permission:payroll.create')->only(['create', 'store']);
-        $this->middleware('permission:payroll.edit')->only(['edit', 'update']);
-        $this->middleware('permission:payroll.delete')->only('destroy');
+        $this->middleware('permission:payroll.index')->only(['index', 'validatePayroll', 'exportToCsv']);
     }
 
-
-    // public function index()
-    // {
-    //     $payrolls = Payroll::with('employee')->get();
-    //     return view('Superadmin.payroll.index', compact('payrolls'));
-    // }
 
     public function index(Request $request)
     {
-        // Ambil bulan dan tahun dari request
-        $month = $request->input('month');
-        $year = $request->input('year');
-
-        // Query untuk mengambil data payroll dengan filter
-        $payrolls = Payroll::with('employee') // Pastikan untuk mengaitkan data employee
-            ->when($month, function ($query) use ($month) {
-                return $query->whereMonth('created_at', $month);
+        $month = $request->input('month', date('m'));
+        $year = $request->input('year', date('Y'));
+    
+        $payrolls = Payroll::with(['employee', 'attandanceRecap', 'workdaySetting', 'overtime', 'offRequests'])
+            ->whereHas('attandanceRecap', function ($query) use ($month, $year) {
+                $query->whereMonth('month', $month)
+                      ->whereYear('month', $year);
             })
-            ->when($year, function ($query) use ($year) {
-                return $query->whereYear('created_at', $year);
-            })
-            ->get(); // Ambil semua data
+            ->get()
+            ->map(function ($payroll) {
+                // Menghitung total days worked
+                $totalDaysWorked = $payroll->attandanceRecap->total_present ?? 0;
+    
+                // Menghitung total days off berdasarkan offRequests yang disetujui
+                $totalDaysOff = $payroll->offRequests
+                    ->where('status', 'approved')
+                    ->sum(function ($offRequest) {
+                        $start = \Carbon\Carbon::parse($offRequest->start_event);
+                        $end = \Carbon\Carbon::parse($offRequest->end_event);
+                        return $start->diffInDays($end) + 1; // +1 untuk menyertakan hari mulai
+                    });
+    
+                // Menghitung total days late dan total early check out
+                $totalLateCheckIn = $payroll->attandanceRecap->total_late ?? 0;
+                $totalEarlyCheckOut = $payroll->attandanceRecap->total_early ?? 0;
+    
+                // Menghitung effective work days
+                $effectiveWorkDays = $payroll->workdaySetting->monthly_workdays ?? 0;
+    
+                // Menghitung current salary
+                $currentSalary = $payroll->employee->current_salary ?? 0;
+    
+                // Menghitung overtime pay
+                $hourlyRate = $currentSalary / ($effectiveWorkDays * ($payroll->employee->check_out_time - $payroll->employee->check_in_time));
+                $overtimePay = $payroll->overtime->sum(function ($overtime) use ($hourlyRate) {
+                    return $hourlyRate * $overtime->duration;
+                });
+    
+                // Menghitung total salary
+                $totalSalary = ($currentSalary / $effectiveWorkDays) * $totalDaysWorked + $overtimePay;
+    
+                // Mengatur nilai untuk tampilan
+                $payroll->total_days_worked = $totalDaysWorked;
+                $payroll->total_days_off = $totalDaysOff;
+                $payroll->total_late_check_in = $totalLateCheckIn;
+                $payroll->total_early_check_out = $totalEarlyCheckOut;
+                $payroll->effective_work_days = $effectiveWorkDays;
+                $payroll->current_salary = $currentSalary;
+                $payroll->overtime_pay = $overtimePay;
+                $payroll->total_salary = $totalSalary;
+    
+                return $payroll;
+            });
+    
+        return view('superadmin.payroll.index', compact('payrolls'));
+    }
+    
+    public function validatePayroll($id)
+    {
+        $payroll = Payroll::findOrFail($id);
+        $payroll->validation_status = 1;
+        $payroll->save();
 
-        return view('Superadmin.payroll.index', compact('payrolls', 'month', 'year'));
+        return response()->json(['message' => 'Payroll validated successfully']);
     }
 
-    public function create()
+    public function exportToCsv()
     {
-        $employees = Employee::all(); // Ambil data karyawan dari tabel employees
-        return view('Superadmin.payroll.create', compact('employees'));
-    }
 
-    public function calculatePayroll(Request $request)
-    {
-        // Validasi input
-        $request->validate([
-            'month' => 'required|date_format:Y-m',
-        ]);
+        // Mengambil payroll yang sudah tervalidasi
+        $validatedPayrolls = Payroll::where('validation_status', 1)
+            ->with(['employee', 'attandanceRecap', 'workdaySetting', 'overtime', 'offRequests']) // Pastikan relasi sudah dimuat
+            ->get();
 
-        $month = $request->input('month');
-        $workDaySetting = WorkDaySetting::where('month', $month)->first();
-        $totalEffectiveWorkdays = $workDaySetting ? $workDaySetting->total_days : 0;
-        $employees = Employee::all();
-        $payrollData = [];
+        // Membuat header CSV
+        $csvData = "Employee Name,Total Days Worked,Total Days Off,Total Late Check In,Total Early Check Out,Effective Work Days,Current Salary,Overtime Pay,Total Salary\n";
 
-        foreach ($employees as $employee) {
-            // Ambil data rekap absensi
-            $attendanceRecap = AttandanceRecap::where('employee_id', $employee->employee_id)
-                ->where('month', $month)->first();
-            $totalPresent = $attendanceRecap ? $attendanceRecap->total_present : 0;
-            $totalAbsences = $attendanceRecap ? $attendanceRecap->total_absent : 0;
 
-            // Hitung total gaji
-            $totalSalary = ($totalPresent / $totalEffectiveWorkdays) * $employee->current_salary - ($totalAbsences * ($employee->current_salary / $totalEffectiveWorkdays));
+        // Menghitung dan menambahkan data tiap payroll ke CSV
+        foreach ($validatedPayrolls as $payroll) {
+            // Menghitung Total Days Off (jumlah hari cuti yang disetujui)
+            $totalDaysOff = $payroll->offRequests->where('status', 'approved')->sum(function ($offRequest) {
+                $start = \Carbon\Carbon::parse($offRequest->start_event);
+                $end = \Carbon\Carbon::parse($offRequest->end_event);
+                return $start->diffInDays($end) + 1; // +1 untuk termasuk hari mulai
+            });
 
-            // Simpan data payroll ke tabel payrolls
-            $payroll = new Payroll();
-            $payroll->employee_id = $employee->employee_id;
-            $payroll->total_salary = $totalSalary;
-            $payroll->is_validated = false; // Status validasi awal
-            $payroll->save();
+            // Menghitung Overtime Pay
+            $hourlyRate = $payroll->employee->current_salary / ($payroll->workdaySetting->monthly_workdays * $payroll->employee->check_in_time->diffInHours($payroll->employee->check_out_time));
+            $overtimePay = $payroll->overtime->sum(function ($overtime) use ($hourlyRate) {
+                return $hourlyRate * $overtime->duration;
+            });
 
-            // Simpan hasil ke array untuk ditampilkan
-            $payrollData[] = [
-                'employee_id' => $employee->employee_id,
-                'name' => $employee->name,
-                'total_present' => $totalPresent,
-                'total_absent' => $totalAbsences,
-                'current_salary' => $employee->current_salary,
-                'total_salary' => $totalSalary,
-                'is_validated' => false // Menyimpan status validasi di array
-            ];
+            // Menghitung Total Salary
+            $totalSalary = ($payroll->employee->current_salary / $payroll->workdaySetting->monthly_workdays) * $payroll->attandanceRecap->total_present + $overtimePay;
+
+
+            // Menambahkan data payroll ke CSV
+            $csvData .= "{$payroll->employee->first_name} {$payroll->employee->last_name}," // Employee Name
+                . "{$payroll->attandanceRecap->total_present}," // Total Days Worked
+                . "{$totalDaysOff}," // Total Days Off
+                . "{$payroll->attandanceRecap->total_late}," // Total Late Check In
+                . "{$payroll->attandanceRecap->total_early}," // Total Early Check Out
+                . "{$payroll->workdaySetting->monthly_workdays}," // Effective Work Days
+                . "{$payroll->employee->current_salary}," // Current Salary
+                . "{$overtimePay}," // Overtime Pay
+                . "{$totalSalary}\n"; // Total Salary
         }
 
-        return view('payroll.result', compact('payrollData', 'month'));
+    
+        // Menentukan nama file CSV
+        $fileName = "payroll_report_" . now()->format('Y_m_d') . ".csv";
+    
+
+        // Menyusun dan mengirim file CSV ke user
+        return response()->streamDownload(function () use ($csvData) {
+            echo $csvData;
+        }, $fileName);
     }
-
-    public function validatePayroll(Request $request, $employee_id)
-    {
-        $request->validate([
-            'is_validated' => 'required|boolean',
-        ]);
-
-        $payroll = Payroll::where('employee_id', $employee_id)->latest()->first();
-        if ($payroll) {
-            $payroll->is_validated = $request->input('is_validated');
-            $payroll->save();
-        }
-
-        return redirect()->back()->with('success', 'Status validasi berhasil diperbarui.');
-    }
+    
+    
 }

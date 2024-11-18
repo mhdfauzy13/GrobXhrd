@@ -4,17 +4,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="{{ asset('dist/img/icongrob.png') }}" type="image/x-icon" />
 
-    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" /> --}}
-
-    <title>Grob X Hrd</title>
-
-    @yield('head')
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AdminLTE 3 | Dashboard 3</title>
-
-    <!-- Link to custom.css -->
+    <title>{{ $companyname ? $companyname->name_company : 'Default Title' }}</title>
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 
     <!-- SweetAlert2 -->
@@ -48,8 +40,6 @@
     </div>
     @include('components.script')
 
-    {{-- <script src="{{ asset('adminlte/js/adminlte.min.js') }}"></script>
-    @yield('scripts') --}}
 </body>
 
 </html>

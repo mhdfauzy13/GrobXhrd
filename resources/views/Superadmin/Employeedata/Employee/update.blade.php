@@ -6,7 +6,6 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-xl-6">
-                        <h1>Edit Employee</h1>
                     </div>
                 </div>
             </div>
@@ -16,10 +15,27 @@
             <div class="container-fluid">
                 <div class="card card-primary">
                     <div class="card-header">
-                        {{-- <h3 class="card-title">Edit</h3> --}}
+                        <h3 class="card-title">Edit Employee</h3>
                     </div>
+                    @if ($errors->any())
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                let errorMessages = '';
+                                @foreach ($errors->all() as $error)
+                                    errorMessages += '{{ $error }}\n';
+                                @endforeach
+                                
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: errorMessages,
+                                });
+                            });
+                        </script>
+                    @endif
 
-                    <form action="{{ route('employee.update', $employeeModel->employee_id) }}" method="POST">
+                    <form id="update-form" action="{{ route('employee.update', $employeeModel->employee_id) }}"
+                        method="POST">
                         @csrf
                         @method('PUT')
 
@@ -46,13 +62,13 @@
 
                                     <div class="form-group">
                                         <label for="check_in_time">Time Check-In</label>
-                                        <input type="time" name="check_in_time" id="check_in_time" class="form-control"
+                                        <input type="time" name="check_in_time" class="form-control"
                                             value="{{ old('check_in_time', $employeeModel->check_in_time) }}" required>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="check_out_time">Time Check-Out</label>
-                                        <input type="time" name="check_out_time" id="check_out_time" class="form-control"
+                                        <input type="time" name="check_out_time" class="form-control"
                                             value="{{ old('check_out_time', $employeeModel->check_out_time) }}" required>
                                     </div>
 
@@ -69,9 +85,10 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="personal_no">Personal Number</label>
-                                        <input type="number" name="personal_no" id="personal_no" class="form-control"
-                                            value="{{ old('personal_no', $employeeModel->personal_no) }}">
+                                        <label for="identity_number">Identity Number</label>
+                                        <input type="number" name="identity_number" id="identity_number"
+                                            class="form-control"
+                                            value="{{ old('identity_number', $employeeModel->identity_number) }}">
                                     </div>
 
                                     <div class="form-group">
@@ -114,7 +131,7 @@
 
                                     <div class="form-group">
                                         <label for="phone_number">Phone Number</label>
-                                        <input type="text" name="phone_number" id="phone_number" class="form-control"
+                                        <input type="number" name="phone_number" id="phone_number" class="form-control"
                                             value="{{ old('phone_number', $employeeModel->phone_number) }}">
                                     </div>
                                 </div>
@@ -122,7 +139,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="hp_number">HP Number</label>
-                                        <input type="text" name="hp_number" id="hp_number" class="form-control"
+                                        <input type="number" name="hp_number" id="hp_number" class="form-control"
                                             value="{{ old('hp_number', $employeeModel->hp_number) }}">
                                     </div>
 
@@ -130,17 +147,17 @@
                                         <label for="marital_status">Marital Status</label>
                                         <select name="marital_status" id="marital_status" class="form-control">
                                             <option value="">Select</option>
-                                            <option value="single"
-                                                {{ old('marital_status', $employeeModel->marital_status) == 'single' ? 'selected' : '' }}>
+                                            <option value="Single"
+                                                {{ old('marital_status', $employeeModel->marital_status) == 'Single' ? 'selected' : '' }}>
                                                 Single</option>
-                                            <option value="married"
-                                                {{ old('marital_status', $employeeModel->marital_status) == 'married' ? 'selected' : '' }}>
+                                            <option value="Married"
+                                                {{ old('marital_status', $employeeModel->marital_status) == 'Married' ? 'selected' : '' }}>
                                                 Married</option>
-                                            <option value="widow"
-                                                {{ old('marital_status', $employeeModel->marital_status) == 'widow' ? 'selected' : '' }}>
+                                            <option value="Widow"
+                                                {{ old('marital_status', $employeeModel->marital_status) == 'Widow' ? 'selected' : '' }}>
                                                 Widow</option>
-                                            <option value="widower"
-                                                {{ old('marital_status', $employeeModel->marital_status) == 'widower' ? 'selected' : '' }}>
+                                            <option value="Widower"
+                                                {{ old('marital_status', $employeeModel->marital_status) == 'Widower' ? 'selected' : '' }}>
                                                 Widower</option>
                                         </select>
                                     </div>
@@ -149,36 +166,36 @@
                                         <label for="last_education">Last Education</label>
                                         <select name="last_education" id="last_education" class="form-control">
                                             <option value="">Select</option>
-                                            <option value="SD"
-                                                {{ old('last_education', $employeeModel->last_education) == 'SD' ? 'selected' : '' }}>
-                                                SD</option>
-                                            <option value="SMP"
-                                                {{ old('last_education', $employeeModel->last_education) == 'SMP' ? 'selected' : '' }}>
-                                                SMP</option>
-                                            <option value="SMA"
-                                                {{ old('last_education', $employeeModel->last_education) == 'SMA' ? 'selected' : '' }}>
-                                                SMA</option>
-                                            <option value="SMK"
-                                                {{ old('last_education', $employeeModel->last_education) == 'SMK' ? 'selected' : '' }}>
-                                                SMK</option>
-                                            <option value="D1"
-                                                {{ old('last_education', $employeeModel->last_education) == 'D1' ? 'selected' : '' }}>
-                                                D1</option>
-                                            <option value="D2"
-                                                {{ old('last_education', $employeeModel->last_education) == 'D2' ? 'selected' : '' }}>
-                                                D2</option>
-                                            <option value="D3"
-                                                {{ old('last_education', $employeeModel->last_education) == 'D3' ? 'selected' : '' }}>
-                                                D3</option>
-                                            <option value="S1"
-                                                {{ old('last_education', $employeeModel->last_education) == 'S1' ? 'selected' : '' }}>
-                                                S1</option>
-                                            <option value="S2"
-                                                {{ old('last_education', $employeeModel->last_education) == 'S2' ? 'selected' : '' }}>
-                                                S2</option>
-                                            <option value="S3"
-                                                {{ old('last_education', $employeeModel->last_education) == 'S3' ? 'selected' : '' }}>
-                                                S3</option>
+                                            <option value="Elementary School"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Elementary School' ? 'selected' : '' }}>
+                                                Elementary School</option>
+                                            <option value="Junior High School"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Junior High School' ? 'selected' : '' }}>
+                                                Junior High School</option>
+                                            <option value="Senior High School"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Senior High School' ? 'selected' : '' }}>
+                                                Senior High School</option>
+                                            <option value="Vocational High School"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Vocational High School' ? 'selected' : '' }}>
+                                                Vocational High School</option>
+                                            <option value="Associate Degree 1"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Associate Degree 1' ? 'selected' : '' }}>
+                                                Associate Degree 1</option>
+                                            <option value="Associate Degree 2"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Associate Degree 2' ? 'selected' : '' }}>
+                                                Associate Degree 2</option>
+                                            <option value="Associate Degree 3"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Associate Degree 3' ? 'selected' : '' }}>
+                                                Associate Degree 3</option>
+                                            <option value="Bachelors Degree"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Bachelors Degree' ? 'selected' : '' }}>
+                                                Bachelors Degree</option>
+                                            <option value="Masters Degree"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Masters Degree' ? 'selected' : '' }}>
+                                                Masters Degree</option>
+                                            <option value="Doctoral Degree"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Doctoral Degree' ? 'selected' : '' }}>
+                                                Doctoral Degree</option>
                                         </select>
                                     </div>
 
@@ -204,10 +221,11 @@
                                     <div class="form-group">
                                         <label for="current_salary">Current Salary</label>
                                         <input type="text" name="current_salary" id="current_salary"
-                                            class="form-control" oninput="formatCurrency(this)"
+                                            class="form-control"
                                             value="{{ old('current_salary', number_format($employeeModel->current_salary, 0, ',', '.')) }}"
-                                            required>
+                                            oninput="formatCurrency(this)" required>
                                     </div>
+
                                     <div class="form-group">
                                         <label for="insurance">Insurance</label>
                                         <select name="insurance" id="insurance" class="form-control">
@@ -244,13 +262,29 @@
 
                                     <div class="form-group">
                                         <label for="relations">Relations</label>
-                                        <input type="text" name="relations" id="relations" class="form-control"
-                                            value="{{ old('relations', $employeeModel->relations) }}">
+                                        <select name="relations" id="relations" class="form-control">
+                                            <option value="">Select</option>
+                                            <option value="Parent"
+                                                {{ old('relations', $employeeModel->relations) == 'Parent' ? 'selected' : '' }}>
+                                                Parent</option>
+                                            <option value="Guardian"
+                                                {{ old('relations', $employeeModel->relations) == 'Guardian' ? 'selected' : '' }}>
+                                                Guardian</option>
+                                            <option value="Husband"
+                                                {{ old('relations', $employeeModel->relations) == 'Husband' ? 'selected' : '' }}>
+                                                Husband</option>
+                                            <option value="Wife"
+                                                {{ old('relations', $employeeModel->relations) == 'Wife' ? 'selected' : '' }}>
+                                                Wife</option>
+                                            <option value="Sibling"
+                                                {{ old('relations', $employeeModel->relations) == 'Sibling' ? 'selected' : '' }}>
+                                                Sibling</option>
+                                        </select>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="emergency_number">Emergency Number</label>
-                                        <input type="text" name="emergency_number" id="emergency_number"
+                                        <input type="number" name="emergency_number" id="emergency_number"
                                             class="form-control"
                                             value="{{ old('emergency_number', $employeeModel->emergency_number) }}">
                                     </div>
@@ -259,11 +293,11 @@
                                         <label for="status">Status</label>
                                         <select name="status" id="status" class="form-control">
                                             <option value="">Select</option>
-                                            <option value="active"
-                                                {{ old('status', $employeeModel->status) == 'active' ? 'selected' : '' }}>
+                                            <option value="Active"
+                                                {{ old('status', $employeeModel->status) == 'Active' ? 'selected' : '' }}>
                                                 Active</option>
-                                            <option value="inactive"
-                                                {{ old('status', $employeeModel->status) == 'inactive' ? 'selected' : '' }}>
+                                            <option value="Inactive"
+                                                {{ old('status', $employeeModel->status) == 'Inactive' ? 'selected' : '' }}>
                                                 Inactive</option>
                                         </select>
                                     </div>
@@ -272,11 +306,56 @@
                         </div>
 
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Update</button>
+                            <button type="button" class="btn btn-primary" id="submit-btn">Update</button>
                         </div>
                     </form>
+                    <script>
+                        function formatCurrency(input) {
+                            // Menghapus semua karakter selain angka dan koma
+                            let value = input.value.replace(/[^\d]/g, '');
+
+                            // Memasukkan pemisah ribuan
+                            value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+                            // Memperbarui nilai input
+                            input.value = value;
+                        }
+                    </script>
+
+                    <script>
+                        document.getElementById('submit-btn').addEventListener('click', function() {
+                            Swal.fire({
+                                title: "Do you want to save the changes?",
+                                showDenyButton: true,
+                                showCancelButton: true,
+                                confirmButtonText: "Save",
+                                denyButtonText: `Don't save`
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    Swal.fire("Saved!", "", "success").then(() => {
+                                        document.getElementById('update-form').submit();
+                                    });
+                                } else if (result.isDenied) {
+                                    Swal.fire("Changes are not saved", "", "info");
+                                }
+                            });
+                        });
+                    </script>
                 </div>
             </div>
         </section>
     </div>
+@endsection
+@section('scripts')
+    <script>
+        // Cek jika ada pesan error di session
+        @if (session('error'))
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "{{ session('error') }}",
+                footer: '<a href="#">Why do I have this issue?</a>'
+            });
+        @endif
+    </script>
 @endsection

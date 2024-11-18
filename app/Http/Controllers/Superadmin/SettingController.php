@@ -13,18 +13,16 @@ class SettingController extends Controller
     public function __construct()
     {
         $this->middleware('permission:settings.index')->only('index');
-        $this->middleware('permission:settings.company')->only(['store','update']);
+        $this->middleware('permission:settings.company')->only(['store', 'update']);
         $this->middleware('permission:settings.deductions')->only(['salarydeductions']);
         $this->middleware('permission:settings.worksdays')->only(['updateWorkdays']);
-
-
     }
 
     public function index()
     {
         $companyNames = CompanyName::all();
-        $salaryDeduction = SalaryDeduction::first(); // Mengambil data potongan gaji (hanya satu record)
-        $workdaySetting = WorkdaySetting::first(); 
+        $salaryDeduction = SalaryDeduction::first();
+        $workdaySetting = WorkdaySetting::first();
 
         return view('Superadmin.Setting.index', compact('companyNames', 'salaryDeduction', 'workdaySetting'));
     }
@@ -98,18 +96,16 @@ class SettingController extends Controller
             'effective_days' => 'required|array',
             'effective_days.*' => 'in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
         ]);
-    
+
         $workdaySetting = WorkdaySetting::firstOrCreate([]);
         $workdaySetting->effective_days = $validatedData['effective_days'];
-        
-        // Hitung jumlah hari kerja efektif per bulan
+
         $weeklyWorkdays = count($validatedData['effective_days']);
-        $monthlyWorkdays = $weeklyWorkdays * 4; // Asumsi 4 minggu per bulan
+        $monthlyWorkdays = $weeklyWorkdays * 4; 
         $workdaySetting->monthly_workdays = $monthlyWorkdays;
-    
+
         $workdaySetting->save();
-    
+
         return redirect()->route('settings.index')->with('success', 'Workday settings updated successfully');
     }
-    
 }

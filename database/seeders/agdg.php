@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Attandance;
 use Illuminate\Database\Seeder;
-use App\Models\Employee; // Pastikan ini sesuai dengan nama model Anda
-use App\Models\Attendance; // Pastikan model attendance Anda sudah diimport
+use App\Models\Employee; 
+use App\Models\Attendance; 
 use Faker\Factory as Faker;
 use Carbon\Carbon;
 

@@ -6,6 +6,7 @@ use App\Models\User;
 use AttandanceSeeder;
 use AttendanceRecapSeeder;
 use AttendanceSeeder;
+use Database\Seeders\AttendanceSeeder as SeedersAttendanceSeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -21,11 +22,12 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call(RolesAndPermissionsSeeder::class);
+        $this->call(WorkdaySettingsSeeder::class);
         $this->call(UserSeeder::class);
+        $this->call(SeedersAttendanceSeeder::class);
         $this->call([EventSeeder::class]);
-        $this->call(PayrollSeeder::class);
+        // $this->call(PayrollSeeder::class);
 
-        $this->call(AttendanceSeeder::class);
 
     }
 }
