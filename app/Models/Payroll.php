@@ -26,6 +26,18 @@ class Payroll extends Model
 
     ];
 
+    public function getValidationStatusLabelAttribute()
+    {
+        switch ($this->validation_status) {
+            case 'approved':
+                return 'green'; 
+            case 'declined':
+                return 'red'; 
+            default:
+                return 'yellow'; 
+        }
+    }
+
     public function employee()
     {
         return $this->belongsTo(Employee::class, 'employee_id', 'employee_id');
@@ -46,10 +58,9 @@ class Payroll extends Model
         return $this->hasMany(Overtime::class, 'employee_id', 'employee_id');
     }
 
-      // Relasi ke model Offrequest
-      public function offRequests()
-      {
-          return $this->hasMany(Offrequest::class, 'employee_id', 'employee_id');
-
-      }
+    // Relasi ke model Offrequest
+    public function offRequests()
+    {
+        return $this->hasMany(Offrequest::class, 'employee_id', 'employee_id');
+    }
 }

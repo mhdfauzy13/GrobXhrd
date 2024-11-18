@@ -72,7 +72,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('datauser.destroy')
             ->middleware('permission:user.delete');
 
-         // Attendance
+        // Attendance
         Route::get('/attendance', [AttandanceController::class, 'index'])
             ->name('attandance.index')
             ->middleware('permission:attandance.index');
@@ -109,6 +109,9 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('payroll.validate')
             ->middleware('permission:payroll.index');
 
+        Route::patch('/payroll/update-status/{id}', [PayrollController::class, 'updateValidationStatus'])
+            ->name('payroll.updateStatus')
+            ->middleware('permission:payroll.index');
 
         Route::get('/payroll/export', [PayrollController::class, 'exportToCsv'])
             ->name('payroll.export')

@@ -19,7 +19,7 @@ class CreatePayrollsTable extends Migration
             $table->integer('current_salary');
             $table->integer('overtime_pay')->default(0); // Gaji lembur
             $table->integer('total_salary'); // Gaji total setelah lembur
-            // $table->enum('validation_status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('validation_status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
 
             // Foreign Key relation dengan tabel employees

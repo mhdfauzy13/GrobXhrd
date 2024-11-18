@@ -28,7 +28,7 @@ class AttendanceSeeder extends Seeder
             $totalEarly = 0;   // Total pulang awal
 
             // Simulasi data kehadiran untuk setiap hari selama bulan ini
-            for ($day = 1; $day <= 30; $day++) {
+            for ($day = 1; $day <= 20; $day++) {
                 $checkInTime = Carbon::create(2024, 11, $day, rand(8, 9), rand(0, 59)); // Jam check-in acak antara jam 8 dan 9
                 $checkOutTime = $checkInTime->copy()->addHours(8); // Jam check-out 8 jam setelah check-in
 
@@ -71,7 +71,7 @@ class AttendanceSeeder extends Seeder
             // Membuat data recap kehadiran bulanan
             AttandanceRecap::create([
                 'employee_id' => $employeeId,
-                'month' => Carbon::now()->format('Y-m'), // Bulan saat ini
+                'month' => Carbon::now()->format('Y-m'), 
                 'total_present' => $totalPresent,
                 'total_late' => $totalLate,
                 'total_early' => $totalEarly,
