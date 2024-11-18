@@ -24,10 +24,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+
+
     public function employee()
-    {
-        return $this->hasOne(Employee::class, 'employee_id');
-    }
+{
+    return $this->belongsTo(Employee::class, 'employee_id', 'employee_id');
+}
+
 
     public function offrequests()
     {

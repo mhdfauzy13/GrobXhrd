@@ -5,10 +5,14 @@ namespace App\Http\Controllers\Superadmin;
 use App\Http\Controllers\Controller;
 use App\Models\AttandanceRecap;
 use App\Models\Employee;
+use App\Models\Offrequest;
+
 use App\Models\Overtime;
 use App\Models\Payroll;
+use App\Models\SalaryDeduction;
 use App\Models\WorkdaySetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class PayrollController extends Controller
 {
@@ -16,6 +20,7 @@ class PayrollController extends Controller
     {
         $this->middleware('permission:payroll.index')->only(['index', 'validatePayroll', 'exportToCsv']);
     }
+
 
     public function index(Request $request)
     {
@@ -87,14 +92,16 @@ class PayrollController extends Controller
 
     public function exportToCsv()
     {
+
         // Mengambil payroll yang sudah tervalidasi
         $validatedPayrolls = Payroll::where('validation_status', 1)
             ->with(['employee', 'attandanceRecap', 'workdaySetting', 'overtime', 'offRequests']) // Pastikan relasi sudah dimuat
             ->get();
-    
+
         // Membuat header CSV
         $csvData = "Employee Name,Total Days Worked,Total Days Off,Total Late Check In,Total Early Check Out,Effective Work Days,Current Salary,Overtime Pay,Total Salary\n";
-    
+
+
         // Menghitung dan menambahkan data tiap payroll ke CSV
         foreach ($validatedPayrolls as $payroll) {
             // Menghitung Total Days Off (jumlah hari cuti yang disetujui)
@@ -103,16 +110,17 @@ class PayrollController extends Controller
                 $end = \Carbon\Carbon::parse($offRequest->end_event);
                 return $start->diffInDays($end) + 1; // +1 untuk termasuk hari mulai
             });
-    
+
             // Menghitung Overtime Pay
             $hourlyRate = $payroll->employee->current_salary / ($payroll->workdaySetting->monthly_workdays * $payroll->employee->check_in_time->diffInHours($payroll->employee->check_out_time));
             $overtimePay = $payroll->overtime->sum(function ($overtime) use ($hourlyRate) {
                 return $hourlyRate * $overtime->duration;
             });
-    
+
             // Menghitung Total Salary
             $totalSalary = ($payroll->employee->current_salary / $payroll->workdaySetting->monthly_workdays) * $payroll->attandanceRecap->total_present + $overtimePay;
-    
+
+
             // Menambahkan data payroll ke CSV
             $csvData .= "{$payroll->employee->first_name} {$payroll->employee->last_name}," // Employee Name
                 . "{$payroll->attandanceRecap->total_present}," // Total Days Worked
@@ -124,10 +132,12 @@ class PayrollController extends Controller
                 . "{$overtimePay}," // Overtime Pay
                 . "{$totalSalary}\n"; // Total Salary
         }
+
     
         // Menentukan nama file CSV
         $fileName = "payroll_report_" . now()->format('Y_m_d') . ".csv";
     
+
         // Menyusun dan mengirim file CSV ke user
         return response()->streamDownload(function () use ($csvData) {
             echo $csvData;

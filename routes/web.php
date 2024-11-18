@@ -81,6 +81,23 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('attendance.recap')
             ->middleware('permission:attandance.index');
 
+        //overtime
+        // Menampilkan daftar overtime
+        Route::get('/overtime', [OvertimeController::class, 'index'])
+            ->name('overtime.index')
+            ->middleware('permission:overtime.create');
+
+
+        Route::get('/overtime/create', [OvertimeController::class, 'create'])
+            ->name('overtime.create')
+            ->middleware('permission:overtime.create');
+
+        Route::post('/overtime', [OvertimeController::class, 'store'])
+            ->name('overtime.store')
+            ->middleware('permission:overtime.create');
+
+
+
 
 
         // Payroll
@@ -227,6 +244,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::post('/settings/salary-deductions', [SettingController::class, 'salarydeductions'])
             ->name('settings.salarydeductions')
             ->middleware('permission:settings.deductions');
+
 
         Route::post('/settings/update-workdays', [SettingController::class, 'updateWorkdays'])
             ->name('settings.updateWorkdays')

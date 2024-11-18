@@ -214,18 +214,21 @@
                         </li>
                     @endcanany
 
-                    <!-- Payroll menu, only visible if user has permission -->
-                    @canany(['payroll.index', 'payroll.create'])
-                        <li class="nav-item">
-                            @can('payroll.index')
-                                <a href="{{ route('payroll.index') }}"
-                                    class="nav-link {{ request()->routeIs('payroll.index') ? 'active' : '' }}">
-                                    <i class="fas fa-wallet nav-icon"></i>
+                <!-- Payroll menu, only visible if user has permission -->
+
+
+                @canany(['payroll.index'])
+                    <li class="nav-item menu-open">
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('payroll.index') }}" class="nav-link">
+                                    <i class="fas fa-book nav-icon"></i>
                                     <p>Payroll</p>
                                 </a>
-                            @endcan
-                        </li>
-                    @endcanany
+                            </li>
+                        </ul>
+                    </li>
+                @endcanany
 
                     <!-- Recruitment menu, only visible if user has permission -->
                     @canany(['recruitment.index', 'recruitment.create'])
@@ -272,8 +275,8 @@
                             </li>
                         </ul>
                     </li>
+                @endcanany
 
-                    @endcanany
 
                     @canany(['employeebook.index'])
                         <li class="nav-item menu-open">

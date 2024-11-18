@@ -13,12 +13,17 @@ class Payroll extends Model
 
     protected $fillable = [
         'employee_id',
-        // 'days_present',
-        // 'total_leave',
-        // 'effective_workdays',
-        // 'current_salary',
-        // 'total_salary',
-        'validation_status'
+        'month',
+        'total_worked_days',
+        'total_days_off',
+        'total_late',
+        'total_early',
+        'effective_work_days',
+        'current_salary',
+        'overtime_pay',
+        'total_salary',
+        'validation_status',
+
     ];
 
     public function employee()
@@ -44,6 +49,7 @@ class Payroll extends Model
       // Relasi ke model Offrequest
       public function offRequests()
       {
-          return $this->hasMany(Offrequest::class, 'user_id', 'employee_id');
+          return $this->hasMany(Offrequest::class, 'employee_id', 'employee_id');
+
       }
 }

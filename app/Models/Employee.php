@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Attandance; // Pastikan nama model sudah benar
-use App\Models\Payroll; 
+use App\Models\Payroll;
 use App\Models\Overtime; // Menambahkan relasi ke model Overtime
 use App\Models\WorkdaySetting; // Menambahkan relasi ke WorkdaySetting jika diperlukan
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -38,6 +38,12 @@ class Employee extends Model
         'current_salary' => 'decimal:2', // Untuk memastikan salary adalah tipe decimal dengan 2 desimal
     ];
 
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     // Relasi dengan Attendance
     public function attendances(): HasMany
     {
@@ -45,6 +51,7 @@ class Employee extends Model
     }
 
     public function attendancerecaps(): HasMany
+
     {
         return $this->hasMany(AttandanceRecap::class, 'employee_id', 'employee_id');
     }
@@ -67,9 +74,10 @@ class Employee extends Model
         return $this->hasOne(WorkdaySetting::class, 'employee_id', 'employee_id');
     }
 
-    // Relasi dengan User
-    public function user()
-    {
-        return $this->hasOne(User::class, 'email', 'email');
-    }
+
+
+   
+
+ 
+    
 }
