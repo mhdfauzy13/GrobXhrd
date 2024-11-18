@@ -88,6 +88,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'settings.worksdays',
 
 
+            //overtime
+            'overtime.create',
+            'overtime.store',
+
+            //payroll
+            'payroll.index',
+
+
         ];
 
         foreach ($permissions as $permission) {
