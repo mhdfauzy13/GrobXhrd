@@ -109,9 +109,9 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('payroll.validate')
             ->middleware('permission:payroll.index');
 
-
         Route::get('/payroll/export', [PayrollController::class, 'exportToCsv'])
             ->name('payroll.export')
+
             ->middleware('permission:payroll.index');
 
 
@@ -245,7 +245,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('settings.salarydeductions')
             ->middleware('permission:settings.deductions');
 
-
         Route::post('/settings/update-workdays', [SettingController::class, 'updateWorkdays'])
             ->name('settings.updateWorkdays')
             ->middleware('permission:settings.worksdays');
@@ -256,6 +255,9 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('dashboard', [DashboardEmployeeController::class, 'index'])
             ->name('dashboardemployee.index')
             ->middleware('permission:dashboardemployee.view');
+
+        Route::get('events/list', [DashboardEmployeeController::class, 'ListEvent'])
+            ->name('employee.events.list');
 
         // Attendance Scan Routes
         Route::get('/attandance/scan', [AttandanceController::class, 'scanView'])
