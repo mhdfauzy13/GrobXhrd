@@ -72,7 +72,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('datauser.destroy')
             ->middleware('permission:user.delete');
 
-        // Attendance
+         // Attendance
         Route::get('/attendance', [AttandanceController::class, 'index'])
             ->name('attandance.index')
             ->middleware('permission:attandance.index');
@@ -80,22 +80,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/attendance/recap/{employee_id}', [AttandanceController::class, 'recap'])
             ->name('attendance.recap')
             ->middleware('permission:attandance.index');
-
-        //overtime
-        // Menampilkan daftar overtime
-        Route::get('/overtime', [OvertimeController::class, 'index'])
-            ->name('overtime.index')
-            ->middleware('permission:overtime.create');
-
-
-        Route::get('/overtime/create', [OvertimeController::class, 'create'])
-            ->name('overtime.create')
-            ->middleware('permission:overtime.create');
-
-        Route::post('/overtime', [OvertimeController::class, 'store'])
-            ->name('overtime.store')
-            ->middleware('permission:overtime.create');
-
 
 
 

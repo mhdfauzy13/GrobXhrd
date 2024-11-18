@@ -39,7 +39,7 @@ class AuthenticatedSessionController extends Controller
         foreach ($user->roles as $role) {
             if ($role->status === 'disable') {
                 Auth::logout();
-                return redirect('/login')->withErrors('Role Anda tidak aktif. Silakan hubungi admin.');
+                return redirect('/login')->withErrors('Your role is not active. Please contact an admin.');
             }
         }
 
