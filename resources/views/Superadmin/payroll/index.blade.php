@@ -4,7 +4,7 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            <div class="row mb-3">
+            {{-- <div class="row mb-3">
                 <div class="col-md-4">
                     <form action="{{ route('payroll.index') }}" method="GET">
                         <div class="input-group">
@@ -15,7 +15,7 @@
                         </div>
                     </form>
                 </div>
-            </div>
+            </div> --}}
             <!-- Default box -->
             <div class="card">
                 <div class="card-header">

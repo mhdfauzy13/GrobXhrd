@@ -23,10 +23,10 @@ class UserSeeder extends Seeder
             $this->command->info('Workday settings are missing. Seeder will continue, but ensure to add them later.');
         }
 
-        // Ambil role yang sudah ada
-        $adminRole = Role::where('name', 'superadmin')->first();
-        $managerRole = Role::where('name', 'manager')->first();
-        $employeeRole = Role::where('name', 'employee')->first();
+        // Ambil atau buat role yang sudah ada
+        $adminRole = Role::firstOrCreate(['name' => 'superadmin']);
+        $managerRole = Role::firstOrCreate(['name' => 'manager']);
+        $employeeRole = Role::firstOrCreate(['name' => 'employee']);
 
         // Menambahkan Superadmin hanya ke tabel User
         $superadminUser = User::updateOrCreate(
@@ -41,17 +41,14 @@ class UserSeeder extends Seeder
         );
 
         // Assign role Superadmin ke user
-        if ($adminRole) {
-            $superadminUser->assignRole($adminRole);
-        } else {
-            $this->command->warn('Role "superadmin" not found.');
-        }
+        $superadminUser->assignRole($adminRole);
 
         // Menambahkan Manager ke tabel Employee dan User
         $managerEmployee = Employee::firstOrCreate([
+            'email' => 'manager@gmail.com',
+        ], [
             'first_name' => 'Manager',
             'last_name' => 'Example',
-            'email' => 'manager@gmail.com',
             'place_birth' => $faker->city,
             'date_birth' => $faker->date,
             'identity_number' => 'P-000002',
@@ -89,14 +86,9 @@ class UserSeeder extends Seeder
         );
 
         // Assign role Manager ke user
-        if ($managerRole) {
-            $managerUser->assignRole($managerRole);
-        } else {
-            $this->command->warn('Role "manager" not found.');
-        }
+        $managerUser->assignRole($managerRole);
 
         // Buat 15 dummy data karyawan
-        $employees = [];
         for ($i = 1; $i <= 15; $i++) {
             // Membuat karyawan di tabel Employee
             $employee = Employee::firstOrCreate([
@@ -128,7 +120,6 @@ class UserSeeder extends Seeder
                 'status' => 'Active',
                 'check_in_time' => Carbon::now()->setTime(rand(7, 9), 0), // Set ke jam dengan menit 0
                 'check_out_time' => Carbon::now()->setTime(rand(17, 19), 0), // Set ke jam dengan menit 0
-
             ]);
 
             // Membuat pengguna untuk karyawan ini di tabel User
@@ -144,14 +135,7 @@ class UserSeeder extends Seeder
             );
 
             // Assign role Employee ke user
-            if ($employeeRole) {
-                $user->assignRole($employeeRole);
-            } else {
-                $this->command->warn('Role "employee" not found.');
-
-            }
-
-
+            $user->assignRole($employeeRole);
         }
 
         $this->command->info('Users and roles seeded successfully.');

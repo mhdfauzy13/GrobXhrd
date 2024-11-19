@@ -214,22 +214,6 @@
                         </li>
                     @endcanany
 
-                <!-- Payroll menu, only visible if user has permission -->
-
-
-                @canany(['payroll.index'])
-                    <li class="nav-item menu-open">
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('payroll.index') }}" class="nav-link">
-                                    <i class="fas fa-book nav-icon"></i>
-                                    <p>Payroll</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                @endcanany
-
                     <!-- Recruitment menu, only visible if user has permission -->
                     @canany(['recruitment.index', 'recruitment.create'])
                         <li class="nav-item">
@@ -262,13 +246,12 @@
                 @endcanany
 
                 @canany(['overtime.create'])
-
                     <li class="nav-item menu-open">
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 @can('overtime.create')
                                     <a href="{{ route('overtime.index') }}" class="nav-link">
-                                        <i class="fas fa-calendar nav-icon"></i>
+                                        <i class="fas fa-clock nav-icon"></i>
                                         <p>Overtime</p>
                                     </a>
                                 @endcan
@@ -291,6 +274,19 @@
                             </ul>
                         </li>
                     @endcanany
+
+                    @canany(['payroll.index'])
+                    <li class="nav-item menu-open">
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('payroll.index') }}" class="nav-link">
+                                    <i class="fas fa-calculator nav-icon"></i>
+                                    <p>Payroll</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endcanany
 
                     @canany(['settings.index'])
                         <li class="nav-item menu-open">

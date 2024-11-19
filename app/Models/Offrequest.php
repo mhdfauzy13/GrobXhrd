@@ -7,11 +7,14 @@ use Illuminate\Database\Eloquent\Builder;
 class Offrequest extends Model
 {
     protected $table = 'offrequests';
-    protected $primaryKey = 'offrequest_id'; // Ganti dengan nama kolom primary key yang benar
-    public $incrementing = false; // Jika primary key tidak auto increment, set ke false
+    protected $primaryKey = 'offrequest_id'; 
+    public $incrementing = false; 
     protected $keyType = 'string';
-    protected $fillable = ['name', 'email', 'title', 'description', 'start_event', 'end_event', 'user_id', 'manager_id', 'status', 'approver_id', 'image'];
-
+    protected $fillable = [
+        'name', 'email', 'title', 'description', 
+        'start_event', 'end_event', 'employee_id', 
+        'manager_id', 'status', 'approver_id', 'image'
+    ];
     protected $casts = [
         'start_event' => 'datetime',
         'end_event' => 'datetime',
@@ -19,13 +22,15 @@ class Offrequest extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'employee_id');
     }
-
     public function employee()
     {
-        return $this->belongsTo(Employee::class, 'employee_id');
+        return $this->belongsTo(User::class, 'employee_id');
     }
+    
+    
+    
 
     public function manager()
     {

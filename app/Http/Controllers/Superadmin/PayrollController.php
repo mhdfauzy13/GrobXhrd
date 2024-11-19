@@ -83,6 +83,23 @@ class PayrollController extends Controller
             $baseSalary = $totalWorkedDays * $dailySalary;
             $totalPayroll = $baseSalary - $totalDeductions + $overtimePay;
 
+            Payroll::updateOrCreate(
+                ['employee_id' => $employee->employee_id],
+                [
+                    'employee_name' => $employee->first_name . ' ' . $employee->last_name,
+                    'current_salary' => $employee->current_salary,
+                    'total_days_worked' => $totalWorkedDays,
+                    'total_days_off' => $totalDaysOff,
+                    'total_late_check_in' => $totalLate,
+                    'total_early_check_out' => $totalEarly,
+                    'monthly_workdays' => $monthlyWorkdays,
+                    'overtime_pay' => $overtimePay,
+                    'total_payroll' => $totalPayroll,
+                    'validation_status' => 'pending',
+                    // 'month' => now()->format('F'), 
+                ]
+            );
+
             return [
                 'employee_name' => $employee->first_name . ' ' . $employee->last_name,
                 'current_salary' => $employee->current_salary,
