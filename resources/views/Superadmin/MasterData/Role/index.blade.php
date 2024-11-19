@@ -5,11 +5,8 @@
     <section class="content">
         <!-- Default box -->
         <div class="card">
-            {{-- <div class="card-header"> --}}
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <!-- Title Role -->
-                <h3 class="card-title mb-0">Role</h3>
-
+            <div class="card-header">
+                <h3 class="card-title">Role</h3>
                 <div class="card-tools">
                     <a href="{{ route('role.create') }}" class="btn btn-primary" title="Create Role">
                         <i class="fas fa-plus"></i> Add
@@ -38,7 +35,8 @@
                                 <tr>
                                     <td>{{ $role->name }}</td>
                                     <td class="project-state text-center">
-                                        <span class="badge {{ $role->status == 'enable' ? 'badge-success' : 'badge-danger' }}">
+                                        <span
+                                            class="badge {{ $role->status == 'enable' ? 'badge-success' : 'badge-danger' }}">
                                             {{ ucfirst($role->status) }}
                                         </span>
                                     </td>
@@ -46,7 +44,8 @@
                                         <a class="btn btn-info btn-sm" href="{{ route('role.edit', $role->id) }}">
                                             <i class="fas fa-pencil-alt"></i> Edit
                                         </a>
-                                        <form action="{{ route('role.destroy', $role->id) }}" method="POST" class="deleteForm" style="display:inline;">
+                                        <form action="{{ route('role.destroy', $role->id) }}" method="POST"
+                                            class="deleteForm" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" class="deleteButton btn btn-danger btn-sm">
@@ -67,5 +66,4 @@
             </div>
         </div>
     </section>
-
 @endsection

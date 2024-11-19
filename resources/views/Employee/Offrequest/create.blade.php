@@ -7,7 +7,7 @@
             <h3 class="card-title">Add Off Requests</h3>
         </div>
         <div class="card-body">
-            <form action="{{ route('offrequest.store') }}" method="POST" enctype="multipart/form-data"> <!-- tambahkan enctype -->
+            <form action="{{ route('offrequest.store') }}" method="POST" enctype="multipart/form-data"> 
                 @csrf
                 <div class="form-group">
                     <label for="name">Name</label>
@@ -77,7 +77,6 @@
 </section>
 
 <script>
-    // Fungsi untuk mendapatkan tanggal saat ini dalam format YYYY-MM-DD
     function getCurrentDate() {
         const today = new Date();
         const year = today.getFullYear();

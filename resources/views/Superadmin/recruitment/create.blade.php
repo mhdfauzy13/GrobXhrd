@@ -36,11 +36,10 @@
                     @endif
 
                     <!-- Form utama -->
-                    <form action="{{ route('recruitment.store') }}" method="POST" enctype="multipart/form-data">
+                    <form id="quickForm" action="{{ route('recruitment.store') }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
                         <div class="card-body">
-
-
                             <div class="form-group">
                                 <label for="name">Name</label>
                                 <input type="text" name="name" id="name" class="form-control"
@@ -121,7 +120,7 @@
                             </div>
 
                             <div class="card-footer">
-                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="submit" id="saverecruitment" class="btn btn-primary">Save</button>
                             </div>
                         </div>
                     </form>
@@ -129,4 +128,19 @@
             </div>
         </section>
     </div>
+
+    <script>
+        document.getElementById('saverecruitment').addEventListener('click', function(event) {
+            event.preventDefault(); // Mencegah pengiriman form langsung
+            Swal.fire({
+                position: 'top-center',
+                icon: 'success',
+                title: 'Your work has been saved',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                document.getElementById('quickForm').submit(); // Kirim form setelah alert sukses
+            });
+        });
+    </script>
 @endsection

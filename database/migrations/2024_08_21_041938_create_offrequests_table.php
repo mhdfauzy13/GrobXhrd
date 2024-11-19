@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('offrequests', function (Blueprint $table) {
             $table->bigIncrements('offrequest_id'); // Primary key kolom 'offrequest_id'
+             $table->unsignedBigInteger('user_id'); // Kolom foreign key
             $table->unsignedBigInteger('employee_id');
             $table->unsignedBigInteger('manager_id')->nullable(); // Kolom foreign key opsional
             $table->string('name');

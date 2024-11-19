@@ -8,7 +8,7 @@
                 <div class="card-tools">
                     <a class="btn btn-primary btn-sm" href="{{ route('datauser.create') }}">
                         <i class="fas fa-plus"></i>
-                        Create
+                        Add
                     </a>
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                         <i class="fas fa-minus"></i>

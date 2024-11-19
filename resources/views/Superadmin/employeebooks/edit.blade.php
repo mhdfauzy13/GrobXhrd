@@ -20,7 +20,7 @@
                 <h3 class="card-title">{{ $categoryTitle }}</h3>
             </div>
 
-            <form action="{{ route('employeebooks.update', $employeeBook->employeebook_id) }}" method="POST">
+            <form id="quickForm" action="{{ route('employeebooks.update', $employeeBook->employeebook_id) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="card-body">
@@ -55,7 +55,7 @@
                     <input type="hidden" name="category" value="{{ $employeeBook->category }}">
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" id="saveButton" class="btn btn-primary">Save</button>
                     <a href="{{ route('employeebooks.index') }}" class="btn btn-secondary">Back</a>
                 </div>
             </form>

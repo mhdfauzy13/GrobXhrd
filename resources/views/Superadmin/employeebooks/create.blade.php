@@ -8,7 +8,7 @@
                     <div class="card-header">
                         <h3 class="card-title">Add {{ ucfirst($category) }}</h3>
                     </div>
-                    <form action="{{ route('employeebooks.store') }}" method="POST">
+                    <form id="quickForm" action="{{ route('employeebooks.store') }}" method="POST">
                         @csrf
                         <input type="hidden" name="category" value="{{ $category }}">
                         <div class="card-body">
@@ -40,7 +40,7 @@
                             </div>
                         </div>
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" id="savebooks" class="btn btn-primary">Save</button>
                             <a href="{{ route('employeebooks.index') }}" class="btn btn-secondary">Back</a>
                         </div>
                     </form>
@@ -48,4 +48,23 @@
             </div>
         </section>
     </div>
+
+    <script>
+        // Handle the button click for Save
+        document.getElementById('savebooks').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Menampilkan SweetAlert setelah tombol Save diklik
+            Swal.fire({
+                position: 'top-center',
+                icon: 'success',
+                title: 'Your work has been saved',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(function() {
+                // Submit form setelah alert selesai
+                document.getElementById('quickForm').submit(); // Ensure form ID is correct
+            });
+        });
+    </script>
 @endsection
