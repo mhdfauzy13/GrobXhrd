@@ -51,15 +51,19 @@
                 </div>
             </div>
         </div>
-        <div class="col-12">
-            <div class="mb-3">
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" name="delete" role="switch"
-                        id="flexSwitchCheckDefault">
-                    <label class="form-check-label" for="flexSwitchCheckDefault">Delete</label>
+
+        <!-- Tombol Delete hanya muncul jika sedang mengedit event -->
+        @if ($data->event_id)
+            <div class="col-12">
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="delete" role="switch"
+                            id="flexSwitchCheckDefault">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Delete</label>
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
 </x-modal-action>
 
