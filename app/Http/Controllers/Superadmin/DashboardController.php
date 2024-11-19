@@ -23,10 +23,13 @@ class DashboardController extends Controller
         // Mengambil jumlah total pengguna (users)
         $totalUsers = User::count();
 
+        // Mengambil jumlah total recruitment
+        $totalRecruitments = \App\Models\Recruitment::count();
+
         // Menandai notifikasi sebagai sudah dibaca
         Auth::user()->unreadNotifications->markAsRead();
 
         // Mengirim data ke view
-        return view('Superadmin.dashboard.index', compact('totalEmployees', 'totalUsers'));
+        return view('Superadmin.dashboard.index', compact('totalEmployees', 'totalUsers', 'totalRecruitments'));
     }
 }

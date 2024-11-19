@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>HALOO INI DASHBOARD EMPLOYEE</h1>
+    <h1>HELLO THIS IS THE EMPLOYEE DASHBOARD</h1>
 
     <div class="container">
         <div class="row">
