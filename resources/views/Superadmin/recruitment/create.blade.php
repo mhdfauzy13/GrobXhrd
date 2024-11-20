@@ -54,8 +54,17 @@
 
                             <div class="form-group">
                                 <label for="phone_number">Phone Number</label>
-                                <input type="text" name="phone_number" id="phone_number" class="form-control"
-                                    value="{{ old('phone_number') }}" required>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">+62</span>
+                                    </div>
+                                    <input type="text" name="phone_number" id="phone_number" class="form-control"
+                                        value="{{ old('phone_number') }}" required oninput="updatePhoneNumber(this)"
+                                        onkeypress="validatePhoneNumber(event)">
+                                </div>
+                                <small id="phoneNumberWarning" class="form-text text-danger" style="display: none;">
+                                    Please enter only numbers.
+                                </small>
                             </div>
 
                             <div class="form-group">
@@ -66,8 +75,7 @@
 
                             <div class="form-group">
                                 <label for="last_education">Last Education</label>
-                                <select name="last_education" id="last_education" class="form-control"
-                                    value="{{ old('last_education') }}" required>
+                                <select name="last_education" id="last_education" class="form-control" required>
                                     <option value="">-- Select Education Level --</option>
                                     <option value="Elementary School">Elementary School</option>
                                     <option value="Junior High School">Junior High School</option>
@@ -102,13 +110,12 @@
 
                             <div class="form-group">
                                 <label for="comment">Comment</label>
-                                <textarea name="comment" id="comment" class="form-control" value="{{ old('comment') }}"></textarea>
+                                <textarea name="comment" id="comment" class="form-control">{{ old('comment') }}</textarea>
                             </div>
 
                             <div class="form-group">
                                 <label for="status">Status</label>
-                                <select name="status" id="status" class="form-control" value="{{ old('status') }}"
-                                    required>
+                                <select name="status" id="status" class="form-control" required>
                                     <option value="Initial Interview">Initial Interview</option>
                                     <option value="User Interview 1">User Interview 1</option>
                                     <option value="User Interview 2">User Interview 2</option>
@@ -131,4 +138,31 @@
             </div>
         </section>
     </div>
+
+    <script>
+        // Function to automatically update phone number prefix
+        function updatePhoneNumber(input) {
+            // Get the value from the input
+            let value = input.value;
+
+            // If the value starts with '0', replace it with '+62'
+            if (value.startsWith('0')) {
+                input.value = '+62' + value.slice(1);
+            }
+        }
+
+        // Function to validate phone number input (only numbers allowed)
+        function validatePhoneNumber(event) {
+            const input = event.target;
+            const char = String.fromCharCode(event.which);
+
+            // Allow only numbers (0-9) and prevent other characters
+            if (!/[0-9]/.test(char)) {
+                event.preventDefault(); // Prevent the input
+                document.getElementById('phoneNumberWarning').style.display = 'block'; // Show warning
+            } else {
+                document.getElementById('phoneNumberWarning').style.display = 'none'; // Hide warning
+            }
+        }
+    </script>
 @endsection
