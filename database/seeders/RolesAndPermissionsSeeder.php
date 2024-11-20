@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
-    
+
     public function run()
     {
         // Daftar semua permissions
@@ -51,10 +51,13 @@ class RolesAndPermissionsSeeder extends Seeder
             'payroll.delete',
 
             // Permission terkait Recruitment
+            // Permission terkait Recruitment
             'recruitment.index',
             'recruitment.create',
             'recruitment.edit',
             'recruitment.delete',
+            'recruitment.show',
+
 
             // Permission terkait Attandance
             'attandance.index',
@@ -169,7 +172,4 @@ class RolesAndPermissionsSeeder extends Seeder
         // Assign role Manager ke user Bunga Putri
         $employee->assignRole($managerRole);
     }
-
-
-
 }

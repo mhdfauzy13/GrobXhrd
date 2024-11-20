@@ -40,7 +40,6 @@
                         @csrf
                         <div class="card-body">
 
-
                             <div class="form-group">
                                 <label for="name">Name</label>
                                 <input type="text" name="name" id="name" class="form-control"
@@ -62,7 +61,7 @@
                             <div class="form-group">
                                 <label for="date_of_birth">Date of Birth</label>
                                 <input type="date" name="date_of_birth" id="date_of_birth" class="form-control"
-                                    value="{{ old('date_of_birth') }}"required>
+                                    value="{{ old('date_of_birth') }}" required>
                             </div>
 
                             <div class="form-group">
@@ -86,7 +85,7 @@
                             <div class="form-group">
                                 <label for="last_position">Last Position</label>
                                 <input type="text" name="last_position" id="last_position" class="form-control"
-                                    value="{{ old('last_position') }}"required>
+                                    value="{{ old('last_position') }}" required>
                             </div>
 
                             <div class="form-group">
@@ -108,8 +107,8 @@
 
                             <div class="form-group">
                                 <label for="status">Status</label>
-                                <select name="status" id="status" class="form-control"
-                                    value="{{ old('status') }}"required>
+                                <select name="status" id="status" class="form-control" value="{{ old('status') }}"
+                                    required>
                                     <option value="Initial Interview">Initial Interview</option>
                                     <option value="User Interview 1">User Interview 1</option>
                                     <option value="User Interview 2">User Interview 2</option>
@@ -121,7 +120,10 @@
                             </div>
 
                             <div class="card-footer">
+                                <!-- Save Button -->
                                 <button type="submit" class="btn btn-primary">Save</button>
+                                <!-- Back Button -->
+                                <a href="{{ route('recruitment.index') }}" class="btn btn-secondary">Back</a>
                             </div>
                         </div>
                     </form>
