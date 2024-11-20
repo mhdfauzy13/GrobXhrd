@@ -72,7 +72,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('datauser.destroy')
             ->middleware('permission:user.delete');
 
-         // Attendance
+        // Attendance
         Route::get('/attendance', [AttandanceController::class, 'index'])
             ->name('attandance.index')
             ->middleware('permission:attandance.index');
@@ -196,6 +196,10 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::delete('/recruitment/{recruitment_id}', [RecruitmentController::class, 'destroy'])
             ->name('recruitment.destroy')
             ->middleware('permission:recruitment.delete');
+        Route::get('/recruitment/{id}', [RecruitmentController::class, 'show'])
+            ->name('recruitment.show')
+            ->middleware('permission:recruitment.index');
+
 
         // Employee
         Route::get('/employee', [EmployeeController::class, 'index'])
