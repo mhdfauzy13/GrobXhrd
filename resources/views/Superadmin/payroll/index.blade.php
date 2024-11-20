@@ -3,28 +3,31 @@
 @section('content')
     <!-- Main content -->
     <section class="content">
-        <div class="container-fluid">
-            {{-- <div class="row mb-3">
-                <div class="col-md-4">
-                    <form action="{{ route('payroll.index') }}" method="GET">
-                        <div class="input-group">
-                            <input type="text" name="search" class="form-control" placeholder="Search employee name">
-                            <span class="input-group-append">
-                                <button type="submit" class="btn btn-primary">Search</button>
-                            </span>
-                        </div>
-                    </form>
-                </div>
-            </div> --}}
+        {{-- <div class="container-fluid"> --}}
+          
             <!-- Default box -->
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Payroll</h3>
-                    <div class="card-tools">
-                        <form method="GET" action="{{ route('payroll.export') }}">
+
+                <div class="d-flex justify-content-between w-100 align-items-center"">
+                    <!-- Title and Search Form -->
+                    <h3 class="card-title mb-0">Payroll</h3>
+                    <div class="d-flex align-items-center">
+
+                        <form method="GET" action="{{ route('payroll.index') }}" class="form-inline d-flex mb-0">
+                            <input type="text" name="search" class="form-control" placeholder="Search by employee name..." 
+                                   value="{{ request()->query('search') }}">
+                            <button type="submit" class="btn btn-secondary ml-2">Search</button>
+                        </form>
+                        
+                        <!-- Export Button with margin -->
+                        <form method="GET" action="{{ route('payroll.export') }}" class="ml-3">
                             <button type="submit" class="btn btn-primary">Export to CSV</button>
                         </form>
+                        
+
                     </div>
+                </div>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -57,31 +60,31 @@
                                         <td class="text-center">{{ number_format($data['total_payroll'], 0, ',', '.') }}</td>
                                         <td class="text-center">
                                             {{-- @if ($data['validation_status'] == 'pending') --}}
-                                                <form action="
-                                                {{-- {{ route('payroll.updateStatus', $data['id']) }} --}}
-                                                " method="POST" style="display:inline;">
+                                                <form action=" {{-- {{ route('payroll.updateStatus', $data['id']) }} --}} " method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('PATCH')
                                                     <button type="submit" name="status" value="approved" class="btn btn-success btn-sm">Accept</button>
                                                     <button type="submit" name="status" value="declined" class="btn btn-danger btn-sm">Decline</button>
                                                 </form>
-                                            {{-- @elseif ($data['validation_status'] == 'approved')
-                                                <span class="badge bg-success">Accepted</span>
-                                            @elseif ($data['validation_status'] == 'declined')
-                                                <span class="badge bg-danger">Declined</span>
-                                            @endif --}}
-                                        </td>                                    </tr>
+                                            {{-- @elseif ($data['validation_status'] == 'approved') --}}
+                                                {{-- <span class="badge bg-success">Accepted</span> --}}
+                                            {{-- @elseif ($data['validation_status'] == 'declined') --}}
+                                                {{-- <span class="badge bg-danger">Declined</span> --}}
+                                            {{-- @endif --}}
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
                 </div>
+
                 <div class="card-footer clearfix">
                     <div class="pagination-container">
-                        {{-- {{ $payrollData->links('vendor.pagination.bootstrap-4') }} --}}
+                        {{-- {{ $payrollData('vendor.pagination.bootstrap-4') }} --}}
                     </div>
                 </div>
             </div>
-        </div>
+        {{-- </div> --}}
     </section>
 @endsection
