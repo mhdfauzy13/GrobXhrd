@@ -2,6 +2,7 @@
 
 @section('content')
     <div class="content">
+
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
@@ -17,38 +18,59 @@
                         <h3 class="card-title">Add Recruitment</h3>
                     </div>
 
+                    @if ($errors->any())
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                let errorMessages = '';
+                                @foreach ($errors->all() as $error)
+                                    errorMessages += '{{ $error }}\n';
+                                @endforeach
+
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: errorMessages,
+                                });
+                            });
+                        </script>
+                    @endif
+
                     <!-- Form utama -->
                     <form action="{{ route('recruitment.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="card-body">
-                            @if ($errors->any())
-                                <div class="alert alert-danger">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
 
                             <div class="form-group">
                                 <label for="name">Name</label>
-                                <input type="text" name="name" id="name" class="form-control" required>
+                                <input type="text" name="name" id="name" class="form-control"
+                                    value="{{ old('name') }}" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" name="email" id="email" class="form-control" required>
+                                <input type="email" name="email" id="email" class="form-control"
+                                    value="{{ old('email') }}" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="phone_number">Phone Number</label>
-                                <input type="text" name="phone_number" id="phone_number" class="form-control" required>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">+62</span>
+                                    </div>
+                                    <input type="text" name="phone_number" id="phone_number" class="form-control"
+                                        value="{{ old('phone_number') }}" required oninput="updatePhoneNumber(this)"
+                                        onkeypress="validatePhoneNumber(event)">
+                                </div>
+                                <small id="phoneNumberWarning" class="form-text text-danger" style="display: none;">
+                                    Please enter only numbers.
+                                </small>
                             </div>
 
                             <div class="form-group">
                                 <label for="date_of_birth">Date of Birth</label>
-                                <input type="date" name="date_of_birth" id="date_of_birth" class="form-control" required>
+                                <input type="date" name="date_of_birth" id="date_of_birth" class="form-control"
+                                    value="{{ old('date_of_birth') }}" required>
                             </div>
 
                             <div class="form-group">
@@ -70,23 +92,25 @@
 
                             <div class="form-group">
                                 <label for="last_position">Last Position</label>
-                                <input type="text" name="last_position" id="last_position" class="form-control" required>
+                                <input type="text" name="last_position" id="last_position" class="form-control"
+                                    value="{{ old('last_position') }}" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="apply_position">Apply Position</label>
                                 <input type="text" name="apply_position" id="apply_position" class="form-control"
-                                    required>
+                                    value="{{ old('apply_position') }}" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="cv_file">CV File</label>
-                                <input type="file" name="cv_file" id="cv_file" class="form-control" required>
+                                <input type="file" name="cv_file" id="cv_file" class="form-control"
+                                    value="{{ old('cv_file') }}" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="comment">Comment</label>
-                                <textarea name="comment" id="comment" class="form-control"></textarea>
+                                <textarea name="comment" id="comment" class="form-control">{{ old('comment') }}</textarea>
                             </div>
 
                             <div class="form-group">
@@ -103,7 +127,10 @@
                             </div>
 
                             <div class="card-footer">
+                                <!-- Save Button -->
                                 <button type="submit" class="btn btn-primary">Save</button>
+                                <!-- Back Button -->
+                                <a href="{{ route('recruitment.index') }}" class="btn btn-secondary">Back</a>
                             </div>
                         </div>
                     </form>
@@ -111,4 +138,31 @@
             </div>
         </section>
     </div>
+
+    <script>
+        // Function to automatically update phone number prefix
+        function updatePhoneNumber(input) {
+            // Get the value from the input
+            let value = input.value;
+
+            // If the value starts with '0', replace it with '+62'
+            if (value.startsWith('0')) {
+                input.value = '+62' + value.slice(1);
+            }
+        }
+
+        // Function to validate phone number input (only numbers allowed)
+        function validatePhoneNumber(event) {
+            const input = event.target;
+            const char = String.fromCharCode(event.which);
+
+            // Allow only numbers (0-9) and prevent other characters
+            if (!/[0-9]/.test(char)) {
+                event.preventDefault(); // Prevent the input
+                document.getElementById('phoneNumberWarning').style.display = 'block'; // Show warning
+            } else {
+                document.getElementById('phoneNumberWarning').style.display = 'none'; // Hide warning
+            }
+        }
+    </script>
 @endsection

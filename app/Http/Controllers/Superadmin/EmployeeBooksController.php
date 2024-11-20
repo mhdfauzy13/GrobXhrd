@@ -20,13 +20,16 @@ class EmployeeBooksController extends Controller
 
     public function index()
     {
-        $violations = EmployeeBook::where('category', 'violation')->with('employee')->get();
-        $warnings = EmployeeBook::where('category', 'warning')->with('employee')->get();
-        $reprimands = EmployeeBook::where('category', 'reprimand')->with('employee')->get();
+        // Ambil data dengan pagination
+        $violations = EmployeeBook::where('category', 'violation')->with('employee')->paginate(6);
+        $warnings = EmployeeBook::where('category', 'warning')->with('employee')->paginate(6);
+        $reprimands = EmployeeBook::where('category', 'reprimand')->with('employee')->paginate(6);
         $employees = Employee::all(); // Ambil semua karyawan
 
+        // Kirim data ke view
         return view('superadmin.employeebooks.index', compact('violations', 'warnings', 'reprimands', 'employees'));
     }
+
 
     public function create(Request $request)
     {

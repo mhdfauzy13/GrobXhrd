@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container-fluid"> <!-- Changed to container-fluid for full width -->
+    <div class="container-fluid">
         <!-- Card Header for Employee Books -->
-        <div class="card mb-3 w-100"> <!-- Added w-100 to make the card full-width -->
+        <div class="card mb-3 w-100">
             <div class="card-header">
                 <h2>Employee Books</h2>
             </div>
@@ -82,6 +82,8 @@
                                 </tbody>
                             </table>
                         </div>
+                        <!-- Pagination Links -->
+                        {{ $violations->links('vendor.pagination.adminlte') }}
                     </div>
                 </div>
             </div>
@@ -141,6 +143,8 @@
                                 </tbody>
                             </table>
                         </div>
+                        <!-- Pagination Links -->
+                        {{ $warnings->links('vendor.pagination.adminlte') }}
                     </div>
                 </div>
             </div>
@@ -200,28 +204,31 @@
                                 </tbody>
                             </table>
                         </div>
+                        <!-- Pagination Links -->
+                        {{ $reprimands->links('vendor.pagination.adminlte') }}
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    @php
-        function cutText($text, $length)
-        {
-            if (strlen($text) <= $length) {
-                return $text;
-            }
-            // Memotong pada batas kata
-            $words = explode(' ', $text);
-            $cutText = '';
-            foreach ($words as $word) {
-                if (strlen($cutText) + strlen($word) + 1 > $length) {
-                    break;
+        @php
+            function cutText($text, $length)
+            {
+                if (strlen($text) <= $length) {
+                    return $text;
                 }
-                $cutText .= ($cutText ? ' ' : '') . $word;
+                // Memotong pada batas kata
+                $words = explode(' ', $text);
+                $cutText = '';
+                foreach ($words as $word) {
+                    if (strlen($cutText . ' ' . $word) <= $length) {
+                        $cutText .= ' ' . $word;
+                    } else {
+                        break;
+                    }
+                }
+                return $cutText . '...';
             }
-            return $cutText;
-        }
-    @endphp
+        @endphp
+    </div>
 @endsection

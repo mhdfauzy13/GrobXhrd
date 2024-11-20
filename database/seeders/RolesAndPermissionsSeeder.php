@@ -52,10 +52,13 @@ class RolesAndPermissionsSeeder extends Seeder
             'payroll.delete',
 
             // Permission terkait Recruitment
+            // Permission terkait Recruitment
             'recruitment.index',
             'recruitment.create',
             'recruitment.edit',
             'recruitment.delete',
+            'recruitment.show',
+
 
             // Permission terkait Attandance
             'attandance.index',

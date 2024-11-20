@@ -16,33 +16,61 @@
                     <div class="card-header">
                         <h3 class="card-title">Edit Recruitment</h3>
                     </div>
-                    <div class="card-body">
-                        <form action="{{ route('recruitment.update', $recruitment->recruitment_id) }}" method="POST"
-                            enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
+
+                    @if ($errors->any())
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                let errorMessages = '';
+                                @foreach ($errors->all() as $error)
+                                    errorMessages += '{{ $error }}\n';
+                                @endforeach
+
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: errorMessages,
+                                });
+                            });
+                        </script>
+                    @endif
+
+                    <!-- Edit Form -->
+                    <form action="{{ route('recruitment.update', $recruitment->recruitment_id) }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <div class="card-body">
 
                             <div class="form-group">
                                 <label for="name">Name</label>
-                                <input type="text" class="form-control" id="name" name="name"
+                                <input type="text" name="name" id="name" class="form-control"
                                     value="{{ old('name', $recruitment->name) }}" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" class="form-control" id="email" name="email"
+                                <input type="email" name="email" id="email" class="form-control"
                                     value="{{ old('email', $recruitment->email) }}" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="phone_number">Phone Number</label>
-                                <input type="text" class="form-control" id="phone_number" name="phone_number"
-                                    value="{{ old('phone_number', $recruitment->phone_number) }}" required>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">+62</span>
+                                    </div>
+                                    <input type="text" name="phone_number" id="phone_number" class="form-control"
+                                        value="{{ old('phone_number', $recruitment->phone_number) }}" required
+                                        oninput="updatePhoneNumber(this)" onkeypress="validatePhoneNumber(event)">
+                                </div>
+                                <small id="phoneNumberWarning" class="form-text text-danger" style="display: none;">
+                                    Please enter only numbers.
+                                </small>
                             </div>
 
                             <div class="form-group">
                                 <label for="date_of_birth">Date of Birth</label>
-                                <input type="date" class="form-control" id="date_of_birth" name="date_of_birth"
+                                <input type="date" name="date_of_birth" id="date_of_birth" class="form-control"
                                     value="{{ old('date_of_birth', $recruitment->date_of_birth) }}" required>
                             </div>
 
@@ -85,7 +113,7 @@
 
                             <div class="form-group">
                                 <label for="last_position">Last Position</label>
-                                <input type="text" class="form-control" id="last_position" name="last_position"
+                                <input type="text" name="last_position" id="last_position" class="form-control"
                                     value="{{ old('last_position', $recruitment->last_position) }}" required>
                             </div>
 
@@ -97,7 +125,8 @@
 
                             <div class="form-group">
                                 <label for="cv_file">CV File</label>
-                                <input type="file" name="cv_file" id="cv_file" class="form-control">
+                                <input type="file" name="cv_file" id="cv_file" class="form-control"
+                                    value="{{ old('cv_file', $recruitment->cv_file) }}">
                             </div>
 
                             <div class="form-group">
@@ -113,12 +142,10 @@
                                         Initial Interview</option>
                                     <option value="User Interview 1"
                                         {{ old('status', $recruitment->status) == 'User Interview 1' ? 'selected' : '' }}>
-                                        User
-                                        Interview 1</option>
+                                        User Interview 1</option>
                                     <option value="User Interview 2"
                                         {{ old('status', $recruitment->status) == 'User Interview 2' ? 'selected' : '' }}>
-                                        User
-                                        Interview 2</option>
+                                        User Interview 2</option>
                                     <option value="Background Check"
                                         {{ old('status', $recruitment->status) == 'Background Check' ? 'selected' : '' }}>
                                         Background Check</option>
@@ -134,10 +161,38 @@
                                 </select>
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Update</button>
-                        </form>
-                    </div>
+                            <div class="card-footer">
+                                <!-- Save Button -->
+                                <button type="submit" class="btn btn-primary">Update</button>
+                                <!-- Back Button -->
+                                <a href="{{ route('recruitment.index') }}" class="btn btn-secondary">Back</a>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </section>
-    @endsection
+    </div>
+
+    <script>
+        // Function to automatically update phone number prefix
+        function updatePhoneNumber(input) {
+            let value = input.value;
+            if (value.startsWith('0')) {
+                input.value = '+62' + value.slice(1);
+            }
+        }
+
+        // Function to validate phone number input (only numbers allowed)
+        function validatePhoneNumber(event) {
+            const input = event.target;
+            const char = String.fromCharCode(event.which);
+            if (!/[0-9]/.test(char)) {
+                event.preventDefault();
+                document.getElementById('phoneNumberWarning').style.display = 'block';
+            } else {
+                document.getElementById('phoneNumberWarning').style.display = 'none';
+            }
+        }
+    </script>
+@endsection

@@ -113,8 +113,10 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('payroll.updateStatus')
             ->middleware('permission:payroll.index');
 
+
         Route::get('/payroll/export', [PayrollController::class, 'exportToCsv'])
             ->name('payroll.export')
+
             ->middleware('permission:payroll.index');
 
 
@@ -199,6 +201,10 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::delete('/recruitment/{recruitment_id}', [RecruitmentController::class, 'destroy'])
             ->name('recruitment.destroy')
             ->middleware('permission:recruitment.delete');
+        Route::get('/recruitment/{id}', [RecruitmentController::class, 'show'])
+            ->name('recruitment.show')
+            ->middleware('permission:recruitment.index');
+
 
         // Employee
         Route::get('/employee', [EmployeeController::class, 'index'])
@@ -248,7 +254,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('settings.salarydeductions')
             ->middleware('permission:settings.deductions');
 
-
         Route::post('/settings/update-workdays', [SettingController::class, 'updateWorkdays'])
             ->name('settings.updateWorkdays')
             ->middleware('permission:settings.worksdays');
@@ -259,6 +264,9 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('dashboard', [DashboardEmployeeController::class, 'index'])
             ->name('dashboardemployee.index')
             ->middleware('permission:dashboardemployee.view');
+
+        Route::get('events/list', [DashboardEmployeeController::class, 'ListEvent'])
+            ->name('employee.events.list');
 
         // Attendance Scan Routes
         Route::get('/attandance/scan', [AttandanceController::class, 'scanView'])
