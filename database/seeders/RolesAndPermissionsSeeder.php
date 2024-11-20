@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Employee;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
-    
+
     public function run()
     {
         // Daftar semua permissions
@@ -51,10 +52,13 @@ class RolesAndPermissionsSeeder extends Seeder
             'payroll.delete',
 
             // Permission terkait Recruitment
+            // Permission terkait Recruitment
             'recruitment.index',
             'recruitment.create',
             'recruitment.edit',
             'recruitment.delete',
+            'recruitment.show',
+
 
             // Permission terkait Attandance
             'attandance.index',
@@ -157,19 +161,66 @@ class RolesAndPermissionsSeeder extends Seeder
 
 
 
-        $employee = User::updateOrCreate(
+        // $employee = User::updateOrCreate(
+        //     [
+        //         'email' => 'bungadevtri@gmail.com',
+        //     ],
+        //     [
+        //         'name' => 'Bunga Putri',
+        //         'password' => Hash::make('password'),
+        //     ]
+        // );
+        // // Assign role Manager ke user Bunga Putri
+        // $employee->assignRole($managerRole);
+
+
+
+        // Menambahkan Bunga Putri sebagai Manager
+        // Pertama, pastikan employee Bunga Putri sudah ada di tabel Employee
+        $bungadevtriEmployee = Employee::firstOrCreate(
+            [
+                'email' => 'bungadevtri@gmail.com',
+            ],
+            [
+                'first_name' => 'Bunga',
+                'last_name' => 'Putri',
+                'place_birth' => 'City',
+                'date_birth' => now(),
+                'identity_number' => 'P-000003',
+                'address' => 'Some Address',
+                'current_address' => 'Some Address',
+                'blood_type' => 'O',
+                'blood_rhesus' => '+',
+                'phone_number' => '1234567890',
+                'hp_number' => '0987654321',
+                'marital_status' => 'Single',
+                'last_education' => 'Elementary School',
+                'degree' => 'S.Kom',
+                'starting_date' => now(),
+                'interview_by' => 'Interviewer',
+                'current_salary' => 5000000,
+                'insurance' => true,
+                'serious_illness' => 'None',
+                'hereditary_disease' => 'None',
+                'emergency_contact' => 'Mother',
+                'relations' => 'Parent',
+                'emergency_number' => '1234567890',
+                'status' => 'Active',
+            ]
+        );
+
+        // Kemudian, buat pengguna (user) untuk Bunga Putri dengan mengaitkan employee_id
+        $bungadevtri = User::updateOrCreate(
             [
                 'email' => 'bungadevtri@gmail.com',
             ],
             [
                 'name' => 'Bunga Putri',
                 'password' => Hash::make('password'),
+                'employee_id' => $bungadevtriEmployee->employee_id, // Mengaitkan dengan employee_id yang baru dibuat
             ]
         );
-        // Assign role Manager ke user Bunga Putri
-        $employee->assignRole($managerRole);
+        // Assign role Manager ke Bunga Putri
+        $bungadevtri->assignRole($managerRole);
     }
-
-
-
 }

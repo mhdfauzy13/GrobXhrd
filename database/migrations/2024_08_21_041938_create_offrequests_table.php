@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('user_id'); // Kolom foreign key
             // $table->unsignedBigInteger('employee_id');
             $table->unsignedBigInteger('manager_id')->nullable(); // Kolom foreign key opsional
+
             $table->string('name');
             $table->string('email')->unique();
             $table->string('title');
@@ -29,9 +30,10 @@ return new class extends Migration {
                 ->onDelete('cascade');
             $table
                 ->foreign('manager_id')
+
                 ->references('user_id') // Mengacu ke kolom 'user_id' di tabel 'users'
                 ->on('users')
-                ->onDelete('set null');
+                ->onDelete('set null'); // Set null jika manager dihapus
         });
     }
 

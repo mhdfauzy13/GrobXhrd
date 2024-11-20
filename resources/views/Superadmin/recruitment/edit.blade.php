@@ -15,7 +15,7 @@
                     <div class="card-header">
                         <h3 class="card-title">Edit Recruitment</h3>
                     </div>
-                    @if ($errors->any())
+      @if ($errors->any())
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 let errorMessages = '';
@@ -45,26 +45,38 @@
 
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" class="form-control" id="email" name="email"
-                                    value="{{ old('email', $recruitment->email) }}"required>
+
+                                <input type="email" name="email" id="email" class="form-control"
+                                    value="{{ old('email', $recruitment->email) }}" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="phone_number">Phone Number</label>
-                                <input type="text" class="form-control" id="phone_number" name="phone_number"
-                                    value="{{ old('phone_number', $recruitment->phone_number) }}"required>
+
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">+62</span>
+                                    </div>
+                                    <input type="text" name="phone_number" id="phone_number" class="form-control"
+                                        value="{{ old('phone_number', $recruitment->phone_number) }}" required
+                                        oninput="updatePhoneNumber(this)" onkeypress="validatePhoneNumber(event)">
+                                </div>
+                                <small id="phoneNumberWarning" class="form-text text-danger" style="display: none;">
+                                    Please enter only numbers.
+                                </small>
                             </div>
 
                             <div class="form-group">
                                 <label for="date_of_birth">Date of Birth</label>
-                                <input type="date" class="form-control" id="date_of_birth" name="date_of_birth"
-                                    value="{{ old('date_of_birth', $recruitment->date_of_birth) }}"required>
-                            </div>
+                                <input type="date" name="date_of_birth" id="date_of_birth" class="form-control"
+                                    value="{{ old('date_of_birth', $recruitment->date_of_birth) }}" required>
+                                    </div>
 
                             <div class="form-group">
                                 <label for="last_education">Last Education</label>
-                                <select name="last_education" id="last_education" class="form-control"
-                                    value="{{ old('last_education', $recruitment->last_education) }}"required>
+
+
+                                <select name="last_education" id="last_education" class="form-control" required>
                                     <option value="">-- Select Education Level --</option>
                                     <option value="Elementary School"
                                         {{ old('last_education', $recruitment->last_education) == 'Elementary School' ? 'selected' : '' }}>
@@ -101,15 +113,17 @@
 
                             <div class="form-group">
                                 <label for="last_position">Last Position</label>
-                                <input type="text" class="form-control" id="last_position" name="last_position"
-                                    value="{{ old('last_position', $recruitment->last_position) }}"required>
+
+                                <input type="text" name="last_position" id="last_position" class="form-control"
+                                    value="{{ old('last_position', $recruitment->last_position) }}" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="apply_position">Apply Position</label>
                                 <input type="text" name="apply_position" id="apply_position" class="form-control"
-                                    value="{{ old('apply_position', $recruitment->apply_position) }}"required>
-                            </div>
+
+                                    value="{{ old('apply_position', $recruitment->apply_position) }}" required>
+                           </div>
 
                             <div class="form-group">
                                 <label for="cv_file">CV File</label>
@@ -120,12 +134,14 @@
                             <div class="form-group">
                                 <label for="comment">Comment</label>
                                 <textarea name="comment" id="comment" class="form-control" value="{{ old('comment', $recruitment->comment) }}">{{ old('comment', $recruitment->comment) }}</textarea>
+
                             </div>
 
                             <div class="form-group">
                                 <label for="status">Status</label>
                                 <select name="status" id="status" class="form-control"
                                     value="{{ old('status', $recruitment->status) }}"required>
+
                                     <option value="Initial Interview"
                                         {{ old('status', $recruitment->status) == 'Initial Interview' ? 'selected' : '' }}>
                                         Initial Interview</option>
@@ -156,8 +172,31 @@
                             </div>
                         </form>
                     </div>
+
                 </div>
             </div>
         </section>
     </div>
+
+    <script>
+        // Function to automatically update phone number prefix
+        function updatePhoneNumber(input) {
+            let value = input.value;
+            if (value.startsWith('0')) {
+                input.value = '+62' + value.slice(1);
+            }
+        }
+
+        // Function to validate phone number input (only numbers allowed)
+        function validatePhoneNumber(event) {
+            const input = event.target;
+            const char = String.fromCharCode(event.which);
+            if (!/[0-9]/.test(char)) {
+                event.preventDefault();
+                document.getElementById('phoneNumberWarning').style.display = 'block';
+            } else {
+                document.getElementById('phoneNumberWarning').style.display = 'none';
+            }
+        }
+    </script>
 @endsection

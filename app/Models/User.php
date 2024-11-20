@@ -38,7 +38,6 @@ class User extends Authenticatable
         return $this->hasMany(Offrequest::class, 'manager_id');
     }
 
-    // Relasi ke Offrequest, di mana user ini mengajukan banyak cuti
     public function offrequestsAsEmployee()
     {
         return $this->hasMany(Offrequest::class, 'user_id');

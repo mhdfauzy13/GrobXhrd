@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Builder;
 class Offrequest extends Model
 {
     protected $table = 'offrequests';
-    protected $primaryKey = 'offrequest_id'; // Ganti dengan nama kolom primary key yang benar
-    public $incrementing = false; // Jika primary key tidak auto increment, set ke false
+    protected $primaryKey = 'offrequest_id'; 
+    public $incrementing = false; 
     protected $keyType = 'string';
     protected $fillable = [
         'name',
@@ -33,13 +33,16 @@ class Offrequest extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'employee_id');
     }
-    
+
     public function employee()
     {
-        return $this->belongsTo(Employee::class, 'employee_id');
+        return $this->belongsTo(User::class, 'employee_id');
     }
+    
+    
+    
 
     public function manager()
     {

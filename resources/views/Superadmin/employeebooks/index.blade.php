@@ -4,6 +4,7 @@
     <div class="container-fluid"> <!-- Full width container -->
         <!-- Card Wrapper -->
         <div class="card mb-3 w-100"> <!-- Card for wrapping entire content -->
+
             <div class="card-header">
                 <h1>Employee Books</h1>
             </div>
@@ -83,6 +84,8 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Pagination Links -->
+                        {{ $violations->links('vendor.pagination.adminlte') }}
                     </div>
 
                     <!-- Warning Tab -->
@@ -142,6 +145,8 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Pagination Links -->
+                        {{ $warnings->links('vendor.pagination.adminlte') }}
                     </div>
 
                     <!-- Reprimand Tab -->
@@ -201,28 +206,31 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Pagination Links -->
+                        {{ $reprimands->links('vendor.pagination.adminlte') }}
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    @php
-        function cutText($text, $length)
-        {
-            if (strlen($text) <= $length) {
-                return $text;
-            }
-            // Memotong pada batas kata
-            $words = explode(' ', $text);
-            $cutText = '';
-            foreach ($words as $word) {
-                if (strlen($cutText) + strlen($word) + 1 > $length) {
-                    break;
+        @php
+            function cutText($text, $length)
+            {
+                if (strlen($text) <= $length) {
+                    return $text;
                 }
-                $cutText .= ($cutText ? ' ' : '') . $word;
+                // Memotong pada batas kata
+                $words = explode(' ', $text);
+                $cutText = '';
+                foreach ($words as $word) {
+                    if (strlen($cutText . ' ' . $word) <= $length) {
+                        $cutText .= ' ' . $word;
+                    } else {
+                        break;
+                    }
+                }
+                return $cutText . '...';
             }
-            return $cutText;
-        }
-    @endphp
+        @endphp
+    </div>
 @endsection

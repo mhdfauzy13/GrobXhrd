@@ -10,16 +10,16 @@ class CreatePayrollsTable extends Migration
         Schema::create('payrolls', function (Blueprint $table) {
             $table->bigIncrements('payroll_id');
             $table->unsignedBigInteger('employee_id');
-            $table->string('month'); // Bulan perhitungan payroll
-            $table->integer('total_worked_days');
-            $table->integer('total_days_off');
-            $table->integer('total_late');
-            $table->integer('total_early');
-            $table->integer('effective_work_days');
-            $table->integer('current_salary');
-            $table->integer('overtime_pay')->default(0); // Gaji lembur
-            $table->integer('total_salary'); // Gaji total setelah lembur
-            // $table->enum('validation_status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->string('month')->default(now()->format('F'))->change();
+            $table->integer('total_worked_days')->default(0); 
+            $table->integer('total_days_off')->nullable();
+            $table->integer('total_late')->default(0); 
+            $table->integer('total_early')->default(0); 
+            $table->integer('effective_work_days')->default(0); 
+            $table->integer('current_salary')->default(0); 
+            $table->integer('overtime_pay')->default(0); 
+            $table->integer('total_salary')->nullable();
+            $table->enum('validation_status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
 
             // Foreign Key relation dengan tabel employees
