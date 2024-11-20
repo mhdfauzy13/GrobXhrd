@@ -5,10 +5,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="{{ asset('dist/img/icongrob.png') }}" type="image/x-icon" />
-    <title>{{ $companyname ? $companyname->name_company : 'Default Title' }}</title>
+    <title>@yield('title', 'Grobmedia')</title>
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 

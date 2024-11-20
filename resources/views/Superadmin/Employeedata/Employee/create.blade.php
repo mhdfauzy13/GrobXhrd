@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Employee/create')
 @section('content')
     <div class="content">
         <section class="content-header">
@@ -70,7 +70,6 @@
                                         <label>Time Check-Out</label>
                                         <input type="time" name="check_out_time" class="form-control" required
                                             value="{{ old('check_out_time', '17:00') }}">
-
                                     </div>
 
                                     <div class="form-group">
@@ -302,6 +301,7 @@
 
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary">Save</button>
+                            <a href="{{ route('employeebooks.index') }}" class="btn btn-secondary">Back</a>
                         </div>
                     </form>
                 </div>

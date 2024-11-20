@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Employee/index')
 @section('content')
     <section class="content">
         <div class="card">
@@ -14,7 +14,7 @@
 
                         <form action="{{ route('employee.index') }}" method="GET" class="form-inline ml-3">
                             <input type="text" name="search" class="form-control" placeholder="Search by name, email..."
-                                value="{{ request()->query('search') }}">
+                                value="{{ request()->query('search') }}" >
                             <button type="submit" class="btn btn-secondary ml-2">Search</button>
                         </form>
                     </div>
@@ -28,6 +28,22 @@
                 </div>
             </div>
 
+            @if ($errors->any())
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        let errorMessages = '';
+                        @foreach ($errors->all() as $error)
+                            errorMessages += '{{ $error }}\n';
+                        @endforeach
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: errorMessages,
+                        });
+                    });
+                </script>
+            @endif
 
             <div class="card-body p-0">
                 <div class="table-responsive">

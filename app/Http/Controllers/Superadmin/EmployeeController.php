@@ -20,24 +20,33 @@ class EmployeeController extends Controller
     public function index(Request $request)
     {
         $search = $request->get('search');
-    
-        // Ambil data employee berdasarkan pencarian dengan urutan yang benar
+
         $employees = Employee::query()
-            ->where('first_name', 'like', "%$search%")
-            ->orWhere('last_name', 'like', "%$search%")
-            ->orWhere('email', 'like', "%$search%")
-            ->orWhere('address', 'like', "%$search%")
-            ->paginate(10); // Paginasi setelah query selesai
-    
+            ->where(function ($query) use ($search) {
+                $query
+                    ->where('first_name', 'like', "%$search%")
+                    ->orWhere('last_name', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%")
+                    ->orWhere('address', 'like', "%$search%");
+            })
+            ->orderBy('first_name', 'asc')
+            ->orderBy('last_name', 'asc')
+            ->paginate(10);
+
         if ($request->ajax()) {
             return response()->json([
-                'employees' => $employees
+                'employees' => $employees,
             ]);
         }
-    
+        // Jika pencarian tidak menemukan hasil
+        if ($employees->isEmpty() && $search) {
+            return redirect()
+                ->route('employee.index')
+                ->withErrors(['No data found for the search term: ' . $search]);
+        }
+
         return view('Superadmin.Employeedata.Employee.index', compact('employees'));
     }
-    
 
     public function create(): View
     {
@@ -125,7 +134,6 @@ class EmployeeController extends Controller
             return redirect()->route('employee.index')->with('error', 'Data tidak ditemukan!');
         }
 
-        // Tidak perlu memformat current_salary di sini
         return view('Superadmin.Employeedata.Employee.update', compact('employeeModel'));
     }
 
@@ -215,13 +223,12 @@ class EmployeeController extends Controller
         return view('Superadmin.Employeedata.Employee.show', compact('employee'));
     }
 
-
     public function searchEmployees(Request $request)
     {
         $query = $request->get('query');
         $employees = Employee::where('first_name', 'LIKE', "%{$query}%")
             ->orWhere('last_name', 'LIKE', "%{$query}%")
-            ->orderBy('first_name')  // Mengurutkan berdasarkan first_name
+            ->orderBy('first_name') // Mengurutkan berdasarkan first_name
             ->get(['employee_id', 'first_name', 'last_name']); // Ambil kolom yang dibutuhkan
 
         // Gabungkan nama depan dan nama belakang sebagai nama lengkap

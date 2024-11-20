@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Employee/edit')
 @section('content')
     <div class="content">
         <section class="content-header">
@@ -24,7 +24,7 @@
                                 @foreach ($errors->all() as $error)
                                     errorMessages += '{{ $error }}\n';
                                 @endforeach
-                                
+
                                 Swal.fire({
                                     icon: "error",
                                     title: "Oops...",
@@ -306,18 +306,16 @@
                         </div>
 
                         <div class="card-footer">
-                            <button type="button" class="btn btn-primary" id="submit-btn">Update</button>
+                            <button type="button" class="btn btn-primary" id="submit-btn">Save</button>
+                            <a href="{{ route('employee.index') }}" class="btn btn-secondary">Back</a>
                         </div>
                     </form>
                     <script>
                         function formatCurrency(input) {
-                            // Menghapus semua karakter selain angka dan koma
                             let value = input.value.replace(/[^\d]/g, '');
 
-                            // Memasukkan pemisah ribuan
                             value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-                            // Memperbarui nilai input
                             input.value = value;
                         }
                     </script>
@@ -354,7 +352,6 @@
                 icon: "error",
                 title: "Oops...",
                 text: "{{ session('error') }}",
-                footer: '<a href="#">Why do I have this issue?</a>'
             });
         @endif
     </script>
