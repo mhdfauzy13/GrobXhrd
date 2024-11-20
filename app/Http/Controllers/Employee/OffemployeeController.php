@@ -94,7 +94,7 @@ class OffemployeeController extends Controller
         $offrequest->start_event = $request->start_event;
         $offrequest->end_event = $request->end_event;
         $offrequest->status = 'pending';
-        $offrequest->image = $imageName; // Simpan nama file gambar ke database
+        $offrequest->image = $imageName; 
         $offrequest->save();
 
         // Kirim notifikasi email ke manager

@@ -24,13 +24,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-
-
     public function employee()
-{
-    return $this->belongsTo(Employee::class, 'employee_id', 'employee_id');
-}
-
+    {
+        return $this->belongsTo(Employee::class, 'employee_id', 'employee_id');
+    }
 
     public function offrequests()
     {
@@ -42,14 +39,10 @@ class User extends Authenticatable
         return $this->hasMany(Offrequest::class, 'manager_id');
     }
 
-    // Relasi ke Offrequest, di mana user ini mengajukan banyak cuti
     public function offrequestsAsEmployee()
     {
         return $this->hasMany(Offrequest::class, 'user_id');
     }
-
-       
-  
 
     public function approvedOffrequests()
     {
