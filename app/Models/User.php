@@ -26,12 +26,11 @@ class User extends Authenticatable
 
     public function employee()
     {
-        return $this->belongsTo(Employee::class, 'employee_id', 'employee_id');
+        return $this->hasOne(Employee::class, 'employee_id');
     }
 
     public function offrequests()
     {
-
         return $this->hasMany(Offrequest::class, 'user_id');
     }
     public function offrequestsAsManager()

@@ -6,110 +6,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Login</title>
+    <link rel="icon" href="{{ asset('dist/img/icongrob.png') }}" type="image/x-icon" />
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
 </head>
-<html class="h-full">
 
-<body class="dark:bg-slate-900 bg-gray-100 flex h-full items-center py-16 ">
-    <main class="w-full max-w-md mx-auto p-6">
-        <div class="mt-7 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <div class="flex flex-col items-center mx-auto">
-                {{-- <img src="{{ asset('dist/img/grob.png') }}" class="w-20 md:w-32 lg:w-48" alt="Logo Perusahaan"> --}}
-                @if (isset($companyname) && $companyname->image)
-                    <div class="mt-4">
-                        <img src="{{ asset('storage/' . $companyname->image) }}" alt="Current Image"
-                            class="img-fluid img-thumbnail" width="150">
-                    </div>
-                @endif
+<body class="h-screen bg-white dark:bg-slate-900">
+    <div class="flex flex-col md:flex-row h-full">
+        <!-- Login Card -->
+        <div class="relative w-full md:w-2/5 h-full flex items-center justify-center bg-white dark:bg-slate-800">
+            <!-- Background image for mobile -->
+            <div class="absolute inset-0 bg-cover bg-center md:hidden"
+                style="background-image: url('{{ asset('dist/img/photo4.jpg') }}'); z-index: 0;">
             </div>
 
-            <div class="p-4 sm:p-7">
-                <div class="text-center">
-                    <h1 class="block text-2xl font-bold text-gray-800 dark:text-white">Sign in</h1>
-                </div>
-
-                <div class="mt-5">
-                    <x-auth-session-status class="mb-4" :status="session('status')" />
-                    @if ($errors->any())
-                        <div class="alert alert-danger mb-4">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
+            <!-- Card Content -->
+            <div
+                class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl relative z-10 w-full max-w-lg h-auto md:h-full flex flex-col justify-center">
+                <div class="flex flex-col items-center">
+                    @if (isset($companyname) && $companyname->image)
+                        <img src="{{ asset('storage/' . $companyname->image) }}" alt="Logo"
+                            class="w-full max-w-sm object-contain mb-8">
                     @endif
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
-
-                        <!-- Email Address -->
-                        <div>
-                            <x-input-label for="email" :value="__('Email')" />
-                            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email"
-                                :value="old('email')" required autofocus autocomplete="username" />
-                            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                        </div>
-
-                        <!-- Password -->
-                        <div class="mt-4">
-                            <x-input-label for="password" :value="__('Password')" />
-                            <div class="relative">
-                                <x-text-input id="password" class="block mt-1 w-full pr-10" type="password"
-                                    name="password" required autocomplete="current-password" />
-                                <button type="button" id="togglePassword"
-                                    class="absolute inset-y-0 right-0 flex items-center pr-3">
-                                    <i class="fas fa-eye text-black"></i>
-                                </button>
-                            </div>
-                            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                        </div>
-
-                        <script>
-                            const togglePassword = document.querySelector('#togglePassword');
-                            const password = document.querySelector('#password');
-
-                            togglePassword.addEventListener('click', function() {
-                                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-                                password.setAttribute('type', type);
-
-                                this.querySelector('i').classList.toggle('fa-eye');
-                                this.querySelector('i').classList.toggle('fa-eye-slash');
-                            });
-                        </script>
-
-
-                        <!-- Remember Me -->
-                        <div class="block mt-4">
-                            <label for="remember_me" class="inline-flex items-center">
-                                <input id="remember_me" type="checkbox"
-                                    class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800"
-                                    name="remember">
-                                <span
-                                    class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
-                            </label>
-                        </div>
-
-                        <div class="flex items-center mt-4">
-                            {{-- @if (Route::has('password.request'))
-                                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-                                    href="{{ route('password.request') }}">
-                                    {{ __('Forgot your password?') }}
-                                </a>
-                            @endif --}}
-
-                            <div class="flex items-center justify-end mt-4">
-                                <x-primary-button class="ms-3">
-                                    {{ __('Log in') }}
-                                </x-primary-button>
-                            </div>
-                        </div>
-
-                    </form>
                 </div>
+
+                <h2 class="text-2xl font-semibold text-start text-gray-800 dark:text-white mb-5">Sign in to account</h2>
+                <form method="POST" action="{{ route('login') }}">
+                    @csrf
+                    <!-- Email Field -->
+                    <div class="mb-6">
+                        <label for="email"
+                            class="block text-base font-medium text-gray-700 dark:text-gray-300">Email</label>
+                        <input id="email" type="email" name="email" required autofocus
+                            class="mt-1 block w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-gray-700 focus:border-gray-700 sm:text-sm dark:bg-slate-800 dark:text-gray-200" />
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="mb-6">
+                        <label for="password"
+                            class="block text-base font-medium text-gray-700 dark:text-gray-300">Password</label>
+                        <div class="relative">
+                            <input id="password" type="password" name="password" required
+                                class="mt-1 block w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-gray-700 focus:border-gray-700 sm:text-sm dark:bg-slate-800 dark:text-gray-200" />
+                            <button type="button" id="togglePassword"
+                                class="absolute inset-y-0 right-3 flex items-center">
+                                <i class="fas fa-eye text-gray-600 dark:text-gray-400"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Checkbox -->
+                    <div class="flex items-center mb-6">
+                        <input id="remember_me" type="checkbox" name="remember"
+                            class="w-5 h-5 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-800 border-gray-300 dark:border-gray-600 rounded focus:ring-gray-700 focus:ring-offset-gray-700 dark:focus:ring-offset-slate-900">
+                        <label for="remember_me" class="ml-2 text-base text-gray-600 dark:text-gray-400">Remember
+                            me</label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit"
+                        class="w-full bg-gray-800 text-white py-3 px-4 rounded-md hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-600">
+                        Log in
+                    </button>
+                </form>
             </div>
+
         </div>
-    </main>
+
+        <!-- Background Image for Large Screens -->
+        <div class="hidden md:block w-3/5 bg-cover bg-center h-full"
+            style="background-image: url('{{ asset('dist/img/photo4.jpg') }}');">
+        </div>
+    </div>
+
+    <script>
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+
+        togglePassword.addEventListener('click', function() {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+
+            this.querySelector('i').classList.toggle('fa-eye');
+            this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+    </script>
 </body>
 
 </html>

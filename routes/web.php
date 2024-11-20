@@ -289,7 +289,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/offrequest', [OffemployeeController::class, 'index'])
             ->name('offrequest.index')
             ->middleware('permission:offrequest.index');
-
         Route::get('/offrequest/create', [OffemployeeController::class, 'create'])
             ->name('offrequest.create')
             ->middleware('permission:offrequest.create');

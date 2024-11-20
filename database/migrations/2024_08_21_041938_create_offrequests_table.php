@@ -4,14 +4,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up(): void
     {
         Schema::create('offrequests', function (Blueprint $table) {
             $table->bigIncrements('offrequest_id'); // Primary key kolom 'offrequest_id'
-            $table->unsignedBigInteger('employee_id'); // Kolom foreign key employee
-            $table->unsignedBigInteger('manager_id')->nullable(); // Kolom foreign key opsional untuk manager
+            $table->unsignedBigInteger('user_id'); // Kolom foreign key
+            // $table->unsignedBigInteger('employee_id');
+            $table->unsignedBigInteger('manager_id')->nullable(); // Kolom foreign key opsional
+
             $table->string('name');
             $table->string('email')->unique();
             $table->string('title');
@@ -22,14 +23,14 @@ return new class extends Migration
             $table->timestamps();
 
             // Foreign key constraints
-            // Employee merujuk ke kolom user_id di tabel users
-            $table->foreign('employee_id')
+            $table
+                ->foreign('user_id')
                 ->references('user_id') // Mengacu ke kolom 'user_id' di tabel 'users'
                 ->on('users')
-                ->onDelete('cascade'); // Menghapus data jika employee dihapus
+                ->onDelete('cascade');
+            $table
+                ->foreign('manager_id')
 
-            // Manager merujuk ke kolom user_id di tabel users
-            $table->foreign('manager_id')
                 ->references('user_id') // Mengacu ke kolom 'user_id' di tabel 'users'
                 ->on('users')
                 ->onDelete('set null'); // Set null jika manager dihapus

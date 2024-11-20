@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+
 class Offrequest extends Model
 {
     protected $table = 'offrequests';
@@ -11,10 +12,20 @@ class Offrequest extends Model
     public $incrementing = false; 
     protected $keyType = 'string';
     protected $fillable = [
-        'name', 'email', 'title', 'description', 
-        'start_event', 'end_event', 'employee_id', 
-        'manager_id', 'status', 'approver_id', 'image'
+        'name',
+        'email',
+        'title',
+        'description',
+        'start_event',
+        'end_event',
+        'user_id',
+        'manager_id',
+        'status',
+        'approver_id',
+        'image', 
+
     ];
+
     protected $casts = [
         'start_event' => 'datetime',
         'end_event' => 'datetime',
@@ -24,6 +35,7 @@ class Offrequest extends Model
     {
         return $this->belongsTo(User::class, 'employee_id');
     }
+
     public function employee()
     {
         return $this->belongsTo(User::class, 'employee_id');
@@ -42,6 +54,7 @@ class Offrequest extends Model
         return $this->belongsTo(User::class, 'approver_id');
     }
 
+
     // Menyaring offrequest yang masih pending
     public function scopePending($query)
     {
@@ -54,6 +67,7 @@ class Offrequest extends Model
         return $query->where('manager_id', $managerId);
     }
 
+    // Scope untuk memeriksa apakah employee sedang cuti pada tanggal tertentu
     public function scopeIsOnLeave(Builder $query, $employeeId, $date): Builder
     {
         return $query->where('user_id', $employeeId)->where('status', 'approved')->whereDate('start_event', '<=', $date)->whereDate('end_event', '>=', $date);
