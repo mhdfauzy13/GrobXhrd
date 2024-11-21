@@ -12,7 +12,7 @@ class DashboardController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:dashboard.view')->only(['index']);
+        $this->middleware('permission:dashboard.superadmin')->only(['index']);
     }
 
     public function index()

@@ -15,7 +15,7 @@
 
                 @if ($offrequests->isEmpty())
                     <div class="alert alert-info" role="alert">
-                        There are no off requests that need approval at the moment.
+                        No leave applications need to be approved at this time.
                     </div>
                 @else
                     <div class="table-responsive">
@@ -29,7 +29,7 @@
                                     <th>Start Event</th>
                                     <th>End Event</th>
                                     <th>Status</th>
-                                    <th>Image</th>
+                                    <th>Picture Proof</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -60,7 +60,7 @@
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title"
                                                                     id="imageModalLabel{{ $offrequest->offrequest_id }}">
-                                                                    Bukti Gambar</h5>
+                                                                    Picture Proof</h5>
                                                                 <button type="button" class="close" data-dismiss="modal"
                                                                     aria-label="Close">
                                                                     <span aria-hidden="true">&times;</span>
@@ -103,26 +103,25 @@
                 @endif
 
                 <hr>
-                <div class="card-header">
-                    <h3 class="card-title">Leave Request History</h3>
-                </div>
+
+                <h4>Leave Application History</h4>
                 @if ($approvedRequests->isEmpty())
                     <div class="alert alert-info" role="alert">
-                        No off request history.
+                        There is no history of leave applications.
                     </div>
                 @else
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Nama</th>
+                                    <th>Name</th>
                                     <th>Email</th>
                                     <th>Title</th>
                                     <th>Description</th>
                                     <th>Start Event</th>
                                     <th>End Event</th>
                                     <th>Status</th>
-                                    <th>Image</th>
+                                    <th>Picture Proof</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -159,7 +158,7 @@
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title"
                                                                     id="imageModalApprovedLabel{{ $approvedRequest->offrequest_id }}">
-                                                                    Bukti Gambar</h5>
+                                                                    Picture Proof</h5>
                                                                 <button type="button" class="close" data-dismiss="modal"
                                                                     aria-label="Close">
                                                                     <span aria-hidden="true">&times;</span>
@@ -190,7 +189,6 @@
     @push('scripts')
         <script>
             $(document).ready(function() {
-                // Initialize Bootstrap tooltips for images
                 $('[data-toggle="tooltip"]').tooltip();
             });
         </script>

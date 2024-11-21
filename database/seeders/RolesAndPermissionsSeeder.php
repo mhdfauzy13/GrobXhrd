@@ -17,8 +17,8 @@ class RolesAndPermissionsSeeder extends Seeder
         // Daftar semua permissions
         $permissions = [
             //Permission dashboard
-            'dashboard.view',
-            'dashboardemployee.view',
+            'dashboard.superadmin',
+            'dashboard.employee',
 
             // Permission terkait Role
             'role.index',
@@ -113,7 +113,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $adminRole->givePermissionTo($permissions); // Superadmin mendapatkan semua permission
 
         $managerRole->givePermissionTo([
-            'dashboardemployee.view',
+            'dashboard.superadmin',
             'user.index',
             'user.edit',
             'role.index',
@@ -124,7 +124,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'offrequest.index',
             'offrequest.approver',
         ]);
-        $employeeRole->givePermissionTo(['dashboardemployee.view', 'attandance.scan', 'offrequest.create', 'attandance.scanView']);
+        $employeeRole->givePermissionTo(['dashboard.employee', 'attandance.scan','offrequest.index','offrequest.create', 'attandance.scanView']);
 
         $superadmin = User::updateOrCreate(
             [
@@ -159,23 +159,6 @@ class RolesAndPermissionsSeeder extends Seeder
         );
         $employee->assignRole($employeeRole);
 
-
-
-        // $employee = User::updateOrCreate(
-        //     [
-        //         'email' => 'bungadevtri@gmail.com',
-        //     ],
-        //     [
-        //         'name' => 'Bunga Putri',
-        //         'password' => Hash::make('password'),
-        //     ]
-        // );
-        // // Assign role Manager ke user Bunga Putri
-        // $employee->assignRole($managerRole);
-
-
-
-        // Menambahkan Bunga Putri sebagai Manager
         // Pertama, pastikan employee Bunga Putri sudah ada di tabel Employee
         $bungadevtriEmployee = Employee::firstOrCreate(
             [
@@ -209,7 +192,6 @@ class RolesAndPermissionsSeeder extends Seeder
             ]
         );
 
-        // Kemudian, buat pengguna (user) untuk Bunga Putri dengan mengaitkan employee_id
         $bungadevtri = User::updateOrCreate(
             [
                 'email' => 'bungadevtri@gmail.com',
@@ -217,7 +199,7 @@ class RolesAndPermissionsSeeder extends Seeder
             [
                 'name' => 'Bunga Putri',
                 'password' => Hash::make('password'),
-                'employee_id' => $bungadevtriEmployee->employee_id, // Mengaitkan dengan employee_id yang baru dibuat
+                'employee_id' => $bungadevtriEmployee->employee_id,
             ]
         );
         // Assign role Manager ke Bunga Putri

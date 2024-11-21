@@ -11,9 +11,6 @@
         
     </style>
 
-
-
-
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
         <a class="brand-link">
@@ -21,7 +18,7 @@
                 <img src="{{ asset('storage/' . $companyname->image) }}" alt="{{ $companyname->name_company }}"
                     class="brand-image img-circle elevation-3" style="opacity: 0.8" />
             @else
-                <img src="dist/img/AdminLTELogo.png" alt="Default Logo" class="brand-image img-circle elevation-3"
+                <img src="../../../dist/img/AdminLTELogo.png" alt="Default Logo" class="brand-image img-circle elevation-3"
                     style="opacity: 0.8" />
             @endif
             <span
@@ -58,8 +55,8 @@
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                     data-accordion="false">
-                    @canany(['dashboard.view', 'dashboardemployee.view'])
-                        @can('dashboard.view')
+                    @canany(['dashboard.superadmin', 'dashboard.employee'])
+                        @can('dashboard.superadmin')
                             <li class="nav-item">
                                 <a href="{{ route('dashboard.index') }}"
                                     class="nav-link {{ request()->routeIs('dashboard.index') ? 'active' : '' }}">
@@ -69,7 +66,7 @@
                             </li>
                         @endcan
 
-                        @can('dashboardemployee.view')
+                        @can('dashboard.employee')
                             <li class="nav-item">
                                 <a href="{{ route('dashboardemployee.index') }}"
                                     class="nav-link {{ request()->routeIs('dashboardemployee.index') ? 'active' : '' }}">

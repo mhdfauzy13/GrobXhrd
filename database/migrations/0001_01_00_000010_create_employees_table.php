@@ -24,7 +24,7 @@ return new class extends Migration {
             $table->string('phone_number')->nullable();
             $table->string('hp_number')->nullable();
             $table->enum('marital_status', ['Single', 'Married', 'Widow', 'Widower'])->nullable();
-            $table->enum('last_education', ['Elementary School','Junior High School','Senior High School','Vocational High School','Associate Degree 1','Associate Degree 2','Associate Degree 3','Bachelors Degree','Masters Degree','Doctoral Degree'])->nullable();
+            $table->enum('last_education', ['Elementary School','Junior High School','Senior High School','Vocational High School','Associate Degree 1','Associate Degree 2','Associate Degree 3','Bachelor’s Degree','Master’s Degree','Doctoral Degree'])->nullable();
             $table->string('degree')->nullable();
             $table->date('starting_date')->nullable();
             $table->string('interview_by')->nullable();
