@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Datauser/create')
 @section('content')
     <div class="content">
         <section class="content">

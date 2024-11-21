@@ -131,17 +131,40 @@
 
                                     <div class="form-group">
                                         <label for="phone_number">Phone Number</label>
-                                        <input type="number" name="phone_number" id="phone_number" class="form-control"
-                                            value="{{ old('phone_number', $employeeModel->phone_number) }}">
+
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">+62</span>
+                                            </div>
+                                            <input type="text" name="phone_number" id="phone_number"
+                                                class="form-control"
+                                                value="{{ old('phone_number', $employeeModel->phone_number) }}" required
+                                                oninput="phonenumber(this)" onkeypress="validatephonenumber(event)">
+                                        </div>
+                                        <small id="numberwarning" class="form-text text-danger" style="display: none;">
+                                            Please enter only numbers.
+                                        </small>
                                     </div>
+
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="hp_number">HP Number</label>
-                                        <input type="number" name="hp_number" id="hp_number" class="form-control"
-                                            value="{{ old('hp_number', $employeeModel->hp_number) }}">
+                                        <label for="hp_number">Hp Number</label>
+
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">+62</span>
+                                            </div>
+                                            <input type="text" name="hp_number" id="hp_number" class="form-control"
+                                                value="{{ old('hp_number', $employeeModel->hp_number) }}" required
+                                                oninput="phonenumber(this)" onkeypress="validatephonenumber(event)">
+                                        </div>
+                                        <small id="numberwarning" class="form-text text-danger" style="display: none;">
+                                            Please enter only numbers.
+                                        </small>
                                     </div>
+
 
                                     <div class="form-group">
                                         <label for="marital_status">Marital Status</label>
@@ -187,12 +210,12 @@
                                             <option value="Associate Degree 3"
                                                 {{ old('last_education', $employeeModel->last_education) == 'Associate Degree 3' ? 'selected' : '' }}>
                                                 Associate Degree 3</option>
-                                            <option value="Bachelors Degree"
-                                                {{ old('last_education', $employeeModel->last_education) == 'Bachelors Degree' ? 'selected' : '' }}>
-                                                Bachelors Degree</option>
-                                            <option value="Masters Degree"
-                                                {{ old('last_education', $employeeModel->last_education) == 'Masters Degree' ? 'selected' : '' }}>
-                                                Masters Degree</option>
+                                            <option value="Bachelor’s Degree"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Bachelor’s Degree' ? 'selected' : '' }}>
+                                                Bachelor’s Degree</option>
+                                            <option value="Master’s Degree"
+                                                {{ old('last_education', $employeeModel->last_education) == 'Master’s Degree' ? 'selected' : '' }}>
+                                                Master’s Degree</option>
                                             <option value="Doctoral Degree"
                                                 {{ old('last_education', $employeeModel->last_education) == 'Doctoral Degree' ? 'selected' : '' }}>
                                                 Doctoral Degree</option>
@@ -284,10 +307,21 @@
 
                                     <div class="form-group">
                                         <label for="emergency_number">Emergency Number</label>
-                                        <input type="number" name="emergency_number" id="emergency_number"
-                                            class="form-control"
-                                            value="{{ old('emergency_number', $employeeModel->emergency_number) }}">
+
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">+62</span>
+                                            </div>
+                                            <input type="text" name="emergency_number" id="emergency_number"
+                                                class="form-control"
+                                                value="{{ old('emergency_number', $employeeModel->emergency_number) }}" required
+                                                oninput="phonenumber(this)" onkeypress="validatephonenumber(event)">
+                                        </div>
+                                        <small id="numberwarning" class="form-text text-danger" style="display: none;">
+                                            Please enter only numbers.
+                                        </small>
                                     </div>
+
 
                                     <div class="form-group">
                                         <label for="status">Status</label>
@@ -306,7 +340,7 @@
                         </div>
 
                         <div class="card-footer">
-                            <button type="button" class="btn btn-primary" id="submit-btn">Save</button>
+                            <button type="button" class="btn btn-primary" id="submit-btn">Update</button>
                             <a href="{{ route('employee.index') }}" class="btn btn-secondary">Back</a>
                         </div>
                     </form>
@@ -338,6 +372,28 @@
                                 }
                             });
                         });
+                    </script>
+
+                    <script>
+                        // Function to automatically update phone number prefix
+                        function updatephonenumber(input) {
+                            let value = input.value;
+                            if (value.startsWith('0')) {
+                                input.value = '+62' + value.slice(1);
+                            }
+                        }
+
+                        // Function to validate phone number input (only numbers allowed)
+                        function validatephonenumber(event) {
+                            const input = event.target;
+                            const char = String.fromCharCode(event.which);
+                            if (!/[0-9]/.test(char)) {
+                                event.preventDefault();
+                                document.getElementById('numberwarning').style.display = 'block';
+                            } else {
+                                document.getElementById('numberwarning').style.display = 'none';
+                            }
+                        }
                     </script>
                 </div>
             </div>

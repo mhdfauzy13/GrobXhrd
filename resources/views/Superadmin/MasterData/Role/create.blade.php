@@ -30,7 +30,7 @@
                                 @csrf
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label for="roleName">Name Role</label>
+                                        <label for="roleName">Role Name</label>
                                         <input type="text" name="name" class="form-control" id="roleName"
                                             value="{{ old('name') }}" required>
                                     </div>
@@ -48,11 +48,10 @@
                                         <!-- Fitur Dashboard -->
                                         <div class="card mt-3">
                                             <div class="card-header">
-                                                <a href="#" id="selectAllDashboard" class="card-title">Fitur
-                                                    Dashboard</a>
+                                                <a href="#" id="selectAllDashboard" class="card-title">Dashboard</a>
                                             </div>
                                             <div class="card-body">
-                                                @foreach ($permissions->whereIn('name', ['dashboard.view', 'dashboardemployee.view']) as $permission)
+                                                @foreach ($permissions->whereIn('name', ['dashboard.superadmin', 'dashboard.employee']) as $permission)
                                                     <div class="custom-control custom-checkbox">
                                                         <input type="checkbox" name="permissions[]"
                                                             value="{{ $permission->name }}"
@@ -71,7 +70,7 @@
                                         <!-- Fitur Role -->
                                         <div class="card mt-3">
                                             <div class="card-header">
-                                                <a href="#" id="selectAllRole" class="card-title">Fitur Role</a>
+                                                <a href="#" id="selectAllRole" class="card-title">Role</a>
                                             </div>
                                             <div class="card-body">
                                                 @foreach ($permissions->whereIn('name', ['role.index', 'role.create', 'role.edit', 'role.delete']) as $permission)
@@ -93,7 +92,7 @@
                                         <!-- Fitur User -->
                                         <div class="card mt-3">
                                             <div class="card-header">
-                                                <a href="#" id="selectAllUser" class="card-title">Fitur User</a>
+                                                <a href="#" id="selectAllUser" class="card-title">User</a>
                                             </div>
                                             <div class="card-body">
                                                 @foreach ($permissions->whereIn('name', ['user.index', 'user.create', 'user.edit', 'user.delete']) as $permission)
@@ -125,7 +124,7 @@
                                             <div class="card mt-3">
                                                 <div class="card-header">
                                                     <a href="#" id="selectAll{{ ucfirst($feature) }}"
-                                                        class="card-title">Fitur {{ ucfirst($feature) }}</a>
+                                                        class="card-title">{{ ucfirst($feature) }}</a>
                                                 </div>
                                                 <div class="card-body">
                                                     @foreach ($permissions->whereIn('name', $featurePermissions) as $permission)
