@@ -24,7 +24,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])
         ->name('dashboard.index')
-        ->middleware('permission:dashboard.view');
+        ->middleware('permission:dashboard.superadmin');
 
     // Role Management
     Route::prefix('Superadmin')->group(function () {
@@ -79,11 +79,9 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->middleware('permission:attandance.index');
 
         //overtime
-        // Menampilkan daftar overtime
         Route::get('/overtime', [OvertimeController::class, 'index'])
             ->name('overtime.index')
             ->middleware('permission:overtime.create');
-
 
         Route::get('/overtime/create', [OvertimeController::class, 'create'])
             ->name('overtime.create')
@@ -105,11 +103,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/payrolls/exports', [PayrollController::class, 'exportToCsv'])
             ->name('payroll.exports')
             ->middleware('permission:payroll.index');
-
-
-
-
-
 
         // event
         Route::get('/events', [EventController::class, 'index'])
@@ -192,7 +185,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('recruitment.show')
             ->middleware('permission:recruitment.index');
 
-
         // Employee
         Route::get('/employee', [EmployeeController::class, 'index'])
             ->name('employee.index')
@@ -222,8 +214,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('employee.show')
             ->middleware('permission:employee.index');
 
-
-
         // Setting
         Route::get('settings', [SettingController::class, 'index'])
             ->name('settings.index')
@@ -250,10 +240,9 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
     Route::prefix('Employee')->group(function () {
         Route::get('dashboard', [DashboardEmployeeController::class, 'index'])
             ->name('dashboardemployee.index')
-            ->middleware('permission:dashboardemployee.view');
+            ->middleware('permission:dashboard.employee');
 
-        Route::get('events/list', [DashboardEmployeeController::class, 'ListEvent'])
-            ->name('employee.events.list');
+        Route::get('events/list', [DashboardEmployeeController::class, 'ListEvent'])->name('employee.events.list');
 
         // Attendance Scan Routes
         Route::get('/attandance/scan', [AttandanceController::class, 'scanView'])

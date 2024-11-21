@@ -4,7 +4,7 @@
     <section class="content">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Off Request List</h3>
+                <h3 class="card-title">Leave Request List</h3>
                 <div class="card-tools">
                     <a class="btn btn-primary btn-sm" href="{{ route('offrequest.create') }}">
                         <i class="fas fa-plus"></i> Add
@@ -12,7 +12,9 @@
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                         <i class="fas fa-minus"></i>
                     </button>
-                    
+                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             </div>
 
@@ -33,11 +35,11 @@
                 <!-- Menampilkan total cuti berdasarkan tipe -->
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        {{-- <h5>Total Leave by Type</h5> --}}
+                        <h5>Total Leave by Type</h5>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Off Request Type</th>
+                                    <th>Leave Type</th>
                                     <th>Total Days</th>
                                 </tr>
                             </thead>
@@ -45,7 +47,7 @@
                                 @foreach ($totals as $total)
                                     <tr>
                                         <td>{{ $total->title }}</td>
-                                        <td>{{ $total->total_days }} Days</td>
+                                        <td>{{ $total->total_days }} day</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -66,16 +68,14 @@
                                 <th>Start Event</th>
                                 <th>End Event</th>
                                 <th>Status</th>
-                                <th>Image</th>
+                                <th>Picture Proof</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($offrequests as $offrequest)
                                 <tr>
-                                    {{-- <td>{{ $offrequest->employee>name ?? 'N/A' }}</td> --}}
-                                    <td>{{ $offrequest->employee->first_name }} {{ $offrequest->employee->last_name }}</td>
-
-                                    <td>{{ $offrequest->employee->email ?? 'N/A' }}</td>
+                                    <td>{{ $offrequest->user->name ?? 'N/A' }}</td>
+                                    <td>{{ $offrequest->user->email ?? 'N/A' }}</td>
                                     <td>{{ $offrequest->manager ? $offrequest->manager->name : 'N/A' }}</td>
                                     <td>{{ $offrequest->title }}</td>
                                     <td>{{ $offrequest->description }}</td>
@@ -94,13 +94,13 @@
                                                 data-target="#imageModal"
                                                 onclick="showImage('{{ asset('uploads/' . $offrequest->image) }}')">
                                         @else
-                                        No Off Request Proof
+                                            No proof of leave
                                         @endif
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="9" class="text-center">No Off Requests Available.</td>
+                                    <td colspan="9" class="text-center">There are no leave requests available.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -122,7 +122,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="imageModalLabel">Off Request Proof</h5>
+                    <h5 class="modal-title" id="imageModalLabel">Picture Proof</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

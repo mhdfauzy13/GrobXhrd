@@ -201,26 +201,23 @@
             });
 
             if (!matchedEmployee) {
-            // Tampilkan alert SweetAlert2
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Employee name not found. Please select a name from the list.',
-            });
+                // Tampilkan alert SweetAlert2
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Employee name not found. Please select a name from the list.',
+                });
 
-            // Kosongkan input jika tidak ada yang cocok
-            this.value = ''; 
-            document.getElementById('employee_id').value = ''; // Kosongkan ID juga
-        }
+                // Kosongkan input jika tidak ada yang cocok
+                this.value = '';
+                document.getElementById('employee_id').value = ''; // Kosongkan ID juga
+            }
         });
 
         // Event listener untuk menangani pencarian saat mengetik
         document.getElementById('employee_name').addEventListener('keyup', filterEmployees);
     </script>
 @endif
-
-
-
 
 
 {{-- SCRIPT BUAT DURATION TIME OVERTIME --}}
@@ -260,18 +257,18 @@
     // Fungsi untuk mendapatkan dan menampilkan data karyawan berdasarkan query
     function fetchEmployees(query) {
         fetch("{{ route('employee.index') }}?search=" + query, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            let tableBody = document.querySelector('tbody');
-            tableBody.innerHTML = ''; // Bersihkan tabel
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                let tableBody = document.querySelector('tbody');
+                tableBody.innerHTML = ''; // Bersihkan tabel
 
-            data.employees.forEach(employee => {
-                let row = `
+                data.employees.forEach(employee => {
+                    let row = `
                     <tr>
                         <td class="text-left">${employee.first_name}</td>
                         <td class="text-center">${employee.last_name}</td>
@@ -291,10 +288,10 @@
                         </td>
                     </tr>
                 `;
-                tableBody.insertAdjacentHTML('beforeend', row);
-            });
-        })
-        .catch(error => console.log(error));
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+            })
+            .catch(error => console.log(error));
     }
 </script>
 
@@ -422,27 +419,23 @@
             });
 
             if (!matchedEmployee) {
-            // Tampilkan alert SweetAlert2
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Employee name not found. Please select a name from the list.',
-            });
+                // Tampilkan alert SweetAlert2
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Employee name not found. Please select a name from the list.',
+                });
 
-            // Kosongkan input jika tidak ada yang cocok
-            this.value = ''; 
-            document.getElementById('employee_id').value = ''; // Kosongkan ID juga
-        }
+                // Kosongkan input jika tidak ada yang cocok
+                this.value = '';
+                document.getElementById('employee_id').value = ''; // Kosongkan ID juga
+            }
         });
 
         // Event listener untuk menangani pencarian saat mengetik
         document.getElementById('employee_name').addEventListener('keyup', filterEmployees);
     </script>
 @endif
-
-
-
-
 
 {{-- SCRIPT BUAT DURATION TIME OVERTIME --}}
 
@@ -481,18 +474,18 @@
     // Fungsi untuk mendapatkan dan menampilkan data karyawan berdasarkan query
     function fetchEmployees(query) {
         fetch("{{ route('employee.index') }}?search=" + query, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            let tableBody = document.querySelector('tbody');
-            tableBody.innerHTML = ''; // Bersihkan tabel
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                let tableBody = document.querySelector('tbody');
+                tableBody.innerHTML = ''; // Bersihkan tabel
 
-            data.employees.forEach(employee => {
-                let row = `
+                data.employees.forEach(employee => {
+                    let row = `
                     <tr>
                         <td class="text-left">${employee.first_name}</td>
                         <td class="text-center">${employee.last_name}</td>
@@ -512,14 +505,12 @@
                         </td>
                     </tr>
                 `;
-                tableBody.insertAdjacentHTML('beforeend', row);
-            });
-        })
-        .catch(error => console.log(error));
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+            })
+            .catch(error => console.log(error));
     }
 </script>
-
-
 
 {{-- SCRIPT UNTUK PAYROLL --}}
 

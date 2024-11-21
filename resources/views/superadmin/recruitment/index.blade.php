@@ -35,6 +35,7 @@
                         <tbody>
                             @if ($recruitments->isEmpty())
                                 <tr>
+
                                     <td colspan="6" class="text-center">No results found</td>
                                 </tr>
                             @else

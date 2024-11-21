@@ -8,7 +8,6 @@
                     <div class="col-xl-6">
                     </div>
                 </div>
-            </div>
         </section>
         <section class="content">
             <div class="container-fluid">
@@ -16,8 +15,7 @@
                     <div class="card-header">
                         <h3 class="card-title">Edit Recruitment</h3>
                     </div>
-
-                    @if ($errors->any())
+      @if ($errors->any())
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 let errorMessages = '';
@@ -33,28 +31,28 @@
                             });
                         </script>
                     @endif
-
-                    <!-- Edit Form -->
-                    <form action="{{ route('recruitment.update', $recruitment->recruitment_id) }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        <div class="card-body">
+                    <div class="card-body">
+                        <form id="quickForm" action="{{ route('recruitment.update', $recruitment->recruitment_id) }}" method="POST"
+                            enctype="multipart/form-data">
+                            @csrf
+                            @method('PUT')
 
                             <div class="form-group">
                                 <label for="name">Name</label>
-                                <input type="text" name="name" id="name" class="form-control"
-                                    value="{{ old('name', $recruitment->name) }}" required>
+                                <input type="text" class="form-control" id="name" name="name"
+                                    value="{{ old('name', $recruitment->name) }}"required>
                             </div>
 
                             <div class="form-group">
                                 <label for="email">Email</label>
+
                                 <input type="email" name="email" id="email" class="form-control"
                                     value="{{ old('email', $recruitment->email) }}" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="phone_number">Phone Number</label>
+
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">+62</span>
@@ -72,10 +70,12 @@
                                 <label for="date_of_birth">Date of Birth</label>
                                 <input type="date" name="date_of_birth" id="date_of_birth" class="form-control"
                                     value="{{ old('date_of_birth', $recruitment->date_of_birth) }}" required>
-                            </div>
+                                    </div>
 
                             <div class="form-group">
                                 <label for="last_education">Last Education</label>
+
+
                                 <select name="last_education" id="last_education" class="form-control" required>
                                     <option value="">-- Select Education Level --</option>
                                     <option value="Elementary School"
@@ -113,6 +113,7 @@
 
                             <div class="form-group">
                                 <label for="last_position">Last Position</label>
+
                                 <input type="text" name="last_position" id="last_position" class="form-control"
                                     value="{{ old('last_position', $recruitment->last_position) }}" required>
                             </div>
@@ -120,8 +121,9 @@
                             <div class="form-group">
                                 <label for="apply_position">Apply Position</label>
                                 <input type="text" name="apply_position" id="apply_position" class="form-control"
+
                                     value="{{ old('apply_position', $recruitment->apply_position) }}" required>
-                            </div>
+                           </div>
 
                             <div class="form-group">
                                 <label for="cv_file">CV File</label>
@@ -131,21 +133,26 @@
 
                             <div class="form-group">
                                 <label for="comment">Comment</label>
-                                <textarea name="comment" id="comment" class="form-control">{{ old('comment', $recruitment->comment) }}</textarea>
+                                <textarea name="comment" id="comment" class="form-control" value="{{ old('comment', $recruitment->comment) }}">{{ old('comment', $recruitment->comment) }}</textarea>
+
                             </div>
 
                             <div class="form-group">
                                 <label for="status">Status</label>
-                                <select name="status" id="status" class="form-control" required>
+                                <select name="status" id="status" class="form-control"
+                                    value="{{ old('status', $recruitment->status) }}"required>
+
                                     <option value="Initial Interview"
                                         {{ old('status', $recruitment->status) == 'Initial Interview' ? 'selected' : '' }}>
                                         Initial Interview</option>
                                     <option value="User Interview 1"
                                         {{ old('status', $recruitment->status) == 'User Interview 1' ? 'selected' : '' }}>
-                                        User Interview 1</option>
+                                        User
+                                        Interview 1</option>
                                     <option value="User Interview 2"
                                         {{ old('status', $recruitment->status) == 'User Interview 2' ? 'selected' : '' }}>
-                                        User Interview 2</option>
+                                        User
+                                        Interview 2</option>
                                     <option value="Background Check"
                                         {{ old('status', $recruitment->status) == 'Background Check' ? 'selected' : '' }}>
                                         Background Check</option>
@@ -160,15 +167,12 @@
                                     </option>
                                 </select>
                             </div>
-
                             <div class="card-footer">
-                                <!-- Save Button -->
-                                <button type="submit" class="btn btn-primary">Update</button>
-                                <!-- Back Button -->
-                                <a href="{{ route('recruitment.index') }}" class="btn btn-secondary">Back</a>
+                                <button type="submit" id="saveButton" class="btn btn-primary">Save</button>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
+
                 </div>
             </div>
         </section>

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Employee/create')
 @section('content')
     <div class="content">
         <section class="content-header">
@@ -33,7 +33,7 @@
                             });
                         </script>
                     @endif
-                    <form action="{{ route('employee.store') }}" method="POST">
+                    <form id="quickForm" action="{{ route('employee.store') }}" method="POST">
                         @csrf
 
                         <div class="card-body">
@@ -70,7 +70,6 @@
                                         <label>Time Check-Out</label>
                                         <input type="time" name="check_out_time" class="form-control" required
                                             value="{{ old('check_out_time', '17:00') }}">
-
                                     </div>
 
                                     <div class="form-group">
@@ -133,18 +132,34 @@
 
                                     <div class="form-group">
                                         <label for="phone_number">Phone Number</label>
-                                        <input type="number" name="phone_number" id="phone_number" class="form-control"
-                                            value="{{ old('phone_number') }}">
-
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">+62</span>
+                                            </div>
+                                            <input type="text" name="phone_number" id="phone_number"
+                                                class="form-control" value="{{ old('phone_number') }}" required
+                                                oninput="phonenumber(this)" onkeypress="validatephonenumber(event)">
+                                        </div>
+                                        <small id="numberwarning" class="form-text text-danger" style="display: none;">
+                                            Please enter only numbers.
+                                        </small>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="hp_number">HP Number</label>
-                                        <input type="number" name="hp_number" id="hp_number" class="form-control"
-                                            value="{{ old('hp_number') }}">
-
+                                        <label for="hp_number">Hp Number</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">+62</span>
+                                            </div>
+                                            <input type="text" name="hp_number" id="hp_number" class="form-control"
+                                                value="{{ old('hp_number') }}" required oninput="phonenumber(this)"
+                                                onkeypress="validatephonenumber(event)">
+                                        </div>
+                                        <small id="numberwarning" class="form-text text-danger" style="display: none;">
+                                            Please enter only numbers.
+                                        </small>
                                     </div>
 
                                     <div class="form-group">
@@ -189,11 +204,11 @@
                                             <option value="Associate Degree 3"
                                                 {{ old('last_education') == 'Associate Degree 3' ? 'selected' : '' }}>
                                                 Associate Degree 3</option>
-                                            <option value="Bachelors Degree"
-                                                {{ old('last_education') == 'Bachelors Degree' ? 'selected' : '' }}>
-                                                Bachelors Degree</option>
-                                            <option value="Masters Degree"
-                                                {{ old('last_education') == 'Masters Degree' ? 'selected' : '' }}>Masters
+                                            <option value="Bachelor’s Degree"
+                                                {{ old('last_education') == 'Bachelor’s Degree' ? 'selected' : '' }}>
+                                                Bachelor’s Degree</option>
+                                            <option value="Master’s Degree"
+                                                {{ old('last_education') == 'Master’s Degree' ? 'selected' : '' }}>Master’s
                                                 Degree</option>
                                             <option value="Doctoral Degree"
                                                 {{ old('last_education') == 'Doctoral Degree' ? 'selected' : '' }}>Doctoral
@@ -281,8 +296,17 @@
 
                                     <div class="form-group">
                                         <label for="emergency_number">Emergency Number</label>
-                                        <input type="number" name="emergency_number" id="emergency_number"
-                                            class="form-control" value="{{ old('emergency_number') }}">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">+62</span>
+                                            </div>
+                                            <input type="text" name="emergency_number" id="emergency_number"
+                                                class="form-control" value="{{ old('emergency_number') }}" required
+                                                oninput="phonenumber(this)" onkeypress="validatephonenumber(event)">
+                                        </div>
+                                        <small id="numberwarning" class="form-text text-danger" style="display: none;">
+                                            Please enter only numbers.
+                                        </small>
                                     </div>
 
                                     <div class="form-group">
@@ -301,13 +325,67 @@
                         </div>
 
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button id="saveemployee" type="submit" class="btn btn-primary">Save</button>
+                            <a href="{{ route('employeebooks.index') }}" class="btn btn-secondary">Back</a>
                         </div>
                     </form>
                 </div>
             </div>
         </section>
     </div>
+
+    <script>
+        // Function to automatically update phone number prefix
+        function phonenumber(input) {
+            // Get the value from the input
+            let value = input.value;
+
+            // If the value starts with '0', replace it with '+62'
+            if (value.startsWith('0')) {
+                input.value = '+62' + value.slice(1);
+            }
+        }
+
+        // Function to validate phone number input (only numbers allowed)
+        function validatephonenumber(event) {
+            const input = event.target;
+            const char = String.fromCharCode(event.which);
+
+            // Allow only numbers (0-9) and prevent other characters
+            if (!/[0-9]/.test(char)) {
+                event.preventDefault(); // Prevent the input
+                document.getElementById('numberwarning').style.display = 'block'; // Show warning
+            } else {
+                document.getElementById('numberwarning').style.display = 'none'; // Hide warning
+            }
+        }
+    </script>
+
+    <script>
+        document.getElementById('saveemployee').addEventListener('click', function(event) {
+            event.preventDefault();
+            Swal.fire({
+                position: 'top-center',
+                icon: 'success',
+                title: 'Your work has been saved',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(function() {
+                Swal.fire({
+                    position: 'top-center',
+                    icon: 'info',
+                    title: 'Please click continue to create an account',
+                    showConfirmButton: true,
+                    confirmButtonText: 'Continue'
+                }).then(function(result) {
+                    if (result.isConfirmed) {
+                        document.getElementById('quickForm').submit();
+                    }
+                });
+            });
+        });
+    </script>
+
 @endsection
 @section('scripts')
     @if ($errors->any())

@@ -24,13 +24,11 @@ class OffemployeeController extends Controller
         $this->middleware('permission:offrequest.approver')->only(['approverIndex', 'approve', 'reject']);
     }
 
-    // Fungsi untuk menampilkan daftar off request milik user yang sedang login (sisi karyawan)
     public function index()
     {
-        // Menghitung total hari cuti berdasarkan title yang tidak di-reject
         $totals = Offrequest::select('title', DB::raw('SUM(DATEDIFF(end_event, start_event) + 1) as total_days'))->where('status', 'approved')->groupBy('title')->get();
 
-        $offrequests = Offrequest::with(['employee', 'manager'])->paginate(10);
+        $offrequests = Offrequest::with(['user', 'manager'])->paginate(10);
 
         return view('employee.offrequest.index', compact('offrequests', 'totals'));
     }
@@ -45,18 +43,18 @@ class OffemployeeController extends Controller
     {
         // Validasi input
         $request->validate([
-            'title' => 'required|in:Sakit,Liburan,Urusan Keluarga,Absence,Personal Time',
+            'title' => 'required|in:Sick,Holiday,Family Matters,Absence,Personal Time',
             'description' => 'required|string',
             'start_event' => 'required|date|after_or_equal:today',
             'end_event' => 'required|date|after_or_equal:start_event',
-            'manager_id' => 'nullable|exists:employees,employee_id',
+            'manager_id' => 'nullable|exists:users,user_id',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi gambar
         ]);
 
-        $employee = Auth::user(); // Mendapatkan data employee yang sedang login
+        $user = Auth::user();
 
         // Cek apakah ada cuti yang sudah disetujui atau pending pada tanggal yang sama
-        $existingRequest = Offrequest::where('employee_id', $employee->employee_id) // Menggunakan 'employee_id' untuk merujuk ke employee yang sedang login
+        $existingRequest = Offrequest::where('user_id', $user->user_id) // Menggunakan 'user_id' untuk merujuk ke user yang sedang login
             ->where(function ($query) use ($request) {
                 $query->where(function ($q) use ($request) {
                     $q->where('start_event', '<=', $request->end_event)->where('end_event', '>=', $request->start_event);
@@ -85,16 +83,16 @@ class OffemployeeController extends Controller
 
         // Simpan data ke database
         $offrequest = new Offrequest();
-        $offrequest->employee_id = $employee->employee_id; // Menggunakan employee_id
-        $offrequest->name = $employee->name;
-        $offrequest->email = $employee->email;
+        $offrequest->user_id = $user->user_id;
+        $offrequest->name = $user->name;
+        $offrequest->email = $user->email;
         $offrequest->manager_id = $request->manager_id;
         $offrequest->title = $request->title;
         $offrequest->description = $request->description;
         $offrequest->start_event = $request->start_event;
         $offrequest->end_event = $request->end_event;
         $offrequest->status = 'pending';
-        $offrequest->image = $imageName; 
+        $offrequest->image = $imageName; // Simpan nama file gambar ke database
         $offrequest->save();
 
         // Kirim notifikasi email ke manager
@@ -106,7 +104,6 @@ class OffemployeeController extends Controller
         return redirect()->route('offrequest.index')->with('success', 'Off request submitted successfully.');
     }
 
-    // Fungsi untuk menampilkan daftar off request untuk approver (sisi manager)
     public function approverIndex()
     {
         // Dapatkan ID dari approver (manager) yang sedang login
@@ -122,7 +119,6 @@ class OffemployeeController extends Controller
         return view('employee.offrequest.approve', compact('offrequests', 'approvedRequests'));
     }
 
-    // Fungsi untuk approve permohonan cuti
     public function approve($id)
     {
         // Cari offrequest berdasarkan id
@@ -130,7 +126,7 @@ class OffemployeeController extends Controller
 
         // Update status menjadi 'approved'
         $offrequest->status = 'approved';
-        $offrequest->approver_id = auth()->user()->employee_id;
+        $offrequest->approver_id = auth()->user()->user_id;
         $offrequest->save();
 
         // Mengirim notifikasi email ke pengguna
@@ -139,7 +135,6 @@ class OffemployeeController extends Controller
         return redirect()->route('offrequest.approver')->with('success', 'Off request approved successfully.');
     }
 
-    // Fungsi untuk reject permohonan cuti
     public function reject($id)
     {
         // Cari offrequest berdasarkan id
@@ -147,7 +142,7 @@ class OffemployeeController extends Controller
 
         // Update status menjadi 'rejected'
         $offrequest->status = 'rejected';
-        $offrequest->approver_id = auth()->user()->employee_id;
+        $offrequest->approver_id = auth()->user()->user_id;
         $offrequest->save();
 
         Mail::to($offrequest->user->email)->send(new OffrequestStatusMail($offrequest, 'rejected'));

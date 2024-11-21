@@ -36,10 +36,10 @@
                     @endif
 
                     <!-- Form utama -->
-                    <form action="{{ route('recruitment.store') }}" method="POST" enctype="multipart/form-data">
+                    <form id="quickForm" action="{{ route('recruitment.store') }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
                         <div class="card-body">
-
                             <div class="form-group">
                                 <label for="name">Name</label>
                                 <input type="text" name="name" id="name" class="form-control"
@@ -127,8 +127,7 @@
                             </div>
 
                             <div class="card-footer">
-                                <!-- Save Button -->
-                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="submit" id="saverecruitment" class="btn btn-primary">Save</button>
                                 <!-- Back Button -->
                                 <a href="{{ route('recruitment.index') }}" class="btn btn-secondary">Back</a>
                             </div>
@@ -140,6 +139,18 @@
     </div>
 
     <script>
+        document.getElementById('saverecruitment').addEventListener('click', function(event) {
+            event.preventDefault(); // Mencegah pengiriman form langsung
+            Swal.fire({
+                position: 'top-center',
+                icon: 'success',
+                title: 'Your work has been saved',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                document.getElementById('quickForm').submit(); // Kirim form setelah alert sukses
+            });
+        });
         // Function to automatically update phone number prefix
         function updatePhoneNumber(input) {
             // Get the value from the input

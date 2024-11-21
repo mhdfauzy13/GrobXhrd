@@ -10,7 +10,7 @@ class DashboardEmployeeController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:dashboardemployee.view')->only(['index']);
+        $this->middleware('permission:dashboard.employee')->only(['index']);
     }
 
     public function index()

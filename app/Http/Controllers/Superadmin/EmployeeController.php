@@ -20,24 +20,33 @@ class EmployeeController extends Controller
     public function index(Request $request)
     {
         $search = $request->get('search');
-    
-        // Ambil data employee berdasarkan pencarian dengan urutan yang benar
+
         $employees = Employee::query()
-            ->where('first_name', 'like', "%$search%")
-            ->orWhere('last_name', 'like', "%$search%")
-            ->orWhere('email', 'like', "%$search%")
-            ->orWhere('address', 'like', "%$search%")
-            ->paginate(10); // Paginasi setelah query selesai
-    
+            ->where(function ($query) use ($search) {
+                $query
+                    ->where('first_name', 'like', "%$search%")
+                    ->orWhere('last_name', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%")
+                    ->orWhere('address', 'like', "%$search%");
+            })
+            ->orderBy('first_name', 'asc')
+            ->orderBy('last_name', 'asc')
+            ->paginate(10);
+
         if ($request->ajax()) {
             return response()->json([
-                'employees' => $employees
+                'employees' => $employees,
             ]);
         }
-    
+        // Jika pencarian tidak menemukan hasil
+        if ($employees->isEmpty() && $search) {
+            return redirect()
+                ->route('employee.index')
+                ->withErrors(['No data found for the search term: ' . $search]);
+        }
+
         return view('Superadmin.Employeedata.Employee.index', compact('employees'));
     }
-    
 
     public function create(): View
     {
@@ -61,10 +70,10 @@ class EmployeeController extends Controller
                 'current_address' => 'nullable|string',
                 'blood_type' => 'nullable|in:A,B,AB,O',
                 'blood_rhesus' => 'nullable|string',
-                'phone_number' => 'nullable|regex:/^[0-9]+$/|max:15',
-                'hp_number' => 'nullable|regex:/^[0-9]+$/|max:15',
+                'phone_number' => 'required|numeric',
+                'hp_number' => 'required|numeric',
                 'marital_status' => 'nullable|in:Single,Married,Widow,Widower',
-                'last_education' => 'nullable|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelors Degree,Masters Degree,Doctoral Degree',
+                'last_education' => 'nullable|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelor’s Degree,Master’s Degree,Doctoral Degree',
                 'degree' => 'nullable|string',
                 'starting_date' => 'nullable|date',
                 'interview_by' => 'nullable|string',
@@ -74,17 +83,17 @@ class EmployeeController extends Controller
                 'hereditary_disease' => 'nullable|string',
                 'emergency_contact' => 'nullable|string',
                 'relations' => 'nullable|in:Parent,Guardian,Husband,Wife,Sibling',
-                'emergency_number' => 'nullable|regex:/^[0-9]+$/|max:15',
+                'emergency_number' => 'required|numeric',
                 'status' => 'nullable|in:Active,Inactive',
             ],
             [
                 'identity_number.regex' => 'Identity number must only contain numbers.',
                 'identity_number.max' => 'Identity number cannot exceed 20 digits.',
-                'phone_number.regex' => 'Phone number must only contain numbers.',
+                'phone_number.numeric' => 'Phone number must contain only numbers.',
                 'phone_number.max' => 'Phone number cannot exceed 15 digits.',
-                'hp_number.regex' => 'HP number must only contain numbers.',
+                'hp_number.numeric' => 'HP number must only contain numbers.',
                 'hp_number.max' => 'HP number cannot exceed 15 digits.',
-                'emergency_number.regex' => 'Emergency number must only contain numbers.',
+                'emergency_number.numeric' => 'Emergency number must only contain numbers.',
                 'emergency_number.max' => 'Emergency number cannot exceed 15 digits.',
             ],
         );
@@ -125,7 +134,6 @@ class EmployeeController extends Controller
             return redirect()->route('employee.index')->with('error', 'Data tidak ditemukan!');
         }
 
-        // Tidak perlu memformat current_salary di sini
         return view('Superadmin.Employeedata.Employee.update', compact('employeeModel'));
     }
 
@@ -148,10 +156,10 @@ class EmployeeController extends Controller
                 'current_address' => 'nullable|string',
                 'blood_type' => 'nullable|in:A,B,AB,O',
                 'blood_rhesus' => 'nullable|string',
-                'phone_number' => 'nullable|regex:/^[0-9]+$/|max:15',
-                'hp_number' => 'nullable|regex:/^[0-9]+$/|max:15',
+                'phone_number' => 'required|numeric',
+                'hp_number' => 'required|numeric',
                 'marital_status' => 'nullable|in:Single,Married,Widow,Widower',
-                'last_education' => 'nullable|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelors Degree,Masters Degree,Doctoral Degree',
+                'last_education' => 'nullable|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelor’s Degree,Master’s Degree,Doctoral Degree',
                 'degree' => 'nullable|string',
                 'starting_date' => 'nullable|date',
                 'interview_by' => 'nullable|string',
@@ -161,17 +169,17 @@ class EmployeeController extends Controller
                 'hereditary_disease' => 'nullable|string',
                 'emergency_contact' => 'nullable|string',
                 'relations' => 'nullable|in:Parent,Guardian,Husband,Wife,Sibling',
-                'emergency_number' => 'nullable|regex:/^[0-9]+$/|max:15',
+                'emergency_number' => 'required|numeric',
                 'status' => 'nullable|in:Active,Inactive',
             ],
             [
                 'identity_number.regex' => 'Identity number must only contain numbers.',
                 'identity_number.max' => 'Identity number cannot exceed 20 digits.',
-                'phone_number.regex' => 'Phone number must only contain numbers.',
+                'phone_number.numeric' => 'Phone number must contain only numbers.',
                 'phone_number.max' => 'Phone number cannot exceed 15 digits.',
-                'hp_number.regex' => 'HP number must only contain numbers.',
+                'hp_number.numeric' => 'HP number must only contain numbers.',
                 'hp_number.max' => 'HP number cannot exceed 15 digits.',
-                'emergency_number.regex' => 'Emergency number must only contain numbers.',
+                'emergency_number.numeric' => 'Emergency number must only contain numbers.',
                 'emergency_number.max' => 'Emergency number cannot exceed 15 digits.',
             ],
         );
@@ -215,13 +223,12 @@ class EmployeeController extends Controller
         return view('Superadmin.Employeedata.Employee.show', compact('employee'));
     }
 
-
     public function searchEmployees(Request $request)
     {
         $query = $request->get('query');
         $employees = Employee::where('first_name', 'LIKE', "%{$query}%")
             ->orWhere('last_name', 'LIKE', "%{$query}%")
-            ->orderBy('first_name')  // Mengurutkan berdasarkan first_name
+            ->orderBy('first_name') // Mengurutkan berdasarkan first_name
             ->get(['employee_id', 'first_name', 'last_name']); // Ambil kolom yang dibutuhkan
 
         // Gabungkan nama depan dan nama belakang sebagai nama lengkap

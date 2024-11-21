@@ -25,23 +25,24 @@ class OffRequestEmailNotification extends Notification
 
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-            ->subject('Pengajuan Cuti Baru dari ' . $this->offrequest->name)
+        return (new MailMessage())
+            ->subject('New Leave Application from ' . $this->offrequest->name)
             ->greeting('Hello ' . $notifiable->name . ',')
-            ->line('Ada pengajuan cuti baru dari karyawan berikut:')
-            ->line('Nama: ' . $this->offrequest->name)
-            ->line('Judul Cuti: ' . $this->offrequest->title)
-            ->line('Deskripsi: ' . $this->offrequest->description)
-            ->line('Mulai: ' . $this->offrequest->start_event)
-            ->line('Selesai: ' . $this->offrequest->end_event)
+            ->line('There is a new leave request from the following employee:')
+            ->line('Name: ' . $this->offrequest->name)
+            ->line('Leave Title: ' . $this->offrequest->title)
+            ->line('Description: ' . $this->offrequest->description)
+            ->line('Start: ' . $this->offrequest->start_event)
+            ->line('End: ' . $this->offrequest->end_event)
             // ->action('Lihat Detail', url('Employee/offrequest/' . $this->offrequest->id))
-            ->line('Terima kasih telah menggunakan sistem kami!');
+            ->line('Thank you for using our system!')
+            ->salutation('Best regards, Grobmedia');
     }
 
     public function toArray($notifiable)
     {
         return [
-            // Isi notifikasi dalam bentuk array
-        ];
+                // Isi notifikasi dalam bentuk array
+            ];
     }
 }
