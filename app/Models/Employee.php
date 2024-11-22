@@ -23,12 +23,37 @@ class Employee extends Model
     public $timestamps = true; // Menyimpan timestamp
 
     protected $fillable = [
-        'first_name', 'last_name', 'email', 'check_in_time', 'check_out_time', 
-        'place_birth', 'date_birth', 'personal_no', 'address', 'current_address', 
-        'blood_type', 'blood_rhesus', 'phone_number', 'hp_number', 'marital_status', 
-        'last_education', 'degree', 'starting_date', 'interview_by', 'current_salary', 
-        'insurance', 'serious_illness', 'hereditary_disease', 'emergency_contact', 
-        'relations', 'emergency_number', 'status'
+        'first_name',
+        'last_name',
+        'email',
+        'check_in_time',
+        'check_out_time',
+        'place_birth',
+        'date_birth',
+        'personal_no',
+        'address',
+        'current_address',
+        'blood_type',
+        'blood_rhesus',
+        'phone_number',
+        'hp_number',
+        'marital_status',
+        'last_education',
+        'degree',
+        'starting_date',
+        'interview_by',
+        'current_salary',
+        'insurance',
+        'serious_illness',
+        'hereditary_disease',
+        'emergency_contact',
+        'relations',
+        'emergency_number',
+        'status',
+        'resign_date',
+        'reason',
+        'remarks',
+        'document',
     ];
 
     protected $hidden = []; // Kolom yang tidak ingin ditampilkan (opsional)
@@ -45,9 +70,9 @@ class Employee extends Model
     // }
 
     public function user()
-{
-    return $this->hasOne(User::class, 'employee_id');
-}
+    {
+        return $this->hasOne(User::class, 'employee_id');
+    }
 
 
     // Relasi dengan Attendance
@@ -79,11 +104,4 @@ class Employee extends Model
     {
         return $this->hasOne(WorkdaySetting::class, 'employee_id', 'employee_id');
     }
-
-
-
-   
-
- 
-    
 }

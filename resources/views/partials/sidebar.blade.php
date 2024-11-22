@@ -4,11 +4,11 @@
             background-color: #000000 !important;
             color: white !important;
         }
+
         /* .nav-link:hover {
             background-color: #4b545c !important;
             color: white !important;
         } */
-        
     </style>
 
 
@@ -164,6 +164,18 @@
                                     </li>
                                 @endcanany
 
+                                @can('history.index')
+                                    <li class="nav-item">
+                                        <a href="{{ route('history.index') }}"
+                                            class="nav-link {{ request()->routeIs('history.index') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>History</p>
+                                        </a>
+                                    </li>
+                                @endcan
+
+
+
                                 @canany(['attandance.index', 'attandance.scanView'])
                                     <li class="nav-item">
                                         @can('attandance.index')
@@ -243,22 +255,22 @@
                             </ul>
                         </li>
 
-                @endcanany
+                    @endcanany
 
-                @canany(['overtime.create'])
-                    <li class="nav-item menu-open">
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                @can('overtime.create')
-                                    <a href="{{ route('overtime.index') }}" class="nav-link">
-                                        <i class="fas fa-clock nav-icon"></i>
-                                        <p>Overtime</p>
-                                    </a>
-                                @endcan
-                            </li>
-                        </ul>
-                    </li>
-                @endcanany
+                    @canany(['overtime.create'])
+                        <li class="nav-item menu-open">
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    @can('overtime.create')
+                                        <a href="{{ route('overtime.index') }}" class="nav-link">
+                                            <i class="fas fa-clock nav-icon"></i>
+                                            <p>Overtime</p>
+                                        </a>
+                                    @endcan
+                                </li>
+                            </ul>
+                        </li>
+                    @endcanany
 
 
                     @canany(['employeebook.index'])
@@ -276,17 +288,17 @@
                     @endcanany
 
                     @canany(['payroll.index'])
-                    <li class="nav-item menu-open">
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('payroll.index') }}" class="nav-link">
-                                    <i class="fas fa-calculator nav-icon"></i>
-                                    <p>Payroll</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                @endcanany
+                        <li class="nav-item menu-open">
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('payroll.index') }}" class="nav-link">
+                                        <i class="fas fa-calculator nav-icon"></i>
+                                        <p>Payroll</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endcanany
 
                     @canany(['settings.index'])
                         <li class="nav-item menu-open">

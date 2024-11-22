@@ -18,17 +18,47 @@ class EmployeeBooksController extends Controller
         $this->middleware('permission:employeebook.detail')->only('detail');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        // Ambil data dengan pagination
-        $violations = EmployeeBook::where('category', 'violation')->with('employee')->paginate(6);
-        $warnings = EmployeeBook::where('category', 'warning')->with('employee')->paginate(6);
-        $reprimands = EmployeeBook::where('category', 'reprimand')->with('employee')->paginate(6);
-        $employees = Employee::all(); // Ambil semua karyawan
+
+        $search = $request->query('search');
+
+        $violations = EmployeeBook::where('category', 'violation')
+            ->when($search, function ($query, $search) {
+                return $query->whereHas('employee', function ($query) use ($search) {
+                    $query->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%");
+                });
+            })
+            ->with('employee')
+            ->paginate(6);
+
+        $warnings = EmployeeBook::where('category', 'warning')
+            ->when($search, function ($query, $search) {
+                return $query->whereHas('employee', function ($query) use ($search) {
+                    $query->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%");
+                });
+            })
+            ->with('employee')
+            ->paginate(6);
+
+        $reprimands = EmployeeBook::where('category', 'reprimand')
+            ->when($search, function ($query, $search) {
+                return $query->whereHas('employee', function ($query) use ($search) {
+                    $query->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%");
+                });
+            })
+            ->with('employee')
+            ->paginate(6);
+
+        $employees = Employee::all(); // Ambil semua data karyawan (jika dibutuhkan)
 
         // Kirim data ke view
-        return view('superadmin.employeebooks.index', compact('violations', 'warnings', 'reprimands', 'employees'));
+        return view('superadmin.employeebooks.index', compact('violations', 'warnings', 'reprimands', 'employees', 'search'));
     }
+
 
 
     public function create(Request $request)

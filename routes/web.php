@@ -12,6 +12,7 @@ use App\Http\Controllers\Superadmin\RoleController;
 use App\Http\Controllers\Superadmin\AttandanceController;
 use App\Http\Controllers\Superadmin\EventController;
 use App\Http\Controllers\Employee\OffemployeeController;
+use App\Http\Controllers\Superadmin\HistoryController;
 use App\Http\Controllers\ProfileController;
 use App\Notifications\LeaveRequestNotification;
 use App\Http\Controllers\Superadmin\EmployeeBookController;
@@ -234,6 +235,37 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/employees/{employee}', [EmployeeController::class, 'show'])
             ->name('employee.show')
             ->middleware('permission:employee.index');
+
+        //history
+        Route::get('/history', [HistoryController::class, 'index'])
+            ->name('history.index')
+            ->middleware('permission:history.index');
+
+        Route::get('/history/create', [HistoryController::class, 'create'])
+            ->name('history.create')
+            ->middleware('permission:history.create');
+
+        Route::post('/history', [HistoryController::class, 'store'])
+            ->name('history.store')
+            ->middleware('permission:history.create');
+
+        Route::get('/history/{employee_id}/edit', [HistoryController::class, 'edit'])
+            ->name('history.edit')
+            ->middleware('permission:history.edit');
+
+        Route::put('/history/{employee_id}', [HistoryController::class, 'update'])
+            ->name('history.update')
+            ->middleware('permission:history.edit');
+
+        Route::delete('/history/{employee_id}', [HistoryController::class, 'destroy'])
+            ->name('history.destroy')
+            ->middleware('permission:history.delete');
+
+        Route::get('/history/{employee_id}/download', [HistoryController::class, 'download'])
+            ->name('history.download')
+            ->middleware('permission:history.download');
+
+
 
 
 

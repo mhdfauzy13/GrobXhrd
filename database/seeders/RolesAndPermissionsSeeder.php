@@ -45,6 +45,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'employee.delete',
             'employee.show',
 
+            // Permission terkait History
+            'history.index',
+            'history.create',
+            'history.edit',
+            'history.delete',
+
             // Permission terkait Payroll
             'payroll.index',
             'payroll.create',

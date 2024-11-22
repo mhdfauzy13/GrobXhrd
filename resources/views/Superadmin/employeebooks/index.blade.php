@@ -1,46 +1,70 @@
+@php
+    // Fungsi untuk memotong teks (cutText)
+    function cutText($text, $length)
+    {
+        return strlen($text) > $length ? substr($text, 0, $length) . '...' : $text;
+    }
+
+    // Ambil tab aktif dari query string, default ke 'violation'
+    $activeTab = request()->query('tab', 'violation');
+@endphp
+
 @extends('layouts.app')
 
 @section('content')
-    <div class="container-fluid"> <!-- Full width container -->
-        <!-- Card Wrapper -->
-        <div class="card mb-3 w-100"> <!-- Card for wrapping entire content -->
-
+    <div class="container-fluid">
+        <div class="card mb-3 w-100">
             <div class="card-header">
                 <h1>Employee Books</h1>
             </div>
             <div class="card-body">
-                <!-- Tab Navigation -->
                 <ul class="nav nav-tabs" id="employeeBookTab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="violation-tab" data-toggle="tab" href="#violation" role="tab"
-                            aria-controls="violation" aria-selected="true">Violation</a>
+                        <a class="nav-link {{ $activeTab === 'violation' ? 'active' : '' }}" id="violation-tab"
+                            data-toggle="tab" href="#violation" role="tab" aria-controls="violation"
+                            aria-selected="{{ $activeTab === 'violation' ? 'true' : 'false' }}">
+                            Violation
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="warning-tab" data-toggle="tab" href="#warning" role="tab"
-                            aria-controls="warning" aria-selected="false">Warning</a>
+                        <a class="nav-link {{ $activeTab === 'warning' ? 'active' : '' }}" id="warning-tab"
+                            data-toggle="tab" href="#warning" role="tab" aria-controls="warning"
+                            aria-selected="{{ $activeTab === 'warning' ? 'true' : 'false' }}">
+                            Warning
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="reprimand-tab" data-toggle="tab" href="#reprimand" role="tab"
-                            aria-controls="reprimand" aria-selected="false">Reprimand</a>
+                        <a class="nav-link {{ $activeTab === 'reprimand' ? 'active' : '' }}" id="reprimand-tab"
+                            data-toggle="tab" href="#reprimand" role="tab" aria-controls="reprimand"
+                            aria-selected="{{ $activeTab === 'reprimand' ? 'true' : 'false' }}">
+                            Reprimand
+                        </a>
                     </li>
                 </ul>
 
-                <!-- Tab Content -->
                 <div class="tab-content mt-3" id="employeeBookTabContent">
                     <!-- Violation Tab -->
-                    <div id="violation" class="tab-pane fade show active">
+                    <div id="violation" class="tab-pane fade {{ $activeTab === 'violation' ? 'show active' : '' }}">
                         <div class="card mb-3">
                             <div class="card-header">
                                 <h3>Violation</h3>
                             </div>
                             <div class="card-body">
-                                <a id="create-button" href="{{ route('employeebooks.create') }}?category=violation"
+                                <form action="{{ route('employeebooks.index') }}" method="GET" class="form-inline mb-3">
+                                    <input type="text" name="search" class="form-control"
+                                        placeholder="Search by employee name" value="{{ request()->query('search') }}">
+                                    <input type="hidden" name="tab" value="violation">
+                                    <button type="submit" class="btn btn-secondary ml-2">Search</button>
+                                </form>
+
+                                <a href="{{ route('employeebooks.create') }}?category=violation"
                                     class="btn btn-primary mb-3">
                                     <i class="fas fa-plus"></i> Add Violation
                                 </a>
+
                                 <div class="table-responsive">
                                     <table class="table table-striped projects">
-                                        <thead style="background-color: white;">
+                                        <thead>
                                             <tr>
                                                 <th>Employee Name</th>
                                                 <th>Incident Date</th>
@@ -84,24 +108,29 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Pagination Links -->
                         {{ $violations->links('vendor.pagination.adminlte') }}
                     </div>
 
                     <!-- Warning Tab -->
-                    <div id="warning" class="tab-pane fade">
+                    <div id="warning" class="tab-pane fade {{ $activeTab === 'warning' ? 'show active' : '' }}">
                         <div class="card mb-3">
                             <div class="card-header">
                                 <h3>Warning</h3>
                             </div>
                             <div class="card-body">
-                                <a id="create-button" href="{{ route('employeebooks.create') }}?category=warning"
+                                <form action="{{ route('employeebooks.index') }}" method="GET" class="form-inline mb-3">
+                                    <input type="text" name="search" class="form-control"
+                                        placeholder="Search by employee name" value="{{ request()->query('search') }}">
+                                    <input type="hidden" name="tab" value="warning">
+                                    <button type="submit" class="btn btn-secondary ml-2">Search</button>
+                                </form>
+                                <a href="{{ route('employeebooks.create') }}?category=warning"
                                     class="btn btn-primary mb-3">
                                     <i class="fas fa-plus"></i> Add Warning
                                 </a>
                                 <div class="table-responsive">
                                     <table class="table table-striped projects">
-                                        <thead style="background-color: white;">
+                                        <thead>
                                             <tr>
                                                 <th>Employee Name</th>
                                                 <th>Incident Date</th>
@@ -145,24 +174,30 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Pagination Links -->
                         {{ $warnings->links('vendor.pagination.adminlte') }}
                     </div>
 
                     <!-- Reprimand Tab -->
-                    <div id="reprimand" class="tab-pane fade">
+                    <div id="reprimand" class="tab-pane fade {{ $activeTab === 'reprimand' ? 'show active' : '' }}">
                         <div class="card mb-3">
                             <div class="card-header">
                                 <h3>Reprimand</h3>
                             </div>
                             <div class="card-body">
-                                <a id="create-button" href="{{ route('employeebooks.create') }}?category=reprimand"
+                                <form action="{{ route('employeebooks.index') }}" method="GET"
+                                    class="form-inline mb-3">
+                                    <input type="text" name="search" class="form-control"
+                                        placeholder="Search by employee name" value="{{ request()->query('search') }}">
+                                    <input type="hidden" name="tab" value="reprimand">
+                                    <button type="submit" class="btn btn-secondary ml-2">Search</button>
+                                </form>
+                                <a href="{{ route('employeebooks.create') }}?category=reprimand"
                                     class="btn btn-primary mb-3">
                                     <i class="fas fa-plus"></i> Add Reprimand
                                 </a>
                                 <div class="table-responsive">
                                     <table class="table table-striped projects">
-                                        <thead style="background-color: white;">
+                                        <thead>
                                             <tr>
                                                 <th>Employee Name</th>
                                                 <th>Incident Date</th>
@@ -206,31 +241,10 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Pagination Links -->
                         {{ $reprimands->links('vendor.pagination.adminlte') }}
                     </div>
                 </div>
             </div>
         </div>
-
-        @php
-            function cutText($text, $length)
-            {
-                if (strlen($text) <= $length) {
-                    return $text;
-                }
-                // Memotong pada batas kata
-                $words = explode(' ', $text);
-                $cutText = '';
-                foreach ($words as $word) {
-                    if (strlen($cutText . ' ' . $word) <= $length) {
-                        $cutText .= ' ' . $word;
-                    } else {
-                        break;
-                    }
-                }
-                return $cutText . '...';
-            }
-        @endphp
     </div>
 @endsection
