@@ -23,6 +23,7 @@ class Payroll extends Model
         'overtime_pay',
         'total_salary',
         'status',
+        'approved_at'
 
     ];
 
@@ -31,7 +32,7 @@ class Payroll extends Model
         switch ($this->validation_status) {
             case 'approved':
                 return 'green'; 
-            case 'declined':
+            case 'rejected':
                 return 'red'; 
             default:
                 return 'yellow'; 

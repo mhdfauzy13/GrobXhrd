@@ -11,6 +11,7 @@ return new class extends Migration {
             $table->bigIncrements('offrequest_id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('manager_id')->nullable();
+            $table->unsignedBigInteger('employee_id');
             $table->string('name');
             $table->string('email')->unique();
             $table->string('title');

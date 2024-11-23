@@ -96,13 +96,23 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('payroll.index')
             ->middleware('permission:payroll.index');
 
-        Route::patch('/payroll/update-status/{id}', [PayrollController::class, 'updateValidationStatus'])
-            ->name('payroll.updateStatus')
-            ->middleware('permission:payroll.index');
+        // Route::patch('/payroll/update-status/{id}', [PayrollController::class, 'updateValidationStatus'])
+        //     ->name('payroll.updateStatus')
+        //     ->middleware('permission:payroll.index');
 
-        Route::get('/payrolls/exports', [PayrollController::class, 'exportToCsv'])
+        Route::get('/payrolls/exports', [PayrollController::class, 'exportCsv'])
             ->name('payroll.exports')
             ->middleware('permission:payroll.index');
+
+        Route::post('/payroll/{payroll_id}/approve', [PayrollController::class, 'approve'])
+            ->name('payroll.approve')
+            ->middleware('permission:payroll.index');
+
+        Route::post('/payroll/decline/{id}', [PayrollController::class, 'decline'])
+            ->name('payroll.decline')
+            ->middleware('permission:payroll.index');
+
+
 
         // event
         Route::get('/events', [EventController::class, 'index'])

@@ -112,82 +112,222 @@ class PayrollController extends Controller
                 'total_payroll' => $totalPayroll,
                 'status' => 'pending',
             ];
-        }); 
+        });
 
         return view('superadmin.payroll.index', compact('payrollData'));
     }
 
-    public function updateValidationStatus(Request $request, $id)
+
+    // public function updateValidationStatus(Request $request)
+    // {
+    //     $request->validate([
+    //         'employee_id' => 'required|exists:payrolls,id',
+    //         'status' => 'required|in:approved,pending',
+    //     ]);
+
+    //     $payroll = Payroll::find($request->id);
+    //     $payroll->update(['status' => $request->status]);
+
+    //     return response()->json(['success' => true, 'message' => 'Status updated successfully']);
+    // }
+
+
+    // public function updateValidationStatus(Request $request, $id)
+    // {
+    //     // Validasi input
+    //     $validatedData = $request->validate([
+    //         'status' => 'required|in:approved,rejected',
+    //     ]);
+
+    //     // Ambil data payroll berdasarkan ID
+    //     $payroll = Payroll::findOrFail($id);
+
+    //     // Cek apakah status sudah sama
+    //     if ($payroll->status === $validatedData['status']) {
+    //         return redirect()
+    //             ->route('payroll.index')
+    //             ->with('info', 'No changes were made. Payroll already has the status: ' . $validatedData['status'] . '.');
+    //     }
+
+    //     // Perbarui status validasi
+    //     $payroll->status = $validatedData['status'];
+    //     $payroll->save();
+
+    //     // Redirect dengan pesan sukses
+    //     return redirect()
+    //         ->route('payroll.index')
+    //         ->with('success', 'Payroll has been ' . $validatedData['status'] . ' successfully.');
+    // }
+
+
+    public function approve($id)
     {
-        // Validasi input
-        $validatedData = $request->validate([
-            'status' => 'required|in:approved,rejected',
+        $payroll = Payroll::findOrFail($id);
+        $payroll->update([
+            'status' => 'approved',
+            'approved_at' => now(), // Tambahkan waktu persetujuan
         ]);
 
-        // Ambil data payroll berdasarkan ID
+        // dd($payroll->toArray()); 
+
+
+        return redirect()->back()->with('success', 'Payroll approved successfully!');
+    }
+
+    public function decline($id)
+    {
         $payroll = Payroll::findOrFail($id);
+        $payroll->update([
+            'status' => 'pending',
+            'approved_at' => null, // Hapus waktu persetujuan
+        ]);
 
-        // Cek apakah status sudah sama
-        if ($payroll->status === $validatedData['status']) {
-            return redirect()
-                ->route('payroll.index')
-                ->with('info', 'No changes were made. Payroll already has the status: ' . $validatedData['status'] . '.');
-        }
-
-        // Perbarui status validasi
-        $payroll->status = $validatedData['status'];
-        $payroll->save();
-
-        // Redirect dengan pesan sukses
-        return redirect()
-            ->route('payroll.index')
-            ->with('success', 'Payroll has been ' . $validatedData['status'] . ' successfully.');
+        return redirect()->back()->with('success', 'Payroll status reset to pending.');
     }
 
 
-    public function exportToCsv()
+    public function exportCsv()
     {
+        $approvedPayrolls = Payroll::where('status', 'approved')->get();
 
-        // Ambil data payroll yang sudah disetujui (approved)
-        $payrollData = Payroll::where('status', 'approved')->get();
+        // Siapkan header CSV
+        $csvHeader = [
+            'Employee ID',
+            'Employee Name',
+            'Current Salary',
+            'Total Days Worked',
+            'Total Days Off',
+            'Total Late Check-in',
+            'Total Early Check-out',
+            'Monthly Workdays',
+            'Overtime Pay',
+            'Total Payroll',
+            'Approved At',
+        ];
 
-        // Jika tidak ada data yang disetujui, beri pesan atau ekspor file kosong
-        if ($payrollData->isEmpty()) {
-            return response()->stream(function () {
-                echo "No approved payroll data to export.";
-            }, 200, [
-                'Content-Type' => 'text/csv',
-                'Content-Disposition' => 'attachment; filename="payroll.csv"',
-            ]);
+        // Siapkan data CSV
+        $csvData = $approvedPayrolls->map(function ($payroll) {
+            return [
+                $payroll->employee_id,
+                $payroll->employee_name,
+                $payroll->current_salary,
+                $payroll->total_days_worked,
+                $payroll->total_days_off,
+                $payroll->total_late_check_in,
+                $payroll->total_early_check_out,
+                $payroll->monthly_workdays,
+                $payroll->overtime_pay,
+                $payroll->total_payroll,
+                $payroll->approved_at,
+            ];
+        });
+
+        // Konversi ke CSV string
+        $csv = implode(",", $csvHeader) . "\n";
+        foreach ($csvData as $row) {
+            $csv .= implode(",", $row) . "\n";
         }
 
-        // Membuat file CSV
-        $handle = fopen('php://output', 'w');
-        fputcsv($handle, ['Employee Name', 'Current Salary', 'Total Days Worked', 'Total Days Off', 'Total Late Check In', 'Total Early Check Out', 'Effective Work Days', 'Overtime Pay', 'Total Salary']); // Menulis header CSV
-
-        foreach ($payrollData as $data) {
-            fputcsv($handle, [
-                $data->employee_name,
-                $data->current_salary,
-                $data->total_days_worked,
-                $data->total_days_off,
-                $data->total_late_check_in,
-                $data->total_early_check_out,
-                $data->monthly_workdays,
-                $data->overtime_pay,
-                $data->total_payroll,
-            ]);
-        }
-
-        fclose($handle);
-
-        return response()->stream(function () use ($handle) {
-            fclose($handle);
-        }, 200, [
+        // Kirim file CSV
+        return Response::make($csv, 200, [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="payroll.csv"',
         ]);
     }
+
+    // public function exportToCsv()
+    // {
+    //     $approvedPayrolls = Payroll::where('status', 'approved')->get();
+
+    //     $csvFileName = 'payroll_export_' . now()->format('Ymd_His') . '.csv';
+    //     $headers = [
+    //         'Content-Type' => 'text/csv',
+    //         'Content-Disposition' => "attachment; filename=\"$csvFileName\"",
+    //     ];
+
+    //     $columns = [
+    //         'Employee Name',
+    //         'Current Salary',
+    //         'Total Days Worked',
+    //         'Total Days Off',
+    //         'Total Late Check In',
+    //         'Total Early Check Out',
+    //         'Effective Work Days',
+    //         'Overtime Pay',
+    //         'Total Salary',
+    //         'Validation Status',
+    //     ];
+
+    //     $callback = function () use ($approvedPayrolls, $columns) {
+    //         $file = fopen('php://output', 'w');
+    //         fputcsv($file, $columns);
+
+    //         foreach ($approvedPayrolls as $payroll) {
+    //             fputcsv($file, [
+    //                 $payroll->employee_name,
+    //                 $payroll->current_salary,
+    //                 $payroll->total_days_worked,
+    //                 $payroll->total_days_off,
+    //                 $payroll->total_late_check_in,
+    //                 $payroll->total_early_check_out,
+    //                 $payroll->monthly_workdays,
+    //                 $payroll->overtime_pay,
+    //                 $payroll->total_payroll,
+    //                 ucfirst($payroll->status),
+    //             ]);
+    //         }
+
+    //         fclose($file);
+    //     };
+
+    //     return response()->stream($callback, 200, $headers);
+    // }
+
+
+
+    // public function exportToCsv()
+    // {
+
+    //     // Ambil data payroll yang sudah disetujui (approved)
+    //     $payrollData = Payroll::where('status', 'approved')->get();
+
+    //     // Jika tidak ada data yang disetujui, beri pesan atau ekspor file kosong
+    //     if ($payrollData->isEmpty()) {
+    //         return response()->stream(function () {
+    //             echo "No approved payroll data to export.";
+    //         }, 200, [
+    //             'Content-Type' => 'text/csv',
+    //             'Content-Disposition' => 'attachment; filename="payroll.csv"',
+    //         ]);
+    //     }
+
+    //     // Membuat file CSV
+    //     $handle = fopen('php://output', 'w');
+    //     fputcsv($handle, ['Employee Name', 'Current Salary', 'Total Days Worked', 'Total Days Off', 'Total Late Check In', 'Total Early Check Out', 'Effective Work Days', 'Overtime Pay', 'Total Salary']); // Menulis header CSV
+
+    //     foreach ($payrollData as $data) {
+    //         fputcsv($handle, [
+    //             $data->employee_name,
+    //             $data->current_salary,
+    //             $data->total_days_worked,
+    //             $data->total_days_off,
+    //             $data->total_late_check_in,
+    //             $data->total_early_check_out,
+    //             $data->monthly_workdays,
+    //             $data->overtime_pay,
+    //             $data->total_payroll,
+    //         ]);
+    //     }
+
+    //     fclose($handle);
+
+    //     return response()->stream(function () use ($handle) {
+    //         fclose($handle);
+    //     }, 200, [
+    //         'Content-Type' => 'text/csv',
+    //         'Content-Disposition' => 'attachment; filename="payroll.csv"',
+    //     ]);
+    // }
 
 
 }
