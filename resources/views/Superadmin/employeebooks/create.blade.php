@@ -25,6 +25,15 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="type_of">Type of</label>
+                                <select name="type_of" id="type_of" class="form-control">
+                                    <option value="SOP">SOP</option>
+                                    <option value="Administrative">Administrative</option>
+                                    <option value="Behavior">Behavior</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="incident_date">Incident Date</label>
                                 <input type="date" name="incident_date" id="incident_date" class="form-control" required>
                             </div>
@@ -50,11 +59,10 @@
     </div>
 
     <script>
-        // Handle the button click for Save
         document.getElementById('savebooks').addEventListener('click', function(event) {
             event.preventDefault(); // Prevent default form submission
 
-            // Menampilkan SweetAlert setelah tombol Save diklik
+            // Show SweetAlert after clicking Save
             Swal.fire({
                 position: 'top-center',
                 icon: 'success',
@@ -62,8 +70,8 @@
                 showConfirmButton: false,
                 timer: 1500
             }).then(function() {
-                // Submit form setelah alert selesai
-                document.getElementById('quickForm').submit(); // Ensure form ID is correct
+                // Submit form after alert finishes
+                document.getElementById('quickForm').submit();
             });
         });
     </script>

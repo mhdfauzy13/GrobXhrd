@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->text('incident_detail');
             $table->text('remarks');
             $table->enum('category', ['violation', 'warning', 'reprimand']);
+            $table->enum('type_of', ['SOP', 'Administrative', 'Behavior']);
             $table->timestamps();
 
             $table->foreign('employee_id')->references('employee_id')->on('employees')->onDelete('cascade');

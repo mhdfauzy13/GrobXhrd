@@ -56,12 +56,10 @@
                                     <input type="hidden" name="tab" value="violation">
                                     <button type="submit" class="btn btn-secondary ml-2">Search</button>
                                 </form>
-
                                 <a href="{{ route('employeebooks.create') }}?category=violation"
                                     class="btn btn-primary mb-3">
                                     <i class="fas fa-plus"></i> Add Violation
                                 </a>
-
                                 <div class="table-responsive">
                                     <table class="table table-striped projects">
                                         <thead>
@@ -70,6 +68,7 @@
                                                 <th>Incident Date</th>
                                                 <th>Detail</th>
                                                 <th>Remarks</th>
+                                                <th>Type of</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -81,6 +80,7 @@
                                                     <td>{{ $violation->incident_date }}</td>
                                                     <td>{{ cutText($violation->incident_detail, 50) }}</td>
                                                     <td>{{ cutText($violation->remarks, 50) }}</td>
+                                                    <td>{{ $violation->type_of }}</td>
                                                     <td>
                                                         <a class="btn btn-info btn-sm"
                                                             href="{{ route('employeebooks.edit', $violation->employeebook_id) }}">
@@ -136,6 +136,7 @@
                                                 <th>Incident Date</th>
                                                 <th>Detail</th>
                                                 <th>Remarks</th>
+                                                <th>Type of</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -147,6 +148,7 @@
                                                     <td>{{ $warning->incident_date }}</td>
                                                     <td>{{ cutText($warning->incident_detail, 50) }}</td>
                                                     <td>{{ cutText($warning->remarks, 50) }}</td>
+                                                    <td>{{ $warning->type_of }}</td>
                                                     <td>
                                                         <a class="btn btn-info btn-sm"
                                                             href="{{ route('employeebooks.edit', $warning->employeebook_id) }}">
@@ -203,6 +205,7 @@
                                                 <th>Incident Date</th>
                                                 <th>Detail</th>
                                                 <th>Remarks</th>
+                                                <th>Type of</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -214,6 +217,7 @@
                                                     <td>{{ $reprimand->incident_date }}</td>
                                                     <td>{{ cutText($reprimand->incident_detail, 50) }}</td>
                                                     <td>{{ cutText($reprimand->remarks, 50) }}</td>
+                                                    <td>{{ $reprimand->type_of }}</td>
                                                     <td>
                                                         <a class="btn btn-info btn-sm"
                                                             href="{{ route('employeebooks.edit', $reprimand->employeebook_id) }}">

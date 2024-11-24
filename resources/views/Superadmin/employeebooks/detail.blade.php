@@ -46,6 +46,12 @@
                         <label for="category">Category</label>
                         <input type="text" class="form-control" value="{{ $employeeBook->category }}" readonly>
                     </div>
+
+                    <!-- Penambahan Type of -->
+                    <div class="form-group">
+                        <label for="type_of">Type of</label>
+                        <input type="text" class="form-control" value="{{ $employeeBook->type_of }}" readonly>
+                    </div>
                 </div>
             </form>
 

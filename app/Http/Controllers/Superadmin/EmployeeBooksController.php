@@ -79,6 +79,7 @@ class EmployeeBooksController extends Controller
             'incident_detail' => 'required|string',
             'remarks' => 'required|string',
             'category' => 'required|string',
+            'type_of' => 'required|in:SOP,Administrative,Behavior',
         ]);
 
         // Simpan data ke database
@@ -103,6 +104,7 @@ class EmployeeBooksController extends Controller
             'incident_detail' => 'required|string',
             'remarks' => 'required|string',
             'category' => 'required|string',
+            'type_of' => 'required|in:SOP,Administrative,Behavior',
         ]);
 
         // Update data di database
