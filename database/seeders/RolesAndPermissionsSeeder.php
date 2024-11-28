@@ -94,7 +94,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
             //overtime
             'overtime.create',
-            'overtime.store',
+            'overtime.approvals',
 
             //payroll
             'payroll.index',
@@ -123,8 +123,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'recruitment.index',
             'offrequest.index',
             'offrequest.approver',
+            'offrequest.create',
+
+            'overtime.create',
+            'overtime.approvals',
         ]);
-        $employeeRole->givePermissionTo(['dashboard.employee', 'attandance.scan','offrequest.index','offrequest.create', 'attandance.scanView']);
+        $employeeRole->givePermissionTo(['dashboard.employee', 'attandance.scan', 'offrequest.index', 'offrequest.create', 'attandance.scanView','overtime.create',]);
 
         $superadmin = User::updateOrCreate(
             [

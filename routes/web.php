@@ -82,14 +82,24 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/overtime', [OvertimeController::class, 'index'])
             ->name('overtime.index')
             ->middleware('permission:overtime.create');
-
+        
         Route::get('/overtime/create', [OvertimeController::class, 'create'])
             ->name('overtime.create')
             ->middleware('permission:overtime.create');
-
+        
         Route::post('/overtime', [OvertimeController::class, 'store'])
             ->name('overtime.store')
             ->middleware('permission:overtime.create');
+        
+        Route::get('/overtimes/approval', [OvertimeController::class, 'approvals'])
+            ->name('overtime.approvals')
+            ->middleware('permission:overtime.approvals');
+        
+        Route::post('/overtimes/{id}/update-status', [OvertimeController::class, 'updateStatus'])
+            ->name('overtime.updateStatus')
+            ->middleware('permission:overtime.approvals');
+        
+
 
         // Payroll
         Route::get('/payrolls', [PayrollController::class, 'index'])

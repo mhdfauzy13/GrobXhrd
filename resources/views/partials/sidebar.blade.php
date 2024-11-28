@@ -4,11 +4,11 @@
             background-color: #000000 !important;
             color: white !important;
         }
+
         /* .nav-link:hover {
             background-color: #4b545c !important;
             color: white !important;
         } */
-        
     </style>
 
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -18,8 +18,8 @@
                 <img src="{{ asset('storage/' . $companyname->image) }}" alt="{{ $companyname->name_company }}"
                     class="brand-image img-circle elevation-3" style="opacity: 0.8" />
             @else
-                <img src="../../../dist/img/AdminLTELogo.png" alt="Default Logo" class="brand-image img-circle elevation-3"
-                    style="opacity: 0.8" />
+                <img src="../../../dist/img/AdminLTELogo.png" alt="Default Logo"
+                    class="brand-image img-circle elevation-3" style="opacity: 0.8" />
             @endif
             <span
                 class="brand-text font-weight-light">{{ $companyname ? $companyname->name_company : 'AdminLTE 3' }}</span>
@@ -132,7 +132,8 @@
                     <!-- Employee Data menu, only visible if user has specific permissions -->
 
                     @canany(['employee.index', 'employee.create', 'attandance.index', 'attandance.scanView',
-                        'offrequest.index', 'offrequest.create', 'offrequest.approver', 'payroll.index', 'payroll.create'])
+                        'offrequest.index', 'offrequest.create', 'offrequest.approver', 'payroll.index', 'payroll.create',
+                        'overtime.approval'])
                         <li class="nav-item">
                             <a href="#"
                                 class="nav-link {{ request()->routeIs('employee.index') || request()->routeIs('employee.create') || request()->routeIs('attandance.index') || request()->routeIs('attandance.scanView') || request()->routeIs('offrequest.index') || request()->routeIs('offrequest.create') || request()->routeIs('offrequest.approver') ? 'active' : '' }}">
@@ -240,22 +241,33 @@
                             </ul>
                         </li>
 
-                @endcanany
+                    @endcanany
 
-                @canany(['overtime.create'])
-                    <li class="nav-item menu-open">
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                @can('overtime.create')
-                                    <a href="{{ route('overtime.index') }}" class="nav-link">
-                                        <i class="fas fa-clock nav-icon"></i>
-                                        <p>Overtime</p>
-                                    </a>
-                                @endcan
-                            </li>
-                        </ul>
-                    </li>
-                @endcanany
+                    @canany(['overtime.create'])
+                        <li class="nav-item menu-open">
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    @can('overtime.create')
+                                        <a href="{{ route('overtime.index') }}" class="nav-link">
+                                            <i class="fas fa-clock nav-icon"></i>
+                                            <p>Overtime</p>
+                                        </a>
+                                    @endcan
+                                </li>
+                            </ul>
+                        </li>
+                    @endcanany
+
+
+                    @can('overtime.approvals')
+                        <li class="nav-item">
+                            <a href="{{ route('overtime.approvals') }}"
+                                class="nav-link ">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Overtime Approve</p>
+                            </a>
+                        </li>
+                    @endcan
 
 
                     @canany(['employeebook.index'])
@@ -273,17 +285,17 @@
                     @endcanany
 
                     @canany(['payroll.index'])
-                    <li class="nav-item menu-open">
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('payroll.index') }}" class="nav-link">
-                                    <i class="fas fa-calculator nav-icon"></i>
-                                    <p>Payroll</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                @endcanany
+                        <li class="nav-item menu-open">
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('payroll.index') }}" class="nav-link">
+                                        <i class="fas fa-calculator nav-icon"></i>
+                                        <p>Payroll</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endcanany
 
                     @canany(['settings.index'])
                         <li class="nav-item menu-open">
