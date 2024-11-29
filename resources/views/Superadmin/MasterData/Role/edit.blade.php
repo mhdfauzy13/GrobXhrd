@@ -132,6 +132,7 @@
             'employeebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
             'event' => ['event.index', 'event.lists', 'event.create', 'event.edit', 'event.delete'],
             'settings' => ['settings.index', 'settings.company', 'settings.deductions', 'settings.worksdays'],
+            'resignationrequest' => ['resignationrequest.index', 'resignationrequest.create', 'resignationrequest.approver'],
         ] as $feature => $featurePermissions)
                                                 <div class="card mt-3">
                                                     <div class="card-header">
@@ -194,7 +195,7 @@
             // Add event listeners for each feature select all
             const features = [
                 'dashboard', 'role', 'user', 'employee', 'payroll', 'recruitment', 'attandance',
-                'offrequest', 'employeebook', 'event', 'settings'
+                'offrequest', 'employeebook', 'event', 'settings', 'resignationrequest'
             ];
 
             features.forEach(feature => {

@@ -45,11 +45,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'employee.delete',
             'employee.show',
 
-            // Permission terkait History
-            'history.index',
-            'history.create',
-            'history.edit',
-            'history.delete',
 
             // Permission terkait Payroll
             'payroll.index',
@@ -76,6 +71,11 @@ class RolesAndPermissionsSeeder extends Seeder
             'offrequest.index',
             'offrequest.create',
             'offrequest.approver',
+
+            // Permission terkait resignation request
+            'resignationrequest.index',
+            'resignationrequest.create',
+            'resignationrequest.approver',
 
             //event
             'event.index',
@@ -129,8 +129,13 @@ class RolesAndPermissionsSeeder extends Seeder
             'recruitment.index',
             'offrequest.index',
             'offrequest.approver',
+
+
+            'resignationrequest.index',
+            'resignationrequest.create',
+            'resignationrequest.approver',
         ]);
-        $employeeRole->givePermissionTo(['dashboardemployee.view', 'attandance.scan', 'offrequest.create', 'attandance.scanView']);
+        $employeeRole->givePermissionTo(['dashboardemployee.view', 'attandance.scan', 'offrequest.create', 'attandance.scanView', 'resignationrequest.create', 'resignationrequest.index']);
 
         $superadmin = User::updateOrCreate(
             [

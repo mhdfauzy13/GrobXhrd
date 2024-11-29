@@ -50,10 +50,6 @@ class Employee extends Model
         'relations',
         'emergency_number',
         'status',
-        'resign_date',
-        'reason',
-        'remarks',
-        'document',
     ];
 
     protected $hidden = []; // Kolom yang tidak ingin ditampilkan (opsional)

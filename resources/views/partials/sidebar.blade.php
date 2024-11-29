@@ -164,15 +164,7 @@
                                     </li>
                                 @endcanany
 
-                                @can('history.index')
-                                    <li class="nav-item">
-                                        <a href="{{ route('history.index') }}"
-                                            class="nav-link {{ request()->routeIs('history.index') ? 'active' : '' }}">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>History</p>
-                                        </a>
-                                    </li>
-                                @endcan
+
 
 
 
@@ -193,6 +185,40 @@
                                         @endcan
                                     </li>
                                 @endcanany
+
+                                <!-- Tampilkan menu Resignation Request jika user memiliki permission resignationrequest.index, resignationrequest.create, atau resignationrequest.approver -->
+                                @canany(['resignationrequest.index', 'resignationrequest.create',
+                                    'resignationrequest.approver'])
+                                    <li class="nav-item">
+                                        @can('resignationrequest.index')
+                                            <a href="{{ route('resignationrequest.index') }}"
+                                                class="nav-link {{ request()->routeIs('resignationrequest.index') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Resignation Request</p>
+                                            </a>
+                                        @elsecan('resignationrequest.create')
+                                            <a href="{{ route('resignationrequest.create') }}"
+                                                class="nav-link {{ request()->routeIs('resignationrequest.create') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Create Resignation Request</p>
+                                            </a>
+                                        @endcan
+                                    </li>
+                                @endcanany
+
+                                @can('resignationrequest.approver')
+                                    <li class="nav-item">
+                                        <a href="{{ route('resignationrequest.approver') }}"
+                                            class="nav-link {{ request()->routeIs('resignationrequest.approver') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Approve Resignation Request</p>
+                                        </a>
+                                    </li>
+                                @endcan
+
+
+
+
 
                                 <!-- Tampilkan menu Off Request jika user memiliki permission offrequest.index atau offrequest.create -->
                                 @canany(['offrequest.index', 'offrequest.create'])

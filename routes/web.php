@@ -12,6 +12,7 @@ use App\Http\Controllers\Superadmin\RoleController;
 use App\Http\Controllers\Superadmin\AttandanceController;
 use App\Http\Controllers\Superadmin\EventController;
 use App\Http\Controllers\Employee\OffemployeeController;
+use App\Http\Controllers\Employee\ResignationRequestController;
 use App\Http\Controllers\Superadmin\HistoryController;
 use App\Http\Controllers\ProfileController;
 use App\Notifications\LeaveRequestNotification;
@@ -183,6 +184,45 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('employeebooks.detail')
             ->middleware('permission:employeebook.detail');
 
+        // Employee Books Routes
+        Route::get('employeebooks', [EmployeeBooksController::class, 'index'])
+            ->name('employeebooks.index')
+            ->middleware('permission:employeebook.index');
+
+        Route::get('employeebooks/create', [EmployeeBooksController::class, 'create'])
+            ->name('employeebooks.create')
+            ->middleware('permission:employeebook.create');
+
+        Route::post('employeebooks', [EmployeeBooksController::class, 'store'])
+            ->name('employeebooks.store')
+            ->middleware('permission:employeebook.create');
+
+        Route::get('employeebooks/{employeeBook}/edit', [EmployeeBooksController::class, 'edit'])
+            ->name('employeebooks.edit')
+            ->middleware('permission:employeebook.edit');
+
+        Route::put('employeebooks/{employeeBook}', [EmployeeBooksController::class, 'update'])
+            ->name('employeebooks.update')
+            ->middleware('permission:employeebook.edit');
+
+        Route::delete('employeebooks/{employeeBook}', [EmployeeBooksController::class, 'destroy'])
+            ->name('employeebooks.destroy')
+            ->middleware('permission:employeebook.delete');
+
+        Route::get('employeebooks/{employeeBook}/detail', [EmployeeBooksController::class, 'detail'])
+            ->name('employeebooks.detail')
+            ->middleware('permission:employeebook.detail');
+
+        Route::get('/search-employees', [EmployeeBooksController::class, 'searchEmployees'])
+            ->name('employeebooks.search') // Pastikan nama route sesuai
+            ->middleware('permission:employeebook.search');
+
+
+
+
+
+
+
         // Recruitment
         Route::get('/recruitment', [RecruitmentController::class, 'index'])
             ->name('recruitment.index')
@@ -235,35 +275,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/employees/{employee}', [EmployeeController::class, 'show'])
             ->name('employee.show')
             ->middleware('permission:employee.index');
-
-        //history
-        Route::get('/history', [HistoryController::class, 'index'])
-            ->name('history.index')
-            ->middleware('permission:history.index');
-
-        Route::get('/history/create', [HistoryController::class, 'create'])
-            ->name('history.create')
-            ->middleware('permission:history.create');
-
-        Route::post('/history', [HistoryController::class, 'store'])
-            ->name('history.store')
-            ->middleware('permission:history.create');
-
-        Route::get('/history/{employee_id}/edit', [HistoryController::class, 'edit'])
-            ->name('history.edit')
-            ->middleware('permission:history.edit');
-
-        Route::put('/history/{employee_id}', [HistoryController::class, 'update'])
-            ->name('history.update')
-            ->middleware('permission:history.edit');
-
-        Route::delete('/history/{employee_id}', [HistoryController::class, 'destroy'])
-            ->name('history.destroy')
-            ->middleware('permission:history.delete');
-
-        Route::get('/history/{employee_id}/download', [HistoryController::class, 'download'])
-            ->name('history.download')
-            ->middleware('permission:history.download');
 
 
 
@@ -342,6 +353,31 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/offrequest/approver', [OffemployeeController::class, 'approverIndex'])
             ->name('offrequest.approver')
             ->middleware('permission:offrequest.approver');
+
+        // Resignation Request
+        Route::get('/resignation', [ResignationRequestController::class, 'index'])
+            ->name('resignationrequest.index')
+            ->middleware('permission:resignationrequest.index');
+
+        Route::get('/resignation/create', [ResignationRequestController::class, 'create'])
+            ->name('resignationrequest.create')
+            ->middleware('permission:resignationrequest.create');
+
+        Route::post('/resignation', [ResignationRequestController::class, 'store'])
+            ->name('resignationrequest.store')
+            ->middleware('permission:resignationrequest.create');
+
+        Route::put('/resignation/{resignationrequest_id}/status', [ResignationRequestController::class, 'updateStatus'])
+            ->name('resignationrequest.updateStatus')
+            ->middleware('permission:resignationrequest.approver');
+
+        // Route::get('/resignation/approver', [ResignationRequestController::class, 'index'])
+        //     ->name('resignationrequest.approver')
+        //     ->middleware('permission:resignationrequest.approver');
+
+        Route::get('/resignation/approver', [ResignationRequestController::class, 'approver'])
+            ->name('resignationrequest.approver')
+            ->middleware('permission:resignationrequest.approver');
     });
 });
 

@@ -121,6 +121,7 @@
             'event' => ['event.index', 'event.lists', 'event.create', 'event.edit', 'event.delete'],
             'overtime' => ['overtime.create'],
             'settings' => ['settings.index', 'settings.company', 'settings.deductions', 'settings.worksdays'],
+            'resignationrequest' => ['resignationrequest.index', 'resignationrequest.create', 'resignationrequest.approver'],
         ] as $feature => $featurePermissions)
                                             <div class="card mt-3">
                                                 <div class="card-header">
@@ -284,6 +285,14 @@
         document.getElementById('selectAllSettings').addEventListener('click', function(e) {
             e.preventDefault();
             let checkboxes = document.querySelectorAll('.settings-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !checkbox.checked;
+            });
+        });
+
+        document.getElementById('selectAllResignationrequest').addEventListener('click', function(e) {
+            e.preventDefault();
+            let checkboxes = document.querySelectorAll('.resignationrequest-checkbox');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = !checkbox.checked;
             });
