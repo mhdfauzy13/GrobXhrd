@@ -118,7 +118,7 @@
             'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.approver'],
             'employeebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
             'event' => ['event.index', 'event.lists', 'event.create', 'event.edit', 'event.delete'],
-            'overtime' => ['overtime.create'],
+            'overtime' => ['overtime.create','overtime.approval'],
             'settings' => ['settings.index', 'settings.company', 'settings.deductions', 'settings.worksdays'],
         ] as $feature => $featurePermissions)
                                             <div class="card mt-3">
@@ -270,14 +270,7 @@
             });
         });
 
-        // Event listener untuk fitur overtime
-        document.getElementById('selectAllOvertime').addEventListener('click', function(e) {
-            e.preventDefault();
-            let checkboxes = document.querySelectorAll('.overtime-checkbox');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = !checkbox.checked;
-            });
-        });
+       
 
         // Event listener untuk fitur Settings
         document.getElementById('selectAllSettings').addEventListener('click', function(e) {

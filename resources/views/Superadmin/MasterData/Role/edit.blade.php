@@ -130,6 +130,7 @@
             'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.approver'],
             'employeebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
             'event' => ['event.index', 'event.lists', 'event.create', 'event.edit', 'event.delete'],
+            'overtime' => ['overtime.create','overtime.approval'],
             'settings' => ['settings.index', 'settings.company', 'settings.deductions', 'settings.worksdays'],
         ] as $feature => $featurePermissions)
                                                 <div class="card mt-3">
@@ -193,7 +194,7 @@
             // Add event listeners for each feature select all
             const features = [
                 'dashboard', 'role', 'user', 'employee', 'payroll', 'recruitment', 'attandance',
-                'offrequest', 'employeebook', 'event', 'settings'
+                'offrequest', 'employeebook', 'event','overtime','settings'
             ];
 
             features.forEach(feature => {
