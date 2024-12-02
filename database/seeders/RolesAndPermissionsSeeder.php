@@ -90,7 +90,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
             //overtime
             'overtime.create',
-            'overtime.store',
+            'overtime.approvals',
 
             //payroll
             'payroll.index',
@@ -111,9 +111,9 @@ class RolesAndPermissionsSeeder extends Seeder
         $employeeRole = Role::firstOrCreate(['name' => 'employee'], ['status' => 'enable']);
 
         $adminRole->givePermissionTo($permissions); // Superadmin mendapatkan semua permission
-
         $managerRole->givePermissionTo(['dashboard.superadmin', 'user.index', 'user.edit', 'role.index', 'employee.index', 'payroll.index', 'recruitment.index', 'offrequest.index', 'offrequest.approver']);
         $employeeRole->givePermissionTo(['dashboard.employee', 'attendance.scan', 'offrequest.index', 'offrequest.create', 'attendance.scan']);
+
 
         $superadmin = User::updateOrCreate(
             [

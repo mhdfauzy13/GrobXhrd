@@ -22,7 +22,7 @@ class Payroll extends Model
         'current_salary',
         'overtime_pay',
         'total_salary',
-        'validation_status',
+        'status',
 
     ];
 

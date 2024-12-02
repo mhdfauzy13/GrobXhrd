@@ -130,9 +130,11 @@
 
                     <!-- Employee Data menu, only visible if user has specific permissions -->
 
+
                     @canany(['employee.index', 'employee.create', 'attendance.index', 'attendance.scan',
                         'offrequest.index', 'offrequest.create', 'offrequest.approver', 'payroll.index', 'payroll.create',
                         'divisions.index', 'divisions.create'])
+                  
                         <li class="nav-item">
                             <a href="#"
                                 class="nav-link {{ request()->routeIs('employee.index') || request()->routeIs('employee.create') || request()->routeIs('attandance.index') || request()->routeIs('attandance.scanView') || request()->routeIs('offrequest.index') || request()->routeIs('offrequest.create') || request()->routeIs('offrequest.approver') ? 'active' : '' }}">
@@ -274,6 +276,19 @@
                             </ul>
                         </li>
                     @endcanany
+n
+
+
+                    @can('overtime.approvals')
+                        <li class="nav-item">
+                            <a href="{{ route('overtime.approvals') }}"
+                                class="nav-link ">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Overtime Approve</p>
+                            </a>
+                        </li>
+                    @endcan
+
 
 
                     @canany(['employeebook.index'])

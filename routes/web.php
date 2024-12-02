@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Employee\DashboardEmployeeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Superadmin\DashboardController;
@@ -12,8 +11,6 @@ use App\Http\Controllers\Superadmin\RoleController;
 use App\Http\Controllers\Superadmin\AttandanceController;
 use App\Http\Controllers\Superadmin\EventController;
 use App\Http\Controllers\Employee\OffemployeeController;
-use App\Http\Controllers\ProfileController;
-use App\Notifications\LeaveRequestNotification;
 use App\Http\Controllers\Superadmin\EmployeeBookController;
 use App\Http\Controllers\Superadmin\EmployeeBooksController;
 use App\Http\Controllers\Superadmin\OvertimeController;
@@ -86,31 +83,36 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/overtime', [OvertimeController::class, 'index'])
             ->name('overtime.index')
             ->middleware('permission:overtime.create');
-
+        
         Route::get('/overtime/create', [OvertimeController::class, 'create'])
             ->name('overtime.create')
             ->middleware('permission:overtime.create');
-
+        
         Route::post('/overtime', [OvertimeController::class, 'store'])
             ->name('overtime.store')
             ->middleware('permission:overtime.create');
+        
+        Route::get('/overtimes/approval', [OvertimeController::class, 'approvals'])
+            ->name('overtime.approvals')
+            ->middleware('permission:overtime.approvals');
+        
+        Route::post('/overtimes/{id}/update-status', [OvertimeController::class, 'updateStatus'])
+            ->name('overtime.updateStatus')
+            ->middleware('permission:overtime.approvals');
+        
+
 
         // Payroll
         Route::get('/payrolls', [PayrollController::class, 'index'])
             ->name('payroll.index')
             ->middleware('permission:payroll.index');
 
-        Route::post('/payroll/{id}/validate', [PayrollController::class, 'validatePayroll'])
-            ->name('payroll.validate')
-            ->middleware('permission:payroll.index');
-
         Route::patch('/payroll/update-status/{id}', [PayrollController::class, 'updateValidationStatus'])
             ->name('payroll.updateStatus')
             ->middleware('permission:payroll.index');
 
-        Route::get('/payroll/export', [PayrollController::class, 'exportToCsv'])
-            ->name('payroll.export')
-
+        Route::get('/payrolls/exports', [PayrollController::class, 'exportToCsv'])
+            ->name('payroll.exports')
             ->middleware('permission:payroll.index');
 
         // event

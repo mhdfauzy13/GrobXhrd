@@ -49,5 +49,11 @@ class User extends Authenticatable
         return $this->hasMany(Offrequest::class, 'approver_id');
     }
 
-    
+
+    public function overtimes()
+{
+    return $this->hasMany(Overtime::class, 'user_id', 'user_id');
+}
+
+
 }
