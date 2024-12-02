@@ -35,7 +35,7 @@
                     @endif
 
                     <form id="update-form" action="{{ route('employee.update', $employeeModel->employee_id) }}"
-                        method="POST">
+                        method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
@@ -63,13 +63,27 @@
                                     <div class="form-group">
                                         <label for="check_in_time">Time Check-In</label>
                                         <input type="time" name="check_in_time" class="form-control"
-                                            value="{{ old('check_in_time', $employeeModel->check_in_time) }}" required>
+                                            value="{{ old('check_in_time', '10:00', $employeeModel->check_in_time) }}"
+                                            required>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="check_out_time">Time Check-Out</label>
                                         <input type="time" name="check_out_time" class="form-control"
-                                            value="{{ old('check_out_time', $employeeModel->check_out_time) }}" required>
+                                            value="{{ old('check_out_time', '17:00', $employeeModel->check_out_time) }}"
+                                            required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="division_id">Division</label>
+                                        <select name="division_id" id="division_id" class="form-control" required>
+                                            @foreach ($divisions as $division)
+                                                <option value="{{ $division->id }}"
+                                                    {{ old('division_id', $employeeModel->division_id) == $division->id ? 'selected' : '' }}>
+                                                    {{ $division->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
 
                                     <div class="form-group">
@@ -107,7 +121,6 @@
                                     <div class="form-group">
                                         <label for="blood_type">Blood Type</label>
                                         <select name="blood_type" id="blood_type" class="form-control">
-                                            <option value="">Select</option>
                                             <option value="A"
                                                 {{ old('blood_type', $employeeModel->blood_type) == 'A' ? 'selected' : '' }}>
                                                 A</option>
@@ -164,12 +177,9 @@
                                             Please enter only numbers.
                                         </small>
                                     </div>
-
-
                                     <div class="form-group">
                                         <label for="marital_status">Marital Status</label>
                                         <select name="marital_status" id="marital_status" class="form-control">
-                                            <option value="">Select</option>
                                             <option value="Single"
                                                 {{ old('marital_status', $employeeModel->marital_status) == 'Single' ? 'selected' : '' }}>
                                                 Single</option>
@@ -184,11 +194,26 @@
                                                 Widower</option>
                                         </select>
                                     </div>
+                                    <div class="form-group">
+                                        <label for="cv_file">CV File</label>
+                                        <input type="file" name="cv_file" id="cv_file" class="form-control">
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="update_cv">Last CV Update</label>
+                                        <input type="text" name="update_cv" id="update_cv" class="form-control"
+                                            value="{{ old('update_cv', \Carbon\Carbon::parse($employeeModel->update_cv)->format('d F Y')) }}"
+                                            readonly>
+                                        @if ($employeeModel->cv_file)
+                                            <div class="mt-2" id="currentCvFile">
+                                                <strong>Current File: </strong> {{ basename($employeeModel->cv_file) }}
+                                            </div>
+                                        @endif
+                                    </div>
 
                                     <div class="form-group">
                                         <label for="last_education">Last Education</label>
                                         <select name="last_education" id="last_education" class="form-control">
-                                            <option value="">Select</option>
                                             <option value="Elementary School"
                                                 {{ old('last_education', $employeeModel->last_education) == 'Elementary School' ? 'selected' : '' }}>
                                                 Elementary School</option>
@@ -252,7 +277,6 @@
                                     <div class="form-group">
                                         <label for="insurance">Insurance</label>
                                         <select name="insurance" id="insurance" class="form-control">
-                                            <option value="">Select</option>
                                             <option value="1"
                                                 {{ old('insurance', $employeeModel->insurance) == '1' ? 'selected' : '' }}>
                                                 Yes</option>
@@ -286,7 +310,6 @@
                                     <div class="form-group">
                                         <label for="relations">Relations</label>
                                         <select name="relations" id="relations" class="form-control">
-                                            <option value="">Select</option>
                                             <option value="Parent"
                                                 {{ old('relations', $employeeModel->relations) == 'Parent' ? 'selected' : '' }}>
                                                 Parent</option>
@@ -314,8 +337,9 @@
                                             </div>
                                             <input type="text" name="emergency_number" id="emergency_number"
                                                 class="form-control"
-                                                value="{{ old('emergency_number', $employeeModel->emergency_number) }}" required
-                                                oninput="phonenumber(this)" onkeypress="validatephonenumber(event)">
+                                                value="{{ old('emergency_number', $employeeModel->emergency_number) }}"
+                                                required oninput="phonenumber(this)"
+                                                onkeypress="validatephonenumber(event)">
                                         </div>
                                         <small id="numberwarning" class="form-text text-danger" style="display: none;">
                                             Please enter only numbers.
@@ -326,13 +350,18 @@
                                     <div class="form-group">
                                         <label for="status">Status</label>
                                         <select name="status" id="status" class="form-control">
-                                            <option value="">Select</option>
                                             <option value="Active"
                                                 {{ old('status', $employeeModel->status) == 'Active' ? 'selected' : '' }}>
                                                 Active</option>
                                             <option value="Inactive"
                                                 {{ old('status', $employeeModel->status) == 'Inactive' ? 'selected' : '' }}>
                                                 Inactive</option>
+                                            <option value="Pending"
+                                                {{ old('status', $employeeModel->status) == 'Pending' ? 'selected' : '' }}>
+                                                Pending</option>
+                                            <option value="Suspend"
+                                                {{ old('status', $employeeModel->status) == 'Suspend' ? 'selected' : '' }}>
+                                                Suspend</option>
                                         </select>
                                     </div>
                                 </div>

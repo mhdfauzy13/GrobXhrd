@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Overtime/create')
 @section('content')
     <div class="content">
         <section class="content-header">

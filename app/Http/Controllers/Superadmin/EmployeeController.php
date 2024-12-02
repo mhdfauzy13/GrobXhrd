@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Superadmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Division;
 use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class EmployeeController extends Controller
 {
@@ -50,7 +52,10 @@ class EmployeeController extends Controller
 
     public function create(): View
     {
-        return view('Superadmin.Employeedata.Employee.create');
+        // Ambil semua data divisions
+        $divisions = Division::all();
+
+        return view('Superadmin.Employeedata.Employee.create', compact('divisions'));
     }
 
     public function store(Request $request)
@@ -63,6 +68,7 @@ class EmployeeController extends Controller
                 'email' => 'required|email|unique:employees,email',
                 'check_in_time' => 'required|date_format:H:i',
                 'check_out_time' => 'required|date_format:H:i|after:check_in_time',
+                'division_id' => 'required|exists:divisions,id',
                 'place_birth' => 'required|string',
                 'date_birth' => 'nullable|date',
                 'identity_number' => 'nullable|regex:/^[0-9]+$/|max:20',
@@ -73,6 +79,8 @@ class EmployeeController extends Controller
                 'phone_number' => 'required|numeric',
                 'hp_number' => 'required|numeric',
                 'marital_status' => 'nullable|in:Single,Married,Widow,Widower',
+                'cv_file' => 'required|file|mimes:pdf,doc,docx|max:2048',
+                // 'update_cv' => 'nullable|string',
                 'last_education' => 'nullable|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelor’s Degree,Master’s Degree,Doctoral Degree',
                 'degree' => 'nullable|string',
                 'starting_date' => 'nullable|date',
@@ -84,7 +92,7 @@ class EmployeeController extends Controller
                 'emergency_contact' => 'nullable|string',
                 'relations' => 'nullable|in:Parent,Guardian,Husband,Wife,Sibling',
                 'emergency_number' => 'required|numeric',
-                'status' => 'nullable|in:Active,Inactive',
+                'status' => 'nullable|in:Active,Inactive,Pending,Suspend',
             ],
             [
                 'identity_number.regex' => 'Identity number must only contain numbers.',
@@ -102,8 +110,18 @@ class EmployeeController extends Controller
         if (isset($request->current_salary)) {
             $validatedData['current_salary'] = (int) str_replace('.', '', $request->current_salary);
         }
+        // Proses pengunggahan file CV
+        if ($request->hasFile('cv_file')) {
+            $file = $request->file('cv_file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('cv_files', $fileName, 'public');
+            $validatedData['cv_file'] = $filePath;
+        }
 
         try {
+            // Menambahkan division_id ke validatedData
+            $validatedData['division_id'] = $request->division_id; // Menambahkan division_id ke validatedData
+
             // Proses penyimpanan data employee
             $employee = Employee::create($validatedData);
 
@@ -134,12 +152,24 @@ class EmployeeController extends Controller
             return redirect()->route('employee.index')->with('error', 'Data tidak ditemukan!');
         }
 
-        return view('Superadmin.Employeedata.Employee.update', compact('employeeModel'));
+        // Ambil semua data divisi
+        $divisions = Division::all();
+
+        // Kirimkan $divisions ke view
+        return view('Superadmin.Employeedata.Employee.update', compact('employeeModel', 'divisions'));
     }
 
     public function update(Request $request, $employeeId)
     {
         $employeeModel = Employee::findOrFail($employeeId);
+
+        // Menambahkan detik "00" ke waktu jika belum ada
+        if ($request->has('check_in_time') && strpos($request->check_in_time, ':') === strrpos($request->check_in_time, ':')) {
+            $request->merge([
+                'check_in_time' => $request->input('check_in_time') . ':00',
+                'check_out_time' => $request->input('check_out_time') . ':00',
+            ]);
+        }
 
         // Validasi input
         $validatedData = $request->validate(
@@ -149,6 +179,7 @@ class EmployeeController extends Controller
                 'email' => 'required|email|unique:employees,email,' . $employeeModel->employee_id . ',employee_id',
                 'check_in_time' => 'nullable|date_format:H:i:s',
                 'check_out_time' => 'nullable|date_format:H:i:s|after:check_in_time',
+                'division_id' => 'nullable|exists:divisions,id',
                 'place_birth' => 'required|string',
                 'date_birth' => 'nullable|date',
                 'identity_number' => 'nullable|regex:/^[0-9]+$/|max:20',
@@ -159,6 +190,8 @@ class EmployeeController extends Controller
                 'phone_number' => 'required|numeric',
                 'hp_number' => 'required|numeric',
                 'marital_status' => 'nullable|in:Single,Married,Widow,Widower',
+                'cv_file' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+                'update_cv' => 'nullable|string',
                 'last_education' => 'nullable|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelor’s Degree,Master’s Degree,Doctoral Degree',
                 'degree' => 'nullable|string',
                 'starting_date' => 'nullable|date',
@@ -170,7 +203,7 @@ class EmployeeController extends Controller
                 'emergency_contact' => 'nullable|string',
                 'relations' => 'nullable|in:Parent,Guardian,Husband,Wife,Sibling',
                 'emergency_number' => 'required|numeric',
-                'status' => 'nullable|in:Active,Inactive',
+                'status' => 'nullable|in:Active,Inactive,Pending,Suspend',
             ],
             [
                 'identity_number.regex' => 'Identity number must only contain numbers.',
@@ -189,13 +222,33 @@ class EmployeeController extends Controller
             $validatedData['current_salary'] = (int) str_replace('.', '', $request->input('current_salary'));
         }
 
+        // Proses penggantian file CV hanya jika ada file CV yang diunggah
+        if ($request->hasFile('cv_file')) {
+            // Hapus file CV lama jika ada
+            if ($employeeModel->cv_file) {
+                Storage::disk('public')->delete($employeeModel->cv_file);
+            }
+
+            // Simpan file CV baru
+            $file = $request->file('cv_file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('cv_files', $fileName, 'public');
+            $validatedData['cv_file'] = $filePath;
+
+            // Update waktu terakhir CV diunggah
+            $validatedData['update_cv'] = now();
+        }
+        // Update division_id jika ada perubahan
+        if ($request->has('division_id')) {
+            $validatedData['division_id'] = $request->division_id;
+        }
         // Update semua field lainnya
         $employeeModel->fill($validatedData);
 
         try {
             $employeeModel->save();
 
-            // Update data User yang terkait
+            // Update data User yang terkait jika ada
             if ($employeeModel->user) {
                 $employeeModel->user->name = $request->input('first_name') . ' ' . $request->input('last_name');
                 $employeeModel->user->email = $request->input('email');
@@ -228,10 +281,9 @@ class EmployeeController extends Controller
         $query = $request->get('query');
         $employees = Employee::where('first_name', 'LIKE', "%{$query}%")
             ->orWhere('last_name', 'LIKE', "%{$query}%")
-            ->orderBy('first_name') // Mengurutkan berdasarkan first_name
-            ->get(['employee_id', 'first_name', 'last_name']); // Ambil kolom yang dibutuhkan
+            ->orderBy('first_name')
+            ->get(['employee_id', 'first_name', 'last_name']);
 
-        // Gabungkan nama depan dan nama belakang sebagai nama lengkap
         $employees = $employees->map(function ($employee) {
             $employee->full_name = $employee->first_name . ' ' . $employee->last_name;
             return $employee;

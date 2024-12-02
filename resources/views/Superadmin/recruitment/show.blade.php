@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Recruitment/show')
 @section('content')
     <section class="content">
         <div class="card">
@@ -14,8 +14,12 @@
             <div class="card-body">
                 <table class="table table-bordered">
                     <tr>
-                        <th>Name</th>
-                        <td>{{ $recruitment->name }}</td>
+                        <th>First Name</th>
+                        <td>{{ $recruitment->first_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Last Name</th>
+                        <td>{{ $recruitment->last_name }}</td>
                     </tr>
                     <tr>
                         <th>Email</th>
@@ -48,13 +52,19 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>Comment</th>
-                        <td>{{ $recruitment->comment }}</td>
+                        <th>Remarks</th>
+                        <td>{{ $recruitment->remarks }}</td>
                     </tr>
                     <tr>
                         <th>Status</th>
-                        <td>{{ $recruitment->status }}</td>
+                        <td>
+                            <span
+                                class="badge {{ $recruitment->status == 'Accept' ? 'badge-success' : ($recruitment->status == 'Decline' ? 'badge-danger' : 'badge-light') }}">
+                                {{ ucfirst($recruitment->status) }}
+                            </span>
+                        </td>
                     </tr>
+
                 </table>
             </div>
         </div>

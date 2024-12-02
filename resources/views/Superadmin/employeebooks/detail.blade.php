@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Employeebooks/detail')
 @section('content')
     <div class="container-fluid">
         <!-- Judul dinamis berdasarkan kategori -->

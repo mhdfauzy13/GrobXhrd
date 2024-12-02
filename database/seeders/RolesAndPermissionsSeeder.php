@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Hash;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
-
     public function run()
     {
         // Daftar semua permissions
@@ -59,11 +58,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'recruitment.delete',
             'recruitment.show',
 
-
-            // Permission terkait Attandance
-            'attandance.index',
-            'attandance.scanView',
-            'attandance.scan',
+            // Permission terkait Attendance
+            'attendance.index',
+            'attendance.scan',
             'attendance.recap',
 
             // Permission terkait Offrequest
@@ -91,7 +88,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'settings.deductions',
             'settings.worksdays',
 
-
             //overtime
             'overtime.create',
             'overtime.store',
@@ -99,7 +95,11 @@ class RolesAndPermissionsSeeder extends Seeder
             //payroll
             'payroll.index',
 
-
+            //Division
+            'divisions.index',
+            'divisions.create',
+            'divisions.edit',
+            'divisions.delete',
         ];
 
         foreach ($permissions as $permission) {
@@ -112,19 +112,8 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $adminRole->givePermissionTo($permissions); // Superadmin mendapatkan semua permission
 
-        $managerRole->givePermissionTo([
-            'dashboard.superadmin',
-            'user.index',
-            'user.edit',
-            'role.index',
-            'employee.index',
-            'payroll.index',
-
-            'recruitment.index',
-            'offrequest.index',
-            'offrequest.approver',
-        ]);
-        $employeeRole->givePermissionTo(['dashboard.employee', 'attandance.scan','offrequest.index','offrequest.create', 'attandance.scanView']);
+        $managerRole->givePermissionTo(['dashboard.superadmin', 'user.index', 'user.edit', 'role.index', 'employee.index', 'payroll.index', 'recruitment.index', 'offrequest.index', 'offrequest.approver']);
+        $employeeRole->givePermissionTo(['dashboard.employee', 'attendance.scan', 'offrequest.index', 'offrequest.create', 'attendance.scan']);
 
         $superadmin = User::updateOrCreate(
             [
@@ -167,6 +156,8 @@ class RolesAndPermissionsSeeder extends Seeder
             [
                 'first_name' => 'Bunga',
                 'last_name' => 'Putri',
+                'check_in_time' => '10.00',
+                'check_out_time' => '17.00',
                 'place_birth' => 'City',
                 'date_birth' => now(),
                 'identity_number' => 'P-000003',
@@ -177,6 +168,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'phone_number' => '1234567890',
                 'hp_number' => '0987654321',
                 'marital_status' => 'Single',
+                'cv_file' => 'default_cv.pdf',
                 'last_education' => 'Elementary School',
                 'degree' => 'S.Kom',
                 'starting_date' => now(),
@@ -189,7 +181,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'relations' => 'Parent',
                 'emergency_number' => '1234567890',
                 'status' => 'Active',
-            ]
+            ],
         );
 
         $bungadevtri = User::updateOrCreate(
@@ -200,7 +192,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'name' => 'Bunga Putri',
                 'password' => Hash::make('password'),
                 'employee_id' => $bungadevtriEmployee->employee_id,
-            ]
+            ],
         );
         // Assign role Manager ke Bunga Putri
         $bungadevtri->assignRole($managerRole);

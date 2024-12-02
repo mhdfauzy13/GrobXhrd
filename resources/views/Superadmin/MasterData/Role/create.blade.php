@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Role/create')
 @section('content')
     <section class="content">
         <div class="container-fluid">
@@ -114,12 +114,13 @@
             'employee' => ['employee.index', 'employee.create', 'employee.edit', 'employee.delete'],
             'payroll' => ['payroll.index', 'payroll.create', 'payroll.edit', 'payroll.delete'],
             'recruitment' => ['recruitment.index', 'recruitment.create', 'recruitment.edit', 'recruitment.delete'],
-            'attandance' => ['attandance.index', 'attandance.scanView', 'attandance.scan'],
+            'attendance' => ['attendance.index','attendance.scan'],
             'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.approver'],
             'employeebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
             'event' => ['event.index', 'event.lists', 'event.create', 'event.edit', 'event.delete'],
             'overtime' => ['overtime.create'],
             'settings' => ['settings.index', 'settings.company', 'settings.deductions', 'settings.worksdays'],
+            'divisions' => ['divisions.index', 'divisions.create', 'divisions.edit', 'divisions.delete'],
         ] as $feature => $featurePermissions)
                                             <div class="card mt-3">
                                                 <div class="card-header">
@@ -154,8 +155,8 @@
                                 </div>
 
                                 <div class="card-footer">
-                                    <a href="{{ route('role.index') }}" class="btn btn-secondary">Back</a>
                                     <button type="button" id="saverole" class="btn btn-primary">Save</button>
+                                    <a href="{{ route('role.index') }}" class="btn btn-secondary">Back</a>
                                 </div>
 
                             </form>
@@ -226,9 +227,9 @@
         });
 
         // Event listener untuk fitur Attandance
-        document.getElementById('selectAllAttandance').addEventListener('click', function(e) {
+        document.getElementById('selectAllAttendance').addEventListener('click', function(e) {
             e.preventDefault();
-            let checkboxes = document.querySelectorAll('.attandance-checkbox');
+            let checkboxes = document.querySelectorAll('.attendance-checkbox');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = !checkbox.checked;
             });
@@ -270,19 +271,18 @@
             });
         });
 
-        // Event listener untuk fitur overtime
-        document.getElementById('selectAllOvertime').addEventListener('click', function(e) {
-            e.preventDefault();
-            let checkboxes = document.querySelectorAll('.overtime-checkbox');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = !checkbox.checked;
-            });
-        });
-
         // Event listener untuk fitur Settings
         document.getElementById('selectAllSettings').addEventListener('click', function(e) {
             e.preventDefault();
             let checkboxes = document.querySelectorAll('.settings-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !checkbox.checked;
+            });
+        });
+         // Event listener untuk fitur Division
+        document.getElementById('selectAllDivisions').addEventListener('click', function(e) {
+            e.preventDefault();
+            let checkboxes = document.querySelectorAll('.divisions-checkbox');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = !checkbox.checked;
             });

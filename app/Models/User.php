@@ -27,6 +27,7 @@ class User extends Authenticatable
     public function employee()
     {
         return $this->hasOne(Employee::class, 'employee_id');
+        
     }
 
     public function offrequests()
@@ -47,4 +48,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(Offrequest::class, 'approver_id');
     }
+
+    
 }

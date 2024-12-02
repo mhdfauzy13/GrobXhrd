@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Overtime/index')
 @section('content')
     <!-- Main content -->
     <section class="content">

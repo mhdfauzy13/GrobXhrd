@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Role/index')
 @section('content')
     <!-- Main content -->
     <section class="content">

@@ -1,12 +1,10 @@
 @extends('layouts.app')
-
+@section('title', 'Attendance/index')
 @section('content')
-    <!-- Konten utama -->
     <section class="content">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Attendance</h3>
-
                 <div class="card-tools">
                     <form method="GET" action="{{ route('attandance.index') }}" class="form-inline">
                         <div class="form-group mr-2">
@@ -38,7 +36,6 @@
                                             {{ $attendance->employee->first_name }} {{ $attendance->employee->last_name }}
                                         </a>
                                     </td>
-
                                     <td class="text-center">{{ $attendance->check_in ? $attendance->check_in->format('H:i:s') : '-' }}</td>
                                     <td class="text-center">{{ $attendance->check_out ? $attendance->check_out->format('H:i:s') : '-' }}</td>
                                     <td class="text-center">
@@ -81,7 +78,6 @@
         </div>
     </section>
 
-    <!-- Modal untuk gambar -->
     <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
