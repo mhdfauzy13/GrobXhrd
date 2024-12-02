@@ -20,18 +20,39 @@ class OffemployeeController extends Controller
     public function __construct()
     {
         $this->middleware('permission:offrequest.index')->only(['index']);
-        $this->middleware('permission:offrequest.create')->only(['create', 'store']);
+        $this->middleware('permission:offrequest.create')->only(['create', 'store', 'updateImage']);
         $this->middleware('permission:offrequest.approver')->only(['approverIndex', 'approve', 'reject']);
     }
 
+    // public function index()
+    // {
+    //     $totals = Offrequest::select('title', DB::raw('SUM(DATEDIFF(end_event, start_event) + 1) as total_days'))->where('status', 'approved')->groupBy('title')->get();
+
+    //     $offrequests = Offrequest::with(['user', 'manager'])->paginate(10);
+
+    //     return view('employee.offrequest.index', compact('offrequests', 'totals'));
+    // }
+
+
     public function index()
     {
-        $totals = Offrequest::select('title', DB::raw('SUM(DATEDIFF(end_event, start_event) + 1) as total_days'))->where('status', 'approved')->groupBy('title')->get();
+        $userId = Auth::id(); // Mendapatkan ID user yang sedang login
 
-        $offrequests = Offrequest::with(['user', 'manager'])->paginate(10);
+        // Ambil data offrequest yang hanya milik user yang sedang login
+        $offrequests = Offrequest::with(['user', 'manager'])
+            ->where('user_id', $userId)
+            ->paginate(10);
+
+        // Ambil data total hari cuti berdasarkan judul dan status approved untuk user yang login
+        $totals = Offrequest::select('title', DB::raw('SUM(DATEDIFF(end_event, start_event) + 1) as total_days'))
+            ->where('status', 'approved')
+            ->where('user_id', $userId)
+            ->groupBy('title')
+            ->get();
 
         return view('employee.offrequest.index', compact('offrequests', 'totals'));
     }
+
 
     public function create()
     {
@@ -48,7 +69,7 @@ class OffemployeeController extends Controller
             'start_event' => 'required|date|after_or_equal:today',
             'end_event' => 'required|date|after_or_equal:start_event',
             'manager_id' => 'nullable|exists:users,user_id',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi gambar
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $user = Auth::user();
@@ -162,5 +183,27 @@ class OffemployeeController extends Controller
         Mail::to($offRequest->email)->send(new OffRequestStatusMail($offRequest, $status));
 
         return redirect()->back()->with('success', 'Status pengajuan cuti berhasil diubah dan email notifikasi telah dikirim.');
+    }
+
+
+    public function updateImage(Request $request, $id)
+    {
+        // Validasi gambar
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // Cari data offrequest berdasarkan ID
+        $offrequest = Offrequest::findOrFail($id);
+
+        // Upload gambar baru
+        $imageName = time() . '.' . $request->image->extension();
+        $request->image->move(public_path('uploads'), $imageName);
+
+        // Update gambar pada offrequest
+        $offrequest->image = $imageName;
+        $offrequest->save();
+
+        return redirect()->route('offrequest.index')->with('success', 'Gambar telah berhasil diupdate.');
     }
 }

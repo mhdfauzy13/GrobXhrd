@@ -127,13 +127,13 @@
                                     <td>{{ $overtime->overtime_date }}</td>
                                     <td>{{ $overtime->duration }} hours</td>
                                     <td>{{ $overtime->notes }}</td>
-                                    <td>
+                                    {{-- <td>
                                         @if($overtime->user->employee && $overtime->user->employee->current_salary)
                                             Rp {{ number_format($overtime->user->employee->current_salary, 0, ',', '.') }}
                                         @else
                                             N/A
                                         @endif
-                                    </td>
+                                    </td> --}}
                                                                         {{-- <td>{{ $overtime->manager ? $overtime->manager->name : 'N/A' }}</td> --}}
                                     <td>
                                         <span class="badge {{ $overtime->status == 'approved' ? 'bg-success' : ($overtime->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">

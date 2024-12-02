@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Models\Offrequest;
 use Illuminate\Http\Request;
 
 class DashboardEmployeeController extends Controller
@@ -15,8 +16,10 @@ class DashboardEmployeeController extends Controller
 
     public function index()
     {
-        return view('employee.dashboard.index');
+        $offrequests = Offrequest::where('user_id', auth()->id())->get(); // Mengambil data cuti berdasarkan user yang login
+        return view('employee.dashboard.index', compact('offrequests'));
     }
+    
 
     public function ListEvent(Request $request)
     {
@@ -39,4 +42,16 @@ class DashboardEmployeeController extends Controller
 
         return response()->json($events);
     }
+
+
+    public function show($id)
+    {
+        $offrequest = Offrequest::findOrFail($id);
+        return view('employee.dashboard.index', compact('offrequest'));
+    
+
+    dd($id);
+
+
+     }
 }

@@ -67,7 +67,7 @@
 
                 <!-- Daftar History Overtime yang Disetujui/Ditolak oleh Manager yang Sedang Login -->
                 <h4 class="mt-5">Overtime History (Approved & Rejected by You)</h4>
-                @if ($historyOvertimes->isEmpty())
+                @if ($pendingOvertimes->isEmpty())
                     <div class="alert alert-info" role="alert">
                         No overtime history found for your approval.
                     </div>
@@ -84,7 +84,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($historyOvertimes as $overtime)
+                                @foreach ($pendingOvertimes as $overtime)
                                     <tr>
                                         <td>{{ $overtime->user->name ?? 'N/A' }}</td>
                                         <td>{{ \Carbon\Carbon::parse($overtime->overtime_date)->format('d-m-Y') }}</td>

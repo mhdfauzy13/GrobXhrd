@@ -17,12 +17,27 @@ class Overtime extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
-    public function employee()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-   // Model Overtime
-public function manager() {
-    return $this->belongsTo(User::class, 'manager_id'); // Relasi manager ke model User
+ // Model Overtime
+public function employee()
+{
+    return $this->belongsTo(Employee::class, 'user_id', 'employee_id');
 }
+
+    // Model Overtime
+    public function manager()
+    {
+        return $this->belongsTo(User::class, 'manager_id', 'user_id');
+    }
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+
+    /**
+     * Scope untuk mengambil overtime berdasarkan manager_id.
+     */
+    public function scopeForManager($query, $managerId)
+    {
+        return $query->where('manager_id', $managerId);
+    }
 }

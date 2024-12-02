@@ -82,23 +82,23 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/overtime', [OvertimeController::class, 'index'])
             ->name('overtime.index')
             ->middleware('permission:overtime.create');
-        
+
         Route::get('/overtime/create', [OvertimeController::class, 'create'])
             ->name('overtime.create')
             ->middleware('permission:overtime.create');
-        
+
         Route::post('/overtime', [OvertimeController::class, 'store'])
             ->name('overtime.store')
             ->middleware('permission:overtime.create');
-        
+
         Route::get('/overtimes/approval', [OvertimeController::class, 'approvals'])
             ->name('overtime.approvals')
             ->middleware('permission:overtime.approvals');
-        
+
         Route::post('/overtimes/{id}/update-status', [OvertimeController::class, 'updateStatus'])
             ->name('overtime.updateStatus')
             ->middleware('permission:overtime.approvals');
-        
+
 
 
         // Payroll
@@ -253,6 +253,16 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->middleware('permission:dashboard.employee');
 
         Route::get('events/list', [DashboardEmployeeController::class, 'ListEvent'])->name('employee.events.list');
+    //     Route::get('offrequest/{id}', [DashboardEmployeeController::class, 'show'])
+    //     dd($id);
+    // }) ->name('offrequest.show');
+
+    Route::get('offrequest/{id}', function ($id) {
+        dd($id); // Harus menampilkan nilai parameter 'id'
+    })->name('offrequest.show');
+    
+
+
 
         // Attendance Scan Routes
         Route::get('/attandance/scan', [AttandanceController::class, 'scanView'])
@@ -297,6 +307,11 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/offrequest/approver', [OffemployeeController::class, 'approverIndex'])
             ->name('offrequest.approver')
             ->middleware('permission:offrequest.approver');
+
+        Route::post('/offrequest/{id}/update-image', [OffemployeeController::class, 'updateImage'])
+        ->name('offrequest.updateImage')
+        ->middleware('permission:offrequest.create');
+
     });
 });
 

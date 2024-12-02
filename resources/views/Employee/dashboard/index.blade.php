@@ -5,9 +5,8 @@
 
     <div class="container">
         <div class="row">
-            <!-- Create two columns: one for the calendar and one for other content -->
+            <!-- Kalender Container (Mengambil setengah lebar layar yang sama dengan tabel) -->
             <div class="col-lg-6 col-md-6 col-sm-12 mt-3">
-                <!-- Calendar Container styled like AdminLTE's card -->
                 <div class="card card-primary">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h3 class="card-title">Event Calendar</h3>
@@ -17,6 +16,66 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Tabel Leave Requests (Mengambil setengah lebar layar) -->
+            <div class="col-lg-6 col-md-6 col-sm-12 mt-3">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <h3 class="card-title">Leave Requests</h3>
+                    </div>
+                    <div class="card-body table-responsive p-0">
+                        <table class="table table-striped table-valign-middle table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($offrequests as $offrequest)
+                                    <tr>
+                                        <td>
+                                            <img src="{{ asset('dist/img/default-150x150.png') }}" 
+                                                 alt="Request" 
+                                                 class="img-circle img-size-32 mr-2">
+                                            {{ $offrequest->title }}
+                                        </td>
+                                        <td>{{ $offrequest->start_event }}</td>
+                                        <td>{{ $offrequest->end_event }}</td>
+                                        <td>
+                                            <small class="
+                                                @if ($offrequest->status == 'approved') text-success 
+                                                @elseif ($offrequest->status == 'pending') text-warning 
+                                                @else text-danger @endif
+                                                mr-1">
+                                                <i class="fas 
+                                                    @if ($offrequest->status == 'approved') fa-check-circle 
+                                                    @elseif ($offrequest->status == 'pending') fa-hourglass-half 
+                                                    @else fa-times-circle @endif">
+                                                </i>
+                                                {{ ucfirst($offrequest->status) }}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('offrequest.show', $offrequest->id) }}" class="text-muted">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        </td>   
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center">No leave requests found.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
