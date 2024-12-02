@@ -22,8 +22,9 @@ class EmployeeBooksController extends Controller
     {
         $search = $request->query('search');
         $typeOfSearch = $request->query('type_of');
+        $activeTab = $request->query('tab', 'violation'); // Menyimpan tab yang aktif
 
-        // Violation
+        // Query untuk masing-masing kategori
         $violations = EmployeeBook::where('category', 'violation')
             ->when($search, function ($query, $search) {
                 return $query->whereHas('employee', function ($query) use ($search) {
@@ -34,10 +35,12 @@ class EmployeeBooksController extends Controller
             ->when($typeOfSearch, function ($query, $typeOfSearch) {
                 return $query->where('type_of', 'like', "%{$typeOfSearch}%");
             })
-            ->with('employee')  // Mengambil relasi employee
-            ->paginate(6);  // Pagination 6 per halaman
+            ->when($activeTab === 'violation', function ($query) {
+                return $query->where('category', 'violation');
+            })
+            ->with('employee')
+            ->paginate(6);
 
-        // Warning
         $warnings = EmployeeBook::where('category', 'warning')
             ->when($search, function ($query, $search) {
                 return $query->whereHas('employee', function ($query) use ($search) {
@@ -48,10 +51,12 @@ class EmployeeBooksController extends Controller
             ->when($typeOfSearch, function ($query, $typeOfSearch) {
                 return $query->where('type_of', 'like', "%{$typeOfSearch}%");
             })
+            ->when($activeTab === 'warning', function ($query) {
+                return $query->where('category', 'warning');
+            })
             ->with('employee')
             ->paginate(6);
 
-        // Reprimand
         $reprimands = EmployeeBook::where('category', 'reprimand')
             ->when($search, function ($query, $search) {
                 return $query->whereHas('employee', function ($query) use ($search) {
@@ -62,12 +67,16 @@ class EmployeeBooksController extends Controller
             ->when($typeOfSearch, function ($query, $typeOfSearch) {
                 return $query->where('type_of', 'like', "%{$typeOfSearch}%");
             })
+            ->when($activeTab === 'reprimand', function ($query) {
+                return $query->where('category', 'reprimand');
+            })
             ->with('employee')
             ->paginate(6);
 
         // Kirim data ke view
-        return view('superadmin.employeebooks.index', compact('violations', 'warnings', 'reprimands', 'search', 'typeOfSearch'));
+        return view('superadmin.employeebooks.index', compact('violations', 'warnings', 'reprimands', 'search', 'typeOfSearch', 'activeTab'));
     }
+
 
 
     public function searchEmployees(Request $request)
