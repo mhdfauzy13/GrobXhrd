@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Settings/index')
 @section('content')
     <section class="content">
         @can('settings.company')

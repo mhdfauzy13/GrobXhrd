@@ -1,9 +1,7 @@
 @extends('layouts.app')
-
+@section('title', 'Dashboard')
 @section('content')
-    <div>
-        <h1>HELLO THIS IS THE SUPERADMIN DASHBOARD</h1>
-        {{-- Notifikasi --}}
+    {{-- <div>
         @if (Auth::user()->unreadNotifications->count() > 0)
             <div class="alert alert-info">
                 <strong>Notifikasi:</strong>
@@ -21,7 +19,7 @@
                 Tidak ada notifikasi baru.
             </div>
         @endif
-    </div>
+    </div> --}}
 
     <div class="row">
         <!-- Small Box for Total Employees -->

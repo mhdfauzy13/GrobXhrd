@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 use App\Models\Employee;
 use App\Models\Attandance;
 use App\Models\AttandanceRecap;
+use App\Models\Event;
 use App\Models\Offrequest;
+use App\Models\WorkdaySetting;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,9 +18,8 @@ class AttandanceController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:attandance.index')->only('index', 'recap');
-        $this->middleware('permission:attandance.scanView')->only(['scanView']);
-        $this->middleware('permission:attandance.scan')->only(['checkIn', 'checkOut']);
+        $this->middleware('permission:attendance.index')->only('index', 'recap');
+        $this->middleware('permission:attendance.scan')->only(['scanView','checkIn', 'checkOut']);
     }
 
     public function index(Request $request)
@@ -179,6 +180,29 @@ class AttandanceController extends Controller
             return redirect()->back()->with('error', 'Karyawan tidak ditemukan');
         }
 
+        // Ambil pengaturan hari kerja
+        $workdaySetting = WorkdaySetting::first();
+        if (!$workdaySetting) {
+            return redirect()->back()->with('error', 'Pengaturan hari kerja belum diatur.');
+        }
+        $workdays = $workdaySetting->effective_days;
+
+        // Ambil hari libur dari Calendar
+        $startDate = Carbon::parse($month)->startOfMonth();
+        $endDate = Carbon::now(); // Sampai tanggal hari ini
+        $holidays = Event::whereBetween('start_date', [$startDate, $endDate])
+            ->pluck('start_date')
+            ->toArray();
+
+        // Hitung total hari kerja efektif
+        $totalEffectiveWorkdays = 0;
+        for ($date = $startDate; $date <= $endDate; $date->addDay()) {
+            if (in_array($date->format('l'), $workdays) && !in_array($date->toDateString(), $holidays)) {
+                $totalEffectiveWorkdays++;
+            }
+        }
+
+        // Ambil data kehadiran
         $attendances = Attandance::where('employee_id', $employee_id)
             ->whereYear('created_at', Carbon::parse($month)->year)
             ->whereMonth('created_at', Carbon::parse($month)->month)
@@ -188,48 +212,31 @@ class AttandanceController extends Controller
         $totalPresent = 0;
         $totalLate = 0;
         $totalEarly = 0;
-        $totalAbsent = 0;
 
         foreach ($attendances as $attendance) {
             if ($attendance->check_in && $attendance->check_out) {
-                // Selalu tambah ke total present jika ada check-in dan check-out
                 $totalPresent++;
 
-                if ($attendance->check_in_status == 'IN' && $attendance->check_out_status == 'OUT') {
-                    // Kehadiran normal
-                }
-                if ($attendance->check_in_status == 'LATE' && $attendance->check_out_status == 'OUT') {
-                    // Terlambat saat check-in tapi pulang tepat waktu
+                if ($attendance->check_in_status == 'LATE') {
                     $totalLate++;
                 }
-                if ($attendance->check_in_status == 'IN' && $attendance->check_out_status == 'EARLY') {
-                    // Tepat waktu saat check-in tapi pulang lebih awal
+                if ($attendance->check_out_status == 'EARLY') {
                     $totalEarly++;
                 }
-                if ($attendance->check_in_status == 'LATE' && $attendance->check_out_status == 'EARLY') {
-                    // Terlambat saat check-in dan pulang lebih awal
-                    $totalLate++;
-                    $totalEarly++;
-                }
-            } else {
-                // Jika tidak melakukan check-in atau check-out
-                $totalAbsent++;
             }
         }
 
-        $totalAbsent = $attendances
-            ->filter(function ($attendance) {
-                return !$attendance->check_in && !$attendance->check_out;
-            })
-            ->count();
+        // Hitung total absent berdasarkan total hari kerja efektif
+        $totalAbsent = $totalEffectiveWorkdays - $totalPresent;
 
+        // Simpan ke recap
         AttandanceRecap::updateOrCreate(
             ['employee_id' => $employee_id, 'month' => $month],
             [
                 'total_present' => $totalPresent,
                 'total_late' => $totalLate,
                 'total_early' => $totalEarly,
-                'total_absent' => $totalAbsent,
+                'total_absent' => max(0, $totalAbsent),
             ],
         );
 

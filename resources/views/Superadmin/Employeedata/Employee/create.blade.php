@@ -33,7 +33,8 @@
                             });
                         </script>
                     @endif
-                    <form id="quickForm" action="{{ route('employee.store') }}" method="POST">
+                    <form id="quickForm" action="{{ route('employee.store') }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
 
                         <div class="card-body">
@@ -43,13 +44,11 @@
                                         <label for="first_name">First Name</label>
                                         <input type="text" name="first_name" id="first_name" class="form-control"
                                             required value="{{ old('first_name') }}">
-
                                     </div>
                                     <div class="form-group">
                                         <label for="last_name">Last Name</label>
                                         <input type="text" name="last_name" id="last_name" class="form-control" required
                                             value="{{ old('last_name') }}">
-
                                     </div>
 
                                     <div class="form-group">
@@ -73,10 +72,20 @@
                                     </div>
 
                                     <div class="form-group">
+                                        <label for="division_id">Division</label>
+                                        <select name="division_id" id="division_id" class="form-control" required>
+                                            @foreach ($divisions as $division)
+                                                <option value="{{ $division->id }}"
+                                                    {{ old('division_id') == $division->id ? 'selected' : '' }}>
+                                                    {{ $division->name }}
+                                                </option>
+                                            @endforeach
+                                        </select> 
+                                    </div>
+                                    <div class="form-group">
                                         <label for="place_birth">Place of Birth</label>
                                         <input type="text" name="place_birth" id="place_birth" class="form-control"
                                             required value="{{ old('place_birth') }}">
-
                                     </div>
 
                                     <div class="form-group">
@@ -110,8 +119,6 @@
                                     <div class="form-group">
                                         <label for="blood_type">Blood Type</label>
                                         <select name="blood_type" id="blood_type" class="form-control">
-                                            <option value="" {{ old('blood_type') == '' ? 'selected' : '' }}>Select
-                                            </option>
                                             <option value="A" {{ old('blood_type') == 'A' ? 'selected' : '' }}>A
                                             </option>
                                             <option value="B" {{ old('blood_type') == 'B' ? 'selected' : '' }}>B
@@ -165,8 +172,6 @@
                                     <div class="form-group">
                                         <label for="marital_status">Marital Status</label>
                                         <select name="marital_status" id="marital_status" class="form-control">
-                                            <option value="" {{ old('marital_status') == '' ? 'selected' : '' }}>
-                                                Select</option>
                                             <option value="Single"
                                                 {{ old('marital_status') == 'Single' ? 'selected' : '' }}>Single</option>
                                             <option value="Married"
@@ -177,12 +182,16 @@
                                                 {{ old('marital_status') == 'Widower' ? 'selected' : '' }}>Widower</option>
                                         </select>
                                     </div>
+                                    <div class="form-group">
+                                        <label for="cv_file">CV File</label>
+                                        <input type="file" name="cv_file" id="cv_file" class="form-control"
+                                            value="{{ old('cv_file') }}" required>
+                                    </div>
 
                                     <div class="form-group">
                                         <label for="last_education">Last Education</label>
                                         <select name="last_education" id="last_education" class="form-control">
-                                            <option value="" {{ old('last_education') == '' ? 'selected' : '' }}>
-                                                Select</option>
+
                                             <option value="Elementary School"
                                                 {{ old('last_education') == 'Elementary School' ? 'selected' : '' }}>
                                                 Elementary School</option>
@@ -220,7 +229,6 @@
                                         <label for="degree">Degree</label>
                                         <input type="text" name="degree" id="degree" class="form-control"
                                             value="{{ old('degree') }}">
-
                                     </div>
 
                                     <div class="form-group">
@@ -248,7 +256,7 @@
                                     <div class="form-group">
                                         <label for="insurance">Insurance</label>
                                         <select name="insurance" id="insurance" class="form-control">
-                                            <option value="">Select</option>
+
                                             <option value="1">Yes</option>
                                             <option value="0">No</option>
                                         </select>
@@ -272,14 +280,11 @@
                                         <label for="emergency_contact">Emergency Contact</label>
                                         <input type="text" name="emergency_contact" id="emergency_contact"
                                             class="form-control" value="{{ old('emergency_contact') }}">
-
-
                                     </div>
 
                                     <div class="form-group">
                                         <label for="relations">Relations</label>
                                         <select name="relations" id="relations" class="form-control">
-                                            <option value="">Select</option>
                                             <option value="Parent" {{ old('relations') == 'Parent' ? 'selected' : '' }}>
                                                 Parent</option>
                                             <option value="Guardian"
@@ -312,13 +317,15 @@
                                     <div class="form-group">
                                         <label for="status">Status</label>
                                         <select name="status" id="status" class="form-control">
-                                            <option value="">Select</option>
                                             <option value="Active" {{ old('status') == 'Active' ? 'selected' : '' }}>
                                                 Active</option>
                                             <option value="Inactive" {{ old('status') == 'Inactive' ? 'selected' : '' }}>
                                                 Inactive</option>
+                                            <option value="Pending" {{ old('status') == 'Pending' ? 'selected' : '' }}>
+                                                Pending</option>
+                                            <option value="Suspend" {{ old('status') == 'Suspend' ? 'selected' : '' }}>
+                                                Suspend</option>
                                         </select>
-
                                     </div>
                                 </div>
                             </div>
@@ -326,7 +333,7 @@
 
                         <div class="card-footer">
                             <button id="saveemployee" type="submit" class="btn btn-primary">Save</button>
-                            <a href="{{ route('employeebooks.index') }}" class="btn btn-secondary">Back</a>
+                            <a href="{{ route('employee.index') }}" class="btn btn-secondary">Back</a>
                         </div>
                     </form>
                 </div>

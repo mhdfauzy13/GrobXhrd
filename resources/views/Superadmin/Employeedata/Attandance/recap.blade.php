@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Attendance/recap')
 @section('content')
     <section class="content">
         <div class="card shadow-sm">
@@ -52,7 +52,6 @@
                         @endforelse
                     </tbody>
                 </table>
-
                 <div class="mt-4">
                     <h5>Recap Total for Month: {{ $month }}</h5>
                     <ul class="list-group">
@@ -76,6 +75,9 @@
                     </ul>
                 </div>
             </div>
+            {{-- <div class="card-footer">
+                <a href="{{ route('attandance.index') }}" class="btn btn-secondary">Back</a>
+            </div> --}}
         </div>
     </section>
 @endsection

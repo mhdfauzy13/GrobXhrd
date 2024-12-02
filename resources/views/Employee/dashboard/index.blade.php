@@ -1,26 +1,72 @@
 @extends('layouts.app')
 
-@section('content')
-    <h1>HELLO THIS IS THE EMPLOYEE DASHBOARD</h1>
+@section('title', 'Dashboard')
 
+@section('content')
     <div class="container">
         <div class="row">
-            <!-- Create two columns: one for the calendar and one for other content -->
+            <!-- Kolom Kalender -->
             <div class="col-lg-6 col-md-6 col-sm-12 mt-3">
-                <!-- Calendar Container styled like AdminLTE's card -->
                 <div class="card card-primary">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h3 class="card-title">Event Calendar</h3>
                     </div>
                     <div class="card-body">
-                        <div id="calendar"></div>
+                        <div id="calendar">
+                            
+                        </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Kolom Tabel Attendance -->
+            <div class="col-lg-6 col-md-6 col-sm-12 mt-3">
+                <div class="card card-dark">
+                    <div class="card-header">
+                        <h3 class="card-title">Attendance</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Date</th>
+                                    <th class="text-center">Check-in</th>
+                                    <th class="text-center">Check-out</th>
+                                    <th class="text-center">Check-in Status</th>
+                                    <th class="text-center">Check-out Status</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($attendances as $attendance)
+                                    <tr> 
+                                        <td class="text-center">{{ $attendance->created_at->format('Y-m-d') }}</td>
+                                        <td class="text-center">{{ $attendance->check_in ? $attendance->check_in->format('H:i:s') : '-' }}</td>
+                                        <td class="text-center">{{ $attendance->check_out ? $attendance->check_out->format('H:i:s') : '-' }}</td>
+                                        <td class="text-center"><span
+                                                class="badge badge-{{ $attendance->check_in_status === 'IN' ? 'success' : 'danger' }}">
+                                                {{ $attendance->check_in_status }}
+                                            </span></td>
+                                        <td class="text-center"><span
+                                                class="badge badge-{{ $attendance->check_out_status === 'IN' ? 'success' : 'danger' }}">
+                                                {{ $attendance->check_out_status }}
+                                            </span></td>
+                                            
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    {{-- <div class="card-footer clearfix">
+                    <div class="pagination-container">
+                        {{ $attendance->links('vendor.pagination.adminlte') }}
+                    </div> --}}
+                </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- FullCalendar dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap5@6.1.15/index.global.min.js"></script>
@@ -58,4 +104,5 @@
             margin: 0 auto;
         }
     </style>
+
 @endsection

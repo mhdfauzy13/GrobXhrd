@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Recruitment/create')
 @section('content')
     <div class="content">
 
@@ -41,9 +41,14 @@
                         @csrf
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="name">Name</label>
-                                <input type="text" name="name" id="name" class="form-control"
-                                    value="{{ old('name') }}" required>
+                                <label for="first_name">First Name</label>
+                                <input type="text" name="first_name" id="first_name" class="form-control" required
+                                    value="{{ old('first_name') }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="last_name">Last Name</label>
+                                <input type="text" name="last_name" id="last_name" class="form-control" required
+                                    value="{{ old('last_name') }}">
                             </div>
 
                             <div class="form-group">
@@ -109,8 +114,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="comment">Comment</label>
-                                <textarea name="comment" id="comment" class="form-control">{{ old('comment') }}</textarea>
+                                <label for="remarks">Remarks</label>
+                                <textarea name="remarks" id="remarks" class="form-control">{{ old('remarks') }}</textarea>
                             </div>
 
                             <div class="form-group">
@@ -128,7 +133,6 @@
 
                             <div class="card-footer">
                                 <button type="submit" id="saverecruitment" class="btn btn-primary">Save</button>
-                                <!-- Back Button -->
                                 <a href="{{ route('recruitment.index') }}" class="btn btn-secondary">Back</a>
                             </div>
                         </div>
