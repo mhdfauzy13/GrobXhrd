@@ -273,7 +273,7 @@
                                         <a href="{{ route('event.index') }}"
                                             class="nav-link {{ request()->routeIs('event.index') ? 'active' : '' }}">
                                             <i class="fas fa-calendar nav-icon"></i>
-                                            <p>Holiday</p>
+                                            <p>Events Calendar</p>
                                         </a>
                                     @endcan
 

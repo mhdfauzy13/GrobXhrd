@@ -213,15 +213,9 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('employeebooks.detail')
             ->middleware('permission:employeebook.detail');
 
-        Route::get('/search-employees', [EmployeeBooksController::class, 'searchEmployees'])
-            ->name('employeebooks.search') // Pastikan nama route sesuai
+        Route::get('/employees/search', [EmployeeBooksController::class, 'searchEmployees'])
+            ->name('employees.search')
             ->middleware('permission:employeebook.search');
-
-
-
-
-
-
 
         // Recruitment
         Route::get('/recruitment', [RecruitmentController::class, 'index'])

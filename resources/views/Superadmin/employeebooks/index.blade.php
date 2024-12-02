@@ -1,11 +1,11 @@
 @php
-    // Fungsi untuk memotong teks (cutText)
+    // Function to cut text (cutText)
     function cutText($text, $length)
     {
         return strlen($text) > $length ? substr($text, 0, $length) . '...' : $text;
     }
 
-    // Ambil tab aktif dari query string, default ke 'violation'
+    // Get the active tab from query string, default to 'violation'
     $activeTab = request()->query('tab', 'violation');
 @endphp
 
@@ -50,12 +50,14 @@
                                 <h3>Violation</h3>
                             </div>
                             <div class="card-body">
-                                <form action="{{ route('employeebooks.index') }}" method="GET" class="form-inline mb-3">
-                                    <input type="text" name="search" class="form-control"
-                                        placeholder="Search by employee name" value="{{ request()->query('search') }}">
-                                    <input type="hidden" name="tab" value="violation">
-                                    <button type="submit" class="btn btn-secondary ml-2">Search</button>
+                                <form method="get" action="{{ route('employeebooks.index') }}">
+                                    <input type="text" name="search" placeholder="Search by name"
+                                        value="{{ request('search') }}">
+                                    <input type="text" name="type_of" placeholder="Search by type"
+                                        value="{{ request('type_of') }}">
+                                    <button type="submit">Search</button>
                                 </form>
+
                                 <a href="{{ route('employeebooks.create') }}?category=violation"
                                     class="btn btn-primary mb-3">
                                     <i class="fas fa-plus"></i> Add Violation
@@ -121,9 +123,12 @@
                                 <form action="{{ route('employeebooks.index') }}" method="GET" class="form-inline mb-3">
                                     <input type="text" name="search" class="form-control"
                                         placeholder="Search by employee name" value="{{ request()->query('search') }}">
-                                    <input type="hidden" name="tab" value="warning">
+                                    <input type="text" name="type_of" class="form-control ml-2"
+                                        placeholder="Search by type of" value="{{ request()->query('type_of') }}">
+                                    <input type="hidden" name="tab" value="{{ $activeTab }}">
                                     <button type="submit" class="btn btn-secondary ml-2">Search</button>
                                 </form>
+
                                 <a href="{{ route('employeebooks.create') }}?category=warning"
                                     class="btn btn-primary mb-3">
                                     <i class="fas fa-plus"></i> Add Warning
@@ -190,9 +195,12 @@
                                     class="form-inline mb-3">
                                     <input type="text" name="search" class="form-control"
                                         placeholder="Search by employee name" value="{{ request()->query('search') }}">
-                                    <input type="hidden" name="tab" value="reprimand">
+                                    <input type="text" name="type_of" class="form-control ml-2"
+                                        placeholder="Search by type of" value="{{ request()->query('type_of') }}">
+                                    <input type="hidden" name="tab" value="{{ $activeTab }}">
                                     <button type="submit" class="btn btn-secondary ml-2">Search</button>
                                 </form>
+
                                 <a href="{{ route('employeebooks.create') }}?category=reprimand"
                                     class="btn btn-primary mb-3">
                                     <i class="fas fa-plus"></i> Add Reprimand

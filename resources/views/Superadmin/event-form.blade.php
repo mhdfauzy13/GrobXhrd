@@ -24,33 +24,49 @@
         </div>
         <div class="col-12">
             <div class="mb-3">
-                <label>Category</label>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" {{ $data->category == 'success' ? 'checked' : null }} type="radio"
-                        name="category" id="category-success" value="success" required>
-                    <label class="form-check-label" for="category-success"
-                        style="background-color: green; color: white; padding: 5px 10px; border-radius: 5px;">&nbsp;</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" {{ $data->category == 'danger' ? 'checked' : null }} type="radio"
-                        name="category" id="category-danger" value="danger" required>
-                    <label class="form-check-label" for="category-danger"
-                        style="background-color: red; color: white; padding: 5px 10px; border-radius: 5px;">&nbsp;</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" {{ $data->category == 'warning' ? 'checked' : null }} type="radio"
-                        name="category" id="category-warning" value="warning" required>
-                    <label class="form-check-label" for="category-warning"
-                        style="background-color: yellow; color: black; padding: 5px 10px; border-radius: 5px;">&nbsp;</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" {{ $data->category == 'info' ? 'checked' : null }} type="radio"
-                        name="category" id="category-info" value="info" required>
-                    <label class="form-check-label" for="category-info"
-                        style="background-color: blue; color: white; padding: 5px 10px; border-radius: 5px;">&nbsp;</label>
+                <label for="category">Category</label>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" {{ $data->category == 'success' ? 'checked' : null }}
+                                type="radio" name="category" id="category-success" value="success" required>
+                            <label class="form-check-label" for="category-success"
+                                style="background-color: green; color: white; padding: 5px 10px; border-radius: 5px;">&nbsp;</label>
+                            <div class="text-muted" style="font-size: 0.9rem;">Office Events</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" {{ $data->category == 'danger' ? 'checked' : null }}
+                                type="radio" name="category" id="category-danger" value="danger" required>
+                            <label class="form-check-label" for="category-danger"
+                                style="background-color: red; color: white; padding: 5px 10px; border-radius: 5px;">&nbsp;</label>
+                            <div class="text-muted" style="font-size: 0.9rem;">National Holidays</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" {{ $data->category == 'warning' ? 'checked' : null }}
+                                type="radio" name="category" id="category-warning" value="warning" required>
+                            <label class="form-check-label" for="category-warning"
+                                style="background-color: yellow; color: black; padding: 5px 10px; border-radius: 5px;">&nbsp;</label>
+                            <div class="text-muted" style="font-size: 0.9rem;">Regional Events</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" {{ $data->category == 'info' ? 'checked' : null }}
+                                type="radio" name="category" id="category-info" value="info" required>
+                            <label class="form-check-label" for="category-info"
+                                style="background-color: blue; color: white; padding: 5px 10px; border-radius: 5px;">&nbsp;</label>
+                            <div class="text-muted" style="font-size: 0.9rem;">General Information</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+
 
         <!-- Tombol Delete hanya muncul jika sedang mengedit event -->
         @if ($data->event_id)
