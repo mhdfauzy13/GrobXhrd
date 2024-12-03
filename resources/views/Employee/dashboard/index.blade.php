@@ -17,6 +17,48 @@
                     </div>
                 </div>
             </div>
+
+
+            <div class="col-lg-6 col-md-6 col-sm-12 mt-3">
+                <div class="card card-primary">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h3 class="card-title">Recent Off Requests</h3>
+                    </div>
+                    <div class="card-body table-responsive p-0">
+                        <table class="table table-striped table-valign-middle">
+                            <thead>
+                                <tr>
+                                    <th>Request Date</th>
+                                    <th>Status</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($offrequests as $offrequest)
+                                    <tr>
+                                        <td>{{ $offrequest->created_at->format('d M Y') }}</td>
+                                        <td>
+                                            <span class="badge {{ $offrequest->status == 'approved' ? 'bg-success' : ($offrequest->status == 'pending' ? 'bg-warning' : 'bg-danger') }}">
+                                                {{ ucfirst($offrequest->status) }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('offrequests.show', $offrequest->id) }}" class="text-muted">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center">No recent off requests.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </div>
 

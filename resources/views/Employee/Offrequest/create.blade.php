@@ -15,9 +15,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="title">Tipe Off</label>
-                        <select class="form-control" id="title" name="title"  required >
-                            <option value="">Tipe Off</option>
+                        <label for="title">Type Off</label>
+                        <select class="form-control" id="title" name="title" required>
+                            <option value="disable" disabled>Type Off</option>
                             <option value="Sick">Sick</option>
                             <option value="Holiday">Holiday</option>
                             <option value="Family Matters">Family Matters</option>
@@ -53,11 +53,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="image">Upload Proof of Leave</label>
+                        <label for="image">Upload Proof of Leave (Optional)</label>
                         <div class="input-group">
                             <div class="custom-file">
-                                <input type="file" name="image"
-                                    class="custom-file-input @error('image') is-invalid @enderror" id="image" required>
+                                <input type="file" name="image" class="custom-file-input @error('image') is-invalid @enderror" id="image">
                                 <label class="custom-file-label" for="image">Choose file</label>
                             </div>
                             <div class="input-group-append">
