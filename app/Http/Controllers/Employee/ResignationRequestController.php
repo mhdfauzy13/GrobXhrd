@@ -22,14 +22,19 @@ class ResignationRequestController extends Controller
     {
         $user = Auth::user();
 
-        $existingRequest = ResignationRequest::where('user_id', $user->id)->first();
+        $existingRequest = ResignationRequest::where('user_id', $user->user_id)
+            ->whereIn('status', ['pending', 'approved']) // agar tidak mengajukan lagi (karena masih pending)
+            ->first();
 
-        if ($existingRequest) {
+        if ($existingRequest && $existingRequest->status !== 'rejected') {
             return redirect()->route('resignationrequest.index')->with('error', 'You have already submitted a resignation request.');
         }
+
+
         $managers = User::whereHas('roles', function ($query) {
             $query->where('name', 'manager');
         })->get();
+
         return view('employee.resignationrequest.create', compact('managers', 'user'));
     }
 
@@ -39,9 +44,10 @@ class ResignationRequestController extends Controller
         $request->validate([
             'resign_date' => ['required', 'date', 'after_or_equal:' . now()->toDateString()],
             'reason' => 'required|string',
-            'manager_id' => 'required|exists:users,user_id',
+            'manager_id' => 'required|exists:users,user_id|different:' . Auth::id(),
             'document' => 'nullable|mimes:pdf,doc,docx|max:10240',
         ]);
+
 
         $documentPath = null;
         if ($request->hasFile('document')) {
@@ -62,17 +68,50 @@ class ResignationRequestController extends Controller
         return redirect()->route('resignationrequest.index')->with('success', 'Resignation request submitted successfully!');
     }
 
-
-
-
     public function index()
     {
-        $resignations = ResignationRequest::where('user_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $user = Auth::user();
+        $role = $user->roles->first()->name;
 
-        return view('employee.resignationrequest.index', compact('resignations'));
+        $resignationsProcessed = collect();
+        $resignationsPending = collect();
+        if ($role === 'employee' || $role === 'superadmin') {
+
+            $resignations = ResignationRequest::where('user_id', $user->user_id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+            return view('employee.resignationrequest.index', compact('resignations', 'role', 'resignationsProcessed', 'resignationsPending'));
+        }
+
+        if ($role === 'manager') {
+
+            $resignationsPending = ResignationRequest::where('manager_id', $user->user_id)
+                ->where('status', 'pending')
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            $resignationsProcessed = ResignationRequest::where('manager_id', $user->user_id)
+                ->whereIn('status', ['approved', 'rejected'])
+                ->orderBy('updated_at', 'desc')
+                ->get();
+
+            // Pastikan collection ini tidak kosong
+            if ($resignationsProcessed->isEmpty()) {
+                $resignationsProcessed = collect();
+            }
+
+            return view('employee.resignationrequest.approver', compact('resignationsPending', 'resignationsProcessed', 'role'));
+        }
+
+        return redirect()->back()->with('error', 'You do not have permission to view resignation requests.');
     }
+
+
+
+
+
+
+
 
     public function updateStatus(Request $request, $resignationrequest_id)
     {
@@ -85,14 +124,18 @@ class ResignationRequestController extends Controller
         if ($resignation->manager_id != Auth::id()) {
             return redirect()->route('resignationrequest.index')->with('error', 'You are not authorized to update this request.');
         }
+
         $resignation->status = $request->status;
         $resignation->save();
-        return redirect()->route('resignationrequest.index')->with('success', 'Resignation request has been ' . $request->status);
+
+        return redirect()->route('resignationrequest.index')->with('success', 'Resignation request has been ' . $request->status . '.');
     }
+
 
     public function approver()
     {
         $managerId = Auth::id();
+
 
         $resignationsPending = ResignationRequest::where('manager_id', $managerId)
             ->where('status', 'pending')
@@ -104,6 +147,6 @@ class ResignationRequestController extends Controller
             ->orderBy('updated_at', 'desc')
             ->get();
 
-        return view('employee.resignationrequest.approver', compact('resignationsPending', 'resignationsProcessed'));
+        return view('employee.resignationrequest.approver', compact('resignations', 'role', 'resignationsProcessed'));
     }
 }
