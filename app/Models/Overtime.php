@@ -13,16 +13,23 @@ class Overtime extends Model
     protected $fillable = ['user_id', 'overtime_date', 'duration', 'notes', 'status'];
 
 
+    // Model Overtime
     public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
-    }
-    public function employee()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-   // Model Overtime
-public function manager() {
-    return $this->belongsTo(User::class, 'manager_id'); // Relasi manager ke model User
-}
+
+    
+
+    // Model User
+    // public function employee()
+    // {
+    //     return $this->belongsTo(Employee::class, 'employee_id');
+    // }
+
+    // Model Overtime
+    public function manager()
+    {
+        return $this->belongsTo(User::class, 'manager_id'); // Relasi manager ke model User
+    }
 }
