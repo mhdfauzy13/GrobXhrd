@@ -69,7 +69,7 @@ class PayrollController extends Controller
             $hourlyRate = $workDurationInHours > 0 ? $dailySalary / $workDurationInHours : 0;
 
             // Hitung total overtime
-            $overtimeData = Overtime::where('employee_id', $employee->employee_id)->get();
+            $overtimeData = Overtime::where('user_id', $employee->user_id)->get();
             $totalOvertimeHours = $overtimeData->sum('duration');
             $overtimePay = $totalOvertimeHours * $hourlyRate;
 

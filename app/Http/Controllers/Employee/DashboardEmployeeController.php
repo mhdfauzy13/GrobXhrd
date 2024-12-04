@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Employee;
 use App\Http\Controllers\Controller;
 use App\Models\Attandance;
 use App\Models\Event;
+use App\Models\Offrequest;
 use Illuminate\Http\Request;
 
 class DashboardEmployeeController extends Controller
@@ -13,6 +14,17 @@ class DashboardEmployeeController extends Controller
     {
         $this->middleware('permission:dashboard.employee')->only(['index']);
     }
+
+// public function index()
+// {
+//     $offrequests = Offrequest::where('user_id', auth()->id()) // Ambil request milik user yang sedang login
+//         ->latest()
+//         ->limit(5)
+//         ->get();
+
+//     return view('employee.dashboard.index', compact('offrequests'));
+// }
+
 
     public function index()
     {
@@ -24,6 +36,7 @@ class DashboardEmployeeController extends Controller
 
         return view('employee.dashboard.index', compact('attendances'));
     }
+
 
     public function ListEvent(Request $request)
     {
