@@ -40,12 +40,32 @@ class OvertimeController extends Controller
 
     public function store(Request $request)
     {
+        // $request->validate([
+        //     'overtime_date' => 'required|date',
+        //     'duration' => 'required|integer|min:1',
+        //     'notes' => 'required|string|max:255',
+        //     'manager_id' => 'required|exists:users,user_id',
+        // ]);
+
         $request->validate([
-            'overtime_date' => 'required|date',
+            'overtime_date' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) {
+                    $existingOvertime = Overtime::where('user_id', Auth::id())
+                                                ->where('overtime_date', $value)
+                                                ->whereIn('status', ['pending', 'approved'])
+                                                ->exists();
+                    if ($existingOvertime) {
+                        $fail('Anda sudah memiliki pengajuan overtime untuk tanggal ini.');
+                    }
+                }
+            ],
             'duration' => 'required|integer|min:1',
             'notes' => 'required|string|max:255',
             'manager_id' => 'required|exists:users,user_id',
         ]);
+        
 
         Overtime::create([
             'user_id' => Auth::id(),
