@@ -19,7 +19,7 @@ class AttandanceController extends Controller
     public function __construct()
     {
         $this->middleware('permission:attendance.index')->only('index', 'recap');
-        $this->middleware('permission:attendance.scan')->only(['scanView','checkIn', 'checkOut']);
+        $this->middleware('permission:attendance.scan')->only(['scanView', 'checkIn', 'checkOut']);
     }
 
     public function index(Request $request)
@@ -190,9 +190,22 @@ class AttandanceController extends Controller
         // Ambil hari libur dari Calendar
         $startDate = Carbon::parse($month)->startOfMonth();
         $endDate = Carbon::now(); // Sampai tanggal hari ini
-        $holidays = Event::whereBetween('start_date', [$startDate, $endDate])
-            ->pluck('start_date')
-            ->toArray();
+        $holidays = [];
+
+        $dangerEvents = Event::whereBetween('start_date', [$startDate, $endDate])
+            ->where('category', 'danger')
+            ->get();
+
+        // Loop untuk menambahkan semua tanggal antara start_date dan end_date ke dalam array $holidays
+        foreach ($dangerEvents as $event) {
+            $rangeStart = Carbon::parse($event->start_date);
+            $rangeEnd = Carbon::parse($event->end_date);
+
+            while ($rangeStart <= $rangeEnd) {
+                $holidays[] = $rangeStart->toDateString();
+                $rangeStart->addDay();
+            }
+        }
 
         // Hitung total hari kerja efektif
         $totalEffectiveWorkdays = 0;

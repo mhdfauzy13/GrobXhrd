@@ -127,11 +127,12 @@
             'employee' => ['employee.index', 'employee.create', 'employee.edit', 'employee.delete'],
             'payroll' => ['payroll.index', 'payroll.create', 'payroll.edit', 'payroll.delete'],
             'recruitment' => ['recruitment.index', 'recruitment.create', 'recruitment.edit', 'recruitment.delete'],
-            'attendance' => ['attendance.index','attendance.scan'],
+            'attendance' => ['attendance.index', 'attendance.scan'],
             'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.approver'],
             'employeebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
             'event' => ['event.index', 'event.lists', 'event.create', 'event.edit', 'event.delete'],
             'overtime' => ['overtime.create','overtime.approvals'],
+
             'settings' => ['settings.index', 'settings.company', 'settings.deductions', 'settings.worksdays'],
             'divisions' => ['divisions.index', 'divisions.create', 'divisions.edit', 'divisions.delete'],
         ] as $feature => $featurePermissions)
@@ -197,7 +198,7 @@
             const features = [
 
                 'dashboard', 'role', 'user', 'employee', 'payroll', 'recruitment', 'attendance',
-                'offrequest', 'employeebook', 'event', 'settings','divisions',
+                'offrequest', 'employeebook', 'event', 'settings', 'overtime', 'divisions',
             ];
 
             features.forEach(feature => {

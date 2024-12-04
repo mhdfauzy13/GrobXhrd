@@ -81,7 +81,6 @@
                             <div class="form-group">
                                 <label for="last_education">Last Education</label>
                                 <select name="last_education" id="last_education" class="form-control" required>
-                                    <option value="">-- Select Education Level --</option>
                                     <option value="Elementary School">Elementary School</option>
                                     <option value="Junior High School">Junior High School</option>
                                     <option value="Senior High School">Senior High School</option>

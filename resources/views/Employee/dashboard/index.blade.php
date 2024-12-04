@@ -1,7 +1,5 @@
 @extends('layouts.app')
-
 @section('title', 'Dashboard')
-
 @section('content')
     <div class="container">
         <div class="row">
@@ -13,7 +11,6 @@
                     </div>
                     <div class="card-body">
                         <div id="calendar">
-                            
                         </div>
                     </div>
                 </div>
@@ -39,10 +36,13 @@
                             </thead>
                             <tbody>
                                 @foreach ($attendances as $attendance)
-                                    <tr> 
+                                    <tr>
                                         <td class="text-center">{{ $attendance->created_at->format('Y-m-d') }}</td>
-                                        <td class="text-center">{{ $attendance->check_in ? $attendance->check_in->format('H:i:s') : '-' }}</td>
-                                        <td class="text-center">{{ $attendance->check_out ? $attendance->check_out->format('H:i:s') : '-' }}</td>
+                                        <td class="text-center">
+                                            {{ $attendance->check_in ? $attendance->check_in->format('H:i:s') : '-' }}</td>
+                                        <td class="text-center">
+                                            {{ $attendance->check_out ? $attendance->check_out->format('H:i:s') : '-' }}
+                                        </td>
                                         <td class="text-center"><span
                                                 class="badge badge-{{ $attendance->check_in_status === 'IN' ? 'success' : 'danger' }}">
                                                 {{ $attendance->check_in_status }}
@@ -51,19 +51,55 @@
                                                 class="badge badge-{{ $attendance->check_out_status === 'IN' ? 'success' : 'danger' }}">
                                                 {{ $attendance->check_out_status }}
                                             </span></td>
-                                            
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
-                    {{-- <div class="card-footer clearfix">
-                    <div class="pagination-container">
-                        {{ $attendance->links('vendor.pagination.adminlte') }}
-                    </div> --}}
-                </div>
                 </div>
             </div>
+
+
+            <div class="col-lg-6 col-md-6 col-sm-12 mt-3">
+                <div class="card card-primary">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h3 class="card-title">Recent Off Requests</h3>
+                    </div>
+                    <div class="card-body table-responsive p-0">
+                        <table class="table table-striped table-valign-middle">
+                            <thead>
+                                <tr>
+                                    <th>Request Date</th>
+                                    <th>Status</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($offrequests as $offrequest)
+                                    <tr>
+                                        <td>{{ $offrequest->created_at->format('d M Y') }}</td>
+                                        <td>
+                                            <span class="badge {{ $offrequest->status == 'approved' ? 'bg-success' : ($offrequest->status == 'pending' ? 'bg-warning' : 'bg-danger') }}">
+                                                {{ ucfirst($offrequest->status) }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('offrequests.show', $offrequest->id) }}" class="text-muted">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center">No recent off requests.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </div>
 
@@ -103,6 +139,12 @@
             width: 100%;
             margin: 0 auto;
         }
+
+        /* Menghilangkan garis bawah dari semua link (<a>) di seluruh halaman */
+        a {
+            text-decoration: none !important;
+        }
     </style>
+
 
 @endsection

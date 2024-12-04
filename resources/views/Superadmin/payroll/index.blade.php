@@ -66,7 +66,7 @@
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" name="status" value="approved" class="btn btn-success btn-sm">Approve</button>
-                                            <button type="submit" name="status" value="rejected" class="btn btn-danger btn-sm" onclick="return confirmDecline()">Decline</button>
+                                            {{-- <button type="submit" name="status" value="rejected" class="btn btn-danger btn-sm" onclick="return confirmDecline()">Decline</button> --}}
                                         </form>
                                     @elseif ($data['status'] == 'approved')
                                         <span class="badge bg-success">Approved</span>

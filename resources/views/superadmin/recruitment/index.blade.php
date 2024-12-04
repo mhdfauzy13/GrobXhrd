@@ -37,8 +37,7 @@
                         <tbody>
                             @if ($recruitments->isEmpty())
                                 <tr>
-
-                                    <td colspan="6" class="text-center">No results found</td>
+                                    <td colspan="8" class="text-center">No results found</td>
                                 </tr>
                             @else
                                 @foreach ($recruitments as $recruitment)
@@ -69,7 +68,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="deletebutton btn btn-sm btn-danger">
-                                                    <i class="fas fa-trash"></i> Delete
+                                                    <i class="deletebutton fas fa-trash"></i> Delete
                                                 </button>
                                             </form>
                                         </td>

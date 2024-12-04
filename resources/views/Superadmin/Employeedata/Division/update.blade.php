@@ -41,7 +41,7 @@
                         </div>
 
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary" id="saveBtn">Update</button>
+                            <button type="submit" class="btn btn-primary" id="updateDivision">Update</button>
                             <a href="{{ route('divisions.index') }}" class="btn btn-secondary">Back</a>
                         </div>
                     </form>
@@ -49,4 +49,28 @@
             </div>
         </section>
     </div>
+
+    <script>
+        document.getElementById("updateDivision").addEventListener("click", function(e) {
+            e.preventDefault(); // Mencegah pengiriman form default
+
+            Swal.fire({
+                title: "Do you want to save the changes?",
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: "Save",
+                denyButtonText: `Don't save`
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Jika user mengkonfirmasi, submit form
+                    Swal.fire("Saved!", "", "success").then(() => {
+                        document.getElementById("divisionForm")
+                            .submit(); // Kirim form setelah alert konfirmasi
+                    });
+                } else if (result.isDenied) {
+                    Swal.fire("Changes are not saved", "", "info");
+                }
+            });
+        });
+    </script>
 @endsection

@@ -73,20 +73,24 @@
                                             Edit
                                         </a>
 
-                                        <form method="post"
-                                            action="{{ route('datauser.destroy', ['user_id' => $user->user_id]) }}"
-                                            style="display:inline;">
-                                            @csrf
-                                            @method('delete')
-                                            <button type="button" class="deleteButton btn btn-danger btn-sm">
-                                                <i class="fas fa-trash"></i>
-                                                Delete
-                                            </button>
-                                        </form>
-
+                                        @if (!$user->hasRole('superadmin'))
+                                            <!-- Kondisi untuk Superadmin -->
+                                            <form method="post"
+                                                action="{{ route('datauser.destroy', ['user_id' => $user->user_id]) }}"
+                                                style="display:inline;">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="button" class="deleteButton btn btn-danger btn-sm">
+                                                    <i class="deletebutton fas fa-trash"></i>
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        @endif
                                     </td>
+
                                 </tr>
                             @endforeach
+
                         </tbody>
                     </table>
                 </div>

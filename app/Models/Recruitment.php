@@ -37,4 +37,9 @@ class Recruitment extends Model
     {
         return $this->hasOne(Employee::class, 'recruitment_id');
     }
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'recruitment_id', 'recruitment_id');
+    }
 }

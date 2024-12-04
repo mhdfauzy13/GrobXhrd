@@ -75,6 +75,7 @@ class PayrollController extends Controller
             $overtimeData = Overtime::where('user_id', $employee->employee_id)
                 ->where('status', 'approved')
                 ->get();
+
             $totalOvertimeHours = $overtimeData->sum('duration');
             $overtimePay = $totalOvertimeHours * $hourlyRate;
 

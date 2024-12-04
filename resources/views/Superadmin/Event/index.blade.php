@@ -203,4 +203,11 @@
             calendar.render();
         });
     </script>
+
+    <style>
+        /* Menghilangkan garis bawah dari semua link (<a>) di seluruh halaman */
+        a {
+            text-decoration: none !important;
+        }
+    </style>
 @endsection

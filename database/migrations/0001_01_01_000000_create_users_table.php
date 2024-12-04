@@ -10,11 +10,8 @@ return new class extends Migration {
         Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('user_id');
             $table->unsignedBigInteger('employee_id')->nullable(); // Nullable ditambahkan di sini
-            $table->foreign('employee_id')
-                  ->references('employee_id')
-                  ->on('employees')
-                  ->onDelete('cascade');
-            $table->integer('company_id')->default(0);
+            $table->unsignedBigInteger('recruitment_id')->nullable();
+            $table->foreign('employee_id')->references('employee_id')->on('employees')->onDelete('cascade');
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
