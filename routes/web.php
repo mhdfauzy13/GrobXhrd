@@ -15,6 +15,7 @@ use App\Http\Controllers\Superadmin\EmployeeBookController;
 use App\Http\Controllers\Superadmin\EmployeeBooksController;
 use App\Http\Controllers\Superadmin\OvertimeController;
 use App\Http\Controllers\Superadmin\SettingController;
+use App\Http\Controllers\Superadmin\DivisionController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -72,11 +73,11 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         // Attendance
         Route::get('/attendance', [AttandanceController::class, 'index'])
             ->name('attandance.index')
-            ->middleware('permission:attandance.index');
+            ->middleware('permission:attendance.index');
 
         Route::get('/attendance/recap/{employee_id}', [AttandanceController::class, 'recap'])
             ->name('attendance.recap')
-            ->middleware('permission:attandance.index');
+            ->middleware('permission:attendance.index');
 
         //overtime
         Route::get('/overtime', [OvertimeController::class, 'index'])
@@ -244,6 +245,31 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::post('/settings/update-workdays', [SettingController::class, 'updateWorkdays'])
             ->name('settings.updateWorkdays')
             ->middleware('permission:settings.worksdays');
+
+        //Division
+        Route::get('divisions', [DivisionController::class, 'index'])
+            ->name('divisions.index')
+            ->middleware('permission:divisions.index');
+
+        Route::get('divisions/create', [DivisionController::class, 'create'])
+            ->name('divisions.create')
+            ->middleware('permission:divisions.create');
+
+        Route::post('divisions/store', [DivisionController::class, 'store'])
+            ->name('divisions.store')
+            ->middleware('permission:divisions.create');
+
+        Route::get('divisions/{division}/edit', [DivisionController::class, 'edit'])
+            ->name('divisions.edit')
+            ->middleware('permission:divisions.edit');
+
+        Route::put('divisions/{division}', [DivisionController::class, 'update'])
+            ->name('divisions.update')
+            ->middleware('permission:divisions.edit');
+
+        Route::delete('divisions/{division}', [DivisionController::class, 'destroy'])
+            ->name('divisions.destroy')
+            ->middleware('permission:divisions.delete');
     });
 
     // Employee Routes
@@ -257,19 +283,19 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
 
         // Attendance Scan Routes
         Route::get('/attandance/scan', [AttandanceController::class, 'scanView'])
-            ->name('attandance.scanView') // Nama rute untuk tampilan scan
-            ->middleware('permission:attandance.scanView'); // Middleware untuk izin tampilan scan
+            ->name('attandance.scanView') 
+            ->middleware('permission:attendance.scan'); 
 
         Route::post('/attandance/check-in', [AttandanceController::class, 'checkIn'])
-            ->name('attandance.checkIn') // Nama rute untuk proses check-in
-            ->middleware('permission:attandance.scan'); // Middleware untuk izin scan (check-in)
+            ->name('attandance.checkIn')
+            ->middleware('permission:attendance.scan'); 
 
         Route::post('/attandance/check-out', [AttandanceController::class, 'checkOut'])
-            ->name('attandance.checkOut') // Nama rute untuk proses check-out
-            ->middleware('permission:attandance.scan'); // Middleware untuk izin scan (check-out)
+            ->name('attandance.checkOut') 
+            ->middleware('permission:attendance.scan'); 
         Route::post('/attandance/scan', [AttandanceController::class, 'scan'])
             ->name('attandance.scan')
-            ->middleware('permission:attandance.scan');
+            ->middleware('permission:attendance.scan');
 
         // Off Request
 

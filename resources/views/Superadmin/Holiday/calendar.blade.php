@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Calendar/index')
 @section('head')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.2/main.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/css/adminlte.min.css">

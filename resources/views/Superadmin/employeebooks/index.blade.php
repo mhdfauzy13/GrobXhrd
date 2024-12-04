@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Employeebooks/index')
 @section('content')
     <div class="container-fluid"> <!-- Full width container -->
         <!-- Card Wrapper -->

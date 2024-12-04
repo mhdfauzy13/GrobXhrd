@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Role/edit')
 @section('content')
     <div class="content">
         <section class="content-header">
@@ -58,7 +58,8 @@
                                             <!-- Fitur Dashboard -->
                                             <div class="card mt-3">
                                                 <div class="card-header">
-                                                    <a href="#" id="selectAllDashboard" class="card-title">Dashboard</a>
+                                                    <a href="#" id="selectAllDashboard"
+                                                        class="card-title">Dashboard</a>
                                                 </div>
                                                 <div class="card-body">
                                                     @foreach ($permissions->whereIn('name', ['dashboard.superadmin', 'dashboard.employee']) as $permission)
@@ -126,12 +127,13 @@
             'employee' => ['employee.index', 'employee.create', 'employee.edit', 'employee.delete'],
             'payroll' => ['payroll.index', 'payroll.create', 'payroll.edit', 'payroll.delete'],
             'recruitment' => ['recruitment.index', 'recruitment.create', 'recruitment.edit', 'recruitment.delete'],
-            'attandance' => ['attandance.index', 'attandance.scanView', 'attandance.scan'],
+            'attendance' => ['attendance.index','attendance.scan'],
             'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.approver'],
             'employeebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
             'event' => ['event.index', 'event.lists', 'event.create', 'event.edit', 'event.delete'],
             'overtime' => ['overtime.create','overtime.approval'],
             'settings' => ['settings.index', 'settings.company', 'settings.deductions', 'settings.worksdays'],
+            'divisions' => ['divisions.index', 'divisions.create', 'divisions.edit', 'divisions.delete'],
         ] as $feature => $featurePermissions)
                                                 <div class="card mt-3">
                                                     <div class="card-header">
@@ -171,8 +173,8 @@
                                     </div>
 
                                     <div class="card-footer">
+                                        <button type="submit" id="saveButton" class="btn btn-primary">Update</button>
                                         <a href="{{ route('role.index') }}" class="btn btn-secondary">Back</a>
-                                        <button type="submit" id="saveButton" class="btn btn-primary">Save</button>
                                     </div>
                                 </form>
                             </div>
@@ -193,8 +195,9 @@
 
             // Add event listeners for each feature select all
             const features = [
-                'dashboard', 'role', 'user', 'employee', 'payroll', 'recruitment', 'attandance',
-                'offrequest', 'employeebook', 'event','overtime','settings'
+
+                'dashboard', 'role', 'user', 'employee', 'payroll', 'recruitment', 'attendance',
+                'offrequest', 'employeebook', 'event', 'settings','divisions',
             ];
 
             features.forEach(feature => {

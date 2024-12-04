@@ -21,7 +21,7 @@ class OffRequestStatusMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Status Pengajuan Cuti Anda')
+        return $this->subject('Status of your Leave Application')
                     ->view('Employee.Offrequest.offrequest-status');
     }
 }

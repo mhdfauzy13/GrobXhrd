@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Payroll/index')
 @section('content')
     <!-- Main content -->
     <section class="content">
@@ -20,21 +20,14 @@
                             <button type="submit" class="btn btn-secondary ml-2">Search</button>
                         </form>
 
-                        <!-- Export Button with margin -->
-                        {{-- <form method="GET" action="{{ route('payroll.exports') }}" class="ml-3">
-                            <button type="submit" class="btn btn-primary">Export to CSV</button>
-                        </form> --}}
-
+                  
                         <form method="GET" action="{{ route('payroll.exports') }}" class="ml-3">
                             <button type="submit" class="btn btn-primary">Export to CSV</button>
                         </form>
+
+
+
                         
-
-{{-- 
-                        <form method="GET" action="{{ route('payroll.export') }}" class="ml-3">
-                            <button type="submit" class="btn btn-primary" {{ $payrollData->where('validation_status', 'approved')->count() == 0 ? 'disabled' : '' }}>Export to CSV</button>
-                        </form> --}}
-
                 </div>
             </div>
         </div>
@@ -95,6 +88,7 @@
             </div>
         </div>
         </div>
+
         {{-- </div> --}}
     </section>
 

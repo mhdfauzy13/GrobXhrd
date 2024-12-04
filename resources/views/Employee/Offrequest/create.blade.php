@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Offrequest/create')
 @section('content')
     <section class="content">
         <div class="card">
@@ -7,7 +7,7 @@
                 <h3 class="card-title">Add Off Requests</h3>
             </div>
             <div class="card-body">
-                <form action="{{ route('offrequest.store') }}" method="POST" enctype="multipart/form-data">
+                <form id="quickForm" action="{{ route('offrequest.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="name">Name</label>
@@ -15,10 +15,10 @@
                     </div>
 
                     <div class="form-group">
+
                         <label for="title">Type Off</label>
                         <select class="form-control" id="title" name="title" required>
-                            <option value="disable" disabled>Type Off</option>
-                            <option value="Sick">Sick</option>
+               <option value="Sick">Sick</option>
                             <option value="Holiday">Holiday</option>
                             <option value="Family Matters">Family Matters</option>
                             <option value="Absence">Absence</option>
@@ -70,7 +70,7 @@
                         @enderror
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" id="savecuti" class="btn btn-primary">Save</button>
                     <a href="{{ route('offrequest.index') }}" class="btn btn-secondary">Back</a>
                 </form>
             </div>
@@ -111,6 +111,25 @@
             var fileName = document.getElementById("image").files[0].name;
             var nextSibling = e.target.nextElementSibling;
             nextSibling.innerText = fileName;
+        });
+    </script>
+
+    <script>
+        // Handle the button click for Save
+        document.getElementById('savecuti').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Menampilkan SweetAlert setelah tombol Save diklik
+            Swal.fire({
+                position: 'top-center',
+                icon: 'success',
+                title: 'Your work has been saved',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(function() {
+                // Submit form setelah alert selesai
+                document.getElementById('quickForm').submit(); // Ensure form ID is correct
+            });
         });
     </script>
 @endsection

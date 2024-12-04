@@ -75,6 +75,7 @@
                         </div>
                         <div class="card-footer">
                             <button type="button" id="updateButton" class="btn btn-primary">Update</button>
+                            <a href="{{ route('datauser.index') }}" class="btn btn-secondary">Back</a>
                         </div>
                     </form>
                 </div>

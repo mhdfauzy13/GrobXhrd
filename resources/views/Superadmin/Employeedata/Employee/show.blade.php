@@ -13,77 +13,138 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h4>Personal Information</h4>
-                            <dl class="row">
-                                <dt class="col-sm-4">First Name:</dt>
-                                <dd class="col-sm-8">{{ $employee->first_name }}</dd>
-                                <dt class="col-sm-4">Last Name:</dt>
-                                <dd class="col-sm-8">{{ $employee->last_name }}</dd>
-                                <dt class="col-sm-4">Email:</dt>
-                                <dd class="col-sm-8">{{ $employee->email }}</dd>
-                                <dt class="col-sm-4">Place of Birth:</dt>
-                                <dd class="col-sm-8">{{ $employee->place_birth }}</dd>
-                                <dt class="col-sm-4">Date of Birth:</dt>
-                                <dd class="col-sm-8">{{ $employee->date_birth }}</dd>
-                                <dt class="col-sm-4">Identity Number:</dt>
-                                <dd class="col-sm-8">{{ $employee->identity_number }}</dd>
-                                <dt class="col-sm-4">Address:</dt>
-                                <dd class="col-sm-8">{{ $employee->address }}</dd>
-                                <dt class="col-sm-4">Current Address:</dt>
-                                <dd class="col-sm-8">{{ $employee->current_address }}</dd>
-                            </dl>
-                        </div>
-                        <div class="col-md-6">
-                            <h4>Additional Information</h4>
-                            <dl class="row">
-                                <dt class="col-sm-4">Check IN Time:</dt>
-                                <dd class="col-sm-8">{{ $employee->check_in_time }}</dd>
-                                <dt class="col-sm-4">Check OUT Time:</dt>
-                                <dd class="col-sm-8">{{ $employee->check_out_time }}</dd>
-                                <dt class="col-sm-4">Blood Type:</dt>
-                                <dd class="col-sm-8">{{ $employee->blood_type }}</dd>
-                                <dt class="col-sm-4">Blood Rhesus:</dt>
-                                <dd class="col-sm-8">{{ $employee->blood_rhesus }}</dd>
-                                <dt class="col-sm-4">Phone Number:</dt>
-                                <dd class="col-sm-8">{{ $employee->phone_number }}</dd>
-                                <dt class="col-sm-4">HP Number:</dt>
-                                <dd class="col-sm-8">{{ $employee->hp_number }}</dd>
-                                <dt class="col-sm-4">Marital Status:</dt>
-                                <dd class="col-sm-8">{{ $employee->marital_status }}</dd>
-                                <dt class="col-sm-4">Last Education:</dt>
-                                <dd class="col-sm-8">{{ $employee->last_education }}</dd>
-                                <dt class="col-sm-4">Degree:</dt>
-                                <dd class="col-sm-8">{{ $employee->degree }}</dd>
-                                <dt class="col-sm-4">Starting Date:</dt>
-                                <dd class="col-sm-8">{{ $employee->starting_date }}</dd>
-                                <dt class="col-sm-4">Interview By:</dt>
-                                <dd class="col-sm-8">{{ $employee->interview_by }}</dd>
-                                <dt class="col-sm-4">Current Salary:</dt>
-                                <dd class="col-sm-8">Rp {{ number_format($employee->current_salary, 0, ',', '.') }}</dd>
-                                <dt class="col-sm-4">Insurance:</dt>
-                                <dd class="col-sm-8">{{ $employee->insurance ? 'Yes' : 'No' }}</dd>
-                                <dt class="col-sm-4">Serious Illness:</dt>
-                                <dd class="col-sm-8">{{ $employee->serious_illness }}</dd>
-                                <dt class="col-sm-4">Hereditary Disease:</dt>
-                                <dd class="col-sm-8">{{ $employee->hereditary_disease }}</dd>
-                                <dt class="col-sm-4">Emergency Contact:</dt>
-                                <dd class="col-sm-8">{{ $employee->emergency_contact }}</dd>
-                                <dt class="col-sm-4">Relations:</dt>
-                                <dd class="col-sm-8">{{ $employee->relations }}</dd>
-                                <dt class="col-sm-4">Emergency Number:</dt>
-                                <dd class="col-sm-8">{{ $employee->emergency_number }}</dd>
-                                <dt class="col-sm-4">Status:</dt>
-                                <dd class="col-sm-8">
-                                    <span
-                                        class="badge {{ $employee->status == 'Active' ? 'badge-success' : 'badge-danger' }}">
-                                        {{ ucfirst($employee->status) }}
-                                    </span>
-                                </dd>
-                            </dl>
-                        </div>
-                    </div>
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>First Name</th>
+                            <td>{{ $employee->first_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Last Name</th>
+                            <td>{{ $employee->last_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email</th>
+                            <td>{{ $employee->email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Place of Birth</th>
+                            <td>{{ $employee->place_birth }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date of Birth</th>
+                            <td>{{ \Carbon\Carbon::parse($employee->date_birth)->format('d-m-Y') }}</td>
+                        </tr>
+                        <tr>
+                            <th>Identity Number</th>
+                            <td>{{ $employee->identity_number }}</td>
+                        </tr>
+                        <tr>
+                            <th>Address</th>
+                            <td>{{ $employee->address }}</td>
+                        </tr>
+                        <tr>
+                            <th>Current Address</th>
+                            <td>{{ $employee->current_address }}</td>
+                        </tr>
+                        <tr>
+                            <th>Check IN Time</th>
+                            <td>{{ $employee->check_in_time }}</td>
+                        </tr>
+                        <tr>
+                            <th>Check OUT Time</th>
+                            <td>{{ $employee->check_out_time }}</td>
+                        </tr>
+                        <tr>
+                            <th>Blood Type</th>
+                            <td>{{ $employee->blood_type }}</td>
+                        </tr>
+                        <tr>
+                            <th>Blood Rhesus</th>
+                            <td>{{ $employee->blood_rhesus }}</td>
+                        </tr>
+                        <tr>
+                            <th>Phone Number</th>
+                            <td>{{ $employee->phone_number }}</td>
+                        </tr>
+                        <tr>
+                            <th>HP Number</th>
+                            <td>{{ $employee->hp_number }}</td>
+                        </tr>
+                        <tr>
+                            <th>Marital Status</th>
+                            <td>{{ $employee->marital_status }}</td>
+                        </tr>
+                        <tr>
+                            <th>CV File</th>
+                            <td>
+                                <a href="{{ Storage::url($employee->cv_file) }}" target="_blank">
+                                    View CV
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Last CV Update</th>
+                            <td>
+                                @if ($employee->update_cv)
+                                    {{ \Carbon\Carbon::parse($employee->update_cv)->format('d F Y ') }}
+                                @else
+                                    There is no update information from CV
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Last Education</th>
+                            <td>{{ $employee->last_education }}</td>
+                        </tr>
+                        <tr>
+                            <th>Degree</th>
+                            <td>{{ $employee->degree }}</td>
+                        </tr>
+                        <tr>
+                            <th>Starting Date</th>
+                            <td>{{ $employee->starting_date }}</td>
+                        </tr>
+                        <tr>
+                            <th>Interview By</th>
+                            <td>{{ $employee->interview_by }}</td>
+                        </tr>
+                        <tr>
+                            <th>Current Salary</th>
+                            <td>Rp {{ number_format($employee->current_salary, 0, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <th>Insurance</th>
+                            <td>{{ $employee->insurance ? 'Yes' : 'No' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Serious Illness</th>
+                            <td>{{ $employee->serious_illness }}</td>
+                        </tr>
+                        <tr>
+                            <th>Hereditary Disease</th>
+                            <td>{{ $employee->hereditary_disease }}</td>
+                        </tr>
+                        <tr>
+                            <th>Emergency Contact</th>
+                            <td>{{ $employee->emergency_contact }}</td>
+                        </tr>
+                        <tr>
+                            <th>Relations</th>
+                            <td>{{ $employee->relations }}</td>
+                        </tr>
+                        <tr>
+                            <th>Emergency Number</th>
+                            <td>{{ $employee->emergency_number }}</td>
+                        </tr>
+                        <tr>
+                            <th>Status</th>
+                            <td>
+                                <span class="badge {{ $employee->status == 'Active' ? 'badge-success' : 'badge-danger' }}">
+                                    {{ ucfirst($employee->status) }}
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>

@@ -77,7 +77,6 @@
                         @endcan
                     @endcanany
 
-                    <!-- Master Data menu, only visible if user has specific permissions -->
                     @canany(['user.index', 'user.create', 'role.index', 'role.create'])
                         <li class="nav-item">
                             <a href="#"
@@ -131,9 +130,11 @@
 
                     <!-- Employee Data menu, only visible if user has specific permissions -->
 
-                    @canany(['employee.index', 'employee.create', 'attandance.index', 'attandance.scanView',
+
+                    @canany(['employee.index', 'employee.create', 'attendance.index', 'attendance.scan',
                         'offrequest.index', 'offrequest.create', 'offrequest.approver', 'payroll.index', 'payroll.create',
-                        'overtime.approval'])
+                        'divisions.index', 'divisions.create'])
+                  
                         <li class="nav-item">
                             <a href="#"
                                 class="nav-link {{ request()->routeIs('employee.index') || request()->routeIs('employee.create') || request()->routeIs('attandance.index') || request()->routeIs('attandance.scanView') || request()->routeIs('offrequest.index') || request()->routeIs('offrequest.create') || request()->routeIs('offrequest.approver') ? 'active' : '' }}">
@@ -162,15 +163,15 @@
                                     </li>
                                 @endcanany
 
-                                @canany(['attandance.index', 'attandance.scanView'])
+                                @canany(['attendance.index', 'attendance.scan'])
                                     <li class="nav-item">
-                                        @can('attandance.index')
+                                        @can('attendance.index')
                                             <a href="{{ route('attandance.index') }}"
                                                 class="nav-link {{ request()->routeIs('attandance.index') ? 'active' : '' }}">
                                                 <i class="far fa-circle nav-icon"></i>
                                                 <p>Attendance</p>
                                             </a>
-                                        @elsecan('attandance.scanView')
+                                        @elsecan('attendance.scan')
                                             <a href="{{ route('attandance.scanView') }}"
                                                 class="nav-link {{ request()->routeIs('attandance.scanView') ? 'active' : '' }}">
                                                 <i class="far fa-circle nav-icon"></i>
@@ -208,6 +209,24 @@
                                         </a>
                                     </li>
                                 @endcan
+
+                                @canany(['divisions.index', 'divisions.create'])
+                                    <li class="nav-item">
+                                        @can('divisions.index')
+                                            <a href="{{ route('divisions.index') }}"
+                                                class="nav-link {{ request()->routeIs('divisions.index') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Division</p>
+                                            </a>
+                                        @elsecan('divisions.create')
+                                            <a href="{{ route('divisions.create') }}"
+                                                class="nav-link {{ request()->routeIs('divisions.create') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Division Create</p>
+                                            </a>
+                                        @endcan
+                                    </li>
+                                @endcanany
                             </ul>
                         </li>
                     @endcanany
@@ -257,6 +276,7 @@
                             </ul>
                         </li>
                     @endcanany
+n
 
 
                     @can('overtime.approvals')
@@ -268,6 +288,7 @@
                             </a>
                         </li>
                     @endcan
+
 
 
                     @canany(['employeebook.index'])
