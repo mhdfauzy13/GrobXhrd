@@ -200,16 +200,17 @@
 
                                     </div>
                                     <div class="form-group">
-                                        <label for="update_cv">Last CV Update</label>
-                                        <input type="text" name="update_cv" id="update_cv" class="form-control"
-                                            value="{{ old('update_cv', \Carbon\Carbon::parse($employeeModel->update_cv)->format('d F Y')) }}"
-                                            readonly>
+                                        <label>Last CV Update:</label>
+                                        <span>{{ \Carbon\Carbon::parse($employeeModel->update_cv)->format('d F Y') }}</span>
+
                                         @if ($employeeModel->cv_file)
                                             <div class="mt-2" id="currentCvFile">
                                                 <strong>Current File: </strong> {{ basename($employeeModel->cv_file) }}
                                             </div>
                                         @endif
                                     </div>
+
+
 
                                     <div class="form-group">
                                         <label for="last_education">Last Education</label>

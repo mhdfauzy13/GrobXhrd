@@ -114,11 +114,11 @@
             'employee' => ['employee.index', 'employee.create', 'employee.edit', 'employee.delete'],
             'payroll' => ['payroll.index', 'payroll.create', 'payroll.edit', 'payroll.delete'],
             'recruitment' => ['recruitment.index', 'recruitment.create', 'recruitment.edit', 'recruitment.delete'],
-            'attendance' => ['attendance.index','attendance.scan'],
+            'attendance' => ['attendance.index', 'attendance.scan'],
             'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.approver'],
             'employeebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
             'event' => ['event.index', 'event.lists', 'event.create', 'event.edit', 'event.delete'],
-            'overtime' => ['overtime.create','overtime.approval'],
+            'overtime' => ['overtime.create', 'overtime.approval'],
             'settings' => ['settings.index', 'settings.company', 'settings.deductions', 'settings.worksdays'],
             'divisions' => ['divisions.index', 'divisions.create', 'divisions.edit', 'divisions.delete'],
         ] as $feature => $featurePermissions)
@@ -279,8 +279,14 @@
                 checkbox.checked = !checkbox.checked;
             });
         });
-         // Event listener untuk fitur Division
+        // Event listener untuk fitur Division
         document.getElementById('selectAllDivisions').addEventListener('click', function(e) {
+            e.preventDefault();
+            let checkboxes = document.querySelectorAll('.divisions-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !checkbox.checked;
+            });
+        });
     </script>
 
     <script>

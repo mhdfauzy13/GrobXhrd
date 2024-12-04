@@ -97,6 +97,11 @@ class RoleController extends Controller
     public function destroy($id)
     {
         $role = Role::findOrFail($id);
+
+        if ($role->name === 'superadmin') {
+            return redirect()->route('role.index')->with('error', 'Role Superadmin tidak dapat dihapus.');
+        }
+
         $role->delete();
 
         return redirect()->route('role.index')->with('success', 'Role berhasil dihapus.');

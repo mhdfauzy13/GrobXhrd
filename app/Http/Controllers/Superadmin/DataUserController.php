@@ -138,7 +138,12 @@ class DataUserController extends Controller
 
     public function destroy($userId)
     {
-        $user = User::findOrFail($userId); // Perbaikan: Menggunakan findOrFail
+        $user = User::findOrFail($userId);
+
+        // Cek apakah user adalah SuperAdmin
+        if ($user->hasRole('superadmin')) {
+            return redirect()->route('datauser.index')->with('error', 'SuperAdmin tidak dapat dihapus!');
+        }
 
         $user->delete();
         return redirect()->route('datauser.index')->with('success', 'Data berhasil dihapus!');

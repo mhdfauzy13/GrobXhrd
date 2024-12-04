@@ -83,7 +83,6 @@
 
 
                                 <select name="last_education" id="last_education" class="form-control" required>
-                                    <option value="">-- Select Education Level --</option>
                                     <option value="Elementary School"
                                         {{ old('last_education', $recruitment->last_education) == 'Elementary School' ? 'selected' : '' }}>
                                         Elementary School</option>

@@ -200,9 +200,9 @@
                             attendanceStatus.isCheckIn = false; // Ubah status menjadi check-out
                         }
 
-                        // Arahkan kembali ke halaman sebelumnya
+                        // Redirect ke route dashboard.employee
                         setTimeout(() => {
-                            window.history.back();
+                            window.location.href = "{{ route('dashboardemployee.index') }}";
                         }, 3000); // 3 detik sebelum redirect
                     } else {
                         alertContainer.innerHTML = `<div class="alert alert-warning text-center" role="alert">
