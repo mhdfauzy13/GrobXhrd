@@ -20,8 +20,6 @@ class CreateRecruitmentsTable extends Migration
             $table->string('apply_position');
             $table->string('cv_file');
             $table->text('remarks')->nullable();
-
-            // Status enum yang sudah ada
             $table->enum('status', [
                 'Initial Interview',
                 'User Interview 1',

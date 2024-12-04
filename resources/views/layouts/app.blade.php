@@ -7,14 +7,9 @@
     <link rel="icon" href="{{ asset('dist/img/icongrob.png') }}" type="image/x-icon" />
     <title>@yield('title', 'Grobmedia')</title>
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <!-- Include Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
-
-
-
     @include('components.head')
 </head>
 
@@ -22,12 +17,8 @@
     <div class="wrapper">
         <!-- Navbar -->
         @include('layouts.navbar')
-
-
         <!-- Sidebar -->
         @include('partials.sidebar')
-
-
         <!-- Content Wrapper -->
         <div class="content-wrapper">
             <div class="content-header">

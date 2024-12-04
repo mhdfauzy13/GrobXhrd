@@ -1,7 +1,5 @@
 @extends('layouts.app')
-
 @section('title', 'Dashboard')
-
 @section('content')
     <div class="container">
         <div class="row">
@@ -13,7 +11,6 @@
                     </div>
                     <div class="card-body">
                         <div id="calendar">
-                            
                         </div>
                     </div>
                 </div>
@@ -39,10 +36,13 @@
                             </thead>
                             <tbody>
                                 @foreach ($attendances as $attendance)
-                                    <tr> 
+                                    <tr>
                                         <td class="text-center">{{ $attendance->created_at->format('Y-m-d') }}</td>
-                                        <td class="text-center">{{ $attendance->check_in ? $attendance->check_in->format('H:i:s') : '-' }}</td>
-                                        <td class="text-center">{{ $attendance->check_out ? $attendance->check_out->format('H:i:s') : '-' }}</td>
+                                        <td class="text-center">
+                                            {{ $attendance->check_in ? $attendance->check_in->format('H:i:s') : '-' }}</td>
+                                        <td class="text-center">
+                                            {{ $attendance->check_out ? $attendance->check_out->format('H:i:s') : '-' }}
+                                        </td>
                                         <td class="text-center"><span
                                                 class="badge badge-{{ $attendance->check_in_status === 'IN' ? 'success' : 'danger' }}">
                                                 {{ $attendance->check_in_status }}
@@ -51,17 +51,11 @@
                                                 class="badge badge-{{ $attendance->check_out_status === 'IN' ? 'success' : 'danger' }}">
                                                 {{ $attendance->check_out_status }}
                                             </span></td>
-                                            
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
-                    {{-- <div class="card-footer clearfix">
-                    <div class="pagination-container">
-                        {{ $attendance->links('vendor.pagination.adminlte') }}
-                    </div> --}}
-                </div>
                 </div>
             </div>
 
@@ -145,6 +139,12 @@
             width: 100%;
             margin: 0 auto;
         }
+
+        /* Menghilangkan garis bawah dari semua link (<a>) di seluruh halaman */
+        a {
+            text-decoration: none !important;
+        }
     </style>
+
 
 @endsection

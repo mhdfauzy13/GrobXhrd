@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Superadmin;
 use App\Http\Controllers\Controller;
 use App\Models\Recruitment;
 use App\Models\Employee;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -30,10 +31,7 @@ class RecruitmentController extends Controller
                 ->orWhere('last_name', 'like', "%{$search}%")
                 ->orWhere('email', 'like', "%{$search}%")
                 ->orWhere('apply_position', 'like', "%{$search}%");
-        })
-            ->paginate(10)
-            ->orderBy('first_name', 'asc')
-            ->orderBy('last_name', 'asc');
+        })->paginate(10);
 
         return view('superadmin.recruitment.index', compact('recruitments'));
     }
@@ -57,7 +55,7 @@ class RecruitmentController extends Controller
                 'apply_position' => 'required|string',
                 'cv_file' => 'required|file|mimes:pdf,doc,docx',
                 'remarks' => 'required|string',
-                'status' => 'required|string',
+                'status' => 'nullable|in:Initial Interview,User Interview 1,User Interview 2,Background Check,Offering letter,Accept,Decline',
             ],
             [
                 'phone_number.numeric' => 'Phone number must contain only numbers.',
@@ -75,22 +73,32 @@ class RecruitmentController extends Controller
                 'last_position' => $validated['last_position'],
                 'apply_position' => $validated['apply_position'],
                 'cv_file' => $request->file('cv_file')->store('cv_files', 'public'),
-                'comment' => $validated['comment'],
+                'remarks' => $validated['remarks'],
                 'status' => $validated['status'],
             ]);
 
-            // Jika status adalah 'accept', buat data di Employee
-            if ($recruitment->status === 'accept') {
-                Employee::create([
-                    'first_name' => $recruitment->first_name,
-                    'last_name' => $recruitment->last_name,
-                    'email' => $recruitment->email,
-                    'phone_number' => $recruitment->phone_number,
-                    'date_of_birth' => $recruitment->date_of_birth,
-                    'last_education' => $recruitment->last_education,
-                    'cv_file' => $recruitment->cv_file,
-                    'recruitment_id' => $recruitment->id, // Jika Anda ingin menyimpan ID Recruitment
-                ]);
+            if ($recruitment->status === 'Accept') {
+                $employee = Employee::firstOrCreate(
+                    ['recruitment_id' => $recruitment->id],
+                    [
+                        'first_name' => $recruitment->first_name,
+                        'last_name' => $recruitment->last_name,
+                        'email' => $recruitment->email,
+                        'phone_number' => $recruitment->phone_number,
+                        'date_of_birth' => $recruitment->date_of_birth,
+                        'last_education' => $recruitment->last_education,
+                        'cv_file' => $recruitment->cv_file,
+                    ],
+                );
+
+                User::firstOrCreate(
+                    ['employee_id' => $employee->id],
+                    [
+                        'name' => $recruitment->first_name . ' ' . $recruitment->last_name,
+                        'email' => $recruitment->email,
+                        'employee_id' => $employee->id,
+                    ],
+                );
             }
 
             return redirect()->route('recruitment.index')->with('success', 'Recruitment successfully created');
@@ -121,7 +129,7 @@ class RecruitmentController extends Controller
                 'apply_position' => 'nullable|string',
                 'cv_file' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
                 'remarks' => 'nullable|string',
-                'status' => 'nullable|string|in:Initial Interview,User Interview 1,User Interview 2,Background Check,Offering letter,Accept,Decline',
+                'status' => 'nullable|in:Initial Interview,User Interview 1,User Interview 2,Background Check,Offering letter,Accept,Decline',
             ],
             [
                 'phone_number.numeric' => 'Phone number must contain only numbers.',
@@ -144,22 +152,31 @@ class RecruitmentController extends Controller
                 $recruitment->cv_file = $request->file('cv_file')->store('cv_files', 'public');
             }
 
-            $recruitment->comment = $validated['comment'] ?? $recruitment->comment;
+            $recruitment->remarks = $validated['remarks'] ?? $recruitment->remarks;
             $recruitment->save();
 
-            // Jika statusnya ACCEPT, pindahkan data ke tabel employees
-            if ($recruitment->status == 'Accept') {
-                Employee::create([
-                    'first_name' => $recruitment->first_name,
-                    'last_name' => $recruitment->last_name,
-                    'email' => $recruitment->email,
-                    'phone_number' => $recruitment->phone_number,
-                    'date_birth' => $recruitment->date_of_birth,
-                    'last_education' => $recruitment->last_education,
-                    'cv_file' => $recruitment->cv_file,
-                    'recruitment_id' => $recruitment->recruitment_id, // Link ke recruitment
-                    // Kolom lainnya bisa ditambahkan jika perlu
-                ]);
+            if (strtolower($recruitment->status) === 'Accept') {
+                $employee = Employee::firstOrCreate(
+                    ['recruitment_id' => $recruitment->id],
+                    [
+                        'first_name' => $recruitment->first_name,
+                        'last_name' => $recruitment->last_name,
+                        'email' => $recruitment->email,
+                        'phone_number' => $recruitment->phone_number,
+                        'date_of_birth' => $recruitment->date_of_birth,
+                        'last_education' => $recruitment->last_education,
+                        'cv_file' => $recruitment->cv_file,
+                    ],
+                );
+
+                User::firstOrCreate(
+                    ['employee_id' => $employee->id],
+                    [
+                        'name' => $recruitment->first_name . ' ' . $recruitment->last_name,
+                        'email' => $recruitment->email,
+                        'employee_id' => $employee->id,
+                    ],
+                );
             }
 
             return redirect()->route('recruitment.index')->with('success', 'Recruitment updated successfully');
