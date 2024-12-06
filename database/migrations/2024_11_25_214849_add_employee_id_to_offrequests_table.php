@@ -33,7 +33,8 @@ return new class extends Migration
     public function down()
     {
         Schema::table('offrequests', function (Blueprint $table) {
-            $table->dropColumn('employee_id');
+            $table->dropForeign(['employee_id']);  // Menghapus foreign key constraint
+            $table->dropColumn('employee_id');     // Menghapus kolom employee_id
         });
     }
 };

@@ -81,7 +81,8 @@
                                     <td>{{ $offrequest->start_event->format('Y-m-d') }}</td>
                                     <td>{{ $offrequest->end_event->format('Y-m-d') }}</td>
                                     <td>
-                                        <span class="badge {{ $offrequest->status == 'approved' ? 'bg-success' : ($offrequest->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
+                                        <span
+                                            class="badge {{ $offrequest->status == 'approved' ? 'bg-success' : ($offrequest->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
                                             {{ ucfirst($offrequest->status) }}
                                         </span>
                                     </td>
@@ -100,6 +101,7 @@
                                             </span>
                                         @endif
                                     </td>
+
                                 </tr>
                             @empty
                                 <tr>
@@ -107,7 +109,7 @@
                                 </tr>
                             @endforelse
                         </tbody>
-                        
+
                     </table>
                 </div>
 
@@ -123,10 +125,9 @@
     <!-- Modal to upload image -->
     <div class="modal fade" id="uploadImageModal" tabindex="-1" role="dialog" aria-labelledby="uploadImageModalLabel"
         aria-hidden="true">
-        <form id="uploadImageForm" method="POST" enctype="multipart/form-data"
-            action="{{ route('offrequest.uploadImage', ['offrequest' => ':id']) }}">
+        <form id="uploadImageForm" method="POST" enctype="multipart/form-data" action="" id="uploadImageAction">
             @csrf
-            @method('PUT')
+            @method('POST')
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -136,6 +137,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        <!-- Input hidden untuk ID offrequest -->
                         <input type="hidden" id="offrequest_id" name="offrequest_id">
                         <div class="form-group">
                             <label for="image">Upload Image</label>
@@ -151,12 +153,14 @@
         </form>
     </div>
 
+
     <script>
         function showImage(src) {
             // Menampilkan gambar bukti cuti
             document.getElementById('previewImage').src = src;
         }
 
+        // Fungsi untuk membuka modal upload gambar
         function openUploadModal(offrequestId) {
             const formAction = document.getElementById('uploadImageForm').action.replace(':id', offrequestId);
             document.getElementById('uploadImageForm').action = formAction;

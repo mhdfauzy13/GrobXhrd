@@ -69,8 +69,11 @@ class PayrollController extends Controller
             $hourlyRate = $workDurationInHours > 0 ? $dailySalary / $workDurationInHours : 0;
 
             // Hitung total overtime
-            $overtimeData = Overtime::where('user_id', $employee->user_id)->get();
+            $overtimeData = Overtime::where('user_id', $employee->user_id)
+                ->where('status', 'approved') // Hanya ambil yang approved
+                ->get();
             $totalOvertimeHours = $overtimeData->sum('duration');
+            $hourlyRate = $employee->hourly_rate;
             $overtimePay = $totalOvertimeHours * $hourlyRate;
 
             // Hitung total deduction berdasarkan total late dan early
@@ -112,7 +115,7 @@ class PayrollController extends Controller
                 'total_payroll' => $totalPayroll,
                 'status' => 'pending',
             ];
-        }); 
+        });
 
         return view('superadmin.payroll.index', compact('payrollData'));
     }
@@ -188,8 +191,6 @@ class PayrollController extends Controller
             'Content-Disposition' => 'attachment; filename="payroll.csv"',
         ]);
     }
-
-
 }
 
 

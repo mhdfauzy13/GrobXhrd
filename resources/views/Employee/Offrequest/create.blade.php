@@ -34,13 +34,16 @@
 
                     <div class="form-group">
                         <label for="start_event">Start Event</label>
-                        <input type="date" name="start_event" class="form-control" id="start_event" required>
+                        <input type="datetime-local" name="start_event" class="form-control" id="start_event" required
+                               value="{{ old('start_event', now()->format('Y-m-d') . 'T09:00') }}">
                     </div>
-
+                    
                     <div class="form-group">
                         <label for="end_event">End Event</label>
-                        <input type="date" name="end_event" class="form-control" id="end_event" required>
+                        <input type="datetime-local" name="end_event" class="form-control" id="end_event" required
+                               value="{{ old('end_event', now()->format('Y-m-d') . 'T17:00') }}">
                     </div>
+                    
 
                     <div class="form-group">
                         <label for="manager_id">Select Manager</label>

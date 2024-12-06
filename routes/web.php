@@ -283,16 +283,16 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
 
         // Attendance Scan Routes
         Route::get('/attandance/scan', [AttandanceController::class, 'scanView'])
-            ->name('attandance.scanView') 
-            ->middleware('permission:attendance.scan'); 
+            ->name('attandance.scanView')
+            ->middleware('permission:attendance.scan');
 
         Route::post('/attandance/check-in', [AttandanceController::class, 'checkIn'])
             ->name('attandance.checkIn')
-            ->middleware('permission:attendance.scan'); 
+            ->middleware('permission:attendance.scan');
 
         Route::post('/attandance/check-out', [AttandanceController::class, 'checkOut'])
-            ->name('attandance.checkOut') 
-            ->middleware('permission:attendance.scan'); 
+            ->name('attandance.checkOut')
+            ->middleware('permission:attendance.scan');
         Route::post('/attandance/scan', [AttandanceController::class, 'scan'])
             ->name('attandance.scan')
             ->middleware('permission:attendance.scan');
@@ -325,7 +325,9 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('offrequest.approver')
             ->middleware('permission:offrequest.approver');
 
-        Route::put('/offrequest/{offrequest}/uploadImage', [OffemployeeController::class, 'uploadImage'])->name('offrequest.uploadImage');
+        Route::post('offrequest/{offrequestId}/updateImage', [OffemployeeController::class, 'uploadImage'])
+            ->name('offrequest.uploadImage')
+            ->middleware('permission:offrequest.index');
 
 
 

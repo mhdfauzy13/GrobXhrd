@@ -134,6 +134,8 @@
                                             N/A
                                         @endif
                                     </td>
+                                    
+                                    
                                                                         {{-- <td>{{ $overtime->manager ? $overtime->manager->name : 'N/A' }}</td> --}}
                                     <td>
                                         <span class="badge {{ $overtime->status == 'approved' ? 'bg-success' : ($overtime->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
