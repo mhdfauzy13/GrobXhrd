@@ -121,7 +121,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $adminRole->givePermissionTo($permissions); // Superadmin mendapatkan semua permission
         $managerRole->givePermissionTo([
-            'dashboardemployee.view',
+            'dashboard.employee',
             'user.index',
             'user.edit',
             'role.index',
