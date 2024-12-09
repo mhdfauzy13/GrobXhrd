@@ -16,13 +16,16 @@ class OvertimeController extends Controller
     {
         // Menggunakan middleware untuk validasi hak akses
         $this->middleware('permission:overtime.create')->only(['index', 'create', 'store', 'searchEmployees']);
-        $this->middleware('permission:overtime.approvals')->only(['approvals', 'updateStatus']);
+        $this->middleware('permission:overtime.approvals')->only(['approvals', 'updateStatus','approve']);
     }
 
     public function index()
     {
         // Mengambil data overtime beserta relasi user dan employee
         $overtimes = Overtime::where('user_id', Auth::id())
+            ->with('user.employee') // Memuat relasi user dan employee
+            ->get();
+
             ->with('user.employee') // Memuat relasi user dan employee
             ->get();
 

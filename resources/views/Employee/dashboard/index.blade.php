@@ -62,6 +62,7 @@
 
 
             {{-- <div class="col-lg-6 col-md-6 col-sm-12 mt-3">
+            {{-- <div class="col-lg-6 col-md-6 col-sm-12 mt-3">
                 <div class="card card-primary">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h3 class="card-title">Recent Off Requests</h3>
@@ -100,7 +101,7 @@
                     </div>
                 </div>
             </div> --}}
-
+            
         </div>
     </div>
 

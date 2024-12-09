@@ -116,49 +116,45 @@
                             {{-- <th>Manager</th> --}}
                             <th>Current Salary</th>
 
-                            <th>Status</th>
-                            {{-- <th>Actions</th> --}}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($overtimes as $overtime)
-                            <tr>
-                                <td>
-                                    @if ($overtime->user && $overtime->user->employee)
-                                        {{ $overtime->user->employee->first_name }} {{ $overtime->user->employee->last_name }}
-                                    @else
-                                        N/A
-                                    @endif
-                                </td>
-                                <td>{{ $overtime->overtime_date }}</td>
-                                <td>{{ $overtime->duration }} hours</td>
-                                <td>{{ $overtime->notes }}</td>
-                                <td>
-                                    @if ($overtime->user && $overtime->user->employee && $overtime->user->employee->current_salary)
-                                        Rp {{ number_format($overtime->user->employee->current_salary, 0, ',', '.') }}
-                                    @else
-                                        N/A
-                                    @endif
-                                </td>
-                                {{-- <td>{{ $overtime->manager ? $overtime->manager->name : 'N/A' }}</td> --}}
-                                <td>
-                                    <span class="badge {{ $overtime->status == 'approved' ? 'bg-success' : ($overtime->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
-                                        {{ ucfirst($overtime->status) }}
-                                    </span>
-                                </td>
+                                <th>Status</th>
+                                {{-- <th>Actions</th> --}}
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="text-center">There are no overtime requests available.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                    
-                </table>
-            </div>
-
-            <!-- Pagination -->
-            {{-- <div class="card-footer clearfix">
+                        </thead>
+                        <tbody>
+                            @forelse ($overtimes as $overtime)
+                                <tr>
+                                    <td>{{ $overtime->employee->name }}</td>
+                                    <td>{{ $overtime->overtime_date }}</td>
+                                    <td>{{ $overtime->duration }} hours</td>
+                                    <td>{{ $overtime->notes }}</td>
+                                    <td>
+                                        @if($overtime->user->employee && $overtime->user->employee->current_salary)
+                                            Rp {{ number_format($overtime->user->employee->current_salary, 0, ',', '.') }}
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
+                                    
+                                    
+                                                                        {{-- <td>{{ $overtime->manager ? $overtime->manager->name : 'N/A' }}</td> --}}
+                                    <td>
+                                        <span class="badge {{ $overtime->status == 'approved' ? 'bg-success' : ($overtime->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
+                                            {{ ucfirst($overtime->status) }}
+                                        </span>
+                                    </td>
+                               
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="text-center">There are no overtime requests available.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+    
+                <!-- Pagination -->
+                {{-- <div class="card-footer clearfix">
                     <div class="pagination-container">
                         {{ $overtimes->links('vendor.pagination.adminlte') }}
                     </div>

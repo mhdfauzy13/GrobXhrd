@@ -83,6 +83,8 @@
                                     <td>
                                         <span
                                             class="badge {{ $offrequest->status == 'approved' ? 'bg-success' : ($offrequest->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
+                                        <span
+                                            class="badge {{ $offrequest->status == 'approved' ? 'bg-success' : ($offrequest->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
                                             {{ ucfirst($offrequest->status) }}
                                         </span>
                                     </td>
@@ -101,6 +103,7 @@
                                             </span>
                                         @endif
                                     </td>
+
                                 </tr>
                             @empty
                                 <tr>
@@ -108,6 +111,7 @@
                                 </tr>
                             @endforelse
                         </tbody>
+
 
                     </table>
                 </div>
@@ -121,36 +125,37 @@
         </div>
     </section>
 
-   <!-- Modal to upload image -->
-<div class="modal fade" id="uploadImageModal" tabindex="-1" role="dialog" aria-labelledby="uploadImageModalLabel"
-    aria-hidden="true">
-    <form id="uploadImageForm" method="POST" enctype="multipart/form-data"
-        action="{{ route('offrequest.uploadImage', ['offrequest' => ':id']) }}">
-        @csrf
-        @method('PUT')
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="uploadImageModalLabel">Upload Proof of Leave</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="offrequest_id" name="offrequest_id">
-                    <div class="form-group">
-                        <label for="image">Upload Image</label>
-                        <input type="file" name="image" class="form-control" id="image" required>
+    <!-- Modal to upload image -->
+    <div class="modal fade" id="uploadImageModal" tabindex="-1" role="dialog" aria-labelledby="uploadImageModalLabel"
+        aria-hidden="true">
+        <form id="uploadImageForm" method="POST" enctype="multipart/form-data" action="" id="uploadImageAction">
+            @csrf
+            @method('POST')
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="uploadImageModalLabel">Upload Proof of Leave</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Input hidden untuk ID offrequest -->
+                        <input type="hidden" id="offrequest_id" name="offrequest_id">
+                        <div class="form-group">
+                            <label for="image">Upload Image</label>
+                            <input type="file" name="image" class="form-control" id="image" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Upload</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
             </div>
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
+
 
     <script>
         // Fungsi untuk menampilkan gambar yang telah diupload
@@ -158,6 +163,7 @@
             document.getElementById('previewImage').src = src;
         }
 
+        // Fungsi untuk membuka modal upload gambar
         // Fungsi untuk membuka modal upload gambar
         function openUploadModal(offrequestId) {
             const formAction = document.getElementById('uploadImageForm').action.replace(':id', offrequestId);
