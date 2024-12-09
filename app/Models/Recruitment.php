@@ -23,7 +23,7 @@ class Recruitment extends Model
         'date_of_birth',
         'last_education',
         'last_position',
-        'apply_position', // Menambahkan kolom apply_position
+        'apply_position', 
         'cv_file',
         'remarks',
         'status',
@@ -42,4 +42,6 @@ class Recruitment extends Model
     {
         return $this->hasOne(User::class, 'recruitment_id', 'recruitment_id');
     }
+
+    
 }

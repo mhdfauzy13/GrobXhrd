@@ -331,8 +331,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
 
 
 
-
-
         // Route::post('offrequest/{id}/upload-image', [OffemployeeController::class, 'uploadImage'])
         //     ->name('offrequest.uploadImage')
         //     ->middleware('permission:offrequest.index');

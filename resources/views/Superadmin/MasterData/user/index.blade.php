@@ -73,8 +73,6 @@
                                             Edit
                                         </a>
 
-                                        @if (!$user->hasRole('superadmin'))
-                                            <!-- Kondisi untuk Superadmin -->
                                             <form method="post"
                                                 action="{{ route('datauser.destroy', ['user_id' => $user->user_id]) }}"
                                                 style="display:inline;">
@@ -85,7 +83,6 @@
                                                     Delete
                                                 </button>
                                             </form>
-                                        @endif
                                     </td>
 
                                 </tr>

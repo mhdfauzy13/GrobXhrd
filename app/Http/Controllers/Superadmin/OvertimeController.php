@@ -23,12 +23,11 @@ class OvertimeController extends Controller
     {
         // Mengambil data overtime beserta relasi user dan employee
         $overtimes = Overtime::where('user_id', Auth::id())
-                            ->with('user.employee') // Memuat relasi user dan employee
-                            ->get();
-    
+            ->with('user.employee') // Memuat relasi user dan employee
+            ->get();
+
         return view('superadmin.overtime.index', compact('overtimes'));
     }
-    
 
     public function create()
     {
@@ -63,41 +62,35 @@ class OvertimeController extends Controller
     {
         // Pengajuan overtime yang masih menunggu persetujuan
         $pendingOvertimes = Overtime::where('status', 'pending')->get();
-    
+
         // Riwayat overtime yang sudah disetujui/rejected oleh manager yang sedang login
-        $managerId = auth()->user()->id;  // Mendapatkan ID manager yang sedang login
+        $managerId = auth()->user()->id; // Mendapatkan ID manager yang sedang login
         $historyOvertimes = Overtime::whereIn('status', ['approved', 'rejected'])
-                                    ->where('manager_id', $managerId) // Filter berdasarkan manager yang sedang login
-                                    ->get();
-    
+            ->where('manager_id', $managerId) // Filter berdasarkan manager yang sedang login
+            ->get();
+
         return view('superadmin.overtime.approve', compact('pendingOvertimes', 'historyOvertimes'));
     }
-    
-    
 
-    
-        // Metode untuk update status overtime
-        public function updateStatus($id, Request $request)
-        {
-            // Ambil status dari form
-            $status = $request->input('status');
-            
-            // Pastikan status yang diterima valid
-            if (!in_array($status, ['approved', 'rejected'])) {
-                return redirect()->back()->with('error', 'Invalid status.');
-            }
-        
-            // Temukan overtime berdasarkan ID
-            $overtime = Overtime::findOrFail($id);
-        
-            // Update status overtime
-            $overtime->status = $status;
-            $overtime->save(); // Simpan perubahan ke database
-        
-            // Kembalikan response dengan pesan sukses
-            return redirect()->route('overtime.index')->with('success', 'Overtime status updated successfully.');
+    // Metode untuk update status overtime
+    public function updateStatus($id, Request $request)
+    {
+        // Ambil status dari form
+        $status = $request->input('status');
+
+        // Pastikan status yang diterima valid
+        if (!in_array($status, ['approved', 'rejected'])) {
+            return redirect()->back()->with('error', 'Invalid status.');
         }
-        
-    
-    
+
+        // Temukan overtime berdasarkan ID
+        $overtime = Overtime::findOrFail($id);
+
+        // Update status overtime
+        $overtime->status = $status;
+        $overtime->save(); // Simpan perubahan ke database
+
+        // Kembalikan response dengan pesan sukses
+        return redirect()->route('overtime.index')->with('success', 'Overtime status updated successfully.');
+    }
 }

@@ -55,6 +55,10 @@
                             <td>{{ $employee->check_out_time }}</td>
                         </tr>
                         <tr>
+                            <th>Division</th>
+                            <td>{{ $employee->division->name }}</td>
+                        </tr>
+                        <tr>
                             <th>Blood Type</th>
                             <td>{{ $employee->blood_type }}</td>
                         </tr>
