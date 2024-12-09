@@ -31,20 +31,20 @@
                             <div class="form-group">
                                 <label for="name">Name</label>
                                 <input type="text" name="name" id="name" class="form-control"
-                                    value="{{ old('name', $user->name) }}" {{ $isEmployee ? 'readonly' : '' }}>
+                                    value="{{ old('name', $user->name) }}">
                             </div>
 
                             <div class="form-group">
                                 <label for="email">Email</label>
                                 <input type="email" name="email" id="email" class="form-control"
-                                    value="{{ old('email', $user->email) }}" {{ $isEmployee ? 'readonly' : '' }}>
+                                    value="{{ old('email', $user->email) }}">
                             </div>
 
                             <div class="form-group">
                                 <label for="role">Role</label>
                                 <select name="role" id="role" class="form-control" required>
                                     @foreach ($roles as $role)
-                                        <option value="{{ old('role',$role->name) }}"
+                                        <option value="{{ $role->name }}"
                                             {{ $user->hasRole($role->name) ? 'selected' : '' }}>
                                             {{ $role->name }}
                                         </option>

@@ -31,7 +31,7 @@
                     <tbody>
                         @forelse ($attendances as $attendance)
                             <tr>
-                                <td>{{ $attendance->created_at->format('Y-m-d') }}</td>
+                                <td>{{ $attendance->created_at->format('d F Y') }}</td>
                                 <td>{{ $attendance->check_in ? $attendance->check_in->format('H:i:s') : '-' }}</td>
                                 <td>{{ $attendance->check_out ? $attendance->check_out->format('H:i:s') : '-' }}</td>
 

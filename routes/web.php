@@ -386,6 +386,8 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('resignationrequest.updateStatus')
             ->middleware('permission:resignationrequest.approver');
 
+
+
         // Route::get('/resignation/approver', [ResignationRequestController::class, 'index'])
         //     ->name('resignationrequest.approver')
         //     ->middleware('permission:resignationrequest.approver');

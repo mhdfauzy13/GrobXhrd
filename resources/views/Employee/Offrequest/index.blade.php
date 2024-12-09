@@ -81,7 +81,8 @@
                                     <td>{{ $offrequest->start_event->format('Y-m-d') }}</td>
                                     <td>{{ $offrequest->end_event->format('Y-m-d') }}</td>
                                     <td>
-                                        <span class="badge {{ $offrequest->status == 'approved' ? 'bg-success' : ($offrequest->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
+                                        <span
+                                            class="badge {{ $offrequest->status == 'approved' ? 'bg-success' : ($offrequest->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
                                             {{ ucfirst($offrequest->status) }}
                                         </span>
                                     </td>
@@ -107,7 +108,7 @@
                                 </tr>
                             @endforelse
                         </tbody>
-                        
+
                     </table>
                 </div>
 
@@ -120,53 +121,51 @@
         </div>
     </section>
 
-    <!-- Modal to upload image -->
-    <div class="modal fade" id="uploadImageModal" tabindex="-1" role="dialog" aria-labelledby="uploadImageModalLabel"
-        aria-hidden="true">
-        <form id="uploadImageForm" method="POST" enctype="multipart/form-data"
-            action="{{ route('offrequest.uploadImage', ['offrequest' => ':id']) }}">
-            @csrf
-            @method('PUT')
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="uploadImageModalLabel">Upload Proof of Leave</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <input type="hidden" id="offrequest_id" name="offrequest_id">
-                        <div class="form-group">
-                            <label for="image">Upload Image</label>
-                            <input type="file" name="image" class="form-control" id="image" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Upload</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+   <!-- Modal to upload image -->
+<div class="modal fade" id="uploadImageModal" tabindex="-1" role="dialog" aria-labelledby="uploadImageModalLabel"
+    aria-hidden="true">
+    <form id="uploadImageForm" method="POST" enctype="multipart/form-data"
+        action="{{ route('offrequest.uploadImage', ['offrequest' => ':id']) }}">
+        @csrf
+        @method('PUT')
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadImageModalLabel">Upload Proof of Leave</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="offrequest_id" name="offrequest_id">
+                    <div class="form-group">
+                        <label for="image">Upload Image</label>
+                        <input type="file" name="image" class="form-control" id="image" required>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
+</div>
 
     <script>
+        // Fungsi untuk menampilkan gambar yang telah diupload
         function showImage(src) {
-            // Menampilkan gambar bukti cuti
             document.getElementById('previewImage').src = src;
         }
 
+        // Fungsi untuk membuka modal upload gambar
         function openUploadModal(offrequestId) {
             const formAction = document.getElementById('uploadImageForm').action.replace(':id', offrequestId);
             document.getElementById('uploadImageForm').action = formAction;
-
-            // Set ID permohonan cuti pada input hidden
             document.getElementById('offrequest_id').value = offrequestId;
-
-            // Menampilkan modal upload gambar
-            $('#uploadImageModal').modal('show');
+            $('#uploadImageModal').modal('show'); // Menampilkan modal
         }
     </script>
+
 
 @endsection
