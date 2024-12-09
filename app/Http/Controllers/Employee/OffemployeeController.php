@@ -110,32 +110,79 @@ class OffemployeeController extends Controller
     }
 
 
-    public function update(Request $request, OffRequest $offrequest)
+    // public function update(Request $request, OffRequest $offrequest)
+    // {
+    //     // Validasi input
+    //     $request->validate([
+    //         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Gambar bersifat opsional pada saat edit
+    //     ]);
+
+    //     // Jika ada gambar yang di-upload
+    //     if ($request->hasFile('image')) {
+    //         // Hapus gambar lama jika ada
+    //         if ($offrequest->image) {
+    //             Storage::delete('uploads/' . $offrequest->image);
+    //         }
+
+    //         // Upload gambar baru
+    //         $imageName = $this->uploadImage($request);
+
+    //         // Update gambar di database
+    //         $offrequest->image = $imageName;
+    //     }
+
+    //     // Update data lainnya jika ada perubahan
+    //     $offrequest->update($request->only(['title', 'description', 'start_event', 'end_event', 'manager_id']));
+
+    //     return redirect()->route('offrequest.index')->with('success', 'Pengajuan cuti berhasil diperbarui.');
+    // }
+
+
+    public function edit($id)
     {
-        // Validasi input
+        // Cari data offrequest berdasarkan ID
+        $offrequest = Offrequest::findOrFail($id);
+
+        // Pastikan hanya user yang memiliki akses yang bisa mengedit
+        if ($offrequest->user_id !== Auth::id()) {
+            return redirect()->route('offrequest.index')->with('error', 'Anda tidak memiliki izin untuk mengedit pengajuan ini.');
+        }
+
+        $approvers = User::permission('offrequest.approver')->get();
+        return view('employee.offrequest.create', compact('offrequest', 'approvers'))->with('isEdit', true);
+    }
+
+
+    public function update(Request $request, $id)
+    {
+        // Cari data offrequest berdasarkan ID
+        $offrequest = Offrequest::findOrFail($id);
+
+        // Pastikan hanya user yang memiliki akses yang bisa mengedit
+        if ($offrequest->user_id !== Auth::id()) {
+            return redirect()->route('offrequest.index')->with('error', 'Anda tidak memiliki izin untuk mengedit pengajuan ini.');
+        }
+
+        // Validasi input hanya untuk gambar
         $request->validate([
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Gambar bersifat opsional pada saat edit
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi gambar
         ]);
 
-        // Jika ada gambar yang di-upload
+        // Proses upload gambar jika ada file yang diunggah
         if ($request->hasFile('image')) {
             // Hapus gambar lama jika ada
             if ($offrequest->image) {
-                Storage::delete('uploads/' . $offrequest->image);
+                Storage::delete('offrequests/' . $offrequest->image);
             }
 
             // Upload gambar baru
-            $imageName = $this->uploadImage($request);
-
-            // Update gambar di database
-            $offrequest->image = $imageName;
+            $imageName = $request->file('image')->store('offrequests');
+            $offrequest->update(['image' => $imageName]);
         }
 
-        // Update data lainnya jika ada perubahan
-        $offrequest->update($request->only(['title', 'description', 'start_event', 'end_event', 'manager_id']));
-
-        return redirect()->route('offrequest.index')->with('success', 'Pengajuan cuti berhasil diperbarui.');
+        return redirect()->route('offrequest.index')->with('success', 'Gambar berhasil diperbarui.');
     }
+
 
 
 
