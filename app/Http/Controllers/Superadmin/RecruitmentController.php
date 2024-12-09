@@ -43,6 +43,7 @@ class RecruitmentController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         $validated = $request->validate(
             [
                 'first_name' => 'required|string',
@@ -76,11 +77,12 @@ class RecruitmentController extends Controller
                 'remarks' => $validated['remarks'],
                 'status' => $validated['status'],
             ]);
+            if ($recruitment && $recruitment->status === 'Accept') {
+                $existingEmployee = Employee::where('recruitment_id', $recruitment->recruitment_id)->first();
 
-            if ($recruitment->status === 'Accept') {
-                $employee = Employee::firstOrCreate(
-                    ['recruitment_id' => $recruitment->id],
-                    [
+                if (!$existingEmployee) {
+                    $employee = Employee::create([
+                        'recruitment_id' => $recruitment->recruitment_id,
                         'first_name' => $recruitment->first_name,
                         'last_name' => $recruitment->last_name,
                         'email' => $recruitment->email,
@@ -88,17 +90,26 @@ class RecruitmentController extends Controller
                         'date_of_birth' => $recruitment->date_of_birth,
                         'last_education' => $recruitment->last_education,
                         'cv_file' => $recruitment->cv_file,
-                    ],
-                );
+                        'status' => 'Active',
+                    ]);
 
-                User::firstOrCreate(
-                    ['employee_id' => $employee->id],
-                    [
+                    $user = User::create([
                         'name' => $recruitment->first_name . ' ' . $recruitment->last_name,
                         'email' => $recruitment->email,
-                        'employee_id' => $employee->id,
-                    ],
-                );
+                        'employee_id' => $employee->employee_id,
+                        'recruitment_id' => $recruitment->recruitment_id,
+                        'password' => bcrypt('defaultPassword'),
+                    ]);
+
+                    $employee->update([
+                        'user_id' => $user->user_id,
+                    ]);
+
+                    $recruitment->update([
+                        'employee_id' => $employee->employee_id,
+                        'user_id' => $user->user_id,
+                    ]);
+                }
             }
 
             return redirect()->route('recruitment.index')->with('success', 'Recruitment successfully created');
@@ -155,9 +166,9 @@ class RecruitmentController extends Controller
             $recruitment->remarks = $validated['remarks'] ?? $recruitment->remarks;
             $recruitment->save();
 
-            if (strtolower($recruitment->status) === 'Accept') {
-                $employee = Employee::firstOrCreate(
-                    ['recruitment_id' => $recruitment->id],
+            if (strtolower($recruitment->status) === 'accept') {
+                $employee = Employee::updateOrCreate(
+                    ['recruitment_id' => $recruitment->recruitment_id],
                     [
                         'first_name' => $recruitment->first_name,
                         'last_name' => $recruitment->last_name,
@@ -166,17 +177,28 @@ class RecruitmentController extends Controller
                         'date_of_birth' => $recruitment->date_of_birth,
                         'last_education' => $recruitment->last_education,
                         'cv_file' => $recruitment->cv_file,
+                        'status' => 'Active',
                     ],
                 );
 
-                User::firstOrCreate(
-                    ['employee_id' => $employee->id],
+                $user = User::updateOrCreate(
+                    ['employee_id' => $employee->employee_id],
                     [
                         'name' => $recruitment->first_name . ' ' . $recruitment->last_name,
                         'email' => $recruitment->email,
-                        'employee_id' => $employee->id,
+                        'employee_id' => $employee->employee_id,
+                        'recruitment_id' => $recruitment->recruitment_id,
+                        'password' => bcrypt('defaultPassword'), 
                     ],
                 );
+
+                $employee->update(['user_id' => $user->user_id]);
+
+                // Update kolom employee_id dan user_id di tabel Recruitment
+                $recruitment->update([
+                    'employee_id' => $employee->employee_id,
+                    'user_id' => $user->user_id,
+                ]);
             }
 
             return redirect()->route('recruitment.index')->with('success', 'Recruitment updated successfully');

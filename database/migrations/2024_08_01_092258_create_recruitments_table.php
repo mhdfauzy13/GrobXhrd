@@ -20,20 +20,13 @@ class CreateRecruitmentsTable extends Migration
             $table->string('apply_position');
             $table->string('cv_file');
             $table->text('remarks')->nullable();
-            $table->enum('status', [
-                'Initial Interview',
-                'User Interview 1',
-                'User Interview 2',
-                'Background Check',
-                'Offering letter',
-                'Accept',
-                'Decline'
-            ])->default('Initial Interview');
+            $table->enum('status', ['Initial Interview', 'User Interview 1', 'User Interview 2', 'Background Check', 'Offering letter', 'Accept', 'Decline'])->default('Initial Interview');
+            $table->unsignedBigInteger('employee_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
 
             $table->timestamps();
         });
     }
-
 
     public function down()
     {

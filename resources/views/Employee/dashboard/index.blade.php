@@ -37,7 +37,8 @@
                             <tbody>
                                 @foreach ($attendances as $attendance)
                                     <tr>
-                                        <td class="text-center">{{ $attendance->created_at->format('Y-m-d') }}</td>
+                                        <td class="text-center">{{ $attendance->created_at->format('d F Y') }}</td>
+
                                         <td class="text-center">
                                             {{ $attendance->check_in ? $attendance->check_in->format('H:i:s') : '-' }}</td>
                                         <td class="text-center">
@@ -60,6 +61,7 @@
             </div>
 
 
+            {{-- <div class="col-lg-6 col-md-6 col-sm-12 mt-3">
             {{-- <div class="col-lg-6 col-md-6 col-sm-12 mt-3">
                 <div class="card card-primary">
                     <div class="card-header d-flex justify-content-between align-items-center">

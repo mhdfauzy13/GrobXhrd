@@ -26,9 +26,11 @@ class OvertimeController extends Controller
             ->with('user.employee') // Memuat relasi user dan employee
             ->get();
 
+            ->with('user.employee') // Memuat relasi user dan employee
+            ->get();
+
         return view('superadmin.overtime.index', compact('overtimes'));
     }
-
 
     public function create()
     {
@@ -40,12 +42,32 @@ class OvertimeController extends Controller
 
     public function store(Request $request)
     {
+        // $request->validate([
+        //     'overtime_date' => 'required|date',
+        //     'duration' => 'required|integer|min:1',
+        //     'notes' => 'required|string|max:255',
+        //     'manager_id' => 'required|exists:users,user_id',
+        // ]);
+
         $request->validate([
-            'overtime_date' => 'required|date',
+            'overtime_date' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) {
+                    $existingOvertime = Overtime::where('user_id', Auth::id())
+                                                ->where('overtime_date', $value)
+                                                ->whereIn('status', ['pending', 'approved'])
+                                                ->exists();
+                    if ($existingOvertime) {
+                        $fail('Anda sudah memiliki pengajuan overtime untuk tanggal ini.');
+                    }
+                }
+            ],
             'duration' => 'required|integer|min:1',
             'notes' => 'required|string|max:255',
             'manager_id' => 'required|exists:users,user_id',
         ]);
+        
 
         Overtime::create([
             'user_id' => Auth::id(),
@@ -65,16 +87,13 @@ class OvertimeController extends Controller
         $pendingOvertimes = Overtime::where('status', 'pending')->get();
 
         // Riwayat overtime yang sudah disetujui/rejected oleh manager yang sedang login
-        $managerId = auth()->user()->id;  // Mendapatkan ID manager yang sedang login
+        $managerId = auth()->user()->id; // Mendapatkan ID manager yang sedang login
         $historyOvertimes = Overtime::whereIn('status', ['approved', 'rejected'])
             ->where('manager_id', $managerId) // Filter berdasarkan manager yang sedang login
             ->get();
 
         return view('superadmin.overtime.approve', compact('pendingOvertimes', 'historyOvertimes'));
     }
-
-
-
 
     // Metode untuk update status overtime
     public function updateStatus($id, Request $request)
@@ -96,17 +115,5 @@ class OvertimeController extends Controller
 
         // Kembalikan response dengan pesan sukses
         return redirect()->route('overtime.index')->with('success', 'Overtime status updated successfully.');
-    }
-
-
-    public function approve($overtimeId)
-    {
-        $overtime = Overtime::findOrFail($overtimeId);
-
-        // Ubah status overtime menjadi 'approved'
-        $overtime->status = 'approved';
-        $overtime->save();
-
-        return redirect()->back()->with('success', 'Overtime approved successfully');
     }
 }

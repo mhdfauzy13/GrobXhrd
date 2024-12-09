@@ -12,7 +12,7 @@ use App\Models\SalaryDeduction;
 use App\Models\WorkdaySetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Log;
 
 class PayrollController extends Controller
 {
@@ -21,48 +21,51 @@ class PayrollController extends Controller
         $this->middleware('permission:payroll.index')->only(['index', 'updateValidationStatus', 'exportToCsv']);
     }
 
-
     public function index()
     {
         // Ambil data semua employee
         $employees = Employee::all();
 
+        // Ambil data salary deduction
         $salaryDeduction = SalaryDeduction::first();
         $lateDeduction = $salaryDeduction ? $salaryDeduction->late_deduction : 0;
         $earlyDeduction = $salaryDeduction ? $salaryDeduction->early_deduction : 0;
 
         $payrollData = $employees->map(function ($employee) use ($lateDeduction, $earlyDeduction) {
 
-            // Ambil data dari AttendanceRecap untuk employee ini
-            $attendanceRecap = AttandanceRecap::where('employee_id', $employee->employee_id)
-                //    ->where('month', now()->format('F')) // Mengambil data bulan ini
-                ->first();
+            // Pastikan user_id valid
+            if (!$employee->user_id) {
+                // Jika user_id tidak valid, skip proses dan log
+                Log::warning("Invalid user_id for employee {$employee->employee_id}");
+                return null; // Skip entry jika user_id tidak ada
+            }
 
+            // Ambil data dari AttendanceRecap untuk employee ini
+            $attendanceRecap = AttandanceRecap::where('user_id', $employee->employee_id)->first();
+
+            // Hitung total hari kerja, total terlambat, dan total awal pulang
             $totalWorkedDays = $attendanceRecap ? $attendanceRecap->total_present : 0;
             $totalLate = $attendanceRecap ? $attendanceRecap->total_late : 0;
             $totalEarly = $attendanceRecap ? $attendanceRecap->total_early : 0;
 
-            $totalDaysOff = Offrequest::where('employee_id', $employee->employee_id)
+            // Hitung total hari cuti
+            $totalDaysOff = Offrequest::where('user_id', $employee->employee_id)
                 ->where('status', 'approved')
                 ->get()
                 ->sum(function ($offrequest) {
                     $start = Carbon::parse($offrequest->start_event)->toDateString();
                     $end = Carbon::parse($offrequest->end_event)->toDateString();
-
-                    // Hitung selisih hari berdasarkan tanggal
                     return Carbon::parse($start)->diffInDays($end) + 1; // Menambahkan 1 agar termasuk hari pertama
                 });
 
-            // Ambil data monthly workdays dari workday_settings
+            // Ambil settingan hari kerja bulanan
             $workdaySetting = WorkdaySetting::first();
             $monthlyWorkdays = $workdaySetting ? $workdaySetting->monthly_workdays : 0;
 
-            // Hitung durasi kerja per hari (dalam jam)
-            if ($employee->check_in_time && $employee->check_out_time) {
-                $workDurationInHours = Carbon::parse($employee->check_in_time)->diffInHours(Carbon::parse($employee->check_out_time));
-            } else {
-                $workDurationInHours = 8; // Default 
-            }
+            // Hitung durasi kerja per hari dalam jam
+            $workDurationInHours = ($employee->check_in_time && $employee->check_out_time)
+                ? Carbon::parse($employee->check_in_time)->diffInHours(Carbon::parse($employee->check_out_time))
+                : 8; // Default 8 jam
 
             // Hitung gaji per jam
             $dailySalary = $monthlyWorkdays > 0 ? $employee->current_salary / $monthlyWorkdays : 0;
@@ -76,17 +79,18 @@ class PayrollController extends Controller
             $hourlyRate = $employee->hourly_rate;
             $overtimePay = $totalOvertimeHours * $hourlyRate;
 
-            // Hitung total deduction berdasarkan total late dan early
+            // Hitung total deduksi berdasarkan terlambat dan awal pulang
             $totalLateDeduction = $totalLate * $lateDeduction;
             $totalEarlyDeduction = $totalEarly * $earlyDeduction;
             $totalDeductions = $totalLateDeduction + $totalEarlyDeduction;
 
-            // Hitung total payroll (gaji dasar, deduksi, lembur)
+            // Hitung total payroll
             $baseSalary = $totalWorkedDays * $dailySalary;
             $totalPayroll = $baseSalary - $totalDeductions + $overtimePay;
 
+            // Update atau buat data payroll
             Payroll::updateOrCreate(
-                ['employee_id' => $employee->employee_id],
+                ['user_id' => $employee->user_id],
                 [
                     'employee_name' => $employee->first_name . ' ' . $employee->last_name,
                     'current_salary' => $employee->current_salary,
@@ -102,6 +106,7 @@ class PayrollController extends Controller
                 ]
             );
 
+            // Return data payroll untuk tampilan
             return [
                 'id' => $employee->employee_id,
                 'employee_name' => $employee->first_name . ' ' . $employee->last_name,
@@ -116,7 +121,14 @@ class PayrollController extends Controller
                 'status' => 'pending',
             ];
         });
+        });
 
+        // Filter data payroll yang valid (tidak null)
+        $payrollData = $payrollData->filter(function ($item) {
+            return $item !== null;
+        });
+
+        // Tampilkan view dengan data payroll yang sudah dihitung
         return view('superadmin.payroll.index', compact('payrollData'));
     }
 
@@ -147,10 +159,8 @@ class PayrollController extends Controller
             ->with('success', 'Payroll has been ' . $validatedData['status'] . ' successfully.');
     }
 
-
     public function exportToCsv()
     {
-
         // Ambil data payroll yang sudah disetujui (approved)
         $payrollData = Payroll::where('status', 'approved')->get();
 

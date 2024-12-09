@@ -25,24 +25,24 @@ class EventSeeder extends Seeder
 
             while ($currentDate->format('Y-m-d') <= $endDate) {
                 // Memeriksa apakah hari ini adalah hari Minggu
-                if ($currentDate->dayOfWeek === 0) {
-                    // Memeriksa apakah event sudah ada untuk tanggal ini
-                    $existingEvent = Event::where('start_date', $currentDate->format('Y-m-d'))
-                        ->where('title', 'holiday')
-                        ->first();
+                // if ($currentDate->dayOfWeek === 0) {
+                //     // Memeriksa apakah event sudah ada untuk tanggal ini
+                //     $existingEvent = Event::where('start_date', $currentDate->format('Y-m-d'))
+                //         ->where('title', 'holiday')
+                //         ->first();
 
 
-                    if (!$existingEvent) {
-                        Event::create([
-                            'title' => 'holiday',
-                            'start_date' => $currentDate->format('Y-m-d'),
-                            'end_date' => $currentDate->format('Y-m-d'),
-                            'category' => 'danger', // Kategori 'danger'
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ]);
-                    }
-                }
+                //     if (!$existingEvent) {
+                //         Event::create([
+                //             'title' => 'holiday',
+                //             'start_date' => $currentDate->format('Y-m-d'),
+                //             'end_date' => $currentDate->format('Y-m-d'),
+                //             'category' => 'danger', // Kategori 'danger'
+                //             'created_at' => now(),
+                //             'updated_at' => now(),
+                //         ]);
+                //     }
+                // }
 
                 // Mengupdate tanggal ke hari berikutnya
                 $currentDate->addDay();

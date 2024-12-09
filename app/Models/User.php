@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+
 class User extends Authenticatable
 {
     use HasRoles, Notifiable, SoftDeletes;
@@ -25,14 +26,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected static function booted()
-    {
-        static::deleting(function ($user) {
-            if ($user->hasRole('Superadmin')) {
-                throw new \Exception('SuperAdmin tidak dapat dihapus.');
-            }
-        });
-    }
 
     public function employee()
     {
@@ -67,4 +60,7 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Recruitment::class, 'recruitment_id', 'recruitment_id');
     }
+
+    
+    
 }

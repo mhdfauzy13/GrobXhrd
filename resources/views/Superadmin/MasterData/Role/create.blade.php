@@ -118,8 +118,9 @@
             'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.approver'],
             'employeebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
             'event' => ['event.index', 'event.lists', 'event.create', 'event.edit', 'event.delete'],
-            'overtime' => ['overtime.create', 'overtime.approvals'],
+            'overtime' => ['overtime.create','overtime.approvals'],
             'settings' => ['settings.index', 'settings.company', 'settings.deductions', 'settings.worksdays'],
+            'resignationrequest' => ['resignationrequest.index', 'resignationrequest.create', 'resignationrequest.approver'],
             'divisions' => ['divisions.index', 'divisions.create', 'divisions.edit', 'divisions.delete'],
         ] as $feature => $featurePermissions)
                                             <div class="card mt-3">
@@ -283,6 +284,14 @@
         document.getElementById('selectAllDivisions').addEventListener('click', function(e) {
             e.preventDefault();
             let checkboxes = document.querySelectorAll('.divisions-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !checkbox.checked;
+            });
+        });
+
+        document.getElementById('selectAllResignationrequest').addEventListener('click', function(e) {
+            e.preventDefault();
+            let checkboxes = document.querySelectorAll('.resignationrequest-checkbox');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = !checkbox.checked;
             });

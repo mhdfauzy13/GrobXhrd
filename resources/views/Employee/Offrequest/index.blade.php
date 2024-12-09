@@ -83,6 +83,8 @@
                                     <td>
                                         <span
                                             class="badge {{ $offrequest->status == 'approved' ? 'bg-success' : ($offrequest->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
+                                        <span
+                                            class="badge {{ $offrequest->status == 'approved' ? 'bg-success' : ($offrequest->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
                                             {{ ucfirst($offrequest->status) }}
                                         </span>
                                     </td>
@@ -109,6 +111,7 @@
                                 </tr>
                             @endforelse
                         </tbody>
+
 
                     </table>
                 </div>
@@ -155,22 +158,20 @@
 
 
     <script>
+        // Fungsi untuk menampilkan gambar yang telah diupload
         function showImage(src) {
-            // Menampilkan gambar bukti cuti
             document.getElementById('previewImage').src = src;
         }
 
         // Fungsi untuk membuka modal upload gambar
+        // Fungsi untuk membuka modal upload gambar
         function openUploadModal(offrequestId) {
             const formAction = document.getElementById('uploadImageForm').action.replace(':id', offrequestId);
             document.getElementById('uploadImageForm').action = formAction;
-
-            // Set ID permohonan cuti pada input hidden
             document.getElementById('offrequest_id').value = offrequestId;
-
-            // Menampilkan modal upload gambar
-            $('#uploadImageModal').modal('show');
+            $('#uploadImageModal').modal('show'); // Menampilkan modal
         }
     </script>
+
 
 @endsection

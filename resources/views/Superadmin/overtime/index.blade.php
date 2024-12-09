@@ -89,32 +89,32 @@
                     </button>
                 </div>
             </div>
-    
+
             <!-- Menampilkan pesan success/error -->
             @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
                 </div>
             @endif
-    
+
             @if (session('error'))
                 <div class="alert alert-danger">
                     {{ session('error') }}
                 </div>
             @endif
 
-    
-                <!-- Tabel untuk daftar permohonan overtime -->
-                <div class="table-responsive">
-                    <table class="table table-striped projects">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Overtime Date</th>
-                                <th>Duration (Hours)</th>
-                                <th>Notes</th>
-                                {{-- <th>Manager</th> --}}
-                                <th>Current Salary</th>
+
+            <!-- Tabel untuk daftar permohonan overtime -->
+            <div class="table-responsive">
+                <table class="table table-striped projects">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Overtime Date</th>
+                            <th>Duration (Hours)</th>
+                            <th>Notes</th>
+                            {{-- <th>Manager</th> --}}
+                            <th>Current Salary</th>
 
                                 <th>Status</th>
                                 {{-- <th>Actions</th> --}}
@@ -159,8 +159,8 @@
                         {{ $overtimes->links('vendor.pagination.adminlte') }}
                     </div>
                 </div> --}}
-            </div>
+        </div>
         </div>
     </section>
-    
+
 @endsection

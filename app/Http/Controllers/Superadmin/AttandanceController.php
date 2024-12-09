@@ -187,16 +187,14 @@ class AttandanceController extends Controller
         }
         $workdays = $workdaySetting->effective_days;
 
-        // Ambil hari libur dari Calendar
         $startDate = Carbon::parse($month)->startOfMonth();
-        $endDate = Carbon::now(); // Sampai tanggal hari ini
+        $endDate = Carbon::now();
         $holidays = [];
 
         $dangerEvents = Event::whereBetween('start_date', [$startDate, $endDate])
             ->where('category', 'danger')
             ->get();
 
-        // Loop untuk menambahkan semua tanggal antara start_date dan end_date ke dalam array $holidays
         foreach ($dangerEvents as $event) {
             $rangeStart = Carbon::parse($event->start_date);
             $rangeEnd = Carbon::parse($event->end_date);
