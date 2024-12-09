@@ -26,9 +26,6 @@ class OvertimeController extends Controller
             ->with('user.employee') // Memuat relasi user dan employee
             ->get();
 
-            ->with('user.employee') // Memuat relasi user dan employee
-            ->get();
-
         return view('superadmin.overtime.index', compact('overtimes'));
     }
 

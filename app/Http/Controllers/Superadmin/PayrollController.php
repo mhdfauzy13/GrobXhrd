@@ -121,7 +121,7 @@ class PayrollController extends Controller
                 'status' => 'pending',
             ];
         });
-        });
+      
 
         // Filter data payroll yang valid (tidak null)
         $payrollData = $payrollData->filter(function ($item) {
