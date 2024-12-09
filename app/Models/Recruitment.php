@@ -16,7 +16,8 @@ class Recruitment extends Model
 
     // Menambahkan 'apply_position' ke dalam $fillable
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'phone_number',
         'date_of_birth',
@@ -24,11 +25,21 @@ class Recruitment extends Model
         'last_position',
         'apply_position', // Menambahkan kolom apply_position
         'cv_file',
-        'comment',
+        'remarks',
         'status',
     ];
 
     protected $casts = [
         'status' => 'string',
     ];
+
+    public function employee()
+    {
+        return $this->hasOne(Employee::class, 'recruitment_id');
+    }
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'recruitment_id', 'recruitment_id');
+    }
 }

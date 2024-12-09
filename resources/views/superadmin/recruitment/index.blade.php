@@ -1,10 +1,10 @@
 @extends('layouts.app')
-
+@section('title', 'Recruitment/index')
 @section('content')
     <section class="content">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Recruitment List</h3>
+                <h3 class="card-title">Recruitment</h3>
                 <div class="card-tools d-flex align-items-center">
                     <!-- Button to add a new recruitment -->
                     <a class="btn btn-primary btn-sm" href="{{ route('recruitment.create') }}">
@@ -24,28 +24,31 @@
                     <table class="table table-striped projects">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone Number</th>
-                                <th>CV File</th>
+                                <th class="text-left">First Name</th>
+                                <th class="text-center">Last Name</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Phone Number</th>
+                                <th class="text-center">Apply Position</th>
+                                <th class="text-center">CV File</th>
                                 <th class="text-center">Status</th>
-                                <th class="text-center">Actions</th>
+                                <th class="text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if ($recruitments->isEmpty())
                                 <tr>
-
-                                    <td colspan="6" class="text-center">No results found</td>
+                                    <td colspan="8" class="text-center">No results found</td>
                                 </tr>
                             @else
                                 @foreach ($recruitments as $recruitment)
-                                    <tr style="cursor: pointer;"
-                                        onclick="window.location='{{ route('recruitment.show', $recruitment->recruitment_id) }}'">
-                                        <td>{{ $recruitment->name }}</td>
-                                        <td>{{ $recruitment->email }}</td>
-                                        <td>{{ $recruitment->phone_number }}</td>
-                                        <td>
+                                    <tr data-url="{{ route('recruitment.show', $recruitment->recruitment_id) }}"
+                                        class="clickable-row">
+                                        <td class="text-left">{{ $recruitment->first_name }}</td>
+                                        <td class="text-center">{{ $recruitment->last_name }}</td>
+                                        <td class="text-center">{{ $recruitment->email }}</td>
+                                        <td class="text-center">{{ $recruitment->phone_number }}</td>
+                                        <td class="text-center">{{ $recruitment->apply_position }}</td>
+                                        <td class="text-center">
                                             <a href="{{ Storage::url($recruitment->cv_file) }}" target="_blank"
                                                 onclick="event.stopPropagation();">Download CV</a>
                                         </td>
@@ -60,13 +63,12 @@
                                                 href="{{ route('recruitment.edit', $recruitment->recruitment_id) }}">
                                                 <i class="fas fa-pencil-alt"></i> Edit
                                             </a>
-                                            <form action="{{ route('recruitment.destroy', $recruitment->recruitment_id) }}"
+                                            <form id="quickForm" action="{{ route('recruitment.destroy', $recruitment->recruitment_id) }}"
                                                 method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger"
-                                                    onclick="return confirm('Are you sure you want to delete this recruitment?')">
-                                                    <i class="fas fa-trash"></i> Delete
+                                                <button type="submit" class="deletebutton btn btn-sm btn-danger">
+                                                    <i class="deletebutton fas fa-trash"></i> Delete
                                                 </button>
                                             </form>
                                         </td>

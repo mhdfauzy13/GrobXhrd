@@ -10,17 +10,16 @@ class CreateRecruitmentsTable extends Migration
     {
         Schema::create('recruitments', function (Blueprint $table) {
             $table->bigIncrements('recruitment_id');
-            $table->string('name');
+            $table->string('first_name');
+            $table->string('last_name');
             $table->string('email')->unique();
             $table->string('phone_number');
             $table->date('date_of_birth');
             $table->string('last_education');
             $table->string('last_position');
-            $table->string('apply_position'); // Field baru
+            $table->string('apply_position');
             $table->string('cv_file');
-            $table->text('comment')->nullable();
-
-            // Status enum yang sudah ada
+            $table->text('remarks')->nullable();
             $table->enum('status', [
                 'Initial Interview',
                 'User Interview 1',

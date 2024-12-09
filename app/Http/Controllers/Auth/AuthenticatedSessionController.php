@@ -43,9 +43,9 @@ class AuthenticatedSessionController extends Controller
             }
         }
 
-        if ($user->hasPermissionTo('dashboard.view')) {
+        if ($user->hasPermissionTo('dashboard.superadmin')) {
             return redirect()->route('dashboard.index');
-        } elseif ($user->hasPermissionTo('dashboardemployee.view')) {
+        } elseif ($user->hasPermissionTo('dashboard.employee')) {
             return redirect()->route('dashboardemployee.index');
         }
 

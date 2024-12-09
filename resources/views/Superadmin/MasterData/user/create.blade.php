@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Datauser/create')
 @section('content')
     <div class="content">
         <section class="content">
@@ -72,6 +72,7 @@
 
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+                            <a href="{{ route('datauser.index') }}" class="btn btn-secondary">Back</a>
                         </div>
                     </form>
                 </div>

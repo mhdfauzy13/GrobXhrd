@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Role/edit')
 @section('content')
     <div class="content">
         <section class="content-header">
@@ -40,7 +40,7 @@
                                     @method('PUT')
                                     <div class="card-body">
                                         <div class="form-group">
-                                            <label for="roleName">Name Role</label>
+                                            <label for="roleName">Role Name</label>
                                             <input type="text" name="name" class="form-control" id="roleName"
                                                 value="{{ old('name', $role->name) }}" required>
                                         </div>
@@ -58,11 +58,11 @@
                                             <!-- Fitur Dashboard -->
                                             <div class="card mt-3">
                                                 <div class="card-header">
-                                                    <a href="#" id="selectAllDashboard" class="card-title">Fitur
-                                                        Dashboard</a>
+                                                    <a href="#" id="selectAllDashboard"
+                                                        class="card-title">Dashboard</a>
                                                 </div>
                                                 <div class="card-body">
-                                                    @foreach ($permissions->whereIn('name', ['dashboard.view', 'dashboardemployee.view']) as $permission)
+                                                    @foreach ($permissions->whereIn('name', ['dashboard.superadmin', 'dashboard.employee']) as $permission)
                                                         <div class="custom-control custom-checkbox">
                                                             <input type="checkbox" name="permissions[]"
                                                                 value="{{ $permission->name }}"
@@ -81,7 +81,7 @@
                                             <!-- Fitur Role -->
                                             <div class="card mt-3">
                                                 <div class="card-header">
-                                                    <a href="#" id="selectAllRole" class="card-title">Fitur Role</a>
+                                                    <a href="#" id="selectAllRole" class="card-title">Role</a>
                                                 </div>
                                                 <div class="card-body">
                                                     @foreach ($permissions->whereIn('name', ['role.index', 'role.create', 'role.edit', 'role.delete']) as $permission)
@@ -103,7 +103,7 @@
                                             <!-- Fitur User -->
                                             <div class="card mt-3">
                                                 <div class="card-header">
-                                                    <a href="#" id="selectAllUser" class="card-title">Fitur User</a>
+                                                    <a href="#" id="selectAllUser" class="card-title">User</a>
                                                 </div>
                                                 <div class="card-body">
                                                     @foreach ($permissions->whereIn('name', ['user.index', 'user.create', 'user.edit', 'user.delete']) as $permission)
@@ -127,17 +127,20 @@
             'employee' => ['employee.index', 'employee.create', 'employee.edit', 'employee.delete'],
             'payroll' => ['payroll.index', 'payroll.create', 'payroll.edit', 'payroll.delete'],
             'recruitment' => ['recruitment.index', 'recruitment.create', 'recruitment.edit', 'recruitment.delete'],
-            'attandance' => ['attandance.index', 'attandance.scanView', 'attandance.scan'],
+            'attendance' => ['attendance.index', 'attendance.scan'],
             'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.approver'],
             'employeebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
             'event' => ['event.index', 'event.lists', 'event.create', 'event.edit', 'event.delete'],
+            'overtime' => ['overtime.create','overtime.approvals'],
+
             'settings' => ['settings.index', 'settings.company', 'settings.deductions', 'settings.worksdays'],
             'resignationrequest' => ['resignationrequest.index', 'resignationrequest.create', 'resignationrequest.approver'],
+            'divisions' => ['divisions.index', 'divisions.create', 'divisions.edit', 'divisions.delete'],
         ] as $feature => $featurePermissions)
                                                 <div class="card mt-3">
                                                     <div class="card-header">
                                                         <a href="#" id="selectAll{{ ucfirst($feature) }}"
-                                                            class="card-title">Fitur {{ ucfirst($feature) }}</a>
+                                                            class="card-title">{{ ucfirst($feature) }}</a>
                                                     </div>
                                                     <div class="card-body">
                                                         @foreach ($permissions->whereIn('name', $featurePermissions) as $permission)
@@ -172,8 +175,8 @@
                                     </div>
 
                                     <div class="card-footer">
+                                        <button type="submit" id="saveButton" class="btn btn-primary">Update</button>
                                         <a href="{{ route('role.index') }}" class="btn btn-secondary">Back</a>
-                                        <button type="submit" id="saveButton" class="btn btn-primary">Save</button>
                                     </div>
                                 </form>
                             </div>
@@ -194,8 +197,11 @@
 
             // Add event listeners for each feature select all
             const features = [
-                'dashboard', 'role', 'user', 'employee', 'payroll', 'recruitment', 'attandance',
-                'offrequest', 'employeebook', 'event', 'settings', 'resignationrequest'
+
+
+                'dashboard', 'role', 'user', 'employee', 'payroll', 'recruitment', 'attendance',
+                'offrequest', 'employeebook', 'event', 'settings', 'overtime', 'divisions', 'resignationrequest'
+
             ];
 
             features.forEach(feature => {

@@ -21,10 +21,27 @@ class DataUserController extends Controller
         $this->middleware('permission:user.delete')->only('destroy');
     }
 
-    public function index(): View
+    public function index(Request $request)
     {
-        $users = User::with('roles')->paginate(10);
-        return view('Superadmin.MasterData.user.index', ['users' => $users]);
+        $search = $request->query('search');
+        $users = User::with('roles')
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('name', 'asc')
+            ->paginate(10);
+
+        if ($users->isEmpty() && $search) {
+            return redirect()
+                ->route('datauser.index')
+                ->withErrors(['No data found for the search term: ' . $search]);
+        }
+
+        return view('Superadmin.MasterData.user.index', [
+            'users' => $users,
+        ]);
     }
 
     public function create(): View
@@ -121,7 +138,12 @@ class DataUserController extends Controller
 
     public function destroy($userId)
     {
-        $user = User::findOrFail($userId); // Perbaikan: Menggunakan findOrFail
+        $user = User::findOrFail($userId);
+
+        // Cek apakah user adalah SuperAdmin
+        if ($user->hasRole('superadmin')) {
+            return redirect()->route('datauser.index')->with('error', 'SuperAdmin tidak dapat dihapus!');
+        }
 
         $user->delete();
         return redirect()->route('datauser.index')->with('success', 'Data berhasil dihapus!');

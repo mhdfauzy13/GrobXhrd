@@ -33,7 +33,8 @@
                             });
                         </script>
                     @endif
-                    <form action="{{ route('employee.store') }}" method="POST">
+                    <form id="quickForm" action="{{ route('employee.store') }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
 
                         <div class="card-body">
@@ -43,13 +44,11 @@
                                         <label for="first_name">First Name</label>
                                         <input type="text" name="first_name" id="first_name" class="form-control"
                                             required value="{{ old('first_name') }}">
-
                                     </div>
                                     <div class="form-group">
                                         <label for="last_name">Last Name</label>
                                         <input type="text" name="last_name" id="last_name" class="form-control" required
                                             value="{{ old('last_name') }}">
-
                                     </div>
 
                                     <div class="form-group">
@@ -73,10 +72,20 @@
                                     </div>
 
                                     <div class="form-group">
+                                        <label for="division_id">Division</label>
+                                        <select name="division_id" id="division_id" class="form-control" required>
+                                            @foreach ($divisions as $division)
+                                                <option value="{{ $division->id }}"
+                                                    {{ old('division_id') == $division->id ? 'selected' : '' }}>
+                                                    {{ $division->name }}
+                                                </option>
+                                            @endforeach
+                                        </select> 
+                                    </div>
+                                    <div class="form-group">
                                         <label for="place_birth">Place of Birth</label>
                                         <input type="text" name="place_birth" id="place_birth" class="form-control"
                                             required value="{{ old('place_birth') }}">
-
                                     </div>
 
                                     <div class="form-group">
@@ -110,8 +119,6 @@
                                     <div class="form-group">
                                         <label for="blood_type">Blood Type</label>
                                         <select name="blood_type" id="blood_type" class="form-control">
-                                            <option value="" {{ old('blood_type') == '' ? 'selected' : '' }}>Select
-                                            </option>
                                             <option value="A" {{ old('blood_type') == 'A' ? 'selected' : '' }}>A
                                             </option>
                                             <option value="B" {{ old('blood_type') == 'B' ? 'selected' : '' }}>B
@@ -132,25 +139,39 @@
 
                                     <div class="form-group">
                                         <label for="phone_number">Phone Number</label>
-                                        <input type="number" name="phone_number" id="phone_number" class="form-control"
-                                            value="{{ old('phone_number') }}">
-
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">+62</span>
+                                            </div>
+                                            <input type="text" name="phone_number" id="phone_number"
+                                                class="form-control" value="{{ old('phone_number') }}" required
+                                                oninput="phonenumber(this)" onkeypress="validatephonenumber(event)">
+                                        </div>
+                                        <small id="numberwarning" class="form-text text-danger" style="display: none;">
+                                            Please enter only numbers.
+                                        </small>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="hp_number">HP Number</label>
-                                        <input type="number" name="hp_number" id="hp_number" class="form-control"
-                                            value="{{ old('hp_number') }}">
-
+                                        <label for="hp_number">Hp Number</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">+62</span>
+                                            </div>
+                                            <input type="text" name="hp_number" id="hp_number" class="form-control"
+                                                value="{{ old('hp_number') }}" required oninput="phonenumber(this)"
+                                                onkeypress="validatephonenumber(event)">
+                                        </div>
+                                        <small id="numberwarning" class="form-text text-danger" style="display: none;">
+                                            Please enter only numbers.
+                                        </small>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="marital_status">Marital Status</label>
                                         <select name="marital_status" id="marital_status" class="form-control">
-                                            <option value="" {{ old('marital_status') == '' ? 'selected' : '' }}>
-                                                Select</option>
                                             <option value="Single"
                                                 {{ old('marital_status') == 'Single' ? 'selected' : '' }}>Single</option>
                                             <option value="Married"
@@ -161,12 +182,16 @@
                                                 {{ old('marital_status') == 'Widower' ? 'selected' : '' }}>Widower</option>
                                         </select>
                                     </div>
+                                    <div class="form-group">
+                                        <label for="cv_file">CV File</label>
+                                        <input type="file" name="cv_file" id="cv_file" class="form-control"
+                                            value="{{ old('cv_file') }}" required>
+                                    </div>
 
                                     <div class="form-group">
                                         <label for="last_education">Last Education</label>
                                         <select name="last_education" id="last_education" class="form-control">
-                                            <option value="" {{ old('last_education') == '' ? 'selected' : '' }}>
-                                                Select</option>
+
                                             <option value="Elementary School"
                                                 {{ old('last_education') == 'Elementary School' ? 'selected' : '' }}>
                                                 Elementary School</option>
@@ -188,11 +213,11 @@
                                             <option value="Associate Degree 3"
                                                 {{ old('last_education') == 'Associate Degree 3' ? 'selected' : '' }}>
                                                 Associate Degree 3</option>
-                                            <option value="Bachelors Degree"
-                                                {{ old('last_education') == 'Bachelors Degree' ? 'selected' : '' }}>
-                                                Bachelors Degree</option>
-                                            <option value="Masters Degree"
-                                                {{ old('last_education') == 'Masters Degree' ? 'selected' : '' }}>Masters
+                                            <option value="Bachelor’s Degree"
+                                                {{ old('last_education') == 'Bachelor’s Degree' ? 'selected' : '' }}>
+                                                Bachelor’s Degree</option>
+                                            <option value="Master’s Degree"
+                                                {{ old('last_education') == 'Master’s Degree' ? 'selected' : '' }}>Master’s
                                                 Degree</option>
                                             <option value="Doctoral Degree"
                                                 {{ old('last_education') == 'Doctoral Degree' ? 'selected' : '' }}>Doctoral
@@ -204,7 +229,6 @@
                                         <label for="degree">Degree</label>
                                         <input type="text" name="degree" id="degree" class="form-control"
                                             value="{{ old('degree') }}">
-
                                     </div>
 
                                     <div class="form-group">
@@ -232,7 +256,7 @@
                                     <div class="form-group">
                                         <label for="insurance">Insurance</label>
                                         <select name="insurance" id="insurance" class="form-control">
-                                            <option value="">Select</option>
+
                                             <option value="1">Yes</option>
                                             <option value="0">No</option>
                                         </select>
@@ -256,14 +280,11 @@
                                         <label for="emergency_contact">Emergency Contact</label>
                                         <input type="text" name="emergency_contact" id="emergency_contact"
                                             class="form-control" value="{{ old('emergency_contact') }}">
-
-
                                     </div>
 
                                     <div class="form-group">
                                         <label for="relations">Relations</label>
                                         <select name="relations" id="relations" class="form-control">
-                                            <option value="">Select</option>
                                             <option value="Parent" {{ old('relations') == 'Parent' ? 'selected' : '' }}>
                                                 Parent</option>
                                             <option value="Guardian"
@@ -280,34 +301,98 @@
 
                                     <div class="form-group">
                                         <label for="emergency_number">Emergency Number</label>
-                                        <input type="number" name="emergency_number" id="emergency_number"
-                                            class="form-control" value="{{ old('emergency_number') }}">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">+62</span>
+                                            </div>
+                                            <input type="text" name="emergency_number" id="emergency_number"
+                                                class="form-control" value="{{ old('emergency_number') }}" required
+                                                oninput="phonenumber(this)" onkeypress="validatephonenumber(event)">
+                                        </div>
+                                        <small id="numberwarning" class="form-text text-danger" style="display: none;">
+                                            Please enter only numbers.
+                                        </small>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="status">Status</label>
                                         <select name="status" id="status" class="form-control">
-                                            <option value="">Select</option>
                                             <option value="Active" {{ old('status') == 'Active' ? 'selected' : '' }}>
                                                 Active</option>
                                             <option value="Inactive" {{ old('status') == 'Inactive' ? 'selected' : '' }}>
                                                 Inactive</option>
+                                            <option value="Pending" {{ old('status') == 'Pending' ? 'selected' : '' }}>
+                                                Pending</option>
+                                            <option value="Suspend" {{ old('status') == 'Suspend' ? 'selected' : '' }}>
+                                                Suspend</option>
                                         </select>
-
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Save</button>
-                            <a href="{{ route('employeebooks.index') }}" class="btn btn-secondary">Back</a>
+                            <button id="saveemployee" type="submit" class="btn btn-primary">Save</button>
+                            <a href="{{ route('employee.index') }}" class="btn btn-secondary">Back</a>
                         </div>
                     </form>
                 </div>
             </div>
         </section>
     </div>
+
+    <script>
+        // Function to automatically update phone number prefix
+        function phonenumber(input) {
+            // Get the value from the input
+            let value = input.value;
+
+            // If the value starts with '0', replace it with '+62'
+            if (value.startsWith('0')) {
+                input.value = '+62' + value.slice(1);
+            }
+        }
+
+        // Function to validate phone number input (only numbers allowed)
+        function validatephonenumber(event) {
+            const input = event.target;
+            const char = String.fromCharCode(event.which);
+
+            // Allow only numbers (0-9) and prevent other characters
+            if (!/[0-9]/.test(char)) {
+                event.preventDefault(); // Prevent the input
+                document.getElementById('numberwarning').style.display = 'block'; // Show warning
+            } else {
+                document.getElementById('numberwarning').style.display = 'none'; // Hide warning
+            }
+        }
+    </script>
+
+    <script>
+        document.getElementById('saveemployee').addEventListener('click', function(event) {
+            event.preventDefault();
+            Swal.fire({
+                position: 'top-center',
+                icon: 'success',
+                title: 'Your work has been saved',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(function() {
+                Swal.fire({
+                    position: 'top-center',
+                    icon: 'info',
+                    title: 'Please click continue to create an account',
+                    showConfirmButton: true,
+                    confirmButtonText: 'Continue'
+                }).then(function(result) {
+                    if (result.isConfirmed) {
+                        document.getElementById('quickForm').submit();
+                    }
+                });
+            });
+        });
+    </script>
+
 @endsection
 @section('scripts')
     @if ($errors->any())

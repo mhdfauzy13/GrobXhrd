@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Offrequest/approver')
 @section('content')
     <section class="content">
         <div class="card">
@@ -15,7 +15,7 @@
 
                 @if ($offrequests->isEmpty())
                     <div class="alert alert-info" role="alert">
-                        There are no off requests that need approval at the moment.
+                        No leave applications need to be approved at this time.
                     </div>
                 @else
                     <div class="table-responsive">
@@ -29,7 +29,7 @@
                                     <th>Start Event</th>
                                     <th>End Event</th>
                                     <th>Status</th>
-                                    <th>Image</th>
+                                    <th>Picture Proof</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -60,7 +60,7 @@
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title"
                                                                     id="imageModalLabel{{ $offrequest->offrequest_id }}">
-                                                                    Bukti Gambar</h5>
+                                                                    Picture Proof</h5>
                                                                 <button type="button" class="close" data-dismiss="modal"
                                                                     aria-label="Close">
                                                                     <span aria-hidden="true">&times;</span>
@@ -80,18 +80,26 @@
                                         </td>
                                         <td class="d-flex">
                                             @can('offrequest.approver')
-                                                <form action="{{ route('offrequest.approve', $offrequest->offrequest_id) }}"
+                                                <form id="approveForm-{{ $offrequest->offrequest_id }}"
+                                                    action="{{ route('offrequest.approve', $offrequest->offrequest_id) }}"
                                                     method="POST" class="mr-2">
                                                     @csrf
                                                     @method('POST')
-                                                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                                    <button type="button" class="btn btn-success btn-sm approve-button"
+                                                        data-id="{{ $offrequest->offrequest_id }}">
+                                                        Approve
+                                                    </button>
                                                 </form>
 
-                                                <form action="{{ route('offrequest.reject', $offrequest->offrequest_id) }}"
+                                                <form id="rejectForm-{{ $offrequest->offrequest_id }}"
+                                                    action="{{ route('offrequest.reject', $offrequest->offrequest_id) }}"
                                                     method="POST">
                                                     @csrf
                                                     @method('POST')
-                                                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                                    <button type="button" class="btn btn-danger btn-sm reject-button"
+                                                        data-id="{{ $offrequest->offrequest_id }}">
+                                                        Reject
+                                                    </button>
                                                 </form>
                                             @endcan
                                         </td>
@@ -103,26 +111,25 @@
                 @endif
 
                 <hr>
-                <div class="card-header">
-                    <h3 class="card-title">Leave Request History</h3>
-                </div>
+
+                <h4>Leave Application History</h4>
                 @if ($approvedRequests->isEmpty())
                     <div class="alert alert-info" role="alert">
-                        No off request history.
+                        There is no history of leave applications.
                     </div>
                 @else
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Nama</th>
+                                    <th>Name</th>
                                     <th>Email</th>
                                     <th>Title</th>
                                     <th>Description</th>
                                     <th>Start Event</th>
                                     <th>End Event</th>
                                     <th>Status</th>
-                                    <th>Image</th>
+                                    <th>Picture Proof</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -159,7 +166,7 @@
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title"
                                                                     id="imageModalApprovedLabel{{ $approvedRequest->offrequest_id }}">
-                                                                    Bukti Gambar</h5>
+                                                                    Picture Proof</h5>
                                                                 <button type="button" class="close" data-dismiss="modal"
                                                                     aria-label="Close">
                                                                     <span aria-hidden="true">&times;</span>
@@ -190,9 +197,69 @@
     @push('scripts')
         <script>
             $(document).ready(function() {
-                // Initialize Bootstrap tooltips for images
                 $('[data-toggle="tooltip"]').tooltip();
             });
         </script>
     @endpush
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle Approve Button Click
+            document.querySelectorAll('.approve-button').forEach(function(button) {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault();
+
+                    // Get the corresponding form ID
+                    const formId = 'approveForm-' + this.getAttribute('data-id');
+
+                    // Show SweetAlert
+                    Swal.fire({
+                        position: 'top-center',
+                        icon: 'success',
+                        title: 'Leave request has been approved!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function() {
+                        // Submit the form after the alert
+                        document.getElementById(formId).submit();
+                    });
+                });
+            });
+
+            // Handle Reject Button Click
+            document.querySelectorAll('.reject-button').forEach(function(button) {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault();
+
+                    // Get the corresponding form ID
+                    const formId = 'rejectForm-' + this.getAttribute('data-id');
+
+                    // Show SweetAlert
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, reject it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire(
+                                'Rejected!',
+                                'The leave request has been rejected.',
+                                'error'
+                            ).then(function() {
+                                // Submit the form after the alert
+                                document.getElementById(formId).submit();
+                            });
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+
+
 @endsection

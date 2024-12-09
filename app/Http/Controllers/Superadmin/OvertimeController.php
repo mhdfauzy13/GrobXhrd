@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Superadmin;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\Overtime;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OvertimeController extends Controller
 {
@@ -13,60 +16,108 @@ class OvertimeController extends Controller
     {
         // Menggunakan middleware untuk validasi hak akses
         $this->middleware('permission:overtime.create')->only(['index', 'create', 'store', 'searchEmployees']);
+        $this->middleware('permission:overtime.approvals')->only(['approvals', 'updateStatus']);
     }
 
     public function index()
     {
-        // Mengambil data overtime beserta relasi ke model Employee
-        $overtimes = Overtime::with('employee')->paginate(10); // Mengambil data overtime dengan pagination
-
+        // Mengambil data overtime beserta relasi user dan employee
+        $overtimes = Overtime::where('user_id', Auth::id())
+                            ->with('user.employee') // Memuat relasi user dan employee
+                            ->get();
+    
         return view('superadmin.overtime.index', compact('overtimes'));
     }
+    
 
     public function create()
     {
-        // Ambil data employee, urutkan berdasarkan nama
-        $employees = Employee::select('employee_id', 'first_name', 'last_name')->orderBy('first_name')->get();
-        return view('superadmin.overtime.create', compact('employees'));
+        // Ambil daftar manager (user dengan role 'manager')
+        $managers = User::role('manager')->get();
+
+        return view('superadmin.overtime.create', compact('managers'));
     }
 
     public function store(Request $request)
     {
-        // Validasi input
-        $validated = $request->validate([
-            'employee_id' => 'required|exists:employees,employee_id', // Pastikan employee_id ada di tabel employees
-            'overtime_date' => 'required|date',
-            'duration' => 'required|integer|min:1|max:8', // Durasi overtime harus antara 1-8 jam
-            'notes' => 'nullable|string', // Catatan tidak wajib
-        ]);
+        // $request->validate([
+        //     'overtime_date' => 'required|date',
+        //     'duration' => 'required|integer|min:1',
+        //     'notes' => 'required|string|max:255',
+        //     'manager_id' => 'required|exists:users,user_id',
+        // ]);
 
-        // Simpan data overtime
+        $request->validate([
+            'overtime_date' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) {
+                    $existingOvertime = Overtime::where('user_id', Auth::id())
+                                                ->where('overtime_date', $value)
+                                                ->whereIn('status', ['pending', 'approved'])
+                                                ->exists();
+                    if ($existingOvertime) {
+                        $fail('Anda sudah memiliki pengajuan overtime untuk tanggal ini.');
+                    }
+                }
+            ],
+            'duration' => 'required|integer|min:1',
+            'notes' => 'required|string|max:255',
+            'manager_id' => 'required|exists:users,user_id',
+        ]);
+        
+
         Overtime::create([
-            'employee_id' => $validated['employee_id'],
-            'overtime_date' => $validated['overtime_date'],
-            'duration' => $validated['duration'],
-            'notes' => $validated['notes'], // Menyimpan catatan overtime jika ada
+            'user_id' => Auth::id(),
+            'overtime_date' => $request->overtime_date,
+            'duration' => $request->duration,
+            'notes' => $request->notes,
+            'manager_id' => $request->manager_id,
+            'status' => 'pending',
         ]);
 
-        // Redirect ke halaman index dengan pesan sukses
-        return redirect()->route('overtime.index')->with('success', 'Overtime berhasil ditambahkan.');
+        return redirect()->route('overtime.index')->with('success');
     }
 
-    public function searchEmployees(Request $request)
+    public function approvals()
     {
-        // Fungsi untuk mencari employee berdasarkan nama depan atau nama belakang
-        $query = $request->get('query');
-        $employees = Employee::where('first_name', 'LIKE', "%{$query}%")
-            ->orWhere('last_name', 'LIKE', "%{$query}%")
-            ->orderBy('first_name')  // Mengurutkan hasil berdasarkan first_name
-            ->get(['employee_id', 'first_name', 'last_name']); // Ambil kolom yang dibutuhkan
-
-        // Gabungkan nama depan dan nama belakang sebagai nama lengkap
-        $employees = $employees->map(function ($employee) {
-            $employee->full_name = $employee->first_name . ' ' . $employee->last_name;
-            return $employee;
-        });
-
-        return response()->json($employees);
+        // Pengajuan overtime yang masih menunggu persetujuan
+        $pendingOvertimes = Overtime::where('status', 'pending')->get();
+    
+        // Riwayat overtime yang sudah disetujui/rejected oleh manager yang sedang login
+        $managerId = auth()->user()->id;  // Mendapatkan ID manager yang sedang login
+        $historyOvertimes = Overtime::whereIn('status', ['approved', 'rejected'])
+                                    ->where('manager_id', $managerId) // Filter berdasarkan manager yang sedang login
+                                    ->get();
+    
+        return view('superadmin.overtime.approve', compact('pendingOvertimes', 'historyOvertimes'));
     }
+    
+    
+
+    
+        // Metode untuk update status overtime
+        public function updateStatus($id, Request $request)
+        {
+            // Ambil status dari form
+            $status = $request->input('status');
+            
+            // Pastikan status yang diterima valid
+            if (!in_array($status, ['approved', 'rejected'])) {
+                return redirect()->back()->with('error', 'Invalid status.');
+            }
+        
+            // Temukan overtime berdasarkan ID
+            $overtime = Overtime::findOrFail($id);
+        
+            // Update status overtime
+            $overtime->status = $status;
+            $overtime->save(); // Simpan perubahan ke database
+        
+            // Kembalikan response dengan pesan sukses
+            return redirect()->route('overtime.index')->with('success', 'Overtime status updated successfully.');
+        }
+        
+    
+    
 }

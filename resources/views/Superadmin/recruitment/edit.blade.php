@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Recruitment/edit')
 @section('content')
     <div class="content">
         <section class="content-header">
@@ -15,7 +15,7 @@
                     <div class="card-header">
                         <h3 class="card-title">Edit Recruitment</h3>
                     </div>
-      @if ($errors->any())
+                    @if ($errors->any())
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 let errorMessages = '';
@@ -32,15 +32,21 @@
                         </script>
                     @endif
                     <div class="card-body">
-                        <form id="quickForm" action="{{ route('recruitment.update', $recruitment->recruitment_id) }}" method="POST"
-                            enctype="multipart/form-data">
+                        <form id="quickForm" action="{{ route('recruitment.update', $recruitment->recruitment_id) }}"
+                            method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
 
                             <div class="form-group">
-                                <label for="name">Name</label>
-                                <input type="text" class="form-control" id="name" name="name"
-                                    value="{{ old('name', $recruitment->name) }}"required>
+                                <label for="first_name">First Name</label>
+                                <input type="text" name="first_name" id="first_name" class="form-control"
+                                    value="{{ old('first_name', $recruitment->first_name) }}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="last_name">Last Name</label>
+                                <input type="text" name="last_name" id="last_name" class="form-control"
+                                    value="{{ old('last_name', $recruitment->last_name) }}" required>
                             </div>
 
                             <div class="form-group">
@@ -70,14 +76,13 @@
                                 <label for="date_of_birth">Date of Birth</label>
                                 <input type="date" name="date_of_birth" id="date_of_birth" class="form-control"
                                     value="{{ old('date_of_birth', $recruitment->date_of_birth) }}" required>
-                                    </div>
+                            </div>
 
                             <div class="form-group">
                                 <label for="last_education">Last Education</label>
 
 
                                 <select name="last_education" id="last_education" class="form-control" required>
-                                    <option value="">-- Select Education Level --</option>
                                     <option value="Elementary School"
                                         {{ old('last_education', $recruitment->last_education) == 'Elementary School' ? 'selected' : '' }}>
                                         Elementary School</option>
@@ -121,9 +126,8 @@
                             <div class="form-group">
                                 <label for="apply_position">Apply Position</label>
                                 <input type="text" name="apply_position" id="apply_position" class="form-control"
-
                                     value="{{ old('apply_position', $recruitment->apply_position) }}" required>
-                           </div>
+                            </div>
 
                             <div class="form-group">
                                 <label for="cv_file">CV File</label>
@@ -132,8 +136,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="comment">Comment</label>
-                                <textarea name="comment" id="comment" class="form-control" value="{{ old('comment', $recruitment->comment) }}">{{ old('comment', $recruitment->comment) }}</textarea>
+                                <label for="remarks">Remarks</label>
+                                <textarea name="remarks" id="remarks" class="form-control" value="{{ old('remarks', $recruitment->remarks) }}">{{ old('remarks', $recruitment->remarks) }}</textarea>
 
                             </div>
 
@@ -168,7 +172,8 @@
                                 </select>
                             </div>
                             <div class="card-footer">
-                                <button type="submit" id="saveButton" class="btn btn-primary">Save</button>
+                                <button type="submit" id="saveButton" class="btn btn-primary">Update</button>
+                                <a href="{{ route('recruitment.index') }}" class="btn btn-secondary">Back</a>
                             </div>
                         </form>
                     </div>

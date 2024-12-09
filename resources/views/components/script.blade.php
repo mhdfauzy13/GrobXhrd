@@ -154,7 +154,7 @@
 
 {{-- SCRIPT BUAT FORM SEARCH EMPLOYEE NAME --}}
 
-@if (Route::is('overtime.create'))
+{{-- @if (Route::is('overtime.create'))
     <script>
         // Data karyawan dari backend
         const employees = @json($employees);
@@ -217,7 +217,7 @@
         // Event listener untuk menangani pencarian saat mengetik
         document.getElementById('employee_name').addEventListener('keyup', filterEmployees);
     </script>
-@endif
+@endif --}}
 
 
 {{-- SCRIPT BUAT DURATION TIME OVERTIME --}}
@@ -372,7 +372,7 @@
 
 {{-- SCRIPT BUAT FORM SEARCH EMPLOYEE NAME --}}
 
-@if (Route::is('overtime.create'))
+{{-- @if (Route::is('overtime.create'))
     <script>
         // Data karyawan dari backend
         const employees = @json($employees);
@@ -435,7 +435,7 @@
         // Event listener untuk menangani pencarian saat mengetik
         document.getElementById('employee_name').addEventListener('keyup', filterEmployees);
     </script>
-@endif
+@endif --}}
 
 {{-- SCRIPT BUAT DURATION TIME OVERTIME --}}
 
@@ -455,6 +455,7 @@
         }
     });
 </script>
+
 
 
 

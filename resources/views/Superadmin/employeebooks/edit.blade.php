@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Employeebooks/edit')
 @section('content')
     <div class="container-fluid">
         @php

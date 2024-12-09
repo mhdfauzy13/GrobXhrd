@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Attendance Scan</title>
+    <title>Attendance/scan</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
     <link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}" />
     <style>
@@ -200,9 +200,9 @@
                             attendanceStatus.isCheckIn = false; // Ubah status menjadi check-out
                         }
 
-                        // Arahkan kembali ke halaman sebelumnya
+                        // Redirect ke route dashboard.employee
                         setTimeout(() => {
-                            window.history.back();
+                            window.location.href = "{{ route('dashboardemployee.index') }}";
                         }, 3000); // 3 detik sebelum redirect
                     } else {
                         alertContainer.innerHTML = `<div class="alert alert-warning text-center" role="alert">

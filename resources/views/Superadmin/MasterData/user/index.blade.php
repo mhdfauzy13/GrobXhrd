@@ -1,23 +1,48 @@
 @extends('layouts.app')
-
+@section('title', 'Datauser/index')
 @section('content')
     <section class="content">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Data User</h3>
+                <div class="d-flex justify-content-between w-100 align-items-center">
+                    <h3 class="card-title mb-0">Datauser</h3>
+
+                    <div class="d-flex align-items-center">
+                        <a href="{{ route('datauser.create') }}" class="btn btn-primary" title="Create Employee">
+                            <i class="fas fa-plus"></i> Add
+                        </a>
+
+                        <form action="{{ route('datauser.index') }}" method="GET" class="form-inline ml-3">
+                            <input type="text" name="search" class="form-control" placeholder="Search by name, email..."
+                                value="{{ request()->query('search') }}">
+                            <button type="submit" class="btn btn-secondary ml-2">Search</button>
+                        </form>
+                    </div>
+                </div>
+
                 <div class="card-tools">
-                    <a class="btn btn-primary btn-sm" href="{{ route('datauser.create') }}">
-                        <i class="fas fa-plus"></i>
-                        Add
-                    </a>
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                         <i class="fas fa-minus"></i>
                     </button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-                        <i class="fas fa-times"></i>
-                    </button>
                 </div>
             </div>
+            @if (session('errors'))
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        let errorMessages = '';
+                        @foreach (session('errors')->all() as $error)
+                            errorMessages += '{{ $error }}\n';
+                        @endforeach
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: errorMessages,
+                        });
+                    });
+                </script>
+            @endif
+
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-striped projects">
@@ -48,20 +73,24 @@
                                             Edit
                                         </a>
 
-                                        <form method="post"
-                                            action="{{ route('datauser.destroy', ['user_id' => $user->user_id]) }}"
-                                            style="display:inline;">
-                                            @csrf
-                                            @method('delete')
-                                            <button type="button" class="deleteButton btn btn-danger btn-sm">
-                                                <i class="fas fa-trash"></i>
-                                                Delete
-                                            </button>
-                                        </form>
-
+                                        @if (!$user->hasRole('superadmin'))
+                                            <!-- Kondisi untuk Superadmin -->
+                                            <form method="post"
+                                                action="{{ route('datauser.destroy', ['user_id' => $user->user_id]) }}"
+                                                style="display:inline;">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="button" class="deleteButton btn btn-danger btn-sm">
+                                                    <i class="deletebutton fas fa-trash"></i>
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        @endif
                                     </td>
+
                                 </tr>
                             @endforeach
+
                         </tbody>
                     </table>
                 </div>

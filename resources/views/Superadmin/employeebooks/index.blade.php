@@ -10,7 +10,7 @@
 @endphp
 
 @extends('layouts.app')
-
+@section('title', 'Employeebooks/index')
 @section('content')
     <div class="container-fluid">
         <div class="card mb-3 w-100">
@@ -111,7 +111,7 @@
                                                             @method('DELETE')
                                                             <button type="button"
                                                                 class="deletebutton btn btn-danger btn-sm">
-                                                                <i class="fas fa-trash"></i> Delete
+                                                                <i class="deletebutton fas fa-trash"></i> Delete
                                                             </button>
                                                         </form>
                                                         <a class="btn btn-info btn-sm"
@@ -197,7 +197,7 @@
                                                             @method('DELETE')
                                                             <button type="button"
                                                                 class="deletebutton btn btn-danger btn-sm">
-                                                                <i class="fas fa-trash"></i> Delete
+                                                                <i class="deletebutton fas fa-trash"></i> Delete
                                                             </button>
                                                         </form>
                                                         <a class="btn btn-info btn-sm"
@@ -284,7 +284,7 @@
                                                             @method('DELETE')
                                                             <button type="button"
                                                                 class="deletebutton btn btn-danger btn-sm">
-                                                                <i class="fas fa-trash"></i> Delete
+                                                                <i class="deletebutton fas fa-trash"></i> Delete
                                                             </button>
                                                         </form>
                                                         <a class="btn btn-info btn-sm"

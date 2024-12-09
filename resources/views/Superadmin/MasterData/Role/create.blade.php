@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Role/create')
 @section('content')
     <section class="content">
         <div class="container-fluid">
@@ -30,7 +30,7 @@
                                 @csrf
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label for="roleName">Name Role</label>
+                                        <label for="roleName">Role Name</label>
                                         <input type="text" name="name" class="form-control" id="roleName"
                                             value="{{ old('name') }}" required>
                                     </div>
@@ -48,11 +48,10 @@
                                         <!-- Fitur Dashboard -->
                                         <div class="card mt-3">
                                             <div class="card-header">
-                                                <a href="#" id="selectAllDashboard" class="card-title">Fitur
-                                                    Dashboard</a>
+                                                <a href="#" id="selectAllDashboard" class="card-title">Dashboard</a>
                                             </div>
                                             <div class="card-body">
-                                                @foreach ($permissions->whereIn('name', ['dashboard.view', 'dashboardemployee.view']) as $permission)
+                                                @foreach ($permissions->whereIn('name', ['dashboard.superadmin', 'dashboard.employee']) as $permission)
                                                     <div class="custom-control custom-checkbox">
                                                         <input type="checkbox" name="permissions[]"
                                                             value="{{ $permission->name }}"
@@ -71,7 +70,7 @@
                                         <!-- Fitur Role -->
                                         <div class="card mt-3">
                                             <div class="card-header">
-                                                <a href="#" id="selectAllRole" class="card-title">Fitur Role</a>
+                                                <a href="#" id="selectAllRole" class="card-title">Role</a>
                                             </div>
                                             <div class="card-body">
                                                 @foreach ($permissions->whereIn('name', ['role.index', 'role.create', 'role.edit', 'role.delete']) as $permission)
@@ -93,7 +92,7 @@
                                         <!-- Fitur User -->
                                         <div class="card mt-3">
                                             <div class="card-header">
-                                                <a href="#" id="selectAllUser" class="card-title">Fitur User</a>
+                                                <a href="#" id="selectAllUser" class="card-title">User</a>
                                             </div>
                                             <div class="card-body">
                                                 @foreach ($permissions->whereIn('name', ['user.index', 'user.create', 'user.edit', 'user.delete']) as $permission)
@@ -115,18 +114,19 @@
             'employee' => ['employee.index', 'employee.create', 'employee.edit', 'employee.delete'],
             'payroll' => ['payroll.index', 'payroll.create', 'payroll.edit', 'payroll.delete'],
             'recruitment' => ['recruitment.index', 'recruitment.create', 'recruitment.edit', 'recruitment.delete'],
-            'attandance' => ['attandance.index', 'attandance.scanView', 'attandance.scan'],
+            'attendance' => ['attendance.index', 'attendance.scan'],
             'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.approver'],
             'employeebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
             'event' => ['event.index', 'event.lists', 'event.create', 'event.edit', 'event.delete'],
-            'overtime' => ['overtime.create'],
+            'overtime' => ['overtime.create','overtime.approvals'],
             'settings' => ['settings.index', 'settings.company', 'settings.deductions', 'settings.worksdays'],
             'resignationrequest' => ['resignationrequest.index', 'resignationrequest.create', 'resignationrequest.approver'],
+            'divisions' => ['divisions.index', 'divisions.create', 'divisions.edit', 'divisions.delete'],
         ] as $feature => $featurePermissions)
                                             <div class="card mt-3">
                                                 <div class="card-header">
                                                     <a href="#" id="selectAll{{ ucfirst($feature) }}"
-                                                        class="card-title">Fitur {{ ucfirst($feature) }}</a>
+                                                        class="card-title">{{ ucfirst($feature) }}</a>
                                                 </div>
                                                 <div class="card-body">
                                                     @foreach ($permissions->whereIn('name', $featurePermissions) as $permission)
@@ -156,8 +156,8 @@
                                 </div>
 
                                 <div class="card-footer">
-                                    <a href="{{ route('role.index') }}" class="btn btn-secondary">Back</a>
                                     <button type="button" id="saverole" class="btn btn-primary">Save</button>
+                                    <a href="{{ route('role.index') }}" class="btn btn-secondary">Back</a>
                                 </div>
 
                             </form>
@@ -228,9 +228,9 @@
         });
 
         // Event listener untuk fitur Attandance
-        document.getElementById('selectAllAttandance').addEventListener('click', function(e) {
+        document.getElementById('selectAllAttendance').addEventListener('click', function(e) {
             e.preventDefault();
-            let checkboxes = document.querySelectorAll('.attandance-checkbox');
+            let checkboxes = document.querySelectorAll('.attendance-checkbox');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = !checkbox.checked;
             });
@@ -272,19 +272,18 @@
             });
         });
 
-        // Event listener untuk fitur overtime
-        document.getElementById('selectAllOvertime').addEventListener('click', function(e) {
-            e.preventDefault();
-            let checkboxes = document.querySelectorAll('.overtime-checkbox');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = !checkbox.checked;
-            });
-        });
-
         // Event listener untuk fitur Settings
         document.getElementById('selectAllSettings').addEventListener('click', function(e) {
             e.preventDefault();
             let checkboxes = document.querySelectorAll('.settings-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !checkbox.checked;
+            });
+        });
+        // Event listener untuk fitur Division
+        document.getElementById('selectAllDivisions').addEventListener('click', function(e) {
+            e.preventDefault();
+            let checkboxes = document.querySelectorAll('.divisions-checkbox');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = !checkbox.checked;
             });

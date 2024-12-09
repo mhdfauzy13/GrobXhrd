@@ -12,15 +12,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
 {
-    protected $table = 'employees'; // Nama tabel
+    protected $table = 'employees';
 
-    protected $primaryKey = 'employee_id'; // Primary key jika berbeda dari default 'id'
+    protected $primaryKey = 'employee_id';
 
-    protected $keyType = 'int'; // Tipe primary key
+    protected $keyType = 'int';
 
-    public $incrementing = true; // Auto increment
+    public $incrementing = true;
 
-    public $timestamps = true; // Menyimpan timestamp
+    public $timestamps = true;
 
     protected $fillable = [
         'first_name',
@@ -52,41 +52,52 @@ class Employee extends Model
         'status',
     ];
 
-    protected $hidden = []; // Kolom yang tidak ingin ditampilkan (opsional)
+
+    protected $hidden = [];
 
     protected $casts = [
-        'insurance' => 'boolean', // Untuk konversi tipe data boolean
-        'current_salary' => 'decimal:2', // Untuk memastikan salary adalah tipe decimal dengan 2 desimal
+        'insurance' => 'boolean',
+        'current_salary' => 'integer',
+        'update_cv' => 'datetime',
     ];
 
-
-    // public function user()
-    // {
-    //     return $this->belongsTo(User::class, 'user_id');
-    // }
-
-    public function user()
+    public function recruitment()
     {
-        return $this->hasOne(User::class, 'employee_id');
+        return $this->belongsTo(Recruitment::class, 'recruitment_id', 'recruitment_id');
     }
 
 
     // Relasi dengan Attendance
+
     public function attendances(): HasMany
     {
         return $this->hasMany(Attandance::class, 'employee_id', 'employee_id');
     }
 
-    public function attendancerecaps(): HasMany
+    public function payrolls(): HasMany
+    {
+        return $this->hasMany(Payroll::class, 'employee_id', 'employee_id');
+    }
 
+    public function attendancerecaps(): HasMany
     {
         return $this->hasMany(AttandanceRecap::class, 'employee_id', 'employee_id');
     }
 
-    // Relasi dengan Payroll
-    public function payrolls(): HasMany
+    public function user()
     {
-        return $this->hasMany(Payroll::class, 'employee_id', 'employee_id');
+        return $this->hasOne(User::class, 'email', 'email'); // Menghubungkan berdasarkan email
+    }
+
+    public function offrequests()
+    {
+        return $this->hasMany(Offrequest::class, 'user_id', 'user_id');
+    }
+
+    // Relasi dengan WorkdaySetting (Jika ada)
+    public function workdaySetting(): HasOne
+    {
+        return $this->hasOne(WorkdaySetting::class, 'employee_id', 'employee_id');
     }
 
     // Relasi dengan Overtime
@@ -95,9 +106,9 @@ class Employee extends Model
         return $this->hasMany(Overtime::class, 'employee_id', 'employee_id');
     }
 
-    // Relasi dengan WorkdaySetting (Jika ada)
-    public function workdaySetting(): HasOne
+    public function division()
     {
-        return $this->hasOne(WorkdaySetting::class, 'employee_id', 'employee_id');
+        return $this->belongsTo(Division::class);
     }
+
 }

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Role/index')
 @section('content')
     <!-- Main content -->
     <section class="content">
@@ -44,15 +44,18 @@
                                         <a class="btn btn-info btn-sm" href="{{ route('role.edit', $role->id) }}">
                                             <i class="fas fa-pencil-alt"></i> Edit
                                         </a>
-                                        <form action="{{ route('role.destroy', $role->id) }}" method="POST"
-                                            class="deleteForm" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button" class="deleteButton btn btn-danger btn-sm">
-                                                <i class="fas fa-trash"></i> Delete
-                                            </button>
-                                        </form>
+                                        @if ($role->name !== 'superadmin')
+                                            <form action="{{ route('role.destroy', $role->id) }}" method="POST"
+                                                class="deleteForm" style="display:inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" class="deleteButton btn btn-danger btn-sm">
+                                                    <i class="deletebutton fas fa-trash"></i> Delete
+                                                </button>
+                                            </form>
+                                        @endif
                                     </td>
+
                                 </tr>
                             @endforeach
                         </tbody>

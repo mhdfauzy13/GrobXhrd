@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Superadmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Recruitment;
+use App\Models\Employee;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -24,9 +26,12 @@ class RecruitmentController extends Controller
 
         // Apply search filter if search term exists
         $recruitments = Recruitment::when($search, function ($query, $search) {
-            return $query->where('name', 'like', "%{$search}%")
-                ->orWhere('email', 'like', "%{$search}%");
-        })->paginate(10); // Pagination with 10 items per page
+            return $query
+                ->where('first_name', 'like', "%{$search}%")
+                ->orWhere('last_name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('apply_position', 'like', "%{$search}%");
+        })->paginate(10);
 
         return view('superadmin.recruitment.index', compact('recruitments'));
     }
@@ -38,34 +43,63 @@ class RecruitmentController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'phone_number' => 'required|numeric',
-            'date_of_birth' => 'required|date',
-            'last_education' => 'required|string|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelor’s Degree,Master’s Degree,Doctoral Degree',
-            'last_position' => 'required|string',
-            'apply_position' => 'required|string',
-            'cv_file' => 'required|file|mimes:pdf,doc,docx',
-            'comment' => 'required|string',
-            'status' => 'required|string',
-        ], [
-            'phone_number.numeric' => 'Phone number must contain only numbers.',
-        ]);
+        $validated = $request->validate(
+            [
+                'first_name' => 'required|string',
+                'last_name' => 'required|string',
+                'email' => 'required|email|unique:recruitments,email',
+                'phone_number' => 'required|numeric',
+                'date_of_birth' => 'required|date',
+                'last_education' => 'required|string|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelor’s Degree,Master’s Degree,Doctoral Degree',
+                'last_position' => 'required|string',
+                'apply_position' => 'required|string',
+                'cv_file' => 'required|file|mimes:pdf,doc,docx',
+                'remarks' => 'required|string',
+                'status' => 'nullable|in:Initial Interview,User Interview 1,User Interview 2,Background Check,Offering letter,Accept,Decline',
+            ],
+            [
+                'phone_number.numeric' => 'Phone number must contain only numbers.',
+            ],
+        );
 
         try {
-            Recruitment::create([
-                'name' => $request->input('name'),
-                'email' => $request->input('email'),
-                'phone_number' => $request->input('phone_number'),
-                'date_of_birth' => $request->input('date_of_birth'),
-                'last_education' => $request->input('last_education'),
-                'last_position' => $request->input('last_position'),
-                'apply_position' => $request->input('apply_position'),
+            $recruitment = Recruitment::create([
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'email' => $validated['email'],
+                'phone_number' => $validated['phone_number'],
+                'date_of_birth' => $validated['date_of_birth'],
+                'last_education' => $validated['last_education'],
+                'last_position' => $validated['last_position'],
+                'apply_position' => $validated['apply_position'],
                 'cv_file' => $request->file('cv_file')->store('cv_files', 'public'),
-                'comment' => $request->input('comment'),
-                'status' => $request->input('status'),
+                'remarks' => $validated['remarks'],
+                'status' => $validated['status'],
             ]);
+
+            if ($recruitment->status === 'Accept') {
+                $employee = Employee::firstOrCreate(
+                    ['recruitment_id' => $recruitment->id],
+                    [
+                        'first_name' => $recruitment->first_name,
+                        'last_name' => $recruitment->last_name,
+                        'email' => $recruitment->email,
+                        'phone_number' => $recruitment->phone_number,
+                        'date_of_birth' => $recruitment->date_of_birth,
+                        'last_education' => $recruitment->last_education,
+                        'cv_file' => $recruitment->cv_file,
+                    ],
+                );
+
+                User::firstOrCreate(
+                    ['employee_id' => $employee->id],
+                    [
+                        'name' => $recruitment->first_name . ' ' . $recruitment->last_name,
+                        'email' => $recruitment->email,
+                        'employee_id' => $employee->id,
+                    ],
+                );
+            }
 
             return redirect()->route('recruitment.index')->with('success', 'Recruitment successfully created');
         } catch (\Exception $e) {
@@ -83,23 +117,29 @@ class RecruitmentController extends Controller
     {
         $recruitment = Recruitment::findOrFail($recruitment_id);
 
-        $validated = $request->validate([
-            'name' => 'nullable|string',
-            'email' => 'nullable|email|unique:recruitments,email,' . $recruitment_id . ',recruitment_id|min:8',
-            'phone_number' => 'nullable|numeric',
-            'date_of_birth' => 'nullable|date',
-            'last_education' => 'nullable|string|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelor’s Degree,Master’s Degree,Doctoral Degree',
-            'last_position' => 'nullable|string',
-            'apply_position' => 'nullable|string',
-            'cv_file' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-            'comment' => 'nullable|string',
-            'status' => 'nullable|string|in:Initial Interview,User Interview 1,User Interview 2,Background Check,Offering letter,Accept,Decline',
-        ], [
-            'phone_number.numeric' => 'Phone number must contain only numbers.',
-        ]);
+        $validated = $request->validate(
+            [
+                'first_name' => 'required|string',
+                'last_name' => 'required|string',
+                'email' => 'required|email|unique:recruitments,email,' . $recruitment->recruitment_id . ',recruitment_id',
+                'phone_number' => 'nullable|numeric',
+                'date_of_birth' => 'nullable|date',
+                'last_education' => 'nullable|string|in:Elementary School,Junior High School,Senior High School,Vocational High School,Associate Degree 1,Associate Degree 2,Associate Degree 3,Bachelor’s Degree,Master’s Degree,Doctoral Degree',
+                'last_position' => 'nullable|string',
+                'apply_position' => 'nullable|string',
+                'cv_file' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+                'remarks' => 'nullable|string',
+                'status' => 'nullable|in:Initial Interview,User Interview 1,User Interview 2,Background Check,Offering letter,Accept,Decline',
+            ],
+            [
+                'phone_number.numeric' => 'Phone number must contain only numbers.',
+            ],
+        );
 
         try {
-            $recruitment->name = $validated['name'] ?? $recruitment->name;
+            // Update Recruitment data
+            $recruitment->first_name = $validated['first_name'] ?? $recruitment->first_name;
+            $recruitment->last_name = $validated['last_name'] ?? $recruitment->last_name;
             $recruitment->email = $validated['email'] ?? $recruitment->email;
             $recruitment->phone_number = $validated['phone_number'] ?? $recruitment->phone_number;
             $recruitment->date_of_birth = $validated['date_of_birth'] ?? $recruitment->date_of_birth;
@@ -112,8 +152,32 @@ class RecruitmentController extends Controller
                 $recruitment->cv_file = $request->file('cv_file')->store('cv_files', 'public');
             }
 
-            $recruitment->comment = $validated['comment'] ?? $recruitment->comment;
+            $recruitment->remarks = $validated['remarks'] ?? $recruitment->remarks;
             $recruitment->save();
+
+            if (strtolower($recruitment->status) === 'Accept') {
+                $employee = Employee::firstOrCreate(
+                    ['recruitment_id' => $recruitment->id],
+                    [
+                        'first_name' => $recruitment->first_name,
+                        'last_name' => $recruitment->last_name,
+                        'email' => $recruitment->email,
+                        'phone_number' => $recruitment->phone_number,
+                        'date_of_birth' => $recruitment->date_of_birth,
+                        'last_education' => $recruitment->last_education,
+                        'cv_file' => $recruitment->cv_file,
+                    ],
+                );
+
+                User::firstOrCreate(
+                    ['employee_id' => $employee->id],
+                    [
+                        'name' => $recruitment->first_name . ' ' . $recruitment->last_name,
+                        'email' => $recruitment->email,
+                        'employee_id' => $employee->id,
+                    ],
+                );
+            }
 
             return redirect()->route('recruitment.index')->with('success', 'Recruitment updated successfully');
         } catch (\Exception $e) {

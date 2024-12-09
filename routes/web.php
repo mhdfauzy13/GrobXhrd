@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Employee\DashboardEmployeeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Superadmin\DashboardController;
@@ -16,11 +15,11 @@ use App\Http\Controllers\Employee\ResignationRequestController;
 use App\Http\Controllers\Employee\SubmitResignationController;
 use App\Http\Controllers\Superadmin\HistoryController;
 use App\Http\Controllers\ProfileController;
-use App\Notifications\LeaveRequestNotification;
 use App\Http\Controllers\Superadmin\EmployeeBookController;
 use App\Http\Controllers\Superadmin\EmployeeBooksController;
 use App\Http\Controllers\Superadmin\OvertimeController;
 use App\Http\Controllers\Superadmin\SettingController;
+use App\Http\Controllers\Superadmin\DivisionController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -30,7 +29,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])
         ->name('dashboard.index')
-        ->middleware('permission:dashboard.view');
+        ->middleware('permission:dashboard.superadmin');
 
     // Role Management
     Route::prefix('Superadmin')->group(function () {
@@ -78,18 +77,16 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         // Attendance
         Route::get('/attendance', [AttandanceController::class, 'index'])
             ->name('attandance.index')
-            ->middleware('permission:attandance.index');
+            ->middleware('permission:attendance.index');
 
         Route::get('/attendance/recap/{employee_id}', [AttandanceController::class, 'recap'])
             ->name('attendance.recap')
-            ->middleware('permission:attandance.index');
+            ->middleware('permission:attendance.index');
 
         //overtime
-        // Menampilkan daftar overtime
         Route::get('/overtime', [OvertimeController::class, 'index'])
             ->name('overtime.index')
             ->middleware('permission:overtime.create');
-
 
         Route::get('/overtime/create', [OvertimeController::class, 'create'])
             ->name('overtime.create')
@@ -99,7 +96,13 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('overtime.store')
             ->middleware('permission:overtime.create');
 
+        Route::get('/overtimes/approval', [OvertimeController::class, 'approvals'])
+            ->name('overtime.approvals')
+            ->middleware('permission:overtime.approvals');
 
+        Route::post('/overtimes/{id}/update-status', [OvertimeController::class, 'updateStatus'])
+            ->name('overtime.updateStatus')
+            ->middleware('permission:overtime.approvals');
 
 
 
@@ -108,24 +111,13 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('payroll.index')
             ->middleware('permission:payroll.index');
 
-        Route::post('/payroll/{id}/validate', [PayrollController::class, 'validatePayroll'])
-            ->name('payroll.validate')
-            ->middleware('permission:payroll.index');
-
         Route::patch('/payroll/update-status/{id}', [PayrollController::class, 'updateValidationStatus'])
             ->name('payroll.updateStatus')
             ->middleware('permission:payroll.index');
 
-
-        Route::get('/payroll/export', [PayrollController::class, 'exportToCsv'])
-            ->name('payroll.export')
-
+        Route::get('/payrolls/exports', [PayrollController::class, 'exportToCsv'])
+            ->name('payroll.exports')
             ->middleware('permission:payroll.index');
-
-
-
-
-
 
         // event
         Route::get('/events', [EventController::class, 'index'])
@@ -247,7 +239,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('recruitment.show')
             ->middleware('permission:recruitment.index');
 
-
         // Employee
         Route::get('/employee', [EmployeeController::class, 'index'])
             ->name('employee.index')
@@ -277,10 +268,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('employee.show')
             ->middleware('permission:employee.index');
 
-
-
-
-
         // Setting
         Route::get('settings', [SettingController::class, 'index'])
             ->name('settings.index')
@@ -301,38 +288,64 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::post('/settings/update-workdays', [SettingController::class, 'updateWorkdays'])
             ->name('settings.updateWorkdays')
             ->middleware('permission:settings.worksdays');
+
+        //Division
+        Route::get('divisions', [DivisionController::class, 'index'])
+            ->name('divisions.index')
+            ->middleware('permission:divisions.index');
+
+        Route::get('divisions/create', [DivisionController::class, 'create'])
+            ->name('divisions.create')
+            ->middleware('permission:divisions.create');
+
+        Route::post('divisions/store', [DivisionController::class, 'store'])
+            ->name('divisions.store')
+            ->middleware('permission:divisions.create');
+
+        Route::get('divisions/{division}/edit', [DivisionController::class, 'edit'])
+            ->name('divisions.edit')
+            ->middleware('permission:divisions.edit');
+
+        Route::put('divisions/{division}', [DivisionController::class, 'update'])
+            ->name('divisions.update')
+            ->middleware('permission:divisions.edit');
+
+        Route::delete('divisions/{division}', [DivisionController::class, 'destroy'])
+            ->name('divisions.destroy')
+            ->middleware('permission:divisions.delete');
     });
 
     // Employee Routes
     Route::prefix('Employee')->group(function () {
         Route::get('dashboard', [DashboardEmployeeController::class, 'index'])
             ->name('dashboardemployee.index')
-            ->middleware('permission:dashboardemployee.view');
+            ->middleware('permission:dashboard.employee');
 
-        Route::get('events/list', [DashboardEmployeeController::class, 'ListEvent'])
-            ->name('employee.events.list');
+        Route::get('events/list', [DashboardEmployeeController::class, 'ListEvent'])->name('employee.events.list');
+        Route::get('/offrequests/{id}', [DashboardEmployeeController::class, 'show'])->name('offrequests.show');
 
         // Attendance Scan Routes
         Route::get('/attandance/scan', [AttandanceController::class, 'scanView'])
-            ->name('attandance.scanView') // Nama rute untuk tampilan scan
-            ->middleware('permission:attandance.scanView'); // Middleware untuk izin tampilan scan
+            ->name('attandance.scanView') 
+            ->middleware('permission:attendance.scan'); 
 
         Route::post('/attandance/check-in', [AttandanceController::class, 'checkIn'])
-            ->name('attandance.checkIn') // Nama rute untuk proses check-in
-            ->middleware('permission:attandance.scan'); // Middleware untuk izin scan (check-in)
+            ->name('attandance.checkIn')
+            ->middleware('permission:attendance.scan'); 
 
         Route::post('/attandance/check-out', [AttandanceController::class, 'checkOut'])
-            ->name('attandance.checkOut') // Nama rute untuk proses check-out
-            ->middleware('permission:attandance.scan'); // Middleware untuk izin scan (check-out)
+            ->name('attandance.checkOut') 
+            ->middleware('permission:attendance.scan'); 
         Route::post('/attandance/scan', [AttandanceController::class, 'scan'])
             ->name('attandance.scan')
-            ->middleware('permission:attandance.scan');
+            ->middleware('permission:attendance.scan');
 
         // Off Request
 
         Route::get('/offrequest', [OffemployeeController::class, 'index'])
             ->name('offrequest.index')
             ->middleware('permission:offrequest.index');
+
         Route::get('/offrequest/create', [OffemployeeController::class, 'create'])
             ->name('offrequest.create')
             ->middleware('permission:offrequest.create');
@@ -354,6 +367,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/offrequest/approver', [OffemployeeController::class, 'approverIndex'])
             ->name('offrequest.approver')
             ->middleware('permission:offrequest.approver');
+
 
         // Resignation Request
         Route::get('/resignation', [ResignationRequestController::class, 'index'])
@@ -389,6 +403,14 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
 
         Route::post('/submit-resignation', [SubmitResignationController::class, 'store'])
             ->name('submitresign.store');
+      
+        Route::put('/offrequest/{offrequest}/uploadImage', [OffemployeeController::class, 'uploadImage'])
+          ->name('offrequest.uploadImage');
+
+        // Route::post('offrequest/{id}/upload-image', [OffemployeeController::class, 'uploadImage'])
+        //     ->name('offrequest.uploadImage')
+        //     ->middleware('permission:offrequest.index');
+
     });
 });
 

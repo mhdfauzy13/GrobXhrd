@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Settings/index')
 @section('content')
     <section class="content">
         @can('settings.company')
@@ -80,7 +80,7 @@
                 <div class="card-body">
                     <form action="{{ route('settings.updateWorkdays') }}" method="POST">
                         @csrf
-                        <label for="effective_days">Select Effective Workdays:</label><br>
+                        <label for="effective_days">Select Effective Workdays</label><br>
 
                         @foreach (['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as $day)
                             <div class="form-check">
