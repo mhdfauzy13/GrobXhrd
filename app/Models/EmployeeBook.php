@@ -16,7 +16,8 @@ class EmployeeBook extends Model
         'incident_date',
         'incident_detail',
         'remarks',
-        'category'
+        'category',
+        'type_of',
     ];
 
 

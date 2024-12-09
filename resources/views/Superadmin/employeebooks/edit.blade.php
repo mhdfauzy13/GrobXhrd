@@ -2,7 +2,6 @@
 @section('title', 'Employeebooks/edit')
 @section('content')
     <div class="container-fluid">
-        {{-- Tentukan judul berdasarkan kategori yang dipilih --}}
         @php
             $categoryTitle = '';
             if ($employeeBook->category === 'violation') {
@@ -14,7 +13,6 @@
             }
         @endphp
 
-        {{-- Card --}}
         <div class="card card-primary w-100">
             <div class="card-header">
                 <h3 class="card-title">{{ $categoryTitle }}</h3>
@@ -33,6 +31,20 @@
                                     {{ $employee->first_name }} {{ $employee->last_name }}
                                 </option>
                             @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type_of">Type of</label>
+                        <select name="type_of" id="type_of" class="form-control">
+                            <option value="SOP"
+                                {{ old('type_of', $employeeBook->type_of ?? '') == 'SOP' ? 'selected' : '' }}>SOP</option>
+                            <option value="Administrative"
+                                {{ old('type_of', $employeeBook->type_of ?? '') == 'Administrative' ? 'selected' : '' }}>
+                                Administrative</option>
+                            <option value="Behavior"
+                                {{ old('type_of', $employeeBook->type_of ?? '') == 'Behavior' ? 'selected' : '' }}>Behavior
+                            </option>
                         </select>
                     </div>
 

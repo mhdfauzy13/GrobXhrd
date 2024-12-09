@@ -11,6 +11,10 @@ use App\Http\Controllers\Superadmin\RoleController;
 use App\Http\Controllers\Superadmin\AttandanceController;
 use App\Http\Controllers\Superadmin\EventController;
 use App\Http\Controllers\Employee\OffemployeeController;
+use App\Http\Controllers\Employee\ResignationRequestController;
+use App\Http\Controllers\Employee\SubmitResignationController;
+use App\Http\Controllers\Superadmin\HistoryController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Superadmin\EmployeeBookController;
 use App\Http\Controllers\Superadmin\EmployeeBooksController;
 use App\Http\Controllers\Superadmin\OvertimeController;
@@ -173,6 +177,45 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('employeebooks.detail')
             ->middleware('permission:employeebook.detail');
 
+        Route::get('employeebooks/search/employees', [EmployeeBooksController::class, 'searchEmployees'])
+            ->name('employeebooks.searchEmployees')
+            ->middleware('permission:employeebook.create');
+
+
+        // Employee Books Routes
+        Route::get('employeebooks', [EmployeeBooksController::class, 'index'])
+            ->name('employeebooks.index')
+            ->middleware('permission:employeebook.index');
+
+        Route::get('employeebooks/create', [EmployeeBooksController::class, 'create'])
+            ->name('employeebooks.create')
+            ->middleware('permission:employeebook.create');
+
+        Route::post('employeebooks', [EmployeeBooksController::class, 'store'])
+            ->name('employeebooks.store')
+            ->middleware('permission:employeebook.create');
+
+        Route::get('employeebooks/{employeeBook}/edit', [EmployeeBooksController::class, 'edit'])
+            ->name('employeebooks.edit')
+            ->middleware('permission:employeebook.edit');
+
+        Route::put('employeebooks/{employeeBook}', [EmployeeBooksController::class, 'update'])
+            ->name('employeebooks.update')
+            ->middleware('permission:employeebook.edit');
+
+        Route::delete('employeebooks/{employeeBook}', [EmployeeBooksController::class, 'destroy'])
+            ->name('employeebooks.destroy')
+            ->middleware('permission:employeebook.delete');
+
+        Route::get('employeebooks/{employeeBook}/detail', [EmployeeBooksController::class, 'detail'])
+            ->name('employeebooks.detail')
+            ->middleware('permission:employeebook.detail');
+
+        Route::get('/employees/search', [EmployeeBooksController::class, 'searchEmployees'])
+            ->name('employees.search')
+            ->middleware('permission:employeebook.search');
+
+
         // Recruitment
         Route::get('/recruitment', [RecruitmentController::class, 'index'])
             ->name('recruitment.index')
@@ -325,15 +368,51 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('offrequest.approver')
             ->middleware('permission:offrequest.approver');
 
-        Route::put('/offrequest/{offrequest}/uploadImage', [OffemployeeController::class, 'uploadImage'])->name('offrequest.uploadImage');
+
+        // Resignation Request
+        Route::get('/resignation', [ResignationRequestController::class, 'index'])
+            ->name('resignationrequest.index')
+            ->middleware('permission:resignationrequest.index');
+
+        Route::get('/resignation/create', [ResignationRequestController::class, 'create'])
+            ->name('resignationrequest.create')
+            ->middleware('permission:resignationrequest.create');
+
+        Route::post('/resignation', [ResignationRequestController::class, 'store'])
+            ->name('resignationrequest.store')
+            ->middleware('permission:resignationrequest.create');
+
+        Route::put('/resignation/{resignationrequest_id}/status', [ResignationRequestController::class, 'updateStatus'])
+            ->name('resignationrequest.updateStatus')
+            ->middleware('permission:resignationrequest.approver');
 
 
 
+        // Route::get('/resignation/approver', [ResignationRequestController::class, 'index'])
+        //     ->name('resignationrequest.approver')
+        //     ->middleware('permission:resignationrequest.approver');
 
+        Route::get('/resignation/approver', [ResignationRequestController::class, 'approver'])
+            ->name('resignationrequest.approver')
+            ->middleware('permission:resignationrequest.approver');
+    });
+    Route::middleware(['auth', 'role:manager|superadmin'])->group(function () {
+        Route::get('/submit-resignation', [SubmitResignationController::class, 'index'])
+            ->name('submitresign.index');
+
+        Route::get('/submit-resignation/create', [SubmitResignationController::class, 'create'])
+            ->name('submitresign.create');
+
+        Route::post('/submit-resignation', [SubmitResignationController::class, 'store'])
+            ->name('submitresign.store');
+      
+        Route::put('/offrequest/{offrequest}/uploadImage', [OffemployeeController::class, 'uploadImage'])
+          ->name('offrequest.uploadImage');
 
         // Route::post('offrequest/{id}/upload-image', [OffemployeeController::class, 'uploadImage'])
         //     ->name('offrequest.uploadImage')
         //     ->middleware('permission:offrequest.index');
+
     });
 });
 

@@ -12,7 +12,7 @@ use App\Models\SalaryDeduction;
 use App\Models\WorkdaySetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Log;
 
 class PayrollController extends Controller
 {
@@ -21,69 +21,76 @@ class PayrollController extends Controller
         $this->middleware('permission:payroll.index')->only(['index', 'updateValidationStatus', 'exportToCsv']);
     }
 
-
     public function index()
     {
         // Ambil data semua employee
         $employees = Employee::all();
 
+        // Ambil data salary deduction
         $salaryDeduction = SalaryDeduction::first();
         $lateDeduction = $salaryDeduction ? $salaryDeduction->late_deduction : 0;
         $earlyDeduction = $salaryDeduction ? $salaryDeduction->early_deduction : 0;
 
         $payrollData = $employees->map(function ($employee) use ($lateDeduction, $earlyDeduction) {
 
-            // Ambil data dari AttendanceRecap untuk employee ini
-            $attendanceRecap = AttandanceRecap::where('employee_id', $employee->employee_id)
-                //    ->where('month', now()->format('F')) // Mengambil data bulan ini
-                ->first();
+            // Pastikan user_id valid
+            if (!$employee->user_id) {
+                // Jika user_id tidak valid, skip proses dan log
+                Log::warning("Invalid user_id for employee {$employee->employee_id}");
+                return null; // Skip entry jika user_id tidak ada
+            }
 
+            // Ambil data dari AttendanceRecap untuk employee ini
+            $attendanceRecap = AttandanceRecap::where('user_id', $employee->employee_id)->first();
+
+            // Hitung total hari kerja, total terlambat, dan total awal pulang
             $totalWorkedDays = $attendanceRecap ? $attendanceRecap->total_present : 0;
             $totalLate = $attendanceRecap ? $attendanceRecap->total_late : 0;
             $totalEarly = $attendanceRecap ? $attendanceRecap->total_early : 0;
 
-            $totalDaysOff = Offrequest::where('employee_id', $employee->employee_id)
+            // Hitung total hari cuti
+            $totalDaysOff = Offrequest::where('user_id', $employee->employee_id)
                 ->where('status', 'approved')
                 ->get()
                 ->sum(function ($offrequest) {
                     $start = Carbon::parse($offrequest->start_event)->toDateString();
                     $end = Carbon::parse($offrequest->end_event)->toDateString();
-
-                    // Hitung selisih hari berdasarkan tanggal
                     return Carbon::parse($start)->diffInDays($end) + 1; // Menambahkan 1 agar termasuk hari pertama
                 });
 
-            // Ambil data monthly workdays dari workday_settings
+            // Ambil settingan hari kerja bulanan
             $workdaySetting = WorkdaySetting::first();
             $monthlyWorkdays = $workdaySetting ? $workdaySetting->monthly_workdays : 0;
 
-            // Hitung durasi kerja per hari (dalam jam)
-            if ($employee->check_in_time && $employee->check_out_time) {
-                $workDurationInHours = Carbon::parse($employee->check_in_time)->diffInHours(Carbon::parse($employee->check_out_time));
-            } else {
-                $workDurationInHours = 8; // Default 
-            }
+            // Hitung durasi kerja per hari dalam jam
+            $workDurationInHours = ($employee->check_in_time && $employee->check_out_time)
+                ? Carbon::parse($employee->check_in_time)->diffInHours(Carbon::parse($employee->check_out_time))
+                : 8; // Default 8 jam
 
             // Hitung gaji per jam
             $dailySalary = $monthlyWorkdays > 0 ? $employee->current_salary / $monthlyWorkdays : 0;
             $hourlyRate = $workDurationInHours > 0 ? $dailySalary / $workDurationInHours : 0;
 
-            // Hitung total overtime
-            $overtimeData = Overtime::where('user_id', $employee->user_id)->get();
+            // Hitung total lembur
+            $overtimeData = Overtime::where('user_id', $employee->employee_id)
+                ->where('status', 'approved')
+                ->get();
+
             $totalOvertimeHours = $overtimeData->sum('duration');
             $overtimePay = $totalOvertimeHours * $hourlyRate;
 
-            // Hitung total deduction berdasarkan total late dan early
+            // Hitung total deduksi berdasarkan terlambat dan awal pulang
             $totalLateDeduction = $totalLate * $lateDeduction;
             $totalEarlyDeduction = $totalEarly * $earlyDeduction;
             $totalDeductions = $totalLateDeduction + $totalEarlyDeduction;
 
-            // Hitung total payroll (gaji dasar, deduksi, lembur)
+            // Hitung total payroll
             $baseSalary = $totalWorkedDays * $dailySalary;
             $totalPayroll = $baseSalary - $totalDeductions + $overtimePay;
 
+            // Update atau buat data payroll
             Payroll::updateOrCreate(
-                ['employee_id' => $employee->employee_id],
+                ['user_id' => $employee->user_id],
                 [
                     'employee_name' => $employee->first_name . ' ' . $employee->last_name,
                     'current_salary' => $employee->current_salary,
@@ -99,6 +106,7 @@ class PayrollController extends Controller
                 ]
             );
 
+            // Return data payroll untuk tampilan
             return [
                 'id' => $employee->employee_id,
                 'employee_name' => $employee->first_name . ' ' . $employee->last_name,
@@ -112,8 +120,14 @@ class PayrollController extends Controller
                 'total_payroll' => $totalPayroll,
                 'status' => 'pending',
             ];
-        }); 
+        });
 
+        // Filter data payroll yang valid (tidak null)
+        $payrollData = $payrollData->filter(function ($item) {
+            return $item !== null;
+        });
+
+        // Tampilkan view dengan data payroll yang sudah dihitung
         return view('superadmin.payroll.index', compact('payrollData'));
     }
 
@@ -144,10 +158,8 @@ class PayrollController extends Controller
             ->with('success', 'Payroll has been ' . $validatedData['status'] . ' successfully.');
     }
 
-
     public function exportToCsv()
     {
-
         // Ambil data payroll yang sudah disetujui (approved)
         $payrollData = Payroll::where('status', 'approved')->get();
 
@@ -188,95 +200,4 @@ class PayrollController extends Controller
             'Content-Disposition' => 'attachment; filename="payroll.csv"',
         ]);
     }
-
-
 }
-
-
-    // public function updateValidationStatus(Request $request, $id)
-    // {
-    //     $payroll = Payroll::findOrFail($id);
-
-    //     // Memastikan hanya status yang valid yang dapat diperbarui
-    //     if ($request->status == 'approved') {
-    //         $payroll->validation_status = 'approved';
-    //     } elseif ($request->status == 'declined') {
-    //         $payroll->validation_status = 'declined';
-    //     }
-
-    //     $payroll->save();
-
-    //     return redirect()->route('payroll.index')->with('success', 'Payroll status updated successfully');
-    // }
-
-
-
-
-    // public function updateValidationStatus(Request $request, $id)
-    // {
-    //     try {
-    //         // Temukan payroll berdasarkan ID
-    //         $payroll = Payroll::findOrFail($id);
-
-    //         // Validasi input status, pastikan status ada dalam input dan valid
-    //         $status = $request->input('validation_status');
-    //         if (!in_array($status, ['approved', 'declined'])) {
-    //             return redirect()->back()->with('error', 'Invalid status: ' . $status);
-    //         }
-
-    //         // Perbarui status payroll
-    //         $payroll->validation_status = $status;
-    //         $payroll->save();
-
-    //         // Redirect kembali ke daftar payroll dengan pesan sukses
-    //         return redirect()->route('payroll.index')->with('success', 'Payroll status updated successfully.');
-    //     } catch (\Exception $e) {
-    //         // Jika terjadi error, tampilkan pesan error
-    //         return redirect()->back()->with('error', 'Failed to update payroll status: ' . $e->getMessage());
-    //     }
-    // }
-
-
-
-
-    // public function exportToCSV()
-    // {
-    //     // Ambil data payroll dengan status approved
-    //     $payrollData = Payroll::where('validation_status', 'approved')->get();
-
-    //     // Cek jika tidak ada data yang bisa diekspor
-    //     if ($payrollData->isEmpty()) {
-    //         return redirect()->route('payroll.index')->with('error', 'No approved payroll data to export.');
-    //     }
-
-    //     // Siapkan header CSV
-    //     $headers = ['ID', 'Employee Name', 'Current Salary', 'Total Worked Days', 'Total Days Off', 'Total Late', 'Total Early', 'Monthly Workdays', 'Overtime Pay', 'Total Payroll'];
-
-    //     // Membuat file CSV
-    //     $csvFileName = 'payroll_approved_data_' . now()->format('Ymd_His') . '.csv';
-    //     $filePath = storage_path('app/public/' . $csvFileName);
-
-    //     $file = fopen($filePath, 'w');
-    //     fputcsv($file, $headers);
-
-    //     // Menulis data ke file CSV
-    //     foreach ($payrollData as $data) {
-    //         fputcsv($file, [
-    //             $data->id,
-    //             $data->employee_name,
-    //             $data->current_salary,
-    //             $data->total_days_worked,
-    //             $data->total_days_off,
-    //             $data->total_late_check_in,
-    //             $data->total_early_check_out,
-    //             $data->monthly_workdays,
-    //             $data->overtime_pay,
-    //             $data->total_payroll,
-    //         ]);
-    //     }
-
-    //     fclose($file);
-
-    //     // Mengirimkan file CSV sebagai response untuk diunduh
-    //     return response()->download($filePath)->deleteFileAfterSend(true);
-    // }

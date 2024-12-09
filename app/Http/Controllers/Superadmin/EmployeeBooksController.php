@@ -18,28 +18,63 @@ class EmployeeBooksController extends Controller
         $this->middleware('permission:employeebook.detail')->only('detail');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        // Ambil data dengan pagination
-        $violations = EmployeeBook::where('category', 'violation')->with('employee')->paginate(6);
-        $warnings = EmployeeBook::where('category', 'warning')->with('employee')->paginate(6);
-        $reprimands = EmployeeBook::where('category', 'reprimand')->with('employee')->paginate(6);
-        $employees = Employee::all(); // Ambil semua karyawan
+        $search = $request->query('search');
+        $typeOf = $request->query('type_of'); // Ambil nilai dari dropdown "type_of"
+
+        $violations = EmployeeBook::where('category', 'violation')
+            ->when($search, function ($query, $search) {
+                return $query->whereHas('employee', function ($query) use ($search) {
+                    $query->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%");
+                });
+            })
+            ->when($typeOf, function ($query, $typeOf) {
+                return $query->where('type_of', $typeOf);
+            })
+            ->with('employee')
+            ->paginate(6);
+
+        $warnings = EmployeeBook::where('category', 'warning')
+            ->when($search, function ($query, $search) {
+                return $query->whereHas('employee', function ($query) use ($search) {
+                    $query->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%");
+                });
+            })
+            ->when($typeOf, function ($query, $typeOf) {
+                return $query->where('type_of', $typeOf);
+            })
+            ->with('employee')
+            ->paginate(6);
+
+        $reprimands = EmployeeBook::where('category', 'reprimand')
+            ->when($search, function ($query, $search) {
+                return $query->whereHas('employee', function ($query) use ($search) {
+                    $query->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%");
+                });
+            })
+            ->when($typeOf, function ($query, $typeOf) {
+                return $query->where('type_of', $typeOf);
+            })
+            ->with('employee')
+            ->paginate(6);
+
+        $employees = Employee::all(); // Ambil semua data karyawan (jika dibutuhkan)
 
         // Kirim data ke view
-        return view('superadmin.employeebooks.index', compact('violations', 'warnings', 'reprimands', 'employees'));
+        return view('superadmin.employeebooks.index', compact('violations', 'warnings', 'reprimands', 'employees', 'search', 'typeOf'));
     }
 
 
     public function create(Request $request)
     {
-        // Urutkan karyawan berdasarkan nama depan dan nama belakang
-        $employees = Employee::orderBy('first_name')->orderBy('last_name')->get();
-
-        $category = $request->query('category', 'violation'); // Set kategori default
+        $employees = Employee::select('employee_id', 'first_name', 'last_name')->orderBy('first_name')->get();
+        $category = $request->query('category', 'violation');
         return view('superadmin.employeebooks.create', compact('employees', 'category'));
     }
-
 
     public function store(Request $request)
     {
@@ -49,6 +84,7 @@ class EmployeeBooksController extends Controller
             'incident_detail' => 'required|string',
             'remarks' => 'required|string',
             'category' => 'required|string',
+            'type_of' => 'required|in:SOP,Administrative,Behavior',
         ]);
 
         // Simpan data ke database
@@ -73,26 +109,40 @@ class EmployeeBooksController extends Controller
             'incident_detail' => 'required|string',
             'remarks' => 'required|string',
             'category' => 'required|string',
+            'type_of' => 'required|in:SOP,Administrative,Behavior',
         ]);
 
-        // Update data di database
         $employeeBook->update($request->all());
-
-        // Redirect kembali ke halaman index dengan pesan sukses
         return redirect()->route('employeebooks.index')->with('success', 'Employee book updated successfully.');
     }
 
     public function destroy(EmployeeBook $employeeBook)
     {
         $employeeBook->delete();
-
-        // Redirect kembali ke halaman index dengan pesan sukses
         return redirect()->route('employeebooks.index')->with('success', 'Employee book deleted successfully.');
     }
 
-    // Method untuk menampilkan detail EmployeeBook
     public function detail(EmployeeBook $employeeBook)
     {
-        return view('superadmin.employeebooks.detail', compact('employeeBook'));
+
+        $employees = Employee::orderBy('first_name')->get();
+        return view('superadmin.employeebooks.detail', compact('employeeBook', 'employees'));
+    }
+
+    public function searchEmployees(Request $request)
+    {
+        $query = $request->get('query'); // Mendapatkanarian query penc
+
+        $employees = Employee::where('first_name', 'LIKE', "%{$query}%")
+            ->orWhere('last_name', 'LIKE', "%{$query}%")
+            ->orderBy('first_name')
+            ->get(['employee_id', 'first_name', 'last_name']); // Mengambil employee_id dan nama
+        $employees = $employees->map(function ($employee) {
+            $employee->full_name = $employee->first_name . ' ' . $employee->last_name;
+            return $employee;
+        });
+
+        // Kembalikan response JSON
+        return response()->json($employees);
     }
 }

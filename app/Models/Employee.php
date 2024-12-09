@@ -22,7 +22,9 @@ class Employee extends Model
 
     public $timestamps = true;
 
+
     protected $fillable = ['recruitment_id', 'first_name', 'last_name', 'email', 'check_in_time', 'check_out_time','division_id', 'place_birth', 'date_birth', 'identity_number', 'address', 'current_address', 'blood_type', 'blood_rhesus', 'phone_number', 'hp_number', 'marital_status', 'cv_file', 'update_cv', 'last_education', 'degree', 'starting_date', 'interview_by', 'current_salary', 'insurance', 'serious_illness', 'hereditary_disease', 'emergency_contact', 'relations', 'emergency_number', 'status'];
+
 
     protected $hidden = [];
 
@@ -36,6 +38,9 @@ class Employee extends Model
     {
         return $this->belongsTo(Recruitment::class, 'recruitment_id'); // Menggunakan kolom recruitment_id
     }
+
+
+    // Relasi dengan Attendance
 
     public function attendances(): HasMany
     {
@@ -77,5 +82,7 @@ class Employee extends Model
     public function division()
     {
         return $this->belongsTo(Division::class);
+
     }   
+
 }

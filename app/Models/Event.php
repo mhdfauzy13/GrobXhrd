@@ -11,16 +11,15 @@ class Event extends Model
 
     // Menggunakan event_id sebagai primary key
     protected $primaryKey = 'event_id';
-    public $incrementing = true; // Atur sesuai kebutuhan
-    protected $keyType = 'int'; // Atur sesuai kebutuhan
+    public $incrementing = true;
+    protected $keyType = 'int';
 
-    // Jika menggunakan Route Model Binding dengan event_id
+
     public function getRouteKeyName()
     {
         return 'event_id';
     }
 
-    // Daftar atribut yang bisa diisi secara massal
     protected $fillable = [
         'title',
         'start_date',
