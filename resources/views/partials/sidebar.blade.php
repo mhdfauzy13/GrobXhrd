@@ -11,6 +11,7 @@
         } */
 </style>
 
+
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a class="brand-link">
@@ -127,6 +128,7 @@
                 @endcanany
 
 
+
                 <!-- Employee Data menu, only visible if user has specific permissions -->
 
 
@@ -179,6 +181,30 @@
                                     @endcan
                                 </li>
                             @endcanany
+                            
+                                <!-- Tampilkan menu Resignation Request jika user memiliki permission resignationrequest.index, resignationrequest.create, atau resignationrequest.approver -->
+                                @canany(['resignationrequest.index', 'resignationrequest.create',
+                                    'resignationrequest.approver'])
+                                    <li class="nav-item">
+                                        <a href="{{ route('resignationrequest.index') }}"
+                                            class="nav-link {{ request()->routeIs('resignationrequest.index') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Resignation Request</p>
+                                        </a>
+                                    </li>
+                                @endcanany
+
+                                <!-- Sidebar untuk Submit Resignation -->
+                                @canany(['submitresign.index', 'submitresign.create'])
+                                    {{-- Hanya Manager dan Superadmin --}}
+                                    <li class="nav-item">
+                                        <a href="{{ route('submitresign.index') }}"
+                                            class="nav-link {{ request()->routeIs('submitresign.index') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Submit Resignation</p>
+                                        </a>
+                                    </li>
+                                @endcanany
 
                             <!-- Tampilkan menu Off Request jika user memiliki permission offrequest.index atau offrequest.create -->
                             @canany(['offrequest.index', 'offrequest.create'])
@@ -194,6 +220,7 @@
                                             class="nav-link {{ request()->routeIs('offrequest.create') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Create Off Request</p>
+
                                         </a>
                                     @endcan
                                 </li>
@@ -259,22 +286,22 @@
                         </ul>
                     </li>
 
-                @endcanany
+                    @endcanany
 
-                @canany(['overtime.create'])
-                    <li class="nav-item menu-open">
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                @can('overtime.create')
-                                    <a href="{{ route('overtime.index') }}" class="nav-link">
-                                        <i class="fas fa-clock nav-icon"></i>
-                                        <p>Overtime</p>
-                                    </a>
-                                @endcan
-                            </li>
-                        </ul>
-                    </li>
-                @endcanany
+                    @canany(['overtime.create'])
+                        <li class="nav-item menu-open">
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    @can('overtime.create')
+                                        <a href="{{ route('overtime.index') }}" class="nav-link">
+                                            <i class="fas fa-clock nav-icon"></i>
+                                            <p>Overtime</p>
+                                        </a>
+                                    @endcan
+                                </li>
+                            </ul>
+                        </li>
+                    @endcanany
 
                 @can('overtime.approvals')
                     <li class="nav-item">
@@ -284,6 +311,7 @@
                         </a>
                     </li>
                 @endcan
+
 
 
 

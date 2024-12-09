@@ -44,6 +44,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'employee.delete',
             'employee.show',
 
+
             // Permission terkait Payroll
             'payroll.index',
             'payroll.create',
@@ -67,6 +68,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'offrequest.index',
             'offrequest.create',
             'offrequest.approver',
+
+            // Permission terkait resignation request
+            'resignationrequest.index',
+            'resignationrequest.create',
+            'resignationrequest.approver',
+
+            'submitresign.index',
+            'submitresign.create',
 
             //event
             'event.index',
@@ -111,8 +120,27 @@ class RolesAndPermissionsSeeder extends Seeder
         $employeeRole = Role::firstOrCreate(['name' => 'employee'], ['status' => 'enable']);
 
         $adminRole->givePermissionTo($permissions); // Superadmin mendapatkan semua permission
-        $managerRole->givePermissionTo(['dashboard.superadmin', 'user.index', 'user.edit', 'role.index', 'employee.index', 'payroll.index', 'recruitment.index', 'offrequest.index', 'offrequest.approver','overtime.approvals','overtime.create']);
-        $employeeRole->givePermissionTo(['dashboard.employee', 'attendance.scan', 'offrequest.index', 'offrequest.create', 'attendance.scan']);
+        $managerRole->givePermissionTo([
+            'dashboardemployee.view',
+            'user.index',
+            'user.edit',
+            'role.index',
+            'employee.index',
+            'payroll.index',
+
+            'recruitment.index',
+            'offrequest.index',
+            'offrequest.approver',
+
+
+            'resignationrequest.index',
+            'resignationrequest.create',
+            'resignationrequest.approver',
+
+            'submitresign.index',
+            'submitresign.create',
+        ]);
+        $employeeRole->givePermissionTo(['dashboardemployee.view', 'attandance.scan', 'offrequest.create', 'attandance.scanView', 'resignationrequest.create', 'resignationrequest.index']);
 
 
         $superadmin = User::updateOrCreate(
