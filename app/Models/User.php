@@ -28,9 +28,9 @@ class User extends Authenticatable
 
 
     public function employee()
-    {
-        return $this->belongsTo(Employee::class, 'employee_id'); // Menghubungkan User dengan Employee berdasarkan employee_id
-    }
+{
+    return $this->belongsTo(Employee::class, 'employee_id', 'employee_id');
+}
 
     public function offrequests()
     {

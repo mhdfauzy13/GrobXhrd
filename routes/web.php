@@ -100,9 +100,17 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('overtime.approvals')
             ->middleware('permission:overtime.approvals');
 
-        Route::post('/overtimes/{id}/update-status', [OvertimeController::class, 'updateStatus'])
-            ->name('overtime.updateStatus')
-            ->middleware('permission:overtime.approvals');
+        // Route::post('/overtimes/{id}/update-status', [OvertimeController::class, 'updateStatus'])
+        //     ->name('overtime.updateStatus')
+        //     ->middleware('permission:overtime.approvals');
+
+        Route::post('/manager/overtimes/{id}/approve', [OvertimeController::class, 'approve'])
+        ->name('overtime.approve')
+        ->middleware('permission:overtime.approvals');
+
+        Route::post('/manager/overtimes/{id}/reject', [OvertimeController::class, 'reject'])
+        ->name('overtime.reject')
+        ->middleware('permission:overtime.approvals');
 
 
 
@@ -405,9 +413,9 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
 
         Route::post('/submit-resignation', [SubmitResignationController::class, 'store'])
             ->name('submitresign.store');
-      
+
         Route::put('/offrequest/{offrequest}/uploadImage', [OffemployeeController::class, 'uploadImage'])
-          ->name('offrequest.uploadImage');
+            ->name('offrequest.uploadImage');
 
         // Route::post('offrequest/{id}/upload-image', [OffemployeeController::class, 'uploadImage'])
         //     ->name('offrequest.uploadImage')

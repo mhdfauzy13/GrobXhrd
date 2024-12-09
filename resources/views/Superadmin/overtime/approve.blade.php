@@ -35,7 +35,7 @@
                             <tbody>
                                 @foreach ($pendingOvertimes as $overtime)
                                     <tr>
-                                        <td>{{ $overtime->user->name ?? 'N/A' }}</td>
+                                        <td>{{ $overtime->employee->user->name ?? 'N/A' }}</td>
                                         <td>{{ \Carbon\Carbon::parse($overtime->overtime_date)->format('d-m-Y') }}</td>
                                         <td>{{ $overtime->duration }}</td>
                                         <td>{{ $overtime->notes }}</td>
@@ -45,17 +45,19 @@
                                         <td class="d-flex">
                                             @can('overtime.approvals')
                                                 <!-- Formulir Approve -->
-                                                <form action="{{ route('overtime.updateStatus', $overtime->id) }}" method="POST" class="mr-2">
+                                                <form action="{{ route('overtime.approve', $overtime->id) }}" method="POST" class="mr-2">
                                                     @csrf
                                                     <input type="hidden" name="status" value="approved">
                                                     <button type="submit" class="btn btn-success btn-sm">Approve</button>
                                                 </form>
                                                 <!-- Formulir Reject -->
-                                                <form action="{{ route('overtime.updateStatus', $overtime->id) }}" method="POST">
+                                                <form action="{{ route('overtime.reject', $overtime->id) }}" method="POST">
                                                     @csrf
                                                     <input type="hidden" name="status" value="rejected">
                                                     <button type="submit" class="btn btn-danger btn-sm">Reject</button>
                                                 </form>
+
+                                            
                                             @endcan
                                         </td>
                                     </tr>
