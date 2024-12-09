@@ -127,6 +127,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'role.index',
             'employee.index',
             'payroll.index',
+            'attendance.scan',
 
             'recruitment.index',
             'offrequest.index',
@@ -140,7 +141,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'submitresign.index',
             'submitresign.create',
         ]);
-        $employeeRole->givePermissionTo(['dashboard.employee', 'attandance.scan', 'offrequest.create', 'attandance.scanView', 'resignationrequest.create', 'resignationrequest.index']);
+        $employeeRole->givePermissionTo(['dashboard.employee', 'attendance.scan', 'offrequest.create', 'resignationrequest.create', 'resignationrequest.index']);
 
 
         $superadmin = User::updateOrCreate(
