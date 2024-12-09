@@ -77,6 +77,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'resignationrequest.create',
             'resignationrequest.approver',
 
+            'submitresign.index',
+            'submitresign.create',
+
             //event
             'event.index',
             'event.lists',
@@ -134,6 +137,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'resignationrequest.index',
             'resignationrequest.create',
             'resignationrequest.approver',
+
+            'submitresign.index',
+            'submitresign.create',
         ]);
         $employeeRole->givePermissionTo(['dashboardemployee.view', 'attandance.scan', 'offrequest.create', 'attandance.scanView', 'resignationrequest.create', 'resignationrequest.index']);
 

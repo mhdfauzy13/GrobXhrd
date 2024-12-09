@@ -1,24 +1,5 @@
 @extends('layouts.app')
 
-@section('styles')
-    <style>
-        #employee-list {
-            position: absolute;
-            z-index: 1000;
-            background-color: white;
-            border: 1px solid #ddd;
-            max-height: 200px;
-            overflow-y: auto;
-            width: 100%;
-        }
-
-        #employee-list .list-group-item:hover {
-            background-color: #f0f0f0;
-            cursor: pointer;
-        }
-    </style>
-@endsection
-
 @section('content')
     <div class="content">
         <section class="content">
@@ -31,6 +12,7 @@
                         @csrf
                         <input type="hidden" name="category" value="{{ $category }}">
                         <div class="card-body">
+                            <!-- Employee Search -->
                             <div class="form-group">
                                 <label for="employee_name">Employee Name</label>
                                 <input type="text" id="employee_name" class="form-control"
@@ -38,7 +20,7 @@
                                 <input type="hidden" name="employee_id" id="employee_id" required>
                                 <div id="employee-list" class="list-group" style="display: none;"></div>
                             </div>
-
+                            <!-- Type of -->
                             <div class="form-group">
                                 <label for="type_of">Type of</label>
                                 <select name="type_of" id="type_of" class="form-control">
@@ -48,24 +30,28 @@
                                 </select>
                             </div>
 
+                            <!-- Incident Date -->
                             <div class="form-group">
                                 <label for="incident_date">Incident Date</label>
                                 <input type="date" name="incident_date" id="incident_date" class="form-control" required>
                             </div>
 
+                            <!-- Incident Detail -->
                             <div class="form-group">
                                 <label for="incident_detail">Incident Detail</label>
                                 <textarea name="incident_detail" id="incident_detail" class="form-control" required></textarea>
                             </div>
 
+                            <!-- Remarks -->
                             <div class="form-group">
                                 <label for="remarks">Remarks</label>
                                 <textarea name="remarks" id="remarks" class="form-control" required></textarea>
                             </div>
                         </div>
-                        <div class="card-footer">
-                            <button type="submit" id="savebooks" class="btn btn-primary" disabled>Save</button>
 
+                        <!-- Footer -->
+                        <div class="card-footer">
+                            <button type="button" id="savebooks" class="btn btn-primary">Save</button>
                             <a href="{{ route('employeebooks.index') }}" class="btn btn-secondary">Back</a>
                         </div>
                     </form>
@@ -74,77 +60,52 @@
         </section>
     </div>
 
+    <!-- Employee Search Script -->
     <script>
-        let employees = @json($employees);
-        const employeeListDiv = document.getElementById('employee-list');
-        const employeeIdInput = document.getElementById('employee_id');
-        const employeeNameInput = document.getElementById('employee_name');
-        const saveButton = document.getElementById('savebooks'); // Mendapatkan tombol Save
-
         function filterEmployees() {
-            const query = employeeNameInput.value.toLowerCase();
-            if (query.length < 2) {
-                employeeListDiv.style.display = 'none';
-                return;
-            }
+            let query = document.getElementById("employee_name").value;
 
-            const filteredEmployees = employees.filter(employee => {
-                return (
-                    employee.first_name.toLowerCase().includes(query) ||
-                    employee.last_name.toLowerCase().includes(query)
-                );
-            });
+            if (query.length >= 2) {
+                // Jika sudah mengetik 2 karakter atau lebih
+                fetch(`/employeebooks/search/employees?query=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        let employeeList = document.getElementById("employee-list");
+                        employeeList.innerHTML = ''; // Kosongkan daftar sebelumnya
 
-            employeeListDiv.innerHTML = '';
-            if (filteredEmployees.length > 0) {
-                employeeListDiv.style.display = 'block';
-                filteredEmployees.forEach(employee => {
-                    const listItem = document.createElement('a');
-                    listItem.classList.add('list-group-item', 'list-group-item-action');
-                    listItem.textContent = `${employee.first_name} ${employee.last_name}`;
-                    listItem.onclick = function() {
-                        employeeNameInput.value = `${employee.first_name} ${employee.last_name}`;
-                        employeeIdInput.value = employee.employee_id;
-                        employeeListDiv.style.display = 'none';
-                        validateForm(); // Pastikan tombol diupdate saat memilih employee
-                    };
-                    employeeListDiv.appendChild(listItem);
-                });
+                        if (data.length > 0) {
+                            data.forEach(employee => {
+                                let listItem = document.createElement("div");
+                                listItem.classList.add("list-group-item");
+                                listItem.textContent = employee.full_name;
+                                listItem.onclick = function() {
+                                    // Isi field dengan data yang dipilih
+                                    document.getElementById("employee_name").value = employee.full_name;
+                                    document.getElementById("employee_id").value = employee.employee_id;
+                                    employeeList.style.display =
+                                    "none"; // Sembunyikan daftar setelah memilih
+                                };
+                                employeeList.appendChild(listItem);
+                            });
+                            employeeList.style.display = "block"; // Tampilkan daftar
+                        } else {
+                            employeeList.style.display = "none"; // Tidak ada hasil
+                        }
+                    })
+                    .catch(error => console.error('Error fetching employees:', error));
             } else {
-                employeeListDiv.style.display = 'none';
+                document.getElementById("employee-list").style.display = "none"; // Jika kurang dari 2 karakter
             }
         }
+    </script>
 
-        // Fungsi untuk memastikan tombol Save hanya aktif jika semua field valid
-        function validateForm() {
-            const employeeId = employeeIdInput.value;
-            const incidentDate = document.getElementById('incident_date').value;
-            const incidentDetail = document.getElementById('incident_detail').value;
-            const remarks = document.getElementById('remarks').value;
 
-            // Memastikan semua field sudah diisi
-            if (employeeId && incidentDate && incidentDetail && remarks) {
-                saveButton.disabled = false; // Aktifkan tombol Save
-            } else {
-                saveButton.disabled = true; // Nonaktifkan tombol Save jika ada field yang kosong
-            }
-        }
+    <!-- Save Form with SweetAlert -->
+    <script>
+        document.getElementById('savebooks').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default form submission
 
-        // Tambahkan event listener untuk validasi form setiap kali ada perubahan
-        document.getElementById('incident_date').addEventListener('change', validateForm);
-        document.getElementById('incident_detail').addEventListener('input', validateForm);
-        document.getElementById('remarks').addEventListener('input', validateForm);
-        employeeNameInput.addEventListener('input', validateForm); // Validasi ketika nama karyawan diubah
-
-        // Inisialisasi validasi saat halaman pertama kali dimuat
-        validateForm();
-
-        // SweetAlert dan form submit
-        document.getElementById('quickForm').addEventListener('submit', function(event) {
-            // Cegah form untuk langsung disubmit
-            event.preventDefault();
-
-            // Tampilkan SweetAlert sebelum mengirim form
+            // Show SweetAlert after clicking Save
             Swal.fire({
                 position: 'top-center',
                 icon: 'success',
@@ -152,9 +113,11 @@
                 showConfirmButton: false,
                 timer: 1500
             }).then(function() {
-                // Setelah alert selesai, kirim form
+                // Submit form after alert finishes
                 document.getElementById('quickForm').submit();
             });
         });
     </script>
+
+    <!-- Add CSS for Employee List Styling -->
 @endsection

@@ -8,72 +8,135 @@
                 <h4>Resignation Requests</h4>
             </div>
             <div class="card-body">
+                <!-- Success Message -->
                 @if (session('success'))
                     <div class="alert alert-success">
                         {{ session('success') }}
                     </div>
                 @endif
 
-                <!-- Button Create or My Requests -->
-                @if ($role === 'employee' || $role === 'superadmin')
-                    <div class="card">
-                        <div class="card-header">
-                            <h5>Your Resignation Requests</h5>
+                <!-- Button Create Resignation Request -->
+                @if ($role === 'manager' || $role === 'superadmin')
+                    @can('resignationrequest.create')
+                        @if ($resignationsByUser->isEmpty() || $resignationsByUser->last()->status === 'rejected')
+                            <div class="text-center mt-3">
+                                <a href="{{ route('resignationrequest.create') }}" class="btn btn-primary">
+                                    Create Resignation Request
+                                </a>
+                            </div>
+                        @endif
+                    @endcan
+                @endif
+
+                <!-- Manager's Own Requests -->
+                @if (!$resignationsByUser->isEmpty())
+                    <div class="card mt-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">Your Resignation Requests</h5>
                         </div>
                         <div class="card-body">
-                            @if ($resignations->isEmpty())
-                                <p class="text-center">You have not submitted any resignation requests.</p>
-                            @else
-                                <table class="table table-bordered">
-                                    <thead>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Resign Date</th>
+                                        <th>Reason</th>
+                                        <th>Remarks</th>
+                                        <th>Document</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($resignationsByUser as $request)
                                         <tr>
-                                            <th>Resign Date</th>
-                                            <th>Reason</th>
-                                            <th>Remarks</th>
-                                            <th>Document</th>
-                                            <th>Status</th>
+                                            <td>{{ $request->resign_date->format('d M Y') }}</td>
+                                            <td>{{ $request->reason }}</td>
+                                            <td>{{ $request->remarks ?? '-' }}</td>
+                                            <td>
+                                                @if ($request->document)
+                                                    <a href="{{ asset('storage/' . $request->document) }}"
+                                                        target="_blank">View</a>
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <span
+                                                    class="badge {{ $request->status === 'approved' ? 'bg-success' : ($request->status === 'rejected' ? 'bg-danger' : 'bg-warning') }}">
+                                                    {{ ucfirst($request->status) }}
+                                                </span>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($resignations as $request)
-                                            <tr>
-                                                <td>{{ $request->resign_date->format('d M Y') }}</td>
-                                                <td>{{ $request->reason }}</td>
-                                                <td>{{ $request->remarks ?? '-' }}</td>
-                                                <td>
-                                                    @if ($request->document)
-                                                        <a href="{{ asset('storage/' . $request->document) }}"
-                                                            target="_blank">View</a>
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <span
-                                                        class="badge {{ $request->status === 'pending' ? 'bg-warning' : ($request->status === 'approved' ? 'bg-success' : 'bg-danger') }}">
-                                                        {{ ucfirst($request->status) }}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            @endif
-                            @if ($resignations->isEmpty() || $resignations->first()->status === 'rejected')
-                                @can('resignationrequest.create')
-                                    <div class="text-center mt-3">
-                                        <a href="{{ route('resignationrequest.create') }}" class="btn btn-primary">
-                                            Create Resignation Request
-                                        </a>
-                                    </div>
-                                @endcan
-                            @endif
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 @endif
 
+                <!-- Pending Requests -->
+                @if (!$resignationsPending->isEmpty())
+                    <div class="card mt-4">
+                        <div class="card-header bg-warning">
+                            <h5 class="mb-0">Pending Requests</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Resign Date</th>
+                                        <th>Reason</th>
+                                        <th>Remarks</th>
+                                        <th>Document</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($resignationsPending as $request)
+                                        <tr>
+                                            <td>{{ $request->name }}</td>
+                                            <td>{{ $request->resign_date->format('d M Y') }}</td>
+                                            <td>{{ $request->reason }}</td>
+                                            <td>{{ $request->remarks ?? '-' }}</td>
+                                            <td>
+                                                @if ($request->document)
+                                                    <a href="{{ asset('storage/' . $request->document) }}"
+                                                        target="_blank">View</a>
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-warning">Pending</span>
+                                            </td>
+                                            <td>
+                                                <form
+                                                    action="{{ route('resignationrequest.updateStatus', $request->resignationrequest_id) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" name="status" value="approved"
+                                                        class="btn btn-success btn-sm">
+                                                        Approve
+                                                    </button>
+                                                    <button type="submit" name="status" value="rejected"
+                                                        class="btn btn-danger btn-sm">
+                                                        Reject
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Processed Requests -->
                 @if (!$resignationsProcessed->isEmpty())
-                    <div class="card">
+                    <div class="card mt-4">
                         <div class="card-header bg-success">
                             <h5 class="mb-0">Processed Requests</h5>
                         </div>
@@ -118,6 +181,62 @@
                     </div>
                 @endif
 
+                <!-- Employee Requests -->
+                @if ($role === 'employee')
+                    @can('resignationrequest.create')
+                        @if ($resignations->isEmpty() || $resignations->last()->status === 'rejected')
+                            <div class="text-center mt-3">
+                                <a href="{{ route('resignationrequest.create') }}" class="btn btn-primary">
+                                    Create Resignation Request
+                                </a>
+                            </div>
+                        @endif
+                    @endcan
+                @endif
+
+                @if (!$resignations->isEmpty())
+                    <div class="card mt-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Your Resignation Requests</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Resign Date</th>
+                                        <th>Reason</th>
+                                        <th>Remarks</th>
+                                        <th>Document</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($resignations as $request)
+                                        <tr>
+                                            <td>{{ $request->resign_date->format('d M Y') }}</td>
+                                            <td>{{ $request->reason }}</td>
+                                            <td>{{ $request->remarks ?? '-' }}</td>
+                                            <td>
+                                                @if ($request->document)
+                                                    <a href="{{ asset('storage/' . $request->document) }}"
+                                                        target="_blank">View</a>
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <span
+                                                    class="badge {{ $request->status === 'approved' ? 'bg-success' : ($request->status === 'rejected' ? 'bg-danger' : 'bg-warning') }}">
+                                                    {{ ucfirst($request->status) }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

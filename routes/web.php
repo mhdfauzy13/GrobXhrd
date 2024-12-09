@@ -13,6 +13,7 @@ use App\Http\Controllers\Superadmin\AttandanceController;
 use App\Http\Controllers\Superadmin\EventController;
 use App\Http\Controllers\Employee\OffemployeeController;
 use App\Http\Controllers\Employee\ResignationRequestController;
+use App\Http\Controllers\Employee\SubmitResignationController;
 use App\Http\Controllers\Superadmin\HistoryController;
 use App\Http\Controllers\ProfileController;
 use App\Notifications\LeaveRequestNotification;
@@ -184,6 +185,11 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('employeebooks.detail')
             ->middleware('permission:employeebook.detail');
 
+        Route::get('employeebooks/search/employees', [EmployeeBooksController::class, 'searchEmployees'])
+            ->name('employeebooks.searchEmployees')
+            ->middleware('permission:employeebook.create');
+
+
         // Employee Books Routes
         Route::get('employeebooks', [EmployeeBooksController::class, 'index'])
             ->name('employeebooks.index')
@@ -216,6 +222,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/employees/search', [EmployeeBooksController::class, 'searchEmployees'])
             ->name('employees.search')
             ->middleware('permission:employeebook.search');
+
 
         // Recruitment
         Route::get('/recruitment', [RecruitmentController::class, 'index'])
@@ -372,6 +379,16 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/resignation/approver', [ResignationRequestController::class, 'approver'])
             ->name('resignationrequest.approver')
             ->middleware('permission:resignationrequest.approver');
+    });
+    Route::middleware(['auth', 'role:manager|superadmin'])->group(function () {
+        Route::get('/submit-resignation', [SubmitResignationController::class, 'index'])
+            ->name('submitresign.index');
+
+        Route::get('/submit-resignation/create', [SubmitResignationController::class, 'create'])
+            ->name('submitresign.create');
+
+        Route::post('/submit-resignation', [SubmitResignationController::class, 'store'])
+            ->name('submitresign.store');
     });
 });
 

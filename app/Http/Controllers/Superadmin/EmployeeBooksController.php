@@ -12,7 +12,7 @@ class EmployeeBooksController extends Controller
     public function __construct()
     {
         $this->middleware('permission:employeebook.index')->only('index');
-        $this->middleware('permission:employeebook.create')->only(['create', 'store', 'searchEmployee']);
+        $this->middleware('permission:employeebook.create')->only(['create', 'store']);
         $this->middleware('permission:employeebook.edit')->only(['edit', 'update']);
         $this->middleware('permission:employeebook.delete')->only('destroy');
         $this->middleware('permission:employeebook.detail')->only('detail');
@@ -21,10 +21,8 @@ class EmployeeBooksController extends Controller
     public function index(Request $request)
     {
         $search = $request->query('search');
-        $typeOfSearch = $request->query('type_of');
-        $activeTab = $request->query('tab', 'violation'); // Menyimpan tab yang aktif
+        $typeOf = $request->query('type_of'); // Ambil nilai dari dropdown "type_of"
 
-        // Query untuk masing-masing kategori
         $violations = EmployeeBook::where('category', 'violation')
             ->when($search, function ($query, $search) {
                 return $query->whereHas('employee', function ($query) use ($search) {
@@ -32,11 +30,8 @@ class EmployeeBooksController extends Controller
                         ->orWhere('last_name', 'like', "%{$search}%");
                 });
             })
-            ->when($typeOfSearch, function ($query, $typeOfSearch) {
-                return $query->where('type_of', 'like', "%{$typeOfSearch}%");
-            })
-            ->when($activeTab === 'violation', function ($query) {
-                return $query->where('category', 'violation');
+            ->when($typeOf, function ($query, $typeOf) {
+                return $query->where('type_of', $typeOf);
             })
             ->with('employee')
             ->paginate(6);
@@ -48,11 +43,8 @@ class EmployeeBooksController extends Controller
                         ->orWhere('last_name', 'like', "%{$search}%");
                 });
             })
-            ->when($typeOfSearch, function ($query, $typeOfSearch) {
-                return $query->where('type_of', 'like', "%{$typeOfSearch}%");
-            })
-            ->when($activeTab === 'warning', function ($query) {
-                return $query->where('category', 'warning');
+            ->when($typeOf, function ($query, $typeOf) {
+                return $query->where('type_of', $typeOf);
             })
             ->with('employee')
             ->paginate(6);
@@ -64,81 +56,42 @@ class EmployeeBooksController extends Controller
                         ->orWhere('last_name', 'like', "%{$search}%");
                 });
             })
-            ->when($typeOfSearch, function ($query, $typeOfSearch) {
-                return $query->where('type_of', 'like', "%{$typeOfSearch}%");
-            })
-            ->when($activeTab === 'reprimand', function ($query) {
-                return $query->where('category', 'reprimand');
+            ->when($typeOf, function ($query, $typeOf) {
+                return $query->where('type_of', $typeOf);
             })
             ->with('employee')
             ->paginate(6);
 
+        $employees = Employee::all(); // Ambil semua data karyawan (jika dibutuhkan)
+
         // Kirim data ke view
-        return view('superadmin.employeebooks.index', compact('violations', 'warnings', 'reprimands', 'search', 'typeOfSearch', 'activeTab'));
+        return view('superadmin.employeebooks.index', compact('violations', 'warnings', 'reprimands', 'employees', 'search', 'typeOf'));
     }
 
-
-
-    public function searchEmployees(Request $request)
-    {
-        $query = $request->get('query');
-
-        if (strlen($query) < 2) {
-            return response()->json([]);
-        }
-
-        $employees = Employee::where('first_name', 'LIKE', "%{$query}%")
-            ->orWhere('last_name', 'LIKE', "%{$query}%")
-            ->orderBy('first_name')
-            ->get(['employee_id', 'first_name', 'last_name']);
-
-        $employees = $employees->map(function ($employee) {
-            $employee->full_name = $employee->first_name . ' ' . $employee->last_name;
-            return $employee;
-        });
-
-        return response()->json($employees);
-    }
 
     public function create(Request $request)
     {
-        // Urutkan karyawan berdasarkan nama depan dan nama belakang
-        $employees = Employee::orderBy('first_name')->orderBy('last_name')->get();
-
-        $category = $request->query('category', 'violation'); // Set kategori default
+        $employees = Employee::select('employee_id', 'first_name', 'last_name')->orderBy('first_name')->get();
+        $category = $request->query('category', 'violation');
         return view('superadmin.employeebooks.create', compact('employees', 'category'));
     }
 
     public function store(Request $request)
     {
-        // Validasi input dari form
-        $validated = $request->validate([
-            'category' => 'required|string',
+        $request->validate([
             'employee_id' => 'required|exists:employees,employee_id',
-            'type_of' => 'required|string',
             'incident_date' => 'required|date',
             'incident_detail' => 'required|string',
-            'remarks' => 'nullable|string',
+            'remarks' => 'required|string',
+            'category' => 'required|string',
+            'type_of' => 'required|in:SOP,Administrative,Behavior',
         ]);
 
-        // Menyimpan data ke database
-        $employeeBook = new EmployeeBook();
-        $employeeBook->category = $validated['category'];
-        $employeeBook->employee_id = $validated['employee_id'];
-        $employeeBook->type_of = $validated['type_of'];
-        $employeeBook->incident_date = $validated['incident_date'];
-        $employeeBook->incident_detail = $validated['incident_detail'];
-        $employeeBook->remarks = $validated['remarks'];
+        // Simpan data ke database
+        EmployeeBook::create($request->all());
 
-        // Simpan ke database
-        $employeeBook->save();
-
-        // Redirect atau kembalikan response sukses
-        return redirect()->route('employeebooks.index')->with('success', 'Data berhasil disimpan!');
+        return redirect()->route('employeebooks.index', ['category' => $request->category])->with('success', 'Employee book created successfully.');
     }
-
-
-
     public function edit($id)
     {
         $employeeBook = EmployeeBook::findOrFail($id);
@@ -146,6 +99,7 @@ class EmployeeBooksController extends Controller
 
         return view('superadmin.employeebooks.edit', compact('employeeBook', 'employees'));
     }
+
 
     public function update(Request $request, EmployeeBook $employeeBook)
     {
@@ -158,24 +112,37 @@ class EmployeeBooksController extends Controller
             'type_of' => 'required|in:SOP,Administrative,Behavior',
         ]);
 
-        // Update data di database
         $employeeBook->update($request->all());
-
-        // Redirect kembali ke halaman index dengan pesan sukses
         return redirect()->route('employeebooks.index')->with('success', 'Employee book updated successfully.');
     }
 
     public function destroy(EmployeeBook $employeeBook)
     {
         $employeeBook->delete();
-
-        // Redirect kembali ke halaman index dengan pesan sukses
         return redirect()->route('employeebooks.index')->with('success', 'Employee book deleted successfully.');
     }
 
-    // Method untuk menampilkan detail EmployeeBook
     public function detail(EmployeeBook $employeeBook)
     {
-        return view('superadmin.employeebooks.detail', compact('employeeBook'));
+
+        $employees = Employee::orderBy('first_name')->get();
+        return view('superadmin.employeebooks.detail', compact('employeeBook', 'employees'));
+    }
+
+    public function searchEmployees(Request $request)
+    {
+        $query = $request->get('query'); // Mendapatkanarian query penc
+
+        $employees = Employee::where('first_name', 'LIKE', "%{$query}%")
+            ->orWhere('last_name', 'LIKE', "%{$query}%")
+            ->orderBy('first_name')
+            ->get(['employee_id', 'first_name', 'last_name']); // Mengambil employee_id dan nama
+        $employees = $employees->map(function ($employee) {
+            $employee->full_name = $employee->first_name . ' ' . $employee->last_name;
+            return $employee;
+        });
+
+        // Kembalikan response JSON
+        return response()->json($employees);
     }
 }

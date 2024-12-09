@@ -1,11 +1,11 @@
 @php
-    // Function to cut text (cutText)
+    // Fungsi untuk memotong teks (cutText)
     function cutText($text, $length)
     {
         return strlen($text) > $length ? substr($text, 0, $length) . '...' : $text;
     }
 
-    // Get the active tab from query string, default to 'violation'
+    // Ambil tab aktif dari query string, default ke 'violation'
     $activeTab = request()->query('tab', 'violation');
 @endphp
 
@@ -50,23 +50,29 @@
                                 <h3>Violation</h3>
                             </div>
                             <div class="card-body">
-                                <form method="get" action="{{ route('employeebooks.index') }}" class="form-inline mb-3">
-                                    <input type="text" name="search" class="form-control" placeholder="Search by name"
-                                        value="{{ request('search') }}">
+                                <form action="{{ route('employeebooks.index') }}" method="GET" class="form-inline mb-3">
+                                    <!-- Search by employee name -->
+                                    <input type="text" name="search" class="form-control"
+                                        placeholder="Search by employee name" value="{{ request()->query('search') }}">
+
+                                    <!-- Search by type_of -->
                                     <select name="type_of" class="form-control ml-2">
-                                        <option value="">-- Select Type --</option>
-                                        <option value="SOP" {{ request('type_of') == 'SOP' ? 'selected' : '' }}>SOP
-                                        </option>
+                                        <option value="">Select Type</option>
+                                        <option value="SOP" {{ request()->query('type_of') == 'SOP' ? 'selected' : '' }}>
+                                            SOP</option>
                                         <option value="Administrative"
-                                            {{ request('type_of') == 'Administrative' ? 'selected' : '' }}>Administrative
+                                            {{ request()->query('type_of') == 'Administrative' ? 'selected' : '' }}>
+                                            Administrative</option>
+                                        <option value="Behavior"
+                                            {{ request()->query('type_of') == 'Behavior' ? 'selected' : '' }}>Behavior
                                         </option>
-                                        <option value="Behavior" {{ request('type_of') == 'Behavior' ? 'selected' : '' }}>
-                                            Behavior</option>
                                     </select>
-                                    <input type="hidden" name="tab" value="{{ $activeTab }}">
+
+                                    <!-- Hidden Tab Input -->
+                                    <input type="hidden" name="tab" value="reprimand">
+
                                     <button type="submit" class="btn btn-secondary ml-2">Search</button>
                                 </form>
-
 
                                 <a href="{{ route('employeebooks.create') }}?category=violation"
                                     class="btn btn-primary mb-3">
@@ -130,23 +136,29 @@
                                 <h3>Warning</h3>
                             </div>
                             <div class="card-body">
-                                <form method="get" action="{{ route('employeebooks.index') }}" class="form-inline mb-3">
-                                    <input type="text" name="search" class="form-control" placeholder="Search by name"
-                                        value="{{ request('search') }}">
+                                <form action="{{ route('employeebooks.index') }}" method="GET" class="form-inline mb-3">
+                                    <!-- Search by employee name -->
+                                    <input type="text" name="search" class="form-control"
+                                        placeholder="Search by employee name" value="{{ request()->query('search') }}">
+
+                                    <!-- Search by type_of -->
                                     <select name="type_of" class="form-control ml-2">
-                                        <option value="">-- Select Type --</option>
-                                        <option value="SOP" {{ request('type_of') == 'SOP' ? 'selected' : '' }}>SOP
-                                        </option>
+                                        <option value="">Select Type</option>
+                                        <option value="SOP"
+                                            {{ request()->query('type_of') == 'SOP' ? 'selected' : '' }}>SOP</option>
                                         <option value="Administrative"
-                                            {{ request('type_of') == 'Administrative' ? 'selected' : '' }}>Administrative
+                                            {{ request()->query('type_of') == 'Administrative' ? 'selected' : '' }}>
+                                            Administrative</option>
+                                        <option value="Behavior"
+                                            {{ request()->query('type_of') == 'Behavior' ? 'selected' : '' }}>Behavior
                                         </option>
-                                        <option value="Behavior" {{ request('type_of') == 'Behavior' ? 'selected' : '' }}>
-                                            Behavior</option>
                                     </select>
-                                    <input type="hidden" name="tab" value="{{ $activeTab }}">
+
+                                    <!-- Hidden Tab Input -->
+                                    <input type="hidden" name="tab" value="reprimand">
+
                                     <button type="submit" class="btn btn-secondary ml-2">Search</button>
                                 </form>
-
 
                                 <a href="{{ route('employeebooks.create') }}?category=warning"
                                     class="btn btn-primary mb-3">
@@ -210,26 +222,30 @@
                                 <h3>Reprimand</h3>
                             </div>
                             <div class="card-body">
-                                <form method="get" action="{{ route('employeebooks.index') }}"
+                                <form action="{{ route('employeebooks.index') }}" method="GET"
                                     class="form-inline mb-3">
+                                    <!-- Search by employee name -->
                                     <input type="text" name="search" class="form-control"
-                                        placeholder="Search by name" value="{{ request('search') }}">
+                                        placeholder="Search by employee name" value="{{ request()->query('search') }}">
+
+                                    <!-- Search by type_of -->
                                     <select name="type_of" class="form-control ml-2">
-                                        <option value="">-- Select Type --</option>
-                                        <option value="SOP" {{ request('type_of') == 'SOP' ? 'selected' : '' }}>SOP
-                                        </option>
+                                        <option value="">Select Type</option>
+                                        <option value="SOP"
+                                            {{ request()->query('type_of') == 'SOP' ? 'selected' : '' }}>SOP</option>
                                         <option value="Administrative"
-                                            {{ request('type_of') == 'Administrative' ? 'selected' : '' }}>Administrative
+                                            {{ request()->query('type_of') == 'Administrative' ? 'selected' : '' }}>
+                                            Administrative</option>
+                                        <option value="Behavior"
+                                            {{ request()->query('type_of') == 'Behavior' ? 'selected' : '' }}>Behavior
                                         </option>
-                                        <option value="Behavior" {{ request('type_of') == 'Behavior' ? 'selected' : '' }}>
-                                            Behavior</option>
                                     </select>
-                                    <input type="hidden" name="tab" value="{{ $activeTab }}">
+
+                                    <!-- Hidden Tab Input -->
+                                    <input type="hidden" name="tab" value="reprimand">
+
                                     <button type="submit" class="btn btn-secondary ml-2">Search</button>
                                 </form>
-
-
-
 
                                 <a href="{{ route('employeebooks.create') }}?category=reprimand"
                                     class="btn btn-primary mb-3">

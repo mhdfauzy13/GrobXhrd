@@ -198,6 +198,19 @@
                                     </li>
                                 @endcanany
 
+                                <!-- Sidebar untuk Submit Resignation -->
+                                @canany(['submitresign.index', 'submitresign.create'])
+                                    {{-- Hanya Manager dan Superadmin --}}
+                                    <li class="nav-item">
+                                        <a href="{{ route('submitresign.index') }}"
+                                            class="nav-link {{ request()->routeIs('submitresign.index') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Submit Resignation</p>
+                                        </a>
+                                    </li>
+                                @endcanany
+
+
                                 <!-- Tampilkan menu Off Request jika user memiliki permission offrequest.index atau offrequest.create -->
                                 @canany(['offrequest.index', 'offrequest.create'])
                                     <li class="nav-item">

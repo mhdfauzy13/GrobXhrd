@@ -14,6 +14,7 @@ class ResignationRequest extends Model
     protected $fillable = [
         'user_id',
         'manager_id',
+        'employee_id',
         'name',
         'resign_date',
         'reason',
@@ -24,6 +25,11 @@ class ResignationRequest extends Model
     protected $casts = [
         'resign_date' => 'datetime',
     ];
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class, 'employee_id', 'employee_id');
+    }
 
     public function user()
     {
