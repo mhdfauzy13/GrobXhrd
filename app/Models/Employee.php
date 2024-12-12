@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\Attandance; // Pastikan nama model sudah benar
+use App\Models\Attandance; 
 use App\Models\Payroll;
-use App\Models\Overtime; // Menambahkan relasi ke model Overtime
-use App\Models\WorkdaySetting; // Menambahkan relasi ke WorkdaySetting jika diperlukan
+use App\Models\Overtime; 
+use App\Models\WorkdaySetting; 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Model;
@@ -52,10 +52,11 @@ class Employee extends Model
         return $this->hasMany(Payroll::class, 'employee_id', 'employee_id');
     }
 
-    public function attendancerecaps(): HasMany
+    public function attandanceRecap()
     {
         return $this->hasMany(AttandanceRecap::class, 'employee_id', 'employee_id');
     }
+    
 
     public function user()
     {

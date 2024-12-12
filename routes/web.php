@@ -105,12 +105,12 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         //     ->middleware('permission:overtime.approvals');
 
         Route::post('/manager/overtimes/{id}/approve', [OvertimeController::class, 'approve'])
-        ->name('overtime.approve')
-        ->middleware('permission:overtime.approvals');
+            ->name('overtime.approve')
+            ->middleware('permission:overtime.approvals');
 
         Route::post('/manager/overtimes/{id}/reject', [OvertimeController::class, 'reject'])
-        ->name('overtime.reject')
-        ->middleware('permission:overtime.approvals');
+            ->name('overtime.reject')
+            ->middleware('permission:overtime.approvals');
 
 
 
@@ -123,9 +123,28 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('payroll.updateStatus')
             ->middleware('permission:payroll.index');
 
-        Route::get('/payrolls/exports', [PayrollController::class, 'exportToCsv'])
-            ->name('payroll.exports')
-            ->middleware('permission:payroll.index');
+        // Route::post('/payroll/approve/{employee_id}', [PayrollController::class, 'approve'])
+        // ->name('payroll.approve')
+        // ->middleware('permission:payroll.index');
+
+        Route::put('/payroll/approve/{id}', [PayrollController::class, 'approve'])
+        ->name('payroll.approve')
+        ->middleware('permission:payroll.index');
+    
+
+        
+
+        Route::get('/payroll/export', [PayrollController::class, 'exportToCsv'])
+        ->name('payroll.exports')
+        ->middleware('permission:payroll.export');
+
+
+
+
+
+        // Route::get('/payrolls/exports', [PayrollController::class, 'exportToCsv'])
+        //     ->name('payroll.exports')
+        //     ->middleware('permission:payroll.index');
 
         // event
         Route::get('/events', [EventController::class, 'index'])

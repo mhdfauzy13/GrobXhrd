@@ -112,7 +112,7 @@
                                         </div>
                                         @foreach ([
             'employee' => ['employee.index', 'employee.create', 'employee.edit', 'employee.delete'],
-            'payroll' => ['payroll.index', 'payroll.create', 'payroll.edit', 'payroll.delete'],
+            'payroll' => ['payroll.index', 'payroll.export'],
             'recruitment' => ['recruitment.index', 'recruitment.create', 'recruitment.edit', 'recruitment.delete'],
             'attendance' => ['attendance.index', 'attendance.scan'],
             'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.approver'],

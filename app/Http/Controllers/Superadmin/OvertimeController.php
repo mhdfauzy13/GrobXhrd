@@ -108,7 +108,7 @@ class OvertimeController extends Controller
         $overtime->update(['status' => 'approved']);
 
         return redirect()->route('overtime.approvals')
-            ->with('success', 'Pengajuan lembur berhasil disetujui!');
+            ->with('success', 'Overtime request successfully approved!');
     }
 
     public function reject($id)
@@ -120,6 +120,6 @@ class OvertimeController extends Controller
         $overtime->update(['status' => 'rejected']);
 
         return redirect()->route('overtime.approvals')
-            ->with('success', 'Pengajuan lembur berhasil ditolak!');
+            ->with('success', 'Overtime request successfully rejected!');
     }
 }
