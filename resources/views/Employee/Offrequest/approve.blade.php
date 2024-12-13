@@ -7,108 +7,100 @@
                 <h3 class="card-title">Off Request List</h3>
             </div>
             <div class="card-body">
-                @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
 
-                @if ($offrequests->isEmpty())
-                    <div class="alert alert-info" role="alert">
-                        No leave applications need to be approved at this time.
-                    </div>
-                @else
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered">
-                            <thead>
+
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Start Event</th>
+                                <th>End Event</th>
+                                <th>Status</th>
+                                <th>Picture Proof</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($offrequests as $offrequest)
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Title</th>
-                                    <th>Description</th>
-                                    <th>Start Event</th>
-                                    <th>End Event</th>
-                                    <th>Status</th>
-                                    <th>Picture Proof</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($offrequests as $offrequest)
-                                    <tr>
-                                        <td>{{ $offrequest->user->name ?? 'N/A' }}</td>
-                                        <td>{{ $offrequest->user->email ?? 'N/A' }}</td>
-                                        <td>{{ $offrequest->title }}</td>
-                                        <td>{{ $offrequest->description }}</td>
-                                        <td>{{ $offrequest->start_event ? $offrequest->start_event->format('Y-m-d') : 'N/A' }}
-                                        </td>
-                                        <td>{{ $offrequest->end_event ? $offrequest->end_event->format('Y-m-d') : 'N/A' }}
-                                        </td>
-                                        <td>{{ ucfirst($offrequest->status) }}</td>
-                                        <td>
-                                            @if ($offrequest->image)
-                                                <img src="{{ asset('uploads/' . $offrequest->image) }}" alt="Bukti Gambar"
-                                                    style="max-width: 100px; cursor: pointer;" data-toggle="modal"
-                                                    data-target="#imageModal{{ $offrequest->offrequest_id }}">
-                                                <!-- Modal Trigger -->
-                                                <div class="modal fade" id="imageModal{{ $offrequest->offrequest_id }}"
-                                                    tabindex="-1" role="dialog"
-                                                    aria-labelledby="imageModalLabel{{ $offrequest->offrequest_id }}"
-                                                    aria-hidden="true">
-                                                    <div class="modal-dialog" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title"
-                                                                    id="imageModalLabel{{ $offrequest->offrequest_id }}">
-                                                                    Picture Proof</h5>
-                                                                <button type="button" class="close" data-dismiss="modal"
-                                                                    aria-label="Close">
-                                                                    <span aria-hidden="true">&times;</span>
-                                                                </button>
-                                                            </div>
-                                                            <div class="modal-body text-center">
-                                                                <img src="{{ asset('uploads/' . $offrequest->image) }}"
-                                                                    alt="Bukti Gambar" class="img-fluid"
-                                                                    style="max-width: 100%; height: auto;">
-                                                            </div>
+                                    <td>{{ $offrequest->user->name ?? 'N/A' }}</td>
+                                    <td>{{ $offrequest->user->email ?? 'N/A' }}</td>
+                                    <td>{{ $offrequest->title }}</td>
+                                    <td>{{ $offrequest->description }}</td>
+                                    <td>{{ $offrequest->start_event ? $offrequest->start_event->format('Y-m-d') : 'N/A' }}
+                                    </td>
+                                    <td>{{ $offrequest->end_event ? $offrequest->end_event->format('Y-m-d') : 'N/A' }}
+                                    </td>
+                                    <td>{{ ucfirst($offrequest->status) }}</td>
+                                    <td>
+                                        @if ($offrequest->image)
+                                            <img src="{{ asset('uploads/' . $offrequest->image) }}" alt="Bukti Gambar"
+                                                style="max-width: 100px; cursor: pointer;" data-toggle="modal"
+                                                data-target="#imageModal{{ $offrequest->offrequest_id }}">
+                                            <!-- Modal Trigger -->
+                                            <div class="modal fade" id="imageModal{{ $offrequest->offrequest_id }}"
+                                                tabindex="-1" role="dialog"
+                                                aria-labelledby="imageModalLabel{{ $offrequest->offrequest_id }}"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title"
+                                                                id="imageModalLabel{{ $offrequest->offrequest_id }}">
+                                                                Picture Proof</h5>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body text-center">
+                                                            <img src="{{ asset('uploads/' . $offrequest->image) }}"
+                                                                alt="Bukti Gambar" class="img-fluid"
+                                                                style="max-width: 100%; height: auto;">
                                                         </div>
                                                     </div>
                                                 </div>
-                                            @else
-                                                N/A
-                                            @endif
-                                        </td>
-                                        <td class="d-flex">
-                                            @can('offrequest.approver')
-                                                <form id="approveForm-{{ $offrequest->offrequest_id }}"
-                                                    action="{{ route('offrequest.approve', $offrequest->offrequest_id) }}"
-                                                    method="POST" class="mr-2">
-                                                    @csrf
-                                                    @method('POST')
-                                                    <button type="button" class="btn btn-success btn-sm approve-button"
-                                                        data-id="{{ $offrequest->offrequest_id }}">
-                                                        Approve
-                                                    </button>
-                                                </form>
+                                            </div>
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
+                                    <td class="d-flex">
+                                        @can('offrequest.approver')
+                                            <form id="approveForm-{{ $offrequest->offrequest_id }}"
+                                                action="{{ route('offrequest.approve', $offrequest->offrequest_id) }}"
+                                                method="POST" class="mr-2">
+                                                @csrf
+                                                @method('POST')
+                                                <button type="button" class="btn btn-success btn-sm approve-button"
+                                                    data-id="{{ $offrequest->offrequest_id }}">
+                                                    Approve
+                                                </button>
+                                            </form>
 
-                                                <form id="rejectForm-{{ $offrequest->offrequest_id }}"
-                                                    action="{{ route('offrequest.reject', $offrequest->offrequest_id) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    @method('POST')
-                                                    <button type="button" class="btn btn-danger btn-sm reject-button"
-                                                        data-id="{{ $offrequest->offrequest_id }}">
-                                                        Reject
-                                                    </button>
-                                                </form>
-                                            @endcan
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @endif
+                                            <form id="rejectForm-{{ $offrequest->offrequest_id }}"
+                                                action="{{ route('offrequest.reject', $offrequest->offrequest_id) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('POST')
+                                                <button type="button" class="btn btn-danger btn-sm reject-button"
+                                                    data-id="{{ $offrequest->offrequest_id }}">
+                                                    Reject
+                                                </button>
+                                            </form>
+                                        @endcan
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
 
                 <hr>
 

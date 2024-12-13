@@ -16,9 +16,9 @@
 
                     <div class="form-group">
 
-                        <label for="title">Type Off</label>
+                        <label for="title">Off Type</label>
                         <select class="form-control" id="title" name="title" required>
-               <option value="Sick">Sick</option>
+                            <option value="Sick">Sick</option>
                             <option value="Holiday">Holiday</option>
                             <option value="Family Matters">Family Matters</option>
                             <option value="Absence">Absence</option>
@@ -35,15 +35,15 @@
                     <div class="form-group">
                         <label for="start_event">Start Event</label>
                         <input type="datetime-local" name="start_event" class="form-control" id="start_event" required
-                               value="{{ old('start_event', now()->format('Y-m-d') . 'T09:00') }}">
+                            value="{{ old('start_event', now()->format('Y-m-d') . 'T09:00') }}">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="end_event">End Event</label>
                         <input type="datetime-local" name="end_event" class="form-control" id="end_event" required
-                               value="{{ old('end_event', now()->format('Y-m-d') . 'T17:00') }}">
+                            value="{{ old('end_event', now()->format('Y-m-d') . 'T17:00') }}">
                     </div>
-                    
+
 
                     <div class="form-group">
                         <label for="manager_id">Select Manager</label>
@@ -59,7 +59,8 @@
                         <label for="image">Upload Proof of Leave (Optional)</label>
                         <div class="input-group">
                             <div class="custom-file">
-                                <input type="file" name="image" class="custom-file-input @error('image') is-invalid @enderror" id="image">
+                                <input type="file" name="image"
+                                    class="custom-file-input @error('image') is-invalid @enderror" id="image">
                                 <label class="custom-file-label" for="image">Choose file</label>
                             </div>
                             <div class="input-group-append">
