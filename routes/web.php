@@ -100,8 +100,16 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('overtime.approvals')
             ->middleware('permission:overtime.approvals');
 
-        Route::post('/overtimes/{id}/update-status', [OvertimeController::class, 'updateStatus'])
-            ->name('overtime.updateStatus')
+        // Route::post('/overtimes/{id}/update-status', [OvertimeController::class, 'updateStatus'])
+        //     ->name('overtime.updateStatus')
+        //     ->middleware('permission:overtime.approvals');
+
+        Route::post('/manager/overtimes/{id}/approve', [OvertimeController::class, 'approve'])
+            ->name('overtime.approve')
+            ->middleware('permission:overtime.approvals');
+
+        Route::post('/manager/overtimes/{id}/reject', [OvertimeController::class, 'reject'])
+            ->name('overtime.reject')
             ->middleware('permission:overtime.approvals');
 
 
@@ -115,9 +123,28 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('payroll.updateStatus')
             ->middleware('permission:payroll.index');
 
-        Route::get('/payrolls/exports', [PayrollController::class, 'exportToCsv'])
-            ->name('payroll.exports')
-            ->middleware('permission:payroll.index');
+        // Route::post('/payroll/approve/{employee_id}', [PayrollController::class, 'approve'])
+        // ->name('payroll.approve')
+        // ->middleware('permission:payroll.index');
+
+        Route::put('/payroll/approve/{id}', [PayrollController::class, 'approve'])
+        ->name('payroll.approve')
+        ->middleware('permission:payroll.index');
+    
+
+        
+
+        Route::get('/payroll/export', [PayrollController::class, 'exportToCsv'])
+        ->name('payroll.exports')
+        ->middleware('permission:payroll.export');
+
+
+
+
+
+        // Route::get('/payrolls/exports', [PayrollController::class, 'exportToCsv'])
+        //     ->name('payroll.exports')
+        //     ->middleware('permission:payroll.index');
 
         // event
         Route::get('/events', [EventController::class, 'index'])
@@ -405,9 +432,9 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
 
         Route::post('/submit-resignation', [SubmitResignationController::class, 'store'])
             ->name('submitresign.store');
-      
+
         Route::put('/offrequest/{offrequest}/uploadImage', [OffemployeeController::class, 'uploadImage'])
-          ->name('offrequest.uploadImage');
+            ->name('offrequest.uploadImage');
 
         // Route::post('offrequest/{id}/upload-image', [OffemployeeController::class, 'uploadImage'])
         //     ->name('offrequest.uploadImage')

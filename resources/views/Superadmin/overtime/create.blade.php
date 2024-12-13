@@ -26,10 +26,8 @@
     
                             <!-- Employee Information (Readonly) -->
                             <div class="form-group">
-                                <label for="employee_id">Employee</label>
-                                <input type="text" class="form-control" 
-                                       value="{{ auth()->user()->name }}" disabled>
-                                <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                                <label for="name">Name</label>
+                                <input type="text" class="form-control" id="name" value="{{ Auth::user()->name }}" readonly>
                             </div>
     
                             <!-- Overtime Date -->
