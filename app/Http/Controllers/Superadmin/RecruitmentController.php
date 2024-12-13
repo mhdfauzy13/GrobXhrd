@@ -8,6 +8,9 @@ use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Events\UserCreated; // Import Event untuk mengirim email
+use Illuminate\Support\Facades\Hash;
+use App\Mail\WelcomeUserMail; // Import Mailable untuk pengiriman email
 
 class RecruitmentController extends Controller
 {
@@ -43,7 +46,7 @@ class RecruitmentController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        // Validasi input
         $validated = $request->validate(
             [
                 'first_name' => 'required|string',
@@ -64,6 +67,7 @@ class RecruitmentController extends Controller
         );
 
         try {
+            // Create recruitment record
             $recruitment = Recruitment::create([
                 'first_name' => $validated['first_name'],
                 'last_name' => $validated['last_name'],
@@ -77,10 +81,13 @@ class RecruitmentController extends Controller
                 'remarks' => $validated['remarks'],
                 'status' => $validated['status'],
             ]);
+
+            // If status is 'Accept', proceed to create employee and user
             if ($recruitment && $recruitment->status === 'Accept') {
                 $existingEmployee = Employee::where('recruitment_id', $recruitment->recruitment_id)->first();
 
                 if (!$existingEmployee) {
+                    // Create employee record
                     $employee = Employee::create([
                         'recruitment_id' => $recruitment->recruitment_id,
                         'first_name' => $recruitment->first_name,
@@ -93,22 +100,24 @@ class RecruitmentController extends Controller
                         'status' => 'Active',
                     ]);
 
+                    // Create user record with a default password
                     $user = User::create([
                         'name' => $recruitment->first_name . ' ' . $recruitment->last_name,
                         'email' => $recruitment->email,
                         'employee_id' => $employee->employee_id,
                         'recruitment_id' => $recruitment->recruitment_id,
-                        'password' => bcrypt('defaultPassword'),
+                        'password' => bcrypt('defaultPassword'), // Default password
                     ]);
 
-                    $employee->update([
-                        'user_id' => $user->user_id,
-                    ]);
-
+                    // Update employee and recruitment with the new user ID
+                    $employee->update(['user_id' => $user->user_id]);
                     $recruitment->update([
                         'employee_id' => $employee->employee_id,
                         'user_id' => $user->user_id,
                     ]);
+
+                    // Trigger event to send email to the newly created user
+                    event(new UserCreated($user, 'defaultPassword')); // Pass the default password to the event
                 }
             }
 
@@ -188,7 +197,7 @@ class RecruitmentController extends Controller
                         'email' => $recruitment->email,
                         'employee_id' => $employee->employee_id,
                         'recruitment_id' => $recruitment->recruitment_id,
-                        'password' => bcrypt('defaultPassword'), 
+                        'password' => bcrypt('defaultPassword'),
                     ],
                 );
 

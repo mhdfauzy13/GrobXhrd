@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Leave Application Status</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Creation Status</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -68,20 +70,14 @@
             border-top: 1px solid #ddd;
         }
 
-        .btn {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #27ae60;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 14px;
+        a {
+            color: #000;
             font-weight: bold;
+            text-decoration: none;
         }
 
-        .btn:hover {
-            background-color: #218c53;
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -89,19 +85,19 @@
 <body>
     <div class="email-container">
         <div class="email-header">
-            <h1>Leave Application Status</h1>
+            <h1>Welcome to Our System</h1>
         </div>
         <div class="email-body">
-            <p>Hi, {{ $offRequest->name }}</p>
-            <p>Your leave application has been <strong>{{ $status }}</strong>.</p>
+            <p>Hi, {{ $userName }}</p>
+            <p>Your account has been created successfully. Please review the details below:</p>
 
-            <p><strong>Submission Details:</strong></p>
+            <p><strong>Account Details:</strong></p>
             <ul>
-                <li><strong>Title:</strong> {{ $offRequest->title }}</li>
-                <li><strong>Description:</strong> {{ $offRequest->description }}</li>
-                <li><strong>Start Event:</strong> {{ $offRequest->start_event }}</li>
-                <li><strong>End Event:</strong> {{ $offRequest->end_event }}</li>
+                <li><strong>Email:</strong> {{ $email }}</li>
+                <li><strong>Password:</strong> {{ $password }}</li>
             </ul>
+
+            <p>To log in, click here: <a href="{{ url('/login') }}">Go to Login</a></p>
 
             <p>Thank you,<br>HR Department</p>
         </div>

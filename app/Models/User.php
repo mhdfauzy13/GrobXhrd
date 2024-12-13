@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use HasRoles, Notifiable, SoftDeletes;
+    use HasRoles, Notifiable;
 
     protected $primaryKey = 'user_id';
 
