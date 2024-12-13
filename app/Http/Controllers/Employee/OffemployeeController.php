@@ -24,15 +24,24 @@ class OffemployeeController extends Controller
 
     public function index()
     {
+      
+        
         $totals = Offrequest::select('title', DB::raw('SUM(DATEDIFF(end_event, start_event) + 1) as total_days'))
-            ->where('status', 'approved')
-            ->groupBy('title')
-            ->get();
+        ->where('user_id', auth()->user()->user_id) // Ganti id dengan user_id
+        ->where('status', 'approved')
+        ->groupBy('title')
+        ->get();
 
-        $offrequests = Offrequest::with(['user', 'manager'])->paginate(10);
+    $offrequests = Offrequest::with(['user', 'manager'])
+        ->where('user_id', auth()->user()->user_id) // Ganti id dengan user_id
+        ->paginate(10);
+
+       
 
         return view('employee.offrequest.index', compact('offrequests', 'totals'));
     }
+
+
 
     public function create()
     {
@@ -72,13 +81,13 @@ class OffemployeeController extends Controller
             ->whereIn('status', ['approved', 'pending'])
             ->first();
 
-            if ($existingRequest) {
-                $message = $existingRequest->status === 'pending'
-                    ? 'You already have a leave request that is being processed.'
-                    : 'You already have an approved leave request.';
-                return redirect()->route('offrequest.index')->with('error', $message);
-            }
-            
+        if ($existingRequest) {
+            $message = $existingRequest->status === 'pending'
+                ? 'You already have a leave request that is being processed.'
+                : 'You already have an approved leave request.';
+            return redirect()->route('offrequest.index')->with('error', $message);
+        }
+
 
         $imageName = null;
 

@@ -96,7 +96,12 @@
                                     </td>
 
                                     <td>
-                                        <a href="{{ route('offrequest.edit', $offrequest->offrequest_id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                        {{-- <a href="{{ route('offrequest.edit', $offrequest->offrequest_id) }}" class="btn btn-warning btn-sm">Edit</a> --}}
+                                        <a class="btn btn-info btn-sm"
+                                        href="{{ route('offrequest.edit', $offrequest->offrequest_id) }}">
+                                        <i class="fas fa-pencil-alt"></i>
+                                        Edit
+                                    </a>
                                     </td>
 
                                 </tr>
