@@ -19,6 +19,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
+
 {{-- LINK BUAT SCANNER --}}
 
 <link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}" />

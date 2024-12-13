@@ -19,7 +19,6 @@ class OffRequestEmailNotification extends Notification
 
     public function via($notifiable)
     {
-        // Mengirimkan notifikasi melalui email
         return ['mail'];
     }
 
