@@ -25,7 +25,6 @@ class OffemployeeController extends Controller
     public function index()
     {
       
-        
         $totals = Offrequest::select('title', DB::raw('SUM(DATEDIFF(end_event, start_event) + 1) as total_days'))
         ->where('user_id', auth()->user()->user_id) // Ganti id dengan user_id
         ->where('status', 'approved')
