@@ -128,15 +128,15 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         // ->middleware('permission:payroll.index');
 
         Route::put('/payroll/approve/{id}', [PayrollController::class, 'approve'])
-        ->name('payroll.approve')
-        ->middleware('permission:payroll.index');
-    
+            ->name('payroll.approve')
+            ->middleware('permission:payroll.index');
 
-        
+
+
 
         Route::get('/payroll/export', [PayrollController::class, 'exportToCsv'])
-        ->name('payroll.exports')
-        ->middleware('permission:payroll.export');
+            ->name('payroll.exports')
+            ->middleware('permission:payroll.export');
 
 
 
@@ -394,6 +394,15 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/offrequest/approver', [OffemployeeController::class, 'approverIndex'])
             ->name('offrequest.approver')
             ->middleware('permission:offrequest.approver');
+
+        Route::get('/offrequest/{offrequest_id}/edit', [OffemployeeController::class, 'edit'])
+        ->name('offrequest.edit')
+        ->middleware('permission:offrequest.index');
+
+
+        Route::put('/offrequest/{offrequest_id}', [OffemployeeController::class, 'update'])
+            ->name('offrequest.update')
+            ->middleware('permission:offrequest.index');
 
 
         // Resignation Request

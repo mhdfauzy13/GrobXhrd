@@ -15,15 +15,15 @@ class DashboardEmployeeController extends Controller
         $this->middleware('permission:dashboard.employee')->only(['index']);
     }
 
-// public function index()
-// {
-//     $offrequests = Offrequest::where('user_id', auth()->id()) // Ambil request milik user yang sedang login
-//         ->latest()
-//         ->limit(5)
-//         ->get();
+    // public function index()
+    // {
+    //     $offrequests = Offrequest::where('user_id', auth()->id()) // Ambil request milik user yang sedang login
+    //         ->latest()
+    //         ->limit(5)
+    //         ->get();
 
-//     return view('employee.dashboard.index', compact('offrequests'));
-// }
+    //     return view('employee.dashboard.index', compact('offrequests'));
+    // }
 
 
     public function index()
@@ -34,7 +34,15 @@ class DashboardEmployeeController extends Controller
             // ->paginate(10);
             ->get();
 
-        return view('employee.dashboard.index', compact('attendances'));
+
+        // Ambil data offrequest karyawan, misalnya yang terakhir diajukan
+        $offrequests = Offrequest::where('user_id', auth()->user()->user_id)
+            ->latest()  // Mengambil data terbaru
+            ->take(5)  // Batasi hanya 5 data terakhir
+            ->get();
+
+        return view('employee.dashboard.index', compact('attendances', 'offrequests'));
+
     }
 
 
