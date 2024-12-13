@@ -20,55 +20,70 @@ class SubmitResignationController extends Controller
         $this->middleware('role:manager|superadmin');
     }
 
-    // Menampilkan daftar data pengunduran diri yang telah disubmit
     public function index()
     {
-        $resignationRequests = ResignationRequest::with('employee', 'manager')
-            ->where('status', 'approved')
+        // Ambil data untuk fitur submit resignation
+        $resignationRequests = ResignationRequest::with('employee')
+            ->where('status', 'approved') // Hanya yang sudah disetujui
+            ->whereNull('manager_id')     // Khusus submit resignation tanpa manager
             ->get();
 
         return view('employee.submitresign.index', compact('resignationRequests'));
     }
 
-    // form pengajuan pengunduran diri
     public function create()
     {
         $employees = Employee::all();
-
         return view('employee.submitresign.create', compact('employees'));
     }
 
-    // Menyimpan pengajuan pengunduran diri
     public function store(Request $request)
     {
-        // Validasi Input tanpa status
+        // Validasi input
         $request->validate([
             'employee_id' => 'required|exists:employees,employee_id',
             'resign_date' => 'required|date|after_or_equal:' . now()->toDateString(),
             'reason' => 'required|string',
             'remarks' => 'nullable|string',
+            'name' => 'nullable|string', // Validasi field name jika digunakan
+        ], [
+            'employee_id.required' => 'Employee ID is required.',
+            'employee_id.exists' => 'Selected Employee does not exist.',
+            'resign_date.required' => 'Resignation date is required.',
+            'resign_date.after_or_equal' => 'Resignation date cannot be in the past.',
+            'reason.required' => 'Reason for resignation is required.',
         ]);
 
-        // Ambil data employee berdasarkan employee_id yang dipilih
-        $employee = Employee::where('employee_id', $request->employee_id)->first();
-
-        if (!$employee) {
-            return redirect()->back()->withErrors(['employee_id' => 'Employee not found']);
-        }
-
         try {
+            // Ambil data employee berdasarkan employee_id
+            $employee = Employee::select('first_name', 'last_name')
+                ->where('employee_id', $request->employee_id)
+                ->first();
+
+            // Pastikan data karyawan ditemukan
+            if (!$employee) {
+                return redirect()->back()->withErrors(['employee_id' => 'Employee not found']);
+            }
+
+            // Simpan data pengunduran diri
             ResignationRequest::create([
                 'employee_id' => $request->employee_id,
-                'name' => $employee->first_name . ' ' . $employee->last_name,
                 'resign_date' => $request->resign_date,
                 'reason' => $request->reason,
                 'remarks' => $request->remarks,
-                'status' => 'approved',  // Status langsung di-set menjadi 'approved'
+                'status' => 'approved', // Status otomatis disetujui
+                'manager_id' => null,   // Tidak ada manager untuk submit resignation
+                'name' => $employee->first_name . ' ' . $employee->last_name, // Menggunakan nama dari data Employee
             ]);
 
+            // Redirect ke halaman index setelah sukses
             return redirect()->route('submitresign.index')->with('success', 'Resignation submitted and approved automatically!');
         } catch (\Exception $e) {
-            Log::error('Error saving resignation: ', ['error' => $e->getMessage()]);
+            // Log error jika ada kesalahan saat menyimpan
+            Log::error('Error saving resignation: ', [
+                'error' => $e->getMessage(),
+                'request_data' => $request->all(),
+            ]);
             return redirect()->back()->withErrors(['error' => 'There was an error while submitting your resignation. Please try again later.']);
         }
     }

@@ -1,3 +1,4 @@
+<!-- View untuk halaman Create Submit Resignation -->
 @extends('layouts.app')
 
 @section('content')
@@ -24,17 +25,13 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="employee_id">Employee</label>
-                                @if ($employees->isEmpty())
-                                    <p class="text-danger">No employees available. Please contact the admin.</p>
-                                @else
-                                    <select name="employee_id" id="employee_id" class="form-control" required>
-                                        @foreach ($employees as $employee)
-                                            <option value="{{ $employee->employee_id }}">
-                                                {{ $employee->first_name }} {{ $employee->last_name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                @endif
+                                <select name="employee_id" id="employee_id" class="form-control" required>
+                                    @foreach ($employees as $employee)
+                                        <option value="{{ $employee->employee_id }}">
+                                            {{ $employee->first_name }} {{ $employee->last_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <div class="form-group">

@@ -48,4 +48,14 @@ class ResignationRequest extends Model
     {
         return $query->where('manager_id', $managerId);
     }
+
+    public function scopeSubmitResignation($query)
+    {
+        return $query->whereNull('manager_id')->where('status', 'approved');
+    }
+
+    public function scopeResignationRequest($query)
+    {
+        return $query->whereNotNull('manager_id')->where('status', '!=', 'approved');
+    }
 }

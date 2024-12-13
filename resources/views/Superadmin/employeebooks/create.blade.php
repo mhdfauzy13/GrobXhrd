@@ -83,7 +83,7 @@
                                     document.getElementById("employee_name").value = employee.full_name;
                                     document.getElementById("employee_id").value = employee.employee_id;
                                     employeeList.style.display =
-                                    "none"; // Sembunyikan daftar setelah memilih
+                                        "none"; // Sembunyikan daftar setelah memilih
                                 };
                                 employeeList.appendChild(listItem);
                             });
