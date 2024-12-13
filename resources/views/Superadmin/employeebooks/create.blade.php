@@ -19,7 +19,9 @@
                                     placeholder="Type to search employee" onkeyup="filterEmployees()" required>
                                 <input type="hidden" name="employee_id" id="employee_id" required>
                                 <div id="employee-list" class="list-group" style="display: none;"></div>
+                                <!-- Dropdown hasil pencarian -->
                             </div>
+
                             <!-- Type of -->
                             <div class="form-group">
                                 <label for="type_of">Type of</label>
@@ -62,50 +64,62 @@
 
     <!-- Employee Search Script -->
     <script>
+        // Fungsi untuk memfilter karyawan berdasarkan input nama
         function filterEmployees() {
             let query = document.getElementById("employee_name").value;
 
+            // Jika panjang query >= 2, lakukan pencarian
             if (query.length >= 2) {
-                // Jika sudah mengetik 2 karakter atau lebih
-                fetch(`/employeebooks/search/employees?query=${query}`)
+                fetch(`/Superadmin/employeebooks/search/employees?query=${query}`)
                     .then(response => response.json())
                     .then(data => {
                         let employeeList = document.getElementById("employee-list");
-                        employeeList.innerHTML = ''; // Kosongkan daftar sebelumnya
+                        employeeList.innerHTML = ''; // Hapus hasil pencarian sebelumnya
 
+                        // Jika ada hasil pencarian
                         if (data.length > 0) {
                             data.forEach(employee => {
                                 let listItem = document.createElement("div");
                                 listItem.classList.add("list-group-item");
                                 listItem.textContent = employee.full_name;
+
+                                // Klik pada item untuk memilih karyawan
                                 listItem.onclick = function() {
-                                    // Isi field dengan data yang dipilih
                                     document.getElementById("employee_name").value = employee.full_name;
                                     document.getElementById("employee_id").value = employee.employee_id;
                                     employeeList.style.display =
                                         "none"; // Sembunyikan daftar setelah memilih
                                 };
+
                                 employeeList.appendChild(listItem);
                             });
                             employeeList.style.display = "block"; // Tampilkan daftar
                         } else {
-                            employeeList.style.display = "none"; // Tidak ada hasil
+                            employeeList.style.display = "none"; // Jika tidak ada hasil, sembunyikan daftar
                         }
                     })
                     .catch(error => console.error('Error fetching employees:', error));
             } else {
-                document.getElementById("employee-list").style.display = "none"; // Jika kurang dari 2 karakter
+                document.getElementById("employee-list").style.display = "none"; // Sembunyikan jika query terlalu pendek
             }
         }
-    </script>
 
-
-    <!-- Save Form with SweetAlert -->
-    <script>
+        // Event listener untuk tombol simpan
         document.getElementById('savebooks').addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault();
+            let employeeId = document.getElementById('employee_id').value;
 
-            // Show SweetAlert after clicking Save
+            // Validasi apakah employee_id terisi
+            if (!employeeId) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Please select a valid employee from the list.'
+                });
+                return;
+            }
+
+            // Jika valid, simpan form
             Swal.fire({
                 position: 'top-center',
                 icon: 'success',
@@ -113,11 +127,9 @@
                 showConfirmButton: false,
                 timer: 1500
             }).then(function() {
-                // Submit form after alert finishes
-                document.getElementById('quickForm').submit();
+                document.getElementById('quickForm').submit(); // Submit form
             });
         });
     </script>
 
-    <!-- Add CSS for Employee List Styling -->
 @endsection
