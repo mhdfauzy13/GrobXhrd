@@ -87,4 +87,39 @@ class SubmitResignationController extends Controller
             return redirect()->back()->withErrors(['error' => 'There was an error while submitting your resignation. Please try again later.']);
         }
     }
+
+    public function searchEmployees(Request $request)
+    {
+        $query = $request->get('query'); // Mendapatkan query pencarian
+
+        // Log query yang diterima
+        Log::info('Search query received: ' . $query);
+
+        // Cari karyawan berdasarkan first_name atau last_name
+        try {
+            $employees = Employee::where('first_name', 'LIKE', "%{$query}%")
+                ->orWhere('last_name', 'LIKE', "%{$query}%")
+                ->orderBy('first_name')
+                ->get(['employee_id', 'first_name', 'last_name']); // Ambil kolom yang dibutuhkan
+
+            // Log hasil pencarian
+            Log::info('Search results: ', ['employees' => $employees->toArray()]);
+
+            // Gabungkan nama depan dan nama belakang sebagai nama lengkap
+            $employees = $employees->map(function ($employee) {
+                $employee->full_name = $employee->first_name . ' ' . $employee->last_name;
+                return $employee;
+            });
+
+            return response()->json($employees); // Kembalikan response JSON
+        } catch (\Exception $e) {
+            // Log error jika ada kesalahan dalam pencarian
+            Log::error('Error in employee search: ', [
+                'error' => $e->getMessage(),
+                'query' => $query
+            ]);
+
+            return response()->json(['error' => 'Error searching for employees'], 500); // Mengirimkan error jika terjadi masalah
+        }
+    }
 }

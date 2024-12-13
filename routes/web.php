@@ -405,9 +405,12 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
 
         Route::post('/submit-resignation', [SubmitResignationController::class, 'store'])
             ->name('submitresign.store');
-      
+
+        Route::get('/employee/search', [SubmitResignationController::class, 'searchEmployees'])
+            ->name('employee.search');
+
         Route::put('/offrequest/{offrequest}/uploadImage', [OffemployeeController::class, 'uploadImage'])
-          ->name('offrequest.uploadImage');
+            ->name('offrequest.uploadImage');
 
         // Route::post('offrequest/{id}/upload-image', [OffemployeeController::class, 'uploadImage'])
         //     ->name('offrequest.uploadImage')
