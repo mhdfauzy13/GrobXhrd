@@ -9,6 +9,10 @@ use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Events\UserCreated; // Import Event untuk mengirim email
+use Illuminate\Support\Facades\Hash;
+use App\Mail\WelcomeUserMail; // Import Mailable untuk pengiriman email
+use Illuminate\Support\Facades\Mail;
 
 class EmployeeController extends Controller
 {
@@ -119,22 +123,23 @@ class EmployeeController extends Controller
         }
 
         try {
-            // Menambahkan division_id ke validatedData
-            $validatedData['division_id'] = $request->division_id; // Menambahkan division_id ke validatedData
-
-            // Proses penyimpanan data employee
+            // Menyimpan data Employee
             $employee = Employee::create($validatedData);
 
-            // Proses penyimpanan data user
+            // Membuat data User
             $user = User::create([
                 'name' => $request->first_name . ' ' . $request->last_name,
                 'email' => $request->email,
-                'password' => bcrypt('defaultpassword'),
+                'password' => bcrypt('defaultpassword'), // Default password
                 'employee_id' => $employee->employee_id,
             ]);
 
+            // Menyimpan ID User ke Employee
             $employee->user_id = $user->user_id;
             $employee->save();
+
+            // Kirim email kepada user yang baru dibuat
+            Mail::to($user->email)->send(new WelcomeUserMail($user, 'defaultpassword'));
 
             return redirect()
                 ->route('datauser.edit', $user->user_id)

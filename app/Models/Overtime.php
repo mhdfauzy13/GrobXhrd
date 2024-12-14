@@ -10,26 +10,23 @@ class Overtime extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'overtime_date', 'duration', 'notes', 'status'];
+    protected $fillable = ['employee_id', 'overtime_date', 'duration', 'notes', 'status','manager_id'];
 
 
     // Model Overtime
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
-    
-
-    // Model User
-    // public function employee()
+    // public function user()
     // {
-    //     return $this->belongsTo(Employee::class, 'employee_id');
+    //     return $this->belongsTo(User::class, 'user_id');
     // }
 
-    // Model Overtime
+    
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class, 'employee_id', 'employee_id');
+    }
+
     public function manager()
     {
-        return $this->belongsTo(User::class, 'manager_id'); // Relasi manager ke model User
+        return $this->belongsTo(User::class, 'manager_id', 'user_id');
     }
 }

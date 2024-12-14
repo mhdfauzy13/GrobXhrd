@@ -90,20 +90,6 @@
                 </div>
             </div>
 
-            <!-- Menampilkan pesan success/error -->
-            @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
-
-
             <!-- Tabel untuk daftar permohonan overtime -->
             <div class="table-responsive">
                 <table class="table table-striped projects">
@@ -122,14 +108,15 @@
                         </thead>
                         <tbody>
                             @forelse ($overtimes as $overtime)
+                        
                                 <tr>
-                                    <td>{{ $overtime->employee->name }}</td>
-                                    <td>{{ $overtime->overtime_date }}</td>
+                                    <td>{{ $overtime->employee->first_name }} {{ $overtime->employee->last_name }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($overtime->overtime_date)->format('d-m-Y') }}</td>
                                     <td>{{ $overtime->duration }} hours</td>
                                     <td>{{ $overtime->notes }}</td>
-                                    <td>
-                                        @if($overtime->user->employee && $overtime->user->employee->current_salary)
-                                            Rp {{ number_format($overtime->user->employee->current_salary, 0, ',', '.') }}
+                                    <td class="text-center">
+                                        @if($overtime->employee && $overtime->employee->current_salary)
+                                            {{ number_format($overtime->employee->current_salary, 0, ',', '.') }}
                                         @else
                                             N/A
                                         @endif
@@ -162,5 +149,21 @@
         </div>
         </div>
     </section>
+
+    <script>
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('success') }}',
+            });
+        @elseif (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '{{ session('error') }}',
+            });
+        @endif
+    </script>
 
 @endsection

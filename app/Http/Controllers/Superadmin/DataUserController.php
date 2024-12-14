@@ -10,6 +10,8 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use App\Events\UserCreated; // Import Event
+use Illuminate\Support\Str;
 
 class DataUserController extends Controller
 {
@@ -57,19 +59,24 @@ class DataUserController extends Controller
             'role' => 'required|string',
             'password' => 'required|min:8|confirmed',
         ]);
+
         try {
             // Membuat user baru
+            $passwordPlain = $request->input('password'); // Simpan password plain untuk email
             $user = User::create([
                 'name' => $request->input('name'),
                 'email' => $request->input('email'),
-                'password' => Hash::make($request->input('password')),
+                'password' => Hash::make($passwordPlain),
             ]);
 
             // Menetapkan role untuk user
             $user->assignRole($request->input('role'));
 
+            // Trigger event untuk mengirimkan email
+            event(new UserCreated($user, $passwordPlain));
+
             // Redirect kembali dengan session success
-            return redirect()->route('datauser.index')->with('success', 'Akun berhasil dibuat');
+            return redirect()->route('datauser.index')->with('success', 'Akun berhasil dibuat dan email notifikasi telah dikirim.');
         } catch (\Exception $e) {
             return back()->withErrors($e->getMessage());
         }
@@ -106,8 +113,8 @@ class DataUserController extends Controller
             $isEmployee = $user->employee()->exists();
 
             if ($isEmployee) {
-                // Jika user terkait dengan employee, jangan perbolehkan update name dan email
-                $user->role()->sync($validatedData['role']);
+                // Jika user terkait dengan employee, tidak perbolehkan update name dan email
+                $user->syncRoles($validatedData['role']);
 
                 // Update password jika ada
                 if (!empty($validatedData['password'])) {

@@ -11,10 +11,10 @@ class CreatePayrollsTable extends Migration
             $table->bigIncrements('payroll_id');
             $table->unsignedBigInteger('employee_id');
             $table->string('month')->default(now()->format('F'))->change();
-            $table->integer('total_worked_days')->default(0); 
+            $table->integer('total_days_worked')->default(0); 
             $table->integer('total_days_off')->nullable();
-            $table->integer('total_late')->default(0); 
-            $table->integer('total_early')->default(0); 
+            $table->integer('total_late_check_in')->default(0); 
+            $table->integer('total_early_check_out')->default(0); 
             $table->integer('effective_work_days')->default(0); 
             $table->integer('current_salary')->default(0); 
             $table->integer('overtime_pay')->default(0); 

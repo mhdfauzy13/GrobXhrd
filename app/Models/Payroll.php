@@ -14,10 +14,10 @@ class Payroll extends Model
     protected $fillable = [
         'employee_id',
         'month',
-        'total_worked_days',
+        'total_days_worked',
         'total_days_off',
-        'total_late',
-        'total_early',
+        'total_late_check_in',
+        'total_early_check_out',
         'effective_work_days',
         'current_salary',
         'overtime_pay',
@@ -37,6 +37,7 @@ class Payroll extends Model
                 return 'yellow'; 
         }
     }
+
 
     public function employee()
     {

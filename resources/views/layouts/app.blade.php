@@ -7,7 +7,6 @@
     <link rel="icon" href="{{ asset('dist/img/icongrob.png') }}" type="image/x-icon" />
     <title>@yield('title', 'Grobmedia')</title>
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Include Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
 
@@ -40,6 +39,30 @@
     <!-- Include JS Select2 -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+<!-- Menampilkan SweetAlert jika ada pesan sukses -->
+@if(session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: '{{ session('success') }}',
+            showConfirmButton: true,
+        });
+    </script>
+@endif
+
+<!-- Menampilkan SweetAlert jika ada pesan error -->
+@if(session('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: '{{ session('error') }}',
+            showConfirmButton: true,
+        });
+    </script>
+@endif
 
 
 

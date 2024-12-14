@@ -24,15 +24,23 @@ class OffemployeeController extends Controller
 
     public function index()
     {
+      
         $totals = Offrequest::select('title', DB::raw('SUM(DATEDIFF(end_event, start_event) + 1) as total_days'))
-            ->where('status', 'approved')
-            ->groupBy('title')
-            ->get();
+        ->where('user_id', auth()->user()->user_id) // Ganti id dengan user_id
+        ->where('status', 'approved')
+        ->groupBy('title')
+        ->get();
 
-        $offrequests = Offrequest::with(['user', 'manager'])->paginate(10);
+    $offrequests = Offrequest::with(['user', 'manager'])
+        ->where('user_id', auth()->user()->user_id) // Ganti id dengan user_id
+        ->paginate(10);
+
+       
 
         return view('employee.offrequest.index', compact('offrequests', 'totals'));
     }
+
+
 
     public function create()
     {
@@ -59,7 +67,7 @@ class OffemployeeController extends Controller
         if ($currentTime->hour >= 21) {
             // Jika pengajuan dilakukan setelah jam 9 malam, maka start_event hanya bisa untuk hari berikutnya
             if ($request->start_event == now()->toDateString()) {
-                return redirect()->route('offrequest.index')->with('error', 'Pengajuan cuti tidak dapat dilakukan pada hari yang sama setelah jam 9 malam.');
+                return redirect()->route('offrequest.index')->with('error', 'Leave requests cannot be made on the same day after 9 PM.');
             }
         }
 
@@ -74,10 +82,11 @@ class OffemployeeController extends Controller
 
         if ($existingRequest) {
             $message = $existingRequest->status === 'pending'
-                ? 'Anda sudah memiliki pengajuan cuti yang sedang diproses.'
-                : 'Anda sudah memiliki pengajuan cuti yang disetujui.';
+                ? 'You already have a leave request that is being processed.'
+                : 'You already have an approved leave request.';
             return redirect()->route('offrequest.index')->with('error', $message);
         }
+
 
         $imageName = null;
 
@@ -106,81 +115,43 @@ class OffemployeeController extends Controller
             $manager->notify(new OffRequestEmailNotification($offrequest));
         }
 
-        return redirect()->route('offrequest.index')->with('success', 'Pengajuan cuti berhasil diajukan.');
+        return redirect()->route('offrequest.index')->with('success', 'The Off Request has been successfully submitted');
+    }
+
+    public function edit($offrequest_id)
+    {
+        // Mencari offrequest berdasarkan ID
+        $offrequest = Offrequest::findOrFail($offrequest_id);
+
+        // Mengembalikan view edit dengan data offrequest
+        return view('employee.offrequest.edit', compact('offrequest'));
     }
 
 
-    // public function update(Request $request, OffRequest $offrequest)
-    // {
-    //     // Validasi input
-    //     $request->validate([
-    //         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Gambar bersifat opsional pada saat edit
-    //     ]);
-
-    //     // Jika ada gambar yang di-upload
-    //     if ($request->hasFile('image')) {
-    //         // Hapus gambar lama jika ada
-    //         if ($offrequest->image) {
-    //             Storage::delete('uploads/' . $offrequest->image);
-    //         }
-
-    //         // Upload gambar baru
-    //         $imageName = $this->uploadImage($request);
-
-    //         // Update gambar di database
-    //         $offrequest->image = $imageName;
-    //     }
-
-    //     // Update data lainnya jika ada perubahan
-    //     $offrequest->update($request->only(['title', 'description', 'start_event', 'end_event', 'manager_id']));
-
-    //     return redirect()->route('offrequest.index')->with('success', 'Pengajuan cuti berhasil diperbarui.');
-    // }
-
-
-    public function edit($id)
+    public function update(Request $request, $offrequest_id)
     {
-        // Cari data offrequest berdasarkan ID
-        $offrequest = Offrequest::findOrFail($id);
-
-        // Pastikan hanya user yang memiliki akses yang bisa mengedit
-        if ($offrequest->user_id !== Auth::id()) {
-            return redirect()->route('offrequest.index')->with('error', 'Anda tidak memiliki izin untuk mengedit pengajuan ini.');
-        }
-
-        $approvers = User::permission('offrequest.approver')->get();
-        return view('employee.offrequest.create', compact('offrequest', 'approvers'))->with('isEdit', true);
-    }
-
-
-    public function update(Request $request, $id)
-    {
-        // Cari data offrequest berdasarkan ID
-        $offrequest = Offrequest::findOrFail($id);
-
-        // Pastikan hanya user yang memiliki akses yang bisa mengedit
-        if ($offrequest->user_id !== Auth::id()) {
-            return redirect()->route('offrequest.index')->with('error', 'Anda tidak memiliki izin untuk mengedit pengajuan ini.');
-        }
-
-        // Validasi input hanya untuk gambar
+        // Validasi hanya untuk kolom image, kolom lain tetap readonly
         $request->validate([
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi gambar
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi gambar (opsional)
         ]);
 
-        // Proses upload gambar jika ada file yang diunggah
+        // Mencari offrequest berdasarkan ID
+        $offrequest = Offrequest::findOrFail($offrequest_id);
+
+        // Jika ada gambar baru yang diunggah, proses gambar tersebut
         if ($request->hasFile('image')) {
             // Hapus gambar lama jika ada
             if ($offrequest->image) {
-                Storage::delete('offrequests/' . $offrequest->image);
+                Storage::delete('public/uploads/' . $offrequest->image); // Hapus gambar lama
             }
 
-            // Upload gambar baru
-            $imageName = $request->file('image')->store('offrequests');
-            $offrequest->update(['image' => $imageName]);
+            // Simpan gambar baru menggunakan helper yang sama seperti di fungsi store
+            $imageName = $this->uploadImage($request); // Menggunakan fungsi uploadImage yang sudah ada
+            $offrequest->update(['image' => $imageName]); // Update dengan nama gambar baru
         }
 
-        return redirect()->route('offrequest.index')->with('success', 'Gambar berhasil diperbarui.');
+        // Redirect ke halaman index offrequest dengan pesan sukses
+        return redirect()->route('offrequest.index')->with('success', 'Offrequest image has been successfully updated.');
     }
 
 
@@ -225,7 +196,7 @@ class OffemployeeController extends Controller
 
         Mail::to($offrequest->user->email)->send(new OffRequestStatusMail($offrequest, 'approved'));
 
-        return redirect()->route('offrequest.approver')->with('success', 'Pengajuan cuti berhasil disetujui.');
+        return redirect()->route('offrequest.approver')->with('success', 'The Off Request has been successfully approved');
     }
 
     public function reject($id)
@@ -238,6 +209,6 @@ class OffemployeeController extends Controller
 
         Mail::to($offrequest->user->email)->send(new OffRequestStatusMail($offrequest, 'rejected'));
 
-        return redirect()->route('offrequest.approver')->with('success', 'Pengajuan cuti berhasil ditolak.');
+        return redirect()->route('offrequest.approver')->with('success', 'The Off Request has been successfully rejected');
     }
 }

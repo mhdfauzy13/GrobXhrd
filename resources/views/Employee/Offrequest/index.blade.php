@@ -18,18 +18,7 @@
                 </div>
             </div>
 
-            @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
-
+        
             <div class="card-body">
                 <!-- Menampilkan total cuti berdasarkan tipe -->
                 <div class="row mb-4">
@@ -68,6 +57,8 @@
                                 <th>End Event</th>
                                 <th>Status</th>
                                 <th>Picture Proof</th>
+                                <th>Action</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -102,6 +93,15 @@
                                                 No proof provided
                                             </span>
                                         @endif
+                                    </td>
+
+                                    <td>
+                                        {{-- <a href="{{ route('offrequest.edit', $offrequest->offrequest_id) }}" class="btn btn-warning btn-sm">Edit</a> --}}
+                                        <a class="btn btn-info btn-sm"
+                                        href="{{ route('offrequest.edit', $offrequest->offrequest_id) }}">
+                                        <i class="fas fa-pencil-alt"></i>
+                                        Edit
+                                    </a>
                                     </td>
 
                                 </tr>
