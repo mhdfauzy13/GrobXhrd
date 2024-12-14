@@ -1,3 +1,4 @@
+<!-- View untuk halaman Create Submit Resignation -->
 @extends('layouts.app')
 
 @section('content')
@@ -23,19 +24,14 @@
                         @csrf
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="employee_id">Employee</label>
-                                @if ($employees->isEmpty())
-                                    <p class="text-danger">No employees available. Please contact the admin.</p>
-                                @else
-                                    <select name="employee_id" id="employee_id" class="form-control" required>
-                                        @foreach ($employees as $employee)
-                                            <option value="{{ $employee->employee_id }}">
-                                                {{ $employee->first_name }} {{ $employee->last_name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                @endif
+                                <label for="employee_name">Employee Name</label>
+                                <input type="text" id="employee_name" class="form-control"
+                                    placeholder="Type to search employee" onkeyup="filterEmployees()" required>
+                                <input type="hidden" name="employee_id" id="employee_id" required>
+                                <div id="employee-list" class="list-group" style="display: none;"></div>
+                                <!-- Dropdown hasil pencarian -->
                             </div>
+
 
                             <div class="form-group">
                                 <label for="resign_date">Resign Date</label>
@@ -64,4 +60,45 @@
             </div>
         </section>
     </div>
+    <script>
+        function filterEmployees() {
+            let query = document.getElementById("employee_name").value;
+
+            // Jika panjang query >= 2, lakukan pencarian
+            if (query.length >= 2) {
+                fetch(`/employee/search?query=${query}`)
+
+                    .then(response => response.json())
+                    .then(data => {
+                        let employeeList = document.getElementById("employee-list");
+                        employeeList.innerHTML = ''; // Hapus hasil pencarian sebelumnya
+
+                        // Jika ada hasil pencarian
+                        if (data.length > 0) {
+                            data.forEach(employee => {
+                                let listItem = document.createElement("div");
+                                listItem.classList.add("list-group-item");
+                                listItem.textContent = employee.full_name;
+
+                                // Klik pada item untuk memilih karyawan
+                                listItem.onclick = function() {
+                                    document.getElementById("employee_name").value = employee.full_name;
+                                    document.getElementById("employee_id").value = employee.employee_id;
+                                    employeeList.style.display =
+                                        "none"; // Sembunyikan daftar setelah memilih
+                                };
+
+                                employeeList.appendChild(listItem);
+                            });
+                            employeeList.style.display = "block"; // Tampilkan daftar
+                        } else {
+                            employeeList.style.display = "none"; // Jika tidak ada hasil, sembunyikan daftar
+                        }
+                    })
+                    .catch(error => console.error('Error fetching employees:', error));
+            } else {
+                document.getElementById("employee-list").style.display = "none"; // Sembunyikan jika query terlalu pendek
+            }
+        }
+    </script>
 @endsection

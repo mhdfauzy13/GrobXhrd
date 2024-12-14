@@ -1,9 +1,10 @@
+<!-- View untuk halaman Index Submit Resignation -->
 @extends('layouts.app')
 
 @section('content')
     <div class="container">
-
         @if ($resignationRequests->isEmpty())
+            <p>No resignation requests available.</p>
         @else
             <div class="card">
                 <div class="card-header">
@@ -23,13 +24,11 @@
                         <tbody>
                             @foreach ($resignationRequests as $request)
                                 <tr>
-                                    <!-- Memeriksa jika employee ada sebelum menampilkan nama -->
-                                    <td>{{ $request->employee ? $request->employee->first_name . ' ' . $request->employee->last_name : 'No employee found' }}
-                                    </td>
+                                    <td>{{ $request->employee->first_name }} {{ $request->employee->last_name }}</td>
                                     <td>{{ $request->resign_date }}</td>
                                     <td>{{ $request->reason }}</td>
                                     <td>{{ $request->remarks }}</td>
-                                    <td>{{ ucfirst($request->status) }}</td> <!-- Status dengan kapital pertama -->
+                                    <td>{{ ucfirst($request->status) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -39,6 +38,5 @@
         @endif
 
         <a href="{{ route('submitresign.create') }}" class="btn btn-primary mt-4">Create Resignation</a>
-
     </div>
 @endsection
