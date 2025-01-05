@@ -24,28 +24,23 @@ class OffemployeeController extends Controller
 
     public function index()
     {
-      
         $totals = Offrequest::select('title', DB::raw('SUM(DATEDIFF(end_event, start_event) + 1) as total_days'))
-        ->where('user_id', auth()->user()->user_id) // Ganti id dengan user_id
-        ->where('status', 'approved')
-        ->groupBy('title')
-        ->get();
+            ->where('user_id', auth()->user()->user_id) // Ganti id dengan user_id
+            ->where('status', 'approved')
+            ->groupBy('title')
+            ->get();
 
-    $offrequests = Offrequest::with(['user', 'manager'])
-        ->where('user_id', auth()->user()->user_id) // Ganti id dengan user_id
-        ->paginate(10);
+        $offrequests = Offrequest::with(['user', 'manager'])
+            ->where('user_id', auth()->user()->user_id) // Ganti id dengan user_id
+            ->paginate(10);
 
-       
-
-        return view('employee.offrequest.index', compact('offrequests', 'totals'));
+        return view('Employee.Offrequest.index', compact('offrequests', 'totals'));
     }
-
-
 
     public function create()
     {
         $approvers = User::permission('offrequest.approver')->get();
-        return view('employee.offrequest.create', compact('approvers'));
+        return view('Employee.Offrequest.create', compact('approvers'));
     }
 
     public function store(Request $request)
@@ -61,7 +56,7 @@ class OffemployeeController extends Controller
         ]);
 
         $user = Auth::user();
-        $currentTime = now();  // Mendapatkan waktu saat ini
+        $currentTime = now(); // Mendapatkan waktu saat ini
 
         // Mengecek apakah pengajuan dilakukan setelah jam 9 malam
         if ($currentTime->hour >= 21) {
@@ -74,25 +69,21 @@ class OffemployeeController extends Controller
         // Cek apakah ada cuti yang tumpang tindih
         $existingRequest = Offrequest::where('user_id', $user->user_id)
             ->where(function ($query) use ($request) {
-                $query->where('start_event', '<=', $request->end_event)
-                    ->where('end_event', '>=', $request->start_event);
+                $query->where('start_event', '<=', $request->end_event)->where('end_event', '>=', $request->start_event);
             })
             ->whereIn('status', ['approved', 'pending'])
             ->first();
 
         if ($existingRequest) {
-            $message = $existingRequest->status === 'pending'
-                ? 'You already have a leave request that is being processed.'
-                : 'You already have an approved leave request.';
+            $message = $existingRequest->status === 'pending' ? 'You already have a leave request that is being processed.' : 'You already have an approved leave request.';
             return redirect()->route('offrequest.index')->with('error', $message);
         }
-
 
         $imageName = null;
 
         // Jika ada gambar yang di-upload
         if ($request->hasFile('image')) {
-            $imageName = $this->uploadImage($request);  // Panggil fungsi uploadImage untuk meng-upload gambar
+            $imageName = $this->uploadImage($request); // Panggil fungsi uploadImage untuk meng-upload gambar
         }
 
         // Simpan data pengajuan cuti tanpa gambar jika tidak ada gambar yang di-upload
@@ -106,7 +97,7 @@ class OffemployeeController extends Controller
             'start_event' => $request->start_event,
             'end_event' => $request->end_event,
             'status' => 'pending',
-            'image' => $imageName,  // Menyimpan gambar jika ada
+            'image' => $imageName, // Menyimpan gambar jika ada
         ]);
 
         // Kirim notifikasi ke manager
@@ -124,9 +115,8 @@ class OffemployeeController extends Controller
         $offrequest = Offrequest::findOrFail($offrequest_id);
 
         // Mengembalikan view edit dengan data offrequest
-        return view('employee.offrequest.edit', compact('offrequest'));
+        return view('Employee.Offrequest.edit', compact('offrequest'));
     }
-
 
     public function update(Request $request, $offrequest_id)
     {
@@ -154,9 +144,6 @@ class OffemployeeController extends Controller
         return redirect()->route('offrequest.index')->with('success', 'Offrequest image has been successfully updated.');
     }
 
-
-
-
     public function uploadImage(Request $request)
     {
         // Validasi gambar
@@ -171,8 +158,6 @@ class OffemployeeController extends Controller
         return $imageName;
     }
 
-
-
     public function approverIndex()
     {
         $approverId = Auth::id();
@@ -183,7 +168,7 @@ class OffemployeeController extends Controller
             ->whereIn('status', ['approved', 'rejected'])
             ->get();
 
-        return view('employee.offrequest.approve', compact('offrequests', 'approvedRequests'));
+        return view('Employee.Offrequest.approve', compact('offrequests', 'approvedRequests'));
     }
 
     public function approve($id)

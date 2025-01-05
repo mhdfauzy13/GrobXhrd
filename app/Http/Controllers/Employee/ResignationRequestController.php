@@ -35,7 +35,7 @@ class ResignationRequestController extends Controller
             ->where('user_id', '!=', $user->user_id) // Tidak menampilkan diri sendiri
             ->get();
 
-        return view('employee.resignationrequest.create', compact('managers', 'user'));
+        return view('Employee.resignationrequest.create', compact('managers', 'user'));
     }
 
     public function store(Request $request)
@@ -103,7 +103,7 @@ class ResignationRequestController extends Controller
                 ->get();
         }
 
-        return view('employee.resignationrequest.index', compact(
+        return view('Employee.resignationrequest.index', compact(
             'role',
             'resignations',
             'resignationsPending',
@@ -146,6 +146,6 @@ class ResignationRequestController extends Controller
             ->orderBy('updated_at', 'desc')
             ->get();
 
-        return view('employee.resignationrequest.approver', compact('role', 'resignationsPending', 'resignationsProcessed'));
+        return view('Employee.resignationrequest.approver', compact('role', 'resignationsPending', 'resignationsProcessed'));
     }
 }

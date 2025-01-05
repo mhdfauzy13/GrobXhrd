@@ -66,7 +66,7 @@ class EmployeeBooksController extends Controller
         $employees = Employee::all(); // Ambil semua data karyawan (jika dibutuhkan)
 
         // Kirim data ke view
-        return view('superadmin.employeebooks.index', compact('violations', 'warnings', 'reprimands', 'employees', 'search', 'typeOf'));
+        return view('Superadmin.employeebooks.index', compact('violations', 'warnings', 'reprimands', 'employees', 'search', 'typeOf'));
     }
 
 
@@ -74,7 +74,7 @@ class EmployeeBooksController extends Controller
     {
         $employees = Employee::select('employee_id', 'first_name', 'last_name')->orderBy('first_name')->get();
         $category = $request->query('category', 'violation');
-        return view('superadmin.employeebooks.create', compact('employees', 'category'));
+        return view('Superadmin.employeebooks.create', compact('employees', 'category'));
     }
     public function store(Request $request)
     {
@@ -115,7 +115,7 @@ class EmployeeBooksController extends Controller
         $employeeBook = EmployeeBook::findOrFail($id);
         $employees = Employee::all(); // Ambil data karyawan untuk dropdown
 
-        return view('superadmin.employeebooks.edit', compact('employeeBook', 'employees'));
+        return view('Superadmin.employeebooks.edit', compact('employeeBook', 'employees'));
     }
 
 
@@ -144,7 +144,7 @@ class EmployeeBooksController extends Controller
     {
 
         $employees = Employee::orderBy('first_name')->get();
-        return view('superadmin.employeebooks.detail', compact('employeeBook', 'employees'));
+        return view('Superadmin.employeebooks.detail', compact('employeeBook', 'employees'));
     }
 
     public function searchEmployees(Request $request)

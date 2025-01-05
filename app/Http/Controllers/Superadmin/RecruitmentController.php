@@ -36,12 +36,12 @@ class RecruitmentController extends Controller
                 ->orWhere('apply_position', 'like', "%{$search}%");
         })->paginate(10);
 
-        return view('superadmin.recruitment.index', compact('recruitments'));
+        return view('Superadmin.recruitment.index', compact('recruitments'));
     }
 
     public function create()
     {
-        return view('superadmin.recruitment.create');
+        return view('Superadmin.recruitment.create');
     }
 
     public function store(Request $request)
@@ -130,7 +130,7 @@ class RecruitmentController extends Controller
     public function edit($recruitment_id)
     {
         $recruitment = Recruitment::findOrFail($recruitment_id);
-        return view('superadmin.recruitment.edit', compact('recruitment'));
+        return view('Superadmin.recruitment.edit', compact('recruitment'));
     }
 
     public function update(Request $request, $recruitment_id)
@@ -219,7 +219,7 @@ class RecruitmentController extends Controller
     public function show($recruitment_id)
     {
         $recruitment = Recruitment::findOrFail($recruitment_id);
-        return view('superadmin.recruitment.show', compact('recruitment'));
+        return view('Superadmin.recruitment.show', compact('recruitment'));
     }
 
     public function destroy($recruitment_id)

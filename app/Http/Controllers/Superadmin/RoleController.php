@@ -30,14 +30,14 @@ class RoleController extends Controller
             return !$role->isActive(); // Menggunakan method isActive()
         });
 
-        return view('superadmin.masterdata.role.index', compact('activeRoles', 'disabledRoles', 'roles'));
+        return view('Superadmin.MasterData.Role.index', compact('activeRoles', 'disabledRoles', 'roles'));
     }
 
     public function create()
     {
         $permissions = Permission::all();
         $rolePermissions = [];
-        return view('superadmin.masterdata.role.create', compact('permissions', 'rolePermissions'));
+        return view('Superadmin.MasterData.Role.create', compact('permissions', 'rolePermissions'));
     }
 
     public function store(Request $request)
@@ -68,7 +68,7 @@ class RoleController extends Controller
         $permissions = Permission::all();
         $rolePermissions = $role->permissions->pluck('name')->toArray();
 
-        return view('superadmin.masterdata.role.edit', compact('role', 'permissions', 'rolePermissions'));
+        return view('Superadmin.MasterData.Role.edit', compact('role', 'permissions', 'rolePermissions'));
     }
 
     public function update(Request $request, $id)

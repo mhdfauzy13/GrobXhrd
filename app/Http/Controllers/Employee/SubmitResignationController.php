@@ -28,13 +28,13 @@ class SubmitResignationController extends Controller
             ->whereNull('manager_id')     // Khusus submit resignation tanpa manager
             ->get();
 
-        return view('employee.submitresign.index', compact('resignationRequests'));
+        return view('Employee.submitresign.index', compact('resignationRequests'));
     }
 
     public function create()
     {
         $employees = Employee::all();
-        return view('employee.submitresign.create', compact('employees'));
+        return view('Employee.submitresign.create', compact('employees'));
     }
 
     public function store(Request $request)

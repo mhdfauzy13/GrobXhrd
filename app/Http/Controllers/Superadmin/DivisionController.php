@@ -25,12 +25,12 @@ class DivisionController extends Controller
             ->orderBy('name', 'asc') // Panggil orderBy sebelum paginate
             ->paginate(10);
 
-        return view('Superadmin.Employeedata.division.index', compact('divisions'));
+        return view('Superadmin.Employeedata.Division.index', compact('divisions'));
     }
 
     public function create()
     {
-        return view('Superadmin.Employeedata.division.create');
+        return view('Superadmin.Employeedata.Division.create');
     }
 
     public function store(Request $request)
@@ -50,7 +50,7 @@ class DivisionController extends Controller
 
     public function edit(Division $division)
     {
-        return view('Superadmin.Employeedata.division.update', compact('division'));
+        return view('Superadmin.Employeedata.Division.update', compact('division'));
     }
 
     public function update(Request $request, Division $division)
