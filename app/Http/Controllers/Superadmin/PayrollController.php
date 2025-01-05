@@ -259,7 +259,7 @@ class PayrollController extends Controller
         });
 
 
-        return view('superadmin.payroll.index', compact('payrolls'));
+        return view('Superadmin.payroll.index', compact('payrolls'));
     }
 
 

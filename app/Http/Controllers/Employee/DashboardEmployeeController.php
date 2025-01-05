@@ -41,7 +41,7 @@ class DashboardEmployeeController extends Controller
             ->take(5)  // Batasi hanya 5 data terakhir
             ->get();
 
-        return view('employee.dashboard.index', compact('attendances', 'offrequests'));
+        return view('Employee.dashboard.index', compact('attendances', 'offrequests'));
 
     }
 

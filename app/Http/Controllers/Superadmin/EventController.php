@@ -20,7 +20,7 @@ class EventController extends Controller
     }
     public function index()
     {
-        return view('superadmin.event.index');
+        return view('Superadmin.Event.index');
     }
 
     public function ListEvent(Request $request)
@@ -46,7 +46,7 @@ class EventController extends Controller
 
     public function create()
     {
-        return view('superadmin.event-form', [
+        return view('Superadmin.event-form', [
             'data' => new Event(),
             'action' => route('event.store')
         ]);
@@ -61,7 +61,7 @@ class EventController extends Controller
 
     public function edit(Event $event)
     {
-        return view('superadmin.event-form', [
+        return view('Superadmin.event-form', [
             'data' => $event,
             'action' => route('event.update', $event) // Perbaiki nama rute
         ]);

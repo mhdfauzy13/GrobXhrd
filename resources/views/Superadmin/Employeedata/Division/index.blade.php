@@ -42,7 +42,7 @@
                                 <tr>
                                     <td class="text-left">{{ $division->name }}</td>
                                     <td class="text-center">
-                                        {{ \Illuminate\Support\Str::limit($division->description, $limit = 15, $end = '...') }}
+                                        {{ \Illuminate\Support\Str::limit($division->description, $limit = 50, $end = '...') }}
                                     </td>
 
                                     <td class="project-actions text-right">

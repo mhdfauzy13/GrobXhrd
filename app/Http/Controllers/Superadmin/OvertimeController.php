@@ -27,7 +27,7 @@ class OvertimeController extends Controller
             $query->where('employee_id', auth()->user()->employee->employee_id); // Sesuaikan dengan 'employee_id' atau 'id' sesuai data Anda
         })->get();
 
-        return view('superadmin.overtime.index', compact('overtimes'));
+        return view('Superadmin.overtime.index', compact('overtimes'));
     }
 
 
@@ -37,7 +37,7 @@ class OvertimeController extends Controller
         $managers = User::role('manager')->get();
 
         // dd($managers);
-        return view('superadmin.overtime.create', compact('managers'));
+        return view('Superadmin.overtime.create', compact('managers'));
     }
 
     public function store(Request $request)
@@ -96,7 +96,7 @@ class OvertimeController extends Controller
             ->where('manager_id', $managerId)
             ->get();
 
-        return view('superadmin.overtime.approve', compact('pendingOvertimes', 'historyOvertimes'));
+        return view('Superadmin.overtime.approve', compact('pendingOvertimes', 'historyOvertimes'));
     }
 
     public function approve($id)
