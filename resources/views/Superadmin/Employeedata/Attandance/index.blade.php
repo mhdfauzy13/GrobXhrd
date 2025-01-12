@@ -63,7 +63,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center">No data for the selected date.</td>
+                                    <td colspan="6" class="text-center">No data for the selected date.</td>
                                 </tr>
                             @endforelse
                         </tbody>

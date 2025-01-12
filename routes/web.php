@@ -25,7 +25,17 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+
 Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
+
+    Route::post('/logout', function () {
+        auth()->logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+
+        return redirect('/login');
+    })->name('logout');
+    
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])
         ->name('dashboard.index')

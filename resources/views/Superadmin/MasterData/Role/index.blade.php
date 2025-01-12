@@ -63,7 +63,7 @@
                 </div>
                 <div class="card-footer clearfix">
                     <div class="pagination-container">
-                        {{ $roles->links('vendor.pagination.adminlte') }}
+                        {{ $offrequests->links('vendor.pagination.adminlte') }}
                     </div>
                 </div>
             </div>
