@@ -23,6 +23,10 @@
                             <td>{{ $employee->last_name }}</td>
                         </tr>
                         <tr>
+                            <th>NIK</th>
+                            <td>{{ $employee->employee_number }}</td>
+                        </tr>
+                        <tr>
                             <th>Email</th>
                             <td>{{ $employee->email }}</td>
                         </tr>

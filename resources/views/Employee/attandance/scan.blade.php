@@ -7,6 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Attendance/scan</title>
     <link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
+
     <style>
         body {
             background-color: #f4f6f9;
@@ -56,6 +59,21 @@
         .btn-checkout {
             display: none;
         }
+
+        #camera-container,
+        #btn-checkin,
+        #btn-checkout {
+            display: block;
+        }
+
+        video {
+            border-radius: 10px;
+            border: 3px solid #343a40;
+            width: 100%;
+            max-width: 640px;
+            transform: scaleX(-1);
+            /* Membalikkan video agar tidak mirror */
+        }
     </style>
 </head>
 
@@ -69,23 +87,37 @@
                 <div class="card-body">
                     <div id="alert-container"></div>
 
-                    <div id="camera-container">
-                        <video id="video" autoplay playsinline></video>
-                    </div>
-                    <canvas id="canvas" style="display: none;"></canvas>
-                    <div class="button-container">
-                        <button id="btn-checkin" onclick="takeSnapshot('checkin')" class="btn btn-dark btn-checkin">
-                            Capture Image
-                        </button>
-                        <button id="btn-checkout" onclick="takeSnapshot('checkout')" class="btn btn-dark btn-checkout">
-                            Capture Image
-                        </button>
-                    </div>
+                    <!-- Jika karyawan sedang cuti, tampilkan alert -->
+                    @if (isset($onLeave) && $onLeave)
+                        <div class="alert alert-warning text-center">
+                            You are on leave today.
+                        </div>
+                        <!-- Sembunyikan tombol check-in dan check-out jika cuti -->
+                        <script>
+                            document.getElementById('btn-checkin').style.display = 'none';
+                            document.getElementById('btn-checkout').style.display = 'none';
+                            document.getElementById('camera-container').style.display = 'none';
+                        </script>
+                    @else
+                        <div id="camera-container">
+                            <video id="video" autoplay playsinline></video>
+                        </div>
+                        <canvas id="canvas" style="display: none;"></canvas>
+                        <div class="button-container">
+                            <button id="btn-checkin" onclick="takeSnapshot('checkin')" class="btn btn-dark btn-checkin">
+                                Capture Image
+                            </button>
+                            <button id="btn-checkout" onclick="takeSnapshot('checkout')"
+                                class="btn btn-dark btn-checkout">
+                                Capture Image
+                            </button>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
     </section>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
@@ -117,7 +149,7 @@
             navigator.mediaDevices.getUserMedia({
                     video: {
                         facingMode: "user"
-                    } 
+                    }
                 })
                 .then(stream => {
                     video.srcObject = stream;
@@ -161,29 +193,68 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Tentukan warna dan pesan alert berdasarkan aksi
-                        const alertColor = action === 'checkin' ? 'success' : 'danger';
-                        const alertMessage = `${action === 'checkin' ? 'Check-In' : 'Check-Out'} successful!`;
-
-                        // Tampilkan alert
-                        showAlert(alertMessage, alertColor);
-
-                        // Redirect ke dashboard setelah 3 detik
-                        setTimeout(() => {
-                            window.location.href = '{{ route('dashboardemployee.index') }}';
-                        }, 3000);
-
-                        // Update status dan visibilitas tombol
-                        attendanceStatus.isCheckIn = action === 'checkin';
-                        updateButtonVisibility();
+                        if (data.early && action === 'checkout') {
+                            // Tampilkan konfirmasi SweetAlert untuk early check-out
+                            Swal.fire({
+                                title: 'Early Checkout',
+                                text: data.message,
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: 'Yes, proceed',
+                                cancelButtonText: 'Cancel',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    finalizeCheckOut(imageData, url);
+                                } else {
+                                    Swal.fire('Cancelled', 'Your check-out was cancelled.', 'error');
+                                }
+                            });
+                        } else {
+                            // Tampilkan pesan sukses
+                            Swal.fire('Success', data.message, 'success');
+                            // Redirect ke dashboard setelah beberapa detik
+                            setTimeout(() => {
+                                window.location.href = '{{ route('dashboardemployee.index') }}';
+                            }, 3000);
+                        }
                     } else {
                         // Tampilkan alert warning jika ada masalah
-                        showAlert(data.message, 'warning');
+                        Swal.fire('Error', data.message, 'error');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    showAlert('Error processing request', 'danger');
+                    Swal.fire('Error', 'Error processing request', 'error');
+                });
+        }
+
+        function finalizeCheckOut(imageData, url) {
+            // Lanjutkan proses check-out setelah konfirmasi
+            fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        image: imageData,
+                        confirmedEarly: true, // Menandakan user sudah konfirmasi
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Success', data.message, 'success');
+                        setTimeout(() => {
+                            window.location.href = '{{ route('dashboardemployee.index') }}';
+                        }, 3000);
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire('Error', 'Error processing request', 'error');
                 });
         }
 
@@ -198,5 +269,7 @@
         }
     </script>
 </body>
+
+</html>
 
 </html>

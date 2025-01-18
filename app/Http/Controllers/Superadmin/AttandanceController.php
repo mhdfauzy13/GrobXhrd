@@ -40,7 +40,7 @@ class AttandanceController extends Controller
 
         if ($onLeave) {
             // Jika karyawan sedang cuti, langsung kirimkan status cuti
-            return view('Employee.attandance.scan', ['onLeave' => true]);
+            return view('Employee.attandance.scan', ['onLeave' => true, 'employee' => $employee]);
         }
 
         // Ambil data absensi karyawan untuk hari ini
@@ -48,7 +48,7 @@ class AttandanceController extends Controller
         $hasCheckedIn = $attendance && $attendance->check_in;
         $hasCheckedOut = $attendance && $attendance->check_out;
 
-        return view('Employee.attandance.scan', compact('hasCheckedIn', 'hasCheckedOut', 'attendance', 'onLeave'));
+        return view('Employee.attandance.scan', compact('hasCheckedIn', 'hasCheckedOut', 'attendance', 'onLeave', 'employee'));
     }
 
     // Fungsi untuk Check-in
@@ -70,11 +70,13 @@ class AttandanceController extends Controller
         if ($onLeave) {
             return response()->json(['success' => false, 'message' => 'You are on leave today']);
         }
+
+        // Ambil data absensi karyawan untuk hari ini
         $attendance = $employee->attendances()->whereDate('created_at', $today)->first();
 
         // Jika sudah check-in, tidak perlu check-in lagi
         if ($attendance && $attendance->check_in) {
-            return response()->json(['success' => false, 'message' => 'You are already absent today']);
+            return response()->json(['success' => false, 'message' => 'You have already checked in today']);
         }
 
         // Simpan gambar yang diupload
@@ -91,8 +93,13 @@ class AttandanceController extends Controller
         // Waktu sekarang dan waktu check-in yang dijadwalkan
         $currentTime = now();
         $checkInTime = $employee->check_in_time; // Waktu check-in yang dijadwalkan
+        $toleranceMinutes = 1; // Toleransi waktu dalam menit
+
         $scheduledCheckInTime = Carbon::createFromFormat('H:i:s', $checkInTime, $currentTime->timezone)->setDate($currentTime->year, $currentTime->month, $currentTime->day);
-        $isLate = $currentTime->greaterThan($scheduledCheckInTime);
+        $latestAllowedCheckInTime = $scheduledCheckInTime->copy()->addMinutes($toleranceMinutes);
+
+        // Tentukan status 'LATE' jika check-in melewati toleransi
+        $isLate = $currentTime->greaterThan($latestAllowedCheckInTime);
 
         // Jika belum ada data attendance untuk hari ini, buat data baru
         if (!$attendance) {
@@ -103,15 +110,17 @@ class AttandanceController extends Controller
 
         // Update hanya check_in dan status IN/LATE
         $attendance->check_in = $currentTime;
-        $attendance->check_in_status = $isLate ? 'LATE' : 'IN'; // Simpan status check-in terpisah
+        $attendance->check_in_status = $isLate ? 'LATE' : 'IN';
         $attendance->image = $imagePath;
         $attendance->save();
 
-        return response()->json(['success' => true, 'message' => 'Anda telah berhasil check-in', 'attendance' => $attendance]);
+        $message = $isLate ? 'Check-in successful, but you are late.' : 'Check-in successful, on time.';
+        return response()->json(['success' => true, 'message' => $message, 'attendance' => $attendance]);
     }
 
     // Fungsi untuk Check-out
 
+    // Fungsi untuk Check-out
     public function checkOut(Request $request)
     {
         $request->validate([
@@ -130,25 +139,37 @@ class AttandanceController extends Controller
         if ($onLeave) {
             return response()->json(['success' => false, 'message' => 'You are on leave today']);
         }
+
+        // Ambil data absensi karyawan untuk hari ini
         $attendance = $employee->attendances()->whereDate('created_at', $today)->first();
 
-        // Jika belum check-in atau sudah check-out, tampilkan pesan yang sesuai
         if (!$attendance || !$attendance->check_in) {
-            return response()->json(['success' => false, 'message' => 'Anda belum check-in hari ini']);
+            return response()->json(['success' => false, 'message' => 'You have not checked in today']);
         }
+
         if ($attendance->check_out) {
-            return response()->json(['success' => false, 'message' => 'You are already absent today']);
+            return response()->json(['success' => false, 'message' => 'You have already checked out today']);
         }
 
         // Cek apakah sudah mencapai waktu check-out yang dijadwalkan
         $currentTime = now();
         $checkOutTime = $employee->check_out_time; // Waktu check-out yang dijadwalkan
-        $scheduledCheckOutTime = Carbon::createFromFormat('H:i:s', $checkOutTime, $currentTime->timezone)->setDate($currentTime->year, $currentTime->month, $currentTime->day);
+        $toleranceMinutes = 1; // Toleransi waktu dalam menit
 
-        // Tentukan status 'EARLY' jika check-out sebelum waktu yang dijadwalkan
-        $statusCheckOut = 'OUT';
-        if ($currentTime->lessThan($scheduledCheckOutTime)) {
-            $statusCheckOut = 'EARLY'; // Set status menjadi EARLY
+        $scheduledCheckOutTime = Carbon::createFromFormat('H:i:s', $checkOutTime, $currentTime->timezone)->setDate($currentTime->year, $currentTime->month, $currentTime->day);
+        $earliestAllowedCheckOutTime = $scheduledCheckOutTime->copy()->subMinutes($toleranceMinutes);
+
+        // Status check-out 'EARLY' atau 'OUT'
+        $isEarly = $currentTime->lessThan($earliestAllowedCheckOutTime);
+        $statusCheckOut = $isEarly ? 'EARLY' : 'OUT';
+
+        // Jika check-out early, konfirmasi pengguna
+        if ($isEarly && !$request->has('confirmedEarly')) {
+            return response()->json([
+                'success' => true,
+                'message' => 'You are checking out early. Do you want to proceed?',
+                'early' => true,
+            ]);
         }
 
         // Simpan gambar yang diupload
@@ -162,13 +183,19 @@ class AttandanceController extends Controller
             $imagePath = 'attandance_images/' . $imageName;
         }
 
-        // Update check_out dan status OUT/EARLY
+        // Update check_out dan status
         $attendance->check_out = $currentTime;
-        $attendance->check_out_status = $statusCheckOut; // Simpan status check-out terpisah
+        $attendance->check_out_status = $statusCheckOut;
         $attendance->image = $imagePath;
         $attendance->save();
 
-        return response()->json(['success' => true, 'message' => 'Anda telah berhasil check-out', 'attendance' => $attendance]);
+        $message = $statusCheckOut === 'EARLY' ? 'Check-out successful, but you left early.' : 'Check-out successful, on time.';
+
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'attendance' => $attendance,
+        ]);
     }
 
     public function recap($employee_id, Request $request)

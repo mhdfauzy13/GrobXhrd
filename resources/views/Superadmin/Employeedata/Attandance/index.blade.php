@@ -1,6 +1,16 @@
 @extends('layouts.app')
 @section('title', 'Attendance/index')
 @section('content')
+    <style>
+        .modal-body img {
+            max-height: 80vh;
+            /* Sesuaikan dengan tinggi viewport */
+            max-width: 100%;
+            object-fit: contain;
+            /* Pastikan gambar tetap proporsional */
+        }
+    </style>
+
     <section class="content">
         <div class="card">
             <div class="card-header">
@@ -22,7 +32,7 @@
                                 <th style="width: 20%" class="text-left">Name</th>
                                 <th style="width: 20%" class="text-center">Check-In</th>
                                 <th style="width: 20%" class="text-center">Check-Out</th>
-                                <th style="width: 20%" class="text-center" >Status Check-In</th>
+                                <th style="width: 20%" class="text-center">Status Check-In</th>
                                 <th style="width: 20%" class="text-center">Status Check-Out</th>
                                 <th style="width: 20%" class="text-right">Image</th>
                             </tr>
@@ -36,25 +46,28 @@
                                             {{ $attendance->employee->first_name }} {{ $attendance->employee->last_name }}
                                         </a>
                                     </td>
-                                    <td class="text-center">{{ $attendance->check_in ? $attendance->check_in->format('H:i:s') : '-' }}</td>
-                                    <td class="text-center">{{ $attendance->check_out ? $attendance->check_out->format('H:i:s') : '-' }}</td>
                                     <td class="text-center">
-                                        <span class="badge badge-{{ $attendance->check_in_status === 'IN' ? 'success' : 'danger' }}">
+                                        {{ $attendance->check_in ? $attendance->check_in->format('H:i:s') : '-' }}</td>
+                                    <td class="text-center">
+                                        {{ $attendance->check_out ? $attendance->check_out->format('H:i:s') : '-' }}</td>
+                                    <td class="text-center">
+                                        <span
+                                            class="badge badge-{{ $attendance->check_in_status === 'IN' ? 'success' : 'danger' }}">
                                             {{ $attendance->check_in_status }}
                                         </span>
                                     </td>
-                                    <td  class="text-center">
-                                        <span class="badge badge-{{ $attendance->check_out_status === 'IN' ? 'success' : 'danger' }}">
+                                    <td class="text-center">
+                                        <span
+                                            class="badge badge-{{ $attendance->check_out_status === 'IN' ? 'success' : 'danger' }}">
                                             {{ $attendance->check_out_status }}
                                         </span>
                                     </td>
                                     <td class="text-right">
                                         @if ($attendance->image)
-                                            <!-- Gambar bisa diklik untuk membuka modal -->
                                             <a href="#" data-toggle="modal" data-target="#imageModal"
                                                 data-image="{{ asset('storage/' . $attendance->image) }}">
                                                 <img src="{{ asset('storage/' . $attendance->image) }}"
-                                                    alt="Gambar Absensi" width="100">
+                                                    alt="Attendance Image" width="100">
                                             </a>
                                         @else
                                             No Image
@@ -76,31 +89,36 @@
                 </div>
             </div>
         </div>
-    </section>
 
-    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="imageModalLabel">Image of Attendance</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body text-center">
-                    <img src="" alt="Gambar Absensi" class="img-fluid" id="modalImage">
+        <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="imageModalLabel">Attendance Image</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img src="" alt="Attendance Image" class="img-fluid" id="modalImage">
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        $('#imageModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget);
-            var imageUrl = button.data('image');
-            var modal = $(this);
-            modal.find('#modalImage').attr('src', imageUrl);
-        });
-    </script>
+        <script>
+            $(document).ready(function() {
+                $('#imageModal').on('show.bs.modal', function(event) {
+                    var button = $(event.relatedTarget); // Tombol yang diklik
+                    var imageUrl = button.data('image'); // Ambil URL gambar dari data-image
+                    console.log('Image URL:', imageUrl); // Debug untuk memastikan URL benar
+                    var modal = $(this);
+                    modal.find('#modalImage').attr('src', imageUrl); // Atur src gambar di modal
+                });
+            });
+        </script>
+
+    </section>
+
 @endsection

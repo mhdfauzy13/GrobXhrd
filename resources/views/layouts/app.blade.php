@@ -40,30 +40,52 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 
-<!-- Menampilkan SweetAlert jika ada pesan sukses -->
-@if(session('success'))
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: '{{ session('success') }}',
-            showConfirmButton: true,
-        });
-    </script>
-@endif
+    <!-- Menampilkan SweetAlert jika ada pesan sukses -->
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                showConfirmButton: true,
+            });
+        </script>
+    @endif
 
-<!-- Menampilkan SweetAlert jika ada pesan error -->
-@if(session('error'))
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: '{{ session('error') }}',
-            showConfirmButton: true,
-        });
-    </script>
-@endif
+    <!-- Menampilkan SweetAlert jika ada pesan error -->
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: '{{ session('error') }}',
+                showConfirmButton: true,
+            });
+        </script>
+    @endif
 
+    <script>
+        let idleTime = 0;
+        const timeout = 30 * 60 * 1000; // 30 menit dalam milidetik
+
+        // Reset idle timer saat pengguna melakukan aktivitas
+        function resetIdleTimer() {
+            idleTime = 0;
+        }
+
+        // Tambahkan event listener untuk mendeteksi aktivitas
+        document.onmousemove = resetIdleTimer;
+        document.onkeypress = resetIdleTimer;
+
+        // Timer untuk mengecek idle time
+        setInterval(() => {
+            idleTime += 1000;
+            if (idleTime >= timeout) {
+                alert('You will be logged out automatically due to inactivity.');
+                window.location.href = '{{ route('login') }}';
+            }
+        }, 1000);
+    </script>
 
 
 </body>

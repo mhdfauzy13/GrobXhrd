@@ -110,17 +110,32 @@ class EmployeeController extends Controller
             ],
         );
 
-        // Hapus titik pada `current_salary` dan konversi ke integer
+        // Hapus pemisah ribuan pada `current_salary` dan konversi ke integer
         if (isset($request->current_salary)) {
             $validatedData['current_salary'] = (int) str_replace('.', '', $request->current_salary);
         }
-        // Proses pengunggahan file CV
+
+        // Proses unggah file CV
         if ($request->hasFile('cv_file')) {
             $file = $request->file('cv_file');
             $fileName = time() . '_' . $file->getClientOriginalName();
             $filePath = $file->storeAs('cv_files', $fileName, 'public');
             $validatedData['cv_file'] = $filePath;
         }
+
+        // Generate NIK
+        $division = Division::find($request->division_id);
+
+        $lastEmployee = Employee::where('division_id', $division->id)
+            ->orderBy('employee_number', 'desc')
+            ->first();
+
+        $nextNumber = $lastEmployee ? intval(substr($lastEmployee->employee_number, -3)) + 1 : 1;
+
+        $formattedNumber = str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        $yearBirth = date('y', strtotime($request->date_birth));
+        $yearStart = date('y', strtotime($request->starting_date));
+        $validatedData['employee_number'] = sprintf('%03d/%02d%02d/%s', $division->id, $yearBirth, $yearStart, $formattedNumber);
 
         try {
             // Menyimpan data Employee
@@ -243,28 +258,57 @@ class EmployeeController extends Controller
             // Update waktu terakhir CV diunggah
             $validatedData['update_cv'] = now();
         }
-        // Update division_id jika ada perubahan
-        if ($request->has('division_id')) {
-            $validatedData['division_id'] = $request->division_id;
-        }
-        // Update semua field lainnya
-        $employeeModel->fill($validatedData);
 
-        try {
-            $employeeModel->save();
+       // Cek perubahan terkait NIK
+    $isNikChanged = false;
+    $divisionChanged = $request->input('division_id') != $employeeModel->division_id;
 
-            // Update data User yang terkait jika ada
-            if ($employeeModel->user) {
-                $employeeModel->user->name = $request->input('first_name') . ' ' . $request->input('last_name');
-                $employeeModel->user->email = $request->input('email');
-                $employeeModel->user->save();
+    if (
+        $divisionChanged || 
+        $request->input('date_birth') != $employeeModel->date_birth || 
+        $request->input('starting_date') != $employeeModel->starting_date
+    ) {
+        $isNikChanged = true;
+    }
+
+    // Update data karyawan
+    $employeeModel->fill($validatedData);
+
+    try {
+        $employeeModel->save();
+
+        // Perbarui NIK jika ada perubahan
+        if ($isNikChanged) {
+            $divisionCode = str_pad($request->input('division_id'), 3, '0', STR_PAD_LEFT); // Kode Divisi
+            $yearBirth = $request->input('date_birth') ? substr($request->input('date_birth'), 2, 2) : '00'; // Tahun Lahir
+            $yearStart = $request->input('starting_date') ? substr($request->input('starting_date'), 2, 2) : '00'; // Tahun Masuk
+
+            if ($divisionChanged) {
+                // Jika divisi berubah, dapatkan nomor urut terakhir di divisi baru
+                $sequence = Employee::where('division_id', $request->input('division_id'))->count() + 1;
+            } else {
+                // Jika hanya tahun lahir atau tahun masuk berubah, nomor urut tetap
+                $sequence = (int) explode('/', $employeeModel->employee_number)[2];
             }
 
-            return redirect()->route('employee.index')->with('success', 'Data Employee berhasil diperbarui!');
-        } catch (\Exception $e) {
-            return back()->withErrors(['error' => $e->getMessage()]);
+            // Format NIK baru
+            $newEmployeeNumber = sprintf('%03d/%s%s/%03d', $divisionCode, $yearBirth, $yearStart, $sequence);
+            $employeeModel->employee_number = $newEmployeeNumber;
+            $employeeModel->save();
         }
+
+        // Update data user yang terkait jika ada
+        if ($employeeModel->user) {
+            $employeeModel->user->name = $request->input('first_name') . ' ' . $request->input('last_name');
+            $employeeModel->user->email = $request->input('email');
+            $employeeModel->user->save();
+        }
+
+        return redirect()->route('employee.index')->with('success', 'Data Employee berhasil diperbarui!');
+    } catch (\Exception $e) {
+        return back()->withErrors(['error' => $e->getMessage()]);
     }
+}
 
     public function destroy($employee_id)
     {

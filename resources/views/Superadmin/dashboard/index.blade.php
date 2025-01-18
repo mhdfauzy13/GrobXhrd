@@ -25,7 +25,7 @@
         <!-- Small Box for Total Employees -->
         <div class="col-lg-3 col-6">
             <div class="small-box bg-warning">
-                <div class="inner">
+                <div class="inner" style="color: white;">
                     <h3>{{ $totalEmployees }}</h3>
                     <p>Total Employees</p>
                 </div>
@@ -38,7 +38,7 @@
         <!-- Small Box for Total Users -->
         <div class="col-lg-3 col-6">
             <div class="small-box bg-danger">
-                <div class="inner">
+                <div class="inner" style="color: white;">
                     <h3>{{ $totalUsers }}</h3>
                     <p>Total Users</p>
                 </div>
@@ -51,7 +51,7 @@
         <!-- Small Box for Total Recruitments -->
         <div class="col-lg-3 col-6">
             <div class="small-box bg-success">
-                <div class="inner">
+                <div class="inner" style="color: white;">
                     <h3>{{ $totalRecruitments }}</h3>
                     <p>Total Recruitments</p>
                 </div>
