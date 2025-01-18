@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Attendance/scan</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
     <link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
+
     <style>
         body {
             background-color: #f4f6f9;
@@ -28,8 +30,7 @@
             margin-bottom: 20px;
         }
 
-        video,
-        #my_camera {
+        video {
             border-radius: 10px;
             border: 3px solid #343a40;
             width: 100%;
@@ -58,6 +59,21 @@
         .btn-checkout {
             display: none;
         }
+
+        #camera-container,
+        #btn-checkin,
+        #btn-checkout {
+            display: block;
+        }
+
+        video {
+            border-radius: 10px;
+            border: 3px solid #343a40;
+            width: 100%;
+            max-width: 640px;
+            transform: scaleX(-1);
+            /* Membalikkan video agar tidak mirror */
+        }
     </style>
 </head>
 
@@ -80,11 +96,11 @@
                         <script>
                             document.getElementById('btn-checkin').style.display = 'none';
                             document.getElementById('btn-checkout').style.display = 'none';
+                            document.getElementById('camera-container').style.display = 'none';
                         </script>
                     @else
                         <div id="camera-container">
-                            <video id="video" autoplay></video>
-                            <div id="my_camera" style="display: none;"></div>
+                            <video id="video" autoplay playsinline></video>
                         </div>
                         <canvas id="canvas" style="display: none;"></canvas>
                         <div class="button-container">
@@ -101,7 +117,7 @@
             </div>
         </div>
     </section>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
@@ -114,14 +130,6 @@
             isCheckIn: {!! isset($hasCheckedIn) ? json_encode($hasCheckedIn) : 'false' !!},
             isCheckOut: {!! isset($hasCheckedOut) ? json_encode($hasCheckedOut) : 'false' !!},
         };
-
-        // Menambahkan pengecekan untuk onLeave
-        if ({!! json_encode($onLeave) !!}) {
-            alertContainer.innerHTML =
-                '<div class="alert alert-warning text-center" role="alert">You are on leave today!</div>';
-            btnCheckIn.style.display = 'none';
-            btnCheckOut.style.display = 'none';
-        }
 
         // Fungsi untuk memperbarui visibilitas tombol
         function updateButtonVisibility() {
@@ -136,7 +144,8 @@
 
         window.onload = function() {
             updateButtonVisibility();
-            // Akses kamera
+
+            // Akses kamera menggunakan MediaDevices API
             navigator.mediaDevices.getUserMedia({
                     video: {
                         facingMode: "user"
@@ -147,27 +156,26 @@
                     video.play();
                 })
                 .catch(err => {
-                    console.error('Error accessing camera: ', err);
+                    console.error('Error accessing camera:', err);
                     alertContainer.innerHTML =
-                        '<div class="alert alert-danger text-center" role="alert">Error accessing camera</div>';
+                        '<div class="alert alert-danger text-center">Error accessing camera</div>';
                 });
         };
 
         function takeSnapshot(action) {
-            // Tentukan URL untuk check-in atau check-out berdasarkan action
             const url = action === 'checkin' ? '{{ route('attandance.checkIn') }}' : '{{ route('attandance.checkOut') }}';
 
-            // Atur ukuran canvas berdasarkan video
+            // Set ukuran canvas sesuai video
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
 
-            // Ambil gambar dari video dan gambar di canvas
+            // Gambar frame dari video ke canvas
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            // Konversi canvas ke data URL (gambar)
+            // Konversi ke base64
             const imageData = canvas.toDataURL('image/jpeg');
 
-            // Kirim gambar ke server
+            // Kirim ke server
             sendImageToServer(imageData, url, action);
         }
 
@@ -184,49 +192,84 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    alertContainer.innerHTML = '';
-
-                    // Tangani respon dari server
                     if (data.success) {
-                        if (action === 'checkin') {
-                            alertContainer.innerHTML = `<div class="alert alert-success text-center" role="alert">
-                        <i class="fas fa-check-circle"></i> You have successfully Check-In!
-                    </div>`;
-                            attendanceStatus.isCheckIn = true; // Ubah status menjadi check-in
-                        } else if (action === 'checkout') {
-                            alertContainer.innerHTML = `<div class="alert alert-danger text-center" role="alert">
-                        <i class="fas fa-check-circle"></i> You have successfully Check-Out!
-                    </div>`;
-                            attendanceStatus.isCheckIn = false; // Ubah status menjadi check-out
+                        if (data.early && action === 'checkout') {
+                            // Tampilkan konfirmasi SweetAlert untuk early check-out
+                            Swal.fire({
+                                title: 'Early Checkout',
+                                text: data.message,
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: 'Yes, proceed',
+                                cancelButtonText: 'Cancel',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    finalizeCheckOut(imageData, url);
+                                } else {
+                                    Swal.fire('Cancelled', 'Your check-out was cancelled.', 'error');
+                                }
+                            });
+                        } else {
+                            // Tampilkan pesan sukses
+                            Swal.fire('Success', data.message, 'success');
+                            // Redirect ke dashboard setelah beberapa detik
+                            setTimeout(() => {
+                                window.location.href = '{{ route('dashboardemployee.index') }}';
+                            }, 3000);
                         }
-
-                        // Redirect ke route dashboard.employee
-                        setTimeout(() => {
-                            window.location.href = "{{ route('dashboardemployee.index') }}";
-                        }, 3000); // 3 detik sebelum redirect
                     } else {
-                        alertContainer.innerHTML = `<div class="alert alert-warning text-center" role="alert">
-                    ${data.message}
-                </div>`;
+                        // Tampilkan alert warning jika ada masalah
+                        Swal.fire('Error', data.message, 'error');
                     }
-
-                    // Perbarui visibilitas tombol
-                    updateButtonVisibility();
-
-                    // Hapus alert setelah beberapa detik jika terjadi kesalahan
-                    setTimeout(() => {
-                        alertContainer.innerHTML = '';
-                    }, 3000);
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alertContainer.innerHTML = `<div class="alert alert-danger text-center" role="alert">
-                An error occurred. Please try again.
-            </div>`;
+                    Swal.fire('Error', 'Error processing request', 'error');
                 });
+        }
+
+        function finalizeCheckOut(imageData, url) {
+            // Lanjutkan proses check-out setelah konfirmasi
+            fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        image: imageData,
+                        confirmedEarly: true, // Menandakan user sudah konfirmasi
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Success', data.message, 'success');
+                        setTimeout(() => {
+                            window.location.href = '{{ route('dashboardemployee.index') }}';
+                        }, 3000);
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire('Error', 'Error processing request', 'error');
+                });
+        }
+
+        function showAlert(message, color) {
+            // Tambahkan elemen alert ke dalam container
+            alertContainer.innerHTML = `<div class="alert alert-${color} text-center">${message}</div>`;
+
+            // Hilangkan alert setelah 3 detik
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 3000);
         }
     </script>
 </body>
 
+</html>
 
 </html>

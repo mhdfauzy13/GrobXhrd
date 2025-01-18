@@ -7,6 +7,7 @@ use App\Models\Attandance;
 use App\Models\Event;
 use App\Models\Offrequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class DashboardEmployeeController extends Controller
 {
@@ -15,36 +16,25 @@ class DashboardEmployeeController extends Controller
         $this->middleware('permission:dashboard.employee')->only(['index']);
     }
 
-    // public function index()
-    // {
-    //     $offrequests = Offrequest::where('user_id', auth()->id()) // Ambil request milik user yang sedang login
-    //         ->latest()
-    //         ->limit(5)
-    //         ->get();
-
-    //     return view('employee.dashboard.index', compact('offrequests'));
-    // }
-
-
     public function index()
     {
-        // Ambil data attendance karyawan, misalnya yang terakhir kali hadir
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
+
+        // Ambil data attendance karyawan untuk bulan saat ini
         $attendances = Attandance::where('employee_id', auth()->user()->employee_id)
-            ->take(5)
-            // ->paginate(10);
-            ->get();
+            ->whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->paginate(10); // Batasi 10 data per halaman
 
-
-        // Ambil data offrequest karyawan, misalnya yang terakhir diajukan
+        // Ambil data offrequest karyawan untuk bulan saat ini
         $offrequests = Offrequest::where('user_id', auth()->user()->user_id)
-            ->latest()  // Mengambil data terbaru
-            ->take(5)  // Batasi hanya 5 data terakhir
-            ->get();
+            ->whereMonth('start_event', $currentMonth)
+            ->whereYear('start_event', $currentYear)
+            ->paginate(10); // Batasi 10 data per halaman
 
         return view('Employee.dashboard.index', compact('attendances', 'offrequests'));
-
     }
-
 
     public function ListEvent(Request $request)
     {

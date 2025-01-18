@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Dashboard')
 @section('content')
+
     <div class="container">
         <div class="row">
             <!-- Kolom Kalender -->
@@ -31,7 +32,6 @@
                                     <th class="text-center">Check-out</th>
                                     <th class="text-center">Check-in Status</th>
                                     <th class="text-center">Check-out Status</th>
-
                                 </tr>
                             </thead>
                             <tbody>
@@ -56,6 +56,11 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <div class="card-footer clearfix">
+                            <div class="pagination-container">
+                                {{ $attendances->links('vendor.pagination.adminlte') }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -95,6 +100,11 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <div class="card-footer clearfix">
+                            <div class="pagination-container">
+                                {{ $offrequests->links('vendor.pagination.adminlte') }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -143,6 +153,22 @@
         /* Menghilangkan garis bawah dari semua link (<a>) di seluruh halaman */
         a {
             text-decoration: none !important;
+        }
+
+        @media (max-width: 768px) {
+
+            .table th,
+            .table td {
+                font-size: 12px;
+            }
+
+            .card-title {
+                font-size: 16px;
+            }
+
+            .pagination-container .page-link {
+                font-size: 12px;
+            }
         }
     </style>
 

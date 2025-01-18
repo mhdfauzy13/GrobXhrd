@@ -23,7 +23,7 @@ class Employee extends Model
     public $timestamps = true;
 
 
-    protected $fillable = ['recruitment_id', 'first_name', 'last_name', 'email', 'check_in_time', 'check_out_time','division_id', 'place_birth', 'date_birth', 'identity_number', 'address', 'current_address', 'blood_type', 'blood_rhesus', 'phone_number', 'hp_number', 'marital_status', 'cv_file', 'update_cv', 'last_education', 'degree', 'starting_date', 'interview_by', 'current_salary', 'insurance', 'serious_illness', 'hereditary_disease', 'emergency_contact', 'relations', 'emergency_number', 'status'];
+    protected $fillable = ['recruitment_id','employee_number', 'first_name', 'last_name', 'email', 'check_in_time', 'check_out_time','division_id', 'place_birth', 'date_birth', 'identity_number', 'address', 'current_address', 'blood_type', 'blood_rhesus', 'phone_number', 'hp_number', 'marital_status', 'cv_file', 'update_cv', 'last_education', 'degree', 'starting_date', 'interview_by', 'current_salary', 'insurance', 'serious_illness', 'hereditary_disease', 'emergency_contact', 'relations', 'emergency_number', 'status'];
 
 
     protected $hidden = [];

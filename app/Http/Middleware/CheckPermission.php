@@ -19,8 +19,8 @@ class CheckPermission
     {
         // Periksa apakah user yang sedang login memiliki permission yang dibutuhkan
         if (!auth()->user()->can($permission)) {
-            // Jika tidak, tampilkan halaman error 403 (Unauthorized)
-            abort(403, 'Unauthorized action.');
+            // Redirect kembali ke halaman sebelumnya dengan pesan error
+            return redirect()->back()->with('error', 'You do not have access to perform this action.');
         }
 
         return $next($request);
