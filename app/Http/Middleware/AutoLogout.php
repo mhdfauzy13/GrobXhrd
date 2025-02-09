@@ -10,7 +10,7 @@ class AutoLogout
 {
     public function handle($request, Closure $next)
     {
-        $timeout = 1800; // 30 menit (dalam detik)
+        $timeout = 3600; // 1 jam (dalam detik)
         if (Auth::check()) {
             $lastActivity = Session::get('last_activity');
             if ($lastActivity && (time() - $lastActivity > $timeout)) {

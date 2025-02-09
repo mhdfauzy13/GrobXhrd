@@ -12,22 +12,17 @@ class SubmitResignationController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('permission:resignationrequest.create', ['only' => ['store']]);
-        $this->middleware('permission:resignationrequest.index', ['only' => ['index']]);
-        $this->middleware('permission:submitresign.index', ['only' => ['index']]);
-        $this->middleware('permission:submitresign.create', ['only' => ['create']]);
-        $this->middleware('role:manager|superadmin');
+        // $this->middleware('auth');
+        $this->middleware('permission:submitresign.index')->only(['index', 'searchEmployees']);
+        $this->middleware('permission:submitresign.create')->only(['create', 'store']);
     }
 
     public function index()
     {
-        // Ambil data untuk fitur submit resignation
         $resignationRequests = ResignationRequest::with('employee')
-            ->where('status', 'approved') // Hanya yang sudah disetujui
-            ->whereNull('manager_id')     // Khusus submit resignation tanpa manager
-            ->get();
-
+            ->where('status', 'approved') 
+            ->whereNull('manager_id')
+            ->paginate(10); 
         return view('Employee.submitresign.index', compact('resignationRequests'));
     }
 
@@ -40,19 +35,22 @@ class SubmitResignationController extends Controller
     public function store(Request $request)
     {
         // Validasi input
-        $request->validate([
-            'employee_id' => 'required|exists:employees,employee_id',
-            'resign_date' => 'required|date|after_or_equal:' . now()->toDateString(),
-            'reason' => 'required|string',
-            'remarks' => 'nullable|string',
-            'name' => 'nullable|string', // Validasi field name jika digunakan
-        ], [
-            'employee_id.required' => 'Employee ID is required.',
-            'employee_id.exists' => 'Selected Employee does not exist.',
-            'resign_date.required' => 'Resignation date is required.',
-            'resign_date.after_or_equal' => 'Resignation date cannot be in the past.',
-            'reason.required' => 'Reason for resignation is required.',
-        ]);
+        $request->validate(
+            [
+                'employee_id' => 'required|exists:employees,employee_id',
+                'resign_date' => 'required|date|after_or_equal:' . now()->toDateString(),
+                'reason' => 'required|string',
+                'remarks' => 'nullable|string',
+                'name' => 'nullable|string', // Validasi field name jika digunakan
+            ],
+            [
+                'employee_id.required' => 'Employee ID is required.',
+                'employee_id.exists' => 'Selected Employee does not exist.',
+                'resign_date.required' => 'Resignation date is required.',
+                'resign_date.after_or_equal' => 'Resignation date cannot be in the past.',
+                'reason.required' => 'Reason for resignation is required.',
+            ],
+        );
 
         try {
             // Ambil data employee berdasarkan employee_id
@@ -62,7 +60,9 @@ class SubmitResignationController extends Controller
 
             // Pastikan data karyawan ditemukan
             if (!$employee) {
-                return redirect()->back()->withErrors(['employee_id' => 'Employee not found']);
+                return redirect()
+                    ->back()
+                    ->withErrors(['employee_id' => 'Employee not found']);
             }
 
             // Simpan data pengunduran diri
@@ -72,7 +72,7 @@ class SubmitResignationController extends Controller
                 'reason' => $request->reason,
                 'remarks' => $request->remarks,
                 'status' => 'approved', // Status otomatis disetujui
-                'manager_id' => null,   // Tidak ada manager untuk submit resignation
+                'manager_id' => null, // Tidak ada manager untuk submit resignation
                 'name' => $employee->first_name . ' ' . $employee->last_name, // Menggunakan nama dari data Employee
             ]);
 
@@ -84,7 +84,9 @@ class SubmitResignationController extends Controller
                 'error' => $e->getMessage(),
                 'request_data' => $request->all(),
             ]);
-            return redirect()->back()->withErrors(['error' => 'There was an error while submitting your resignation. Please try again later.']);
+            return redirect()
+                ->back()
+                ->withErrors(['error' => 'There was an error while submitting your resignation. Please try again later.']);
         }
     }
 
@@ -116,7 +118,7 @@ class SubmitResignationController extends Controller
             // Log error jika ada kesalahan dalam pencarian
             Log::error('Error in employee search: ', [
                 'error' => $e->getMessage(),
-                'query' => $query
+                'query' => $query,
             ]);
 
             return response()->json(['error' => 'Error searching for employees'], 500); // Mengirimkan error jika terjadi masalah

@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\View;
 use Closure;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Permission\Models\Role as SpatieRole;
+use App\Models\Attandance;
+use App\Observers\AttandanceObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,11 +26,13 @@ class AppServiceProvider extends ServiceProvider
         // $this->app->bind(\Spatie\Permission\Models\Role::class, \App\Models\Role::class);
     }
 
-    public function boot():void
+    public function boot(): void
     {
         View::composer('*', function ($view) {
             $companynames = Companyname::first(); // Ambil setting pertama (jika hanya satu row)
             $view->with('companyname', $companynames);
         });
+
+        Attandance::observe(AttandanceObserver::class);
     }
 }

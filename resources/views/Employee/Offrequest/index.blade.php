@@ -18,7 +18,7 @@
                 </div>
             </div>
 
-        
+
             <div class="card-body">
                 <!-- Menampilkan total cuti berdasarkan tipe -->
                 <div class="row mb-4">
@@ -56,6 +56,7 @@
                                 <th>Start Event</th>
                                 <th>End Event</th>
                                 <th>Status</th>
+                                <th>Approved By</th>
                                 <th>Picture Proof</th>
                                 <th>Action</th>
 
@@ -74,43 +75,39 @@
                                     <td>
                                         <span
                                             class="badge {{ $offrequest->status == 'approved' ? 'bg-success' : ($offrequest->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
-                                        <span
-                                            class="badge {{ $offrequest->status == 'approved' ? 'bg-success' : ($offrequest->status == 'rejected' ? 'bg-danger' : 'bg-secondary') }}">
                                             {{ ucfirst($offrequest->status) }}
                                         </span>
                                     </td>
                                     <td>
+                                        {{ $offrequest->approved_by ?? 'N/A' }}
+                                    </td>
+                                    <td>
                                         @if ($offrequest->image)
-                                            <!-- Menampilkan gambar jika ada -->
                                             <img src="{{ asset('uploads/' . $offrequest->image) }}" alt="Bukti Cuti"
                                                 width="100" style="cursor: pointer;" data-toggle="modal"
                                                 data-target="#imageModal"
                                                 onclick="showImage('{{ asset('uploads/' . $offrequest->image) }}')">
                                         @else
-                                            <!-- Menampilkan teks "No proof provided" jika tidak ada gambar -->
                                             <span class="text-muted" style="cursor: pointer;"
                                                 onclick="openUploadModal({{ $offrequest->id }})">
                                                 No proof provided
                                             </span>
                                         @endif
                                     </td>
-
                                     <td>
-                                        {{-- <a href="{{ route('offrequest.edit', $offrequest->offrequest_id) }}" class="btn btn-warning btn-sm">Edit</a> --}}
                                         <a class="btn btn-info btn-sm"
-                                        href="{{ route('offrequest.edit', $offrequest->offrequest_id) }}">
-                                        <i class="fas fa-pencil-alt"></i>
-                                        Edit
-                                    </a>
+                                            href="{{ route('offrequest.edit', $offrequest->offrequest_id) }}">
+                                            <i class="fas fa-pencil-alt"></i> Edit
+                                        </a>
                                     </td>
-
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="9" class="text-center">There are no leave requests available.</td>
+                                    <td colspan="10" class="text-center">There are no leave requests available.</td>
                                 </tr>
                             @endforelse
                         </tbody>
+
 
 
                     </table>

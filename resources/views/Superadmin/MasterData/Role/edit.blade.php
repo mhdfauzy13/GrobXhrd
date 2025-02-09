@@ -125,16 +125,16 @@
                                             <!-- Fitur lainnya (loop) -->
                                             @foreach ([
             'employee' => ['employee.index', 'employee.create', 'employee.edit', 'employee.delete'],
-            'payroll' => ['payroll.index',  'payroll.export'],
+            'payroll' => ['payroll.index', 'payroll.export'],
             'recruitment' => ['recruitment.index', 'recruitment.create', 'recruitment.edit', 'recruitment.delete'],
             'attendance' => ['attendance.index', 'attendance.scan'],
             'offrequest' => ['offrequest.index', 'offrequest.create', 'offrequest.approver'],
             'employeebook' => ['employeebook.index', 'employeebook.create', 'employeebook.edit', 'employeebook.delete', 'employeebook.detail'],
             'event' => ['event.index', 'event.lists', 'event.create', 'event.edit', 'event.delete'],
-            'overtime' => ['overtime.create','overtime.approvals'],
-
+            'overtime' => ['overtime.create', 'overtime.approvals'],
             'settings' => ['settings.index', 'settings.company', 'settings.deductions', 'settings.worksdays'],
             'resignationrequest' => ['resignationrequest.index', 'resignationrequest.create', 'resignationrequest.approver'],
+            'submitresign' => ['submitresign.index', 'submitresign.create'],
             'divisions' => ['divisions.index', 'divisions.create', 'divisions.edit', 'divisions.delete'],
         ] as $feature => $featurePermissions)
                                                 <div class="card mt-3">
@@ -187,7 +187,6 @@
         </section>
 
         <script>
-            // Select/Deselect All Permissions
             document.getElementById('selectAllPermissions').addEventListener('click', function() {
                 let checkboxes = document.querySelectorAll('.custom-control-input');
                 checkboxes.forEach(checkbox => {
@@ -195,13 +194,10 @@
                 });
             });
 
-            // Add event listeners for each feature select all
             const features = [
-
-
                 'dashboard', 'role', 'user', 'employee', 'payroll', 'recruitment', 'attendance',
-                'offrequest', 'employeebook', 'event', 'settings', 'overtime', 'divisions', 'resignationrequest'
-
+                'offrequest', 'employeebook', 'event', 'settings', 'overtime', 'divisions', 'resignationrequest',
+                'submitresign'
             ];
 
             features.forEach(feature => {

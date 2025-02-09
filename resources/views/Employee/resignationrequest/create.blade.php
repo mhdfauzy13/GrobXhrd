@@ -1,17 +1,7 @@
 @extends('layouts.app')
-
+@section('title', 'Resignation Requests/Create')
 @section('content')
     <div class="container-fluid">
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-xl-6">
-                        <h1>Create Resignation Request</h1>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <section class="content">
             <div class="container-fluid">
                 <div class="card card-primary">

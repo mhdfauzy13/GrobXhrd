@@ -78,9 +78,11 @@
                 @endcanany
 
                 @canany(['user.index', 'user.create', 'role.index', 'role.create'])
-                    <li class="nav-item">
-                        <a href="#"
-                            class="nav-link {{ request()->routeIs('datauser.index') || request()->routeIs('datauser.create') || request()->routeIs('role.index') || request()->routeIs('role.create') ? 'active' : '' }}">
+                    @php
+                        $isMasterDataOpen = request()->routeIs('datauser.*') || request()->routeIs('role.*');
+                    @endphp
+                    <li class="nav-item {{ $isMasterDataOpen ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ $isMasterDataOpen ? 'active' : '' }}">
                             <i class="nav-icon fas fa-folder"></i>
                             <p>
                                 Master Data
@@ -88,63 +90,39 @@
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
-                            @canany(['user.index', 'user.create'])
-                                <li class="nav-item">
-                                    @can('user.index')
-                                        <a href="{{ route('datauser.index') }}"
-                                            class="nav-link {{ request()->routeIs('datauser.index') ? 'active' : '' }}">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>User</p>
-                                        </a>
-                                    @elsecan('user.create')
-                                        <a href="{{ route('datauser.create') }}"
-                                            class="nav-link {{ request()->routeIs('datauser.create') ? 'active' : '' }}">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Create User</p>
-                                        </a>
-                                    @endcan
-                                </li>
-                            @endcanany
-
-                            @canany(['role.index', 'role.create'])
-                                <li class="nav-item">
-                                    @can('role.index')
-                                        <a href="{{ route('role.index') }}"
-                                            class="nav-link {{ request()->routeIs('role.index') ? 'active' : '' }}">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Role</p>
-                                        </a>
-                                    @elsecan('role.create')
-                                        <a href="{{ route('role.create') }}"
-                                            class="nav-link {{ request()->routeIs('role.create') ? 'active' : '' }}">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Create Role</p>
-                                        </a>
-                                    @endcan
-                                </li>
-                            @endcanany
+                            <li class="nav-item">
+                                <a href="{{ route('datauser.index') }}"
+                                    class="nav-link {{ request()->routeIs('datauser.index') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>User</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('role.index') }}"
+                                    class="nav-link {{ request()->routeIs('role.index') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Role</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 @endcanany
 
-
-
-                <!-- Employee Data menu, only visible if user has specific permissions -->
-
-
                 @canany(['employee.index', 'employee.create', 'attendance.index', 'attendance.scan', 'offrequest.index',
                     'offrequest.create', 'offrequest.approver', 'payroll.index', 'payroll.create', 'divisions.index',
-                    'divisions.create'])
-
-                    <li class="nav-item">
+                    'divisions.create', 'submitresign.index', 'submitresign.create', 'resignationrequest.index',
+                    'resignationrequest.create', 'resignationrequest.approver'])
+                    <li
+                        class="nav-item {{ request()->routeIs('employee.*') || request()->routeIs('attandance.*') || request()->routeIs('offrequest.*') || request()->routeIs('submitresign.*') || request()->routeIs('resignationrequest.*') || request()->routeIs('divisions.*') ? 'menu-open' : '' }}">
                         <a href="#"
-                            class="nav-link {{ request()->routeIs('employee.index') || request()->routeIs('employee.create') || request()->routeIs('attandance.index') || request()->routeIs('attandance.scanView') || request()->routeIs('offrequest.index') || request()->routeIs('offrequest.create') || request()->routeIs('offrequest.approver') ? 'active' : '' }}">
+                            class="nav-link {{ request()->routeIs('employee.*') || request()->routeIs('attandance.*') || request()->routeIs('offrequest.*') || request()->routeIs('submitresign.*') || request()->routeIs('resignationrequest.*') || request()->routeIs('divisions.*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-id-badge"></i>
                             <p>
                                 Employee Data
                                 <i class="fas fa-angle-left right"></i>
                             </p>
                         </a>
+
                         <ul class="nav nav-treeview">
                             @canany(['employee.index', 'employee.create'])
                                 <li class="nav-item">
@@ -188,31 +166,50 @@
                                 </li>
                             @endcanany
 
-                            <!-- Tampilkan menu Resignation Request jika user memiliki permission resignationrequest.index, resignationrequest.create, atau resignationrequest.approver -->
-                            @canany(['resignationrequest.index', 'resignationrequest.create',
-                                'resignationrequest.approver'])
+                            @canany(['resignationrequest.index', 'resignationrequest.create'])
                                 <li class="nav-item">
                                     <a href="{{ route('resignationrequest.index') }}"
                                         class="nav-link {{ request()->routeIs('resignationrequest.index') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Resignation Request</p>
                                     </a>
-                                </li>
-                            @endcanany
-
-                            <!-- Sidebar untuk Submit Resignation -->
-                            @canany(['submitresign.index', 'submitresign.create'])
-                                {{-- Hanya Manager dan Superadmin --}}
-                                <li class="nav-item">
-                                    <a href="{{ route('submitresign.index') }}"
-                                        class="nav-link {{ request()->routeIs('submitresign.index') ? 'active' : '' }}">
+                                @elsecan( 'resignationrequest.create')
+                                    <a href="{{ route('resignationrequest.create') }}"
+                                        class="nav-link {{ request()->routeIs('resignationrequest.create') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Submit Resignation</p>
+                                        <p>Resignation Request</p>
                                     </a>
                                 </li>
                             @endcanany
 
-                            <!-- Tampilkan menu Off Request jika user memiliki permission offrequest.index atau offrequest.create -->
+                            @canany(['resignationrequest.approver'])
+                                <li class="nav-item">
+                                    <a href="{{ route('resignationrequest.approver') }}"
+                                        class="nav-link {{ request()->routeIs('resignationrequest.approver') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Resignation Request Approval</p>
+                                    </a>
+                                </li>
+                            @endcanany
+
+                            @canany(['submitresign.index', 'submitresign.create'])
+                                <li class="nav-item">
+                                    @can('submitresign.index')
+                                        <a href="{{ route('submitresign.index') }}"
+                                            class="nav-link {{ request()->routeIs('submitresign.index') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Submit Resignation</p>
+                                        </a>
+                                    @elsecan('submitresign.create')
+                                        <a href="{{ route('submitresign.create') }}"
+                                            class="nav-link {{ request()->routeIs('submitresign.create') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Submit Resignation</p>
+                                        </a>
+                                    @endcan
+                                </li>
+                            @endcanany
+
                             @canany(['offrequest.index', 'offrequest.create'])
                                 <li class="nav-item">
                                     @can('offrequest.index')
@@ -237,7 +234,7 @@
                                     <a href="{{ route('offrequest.approver') }}"
                                         class="nav-link {{ request()->routeIs('offrequest.approver') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Off Request Approve</p>
+                                        <p>Off Request Approval</p>
                                     </a>
                                 </li>
                             @endcan
@@ -263,7 +260,6 @@
                     </li>
                 @endcanany
 
-                <!-- Recruitment menu, only visible if user has permission -->
                 @canany(['recruitment.index', 'recruitment.create'])
                     <li class="nav-item">
                         @can('recruitment.index')
@@ -313,13 +309,10 @@
                     <li class="nav-item">
                         <a href="{{ route('overtime.approvals') }}" class="nav-link ">
                             <i class="far fa-circle nav-icon"></i>
-                            <p>Overtime Approve</p>
+                            <p>Overtime Approval</p>
                         </a>
                     </li>
                 @endcan
-
-
-
 
                 @canany(['employeebook.index'])
                     <li class="nav-item menu-open">

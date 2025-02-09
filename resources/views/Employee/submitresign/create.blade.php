@@ -1,23 +1,13 @@
 <!-- View untuk halaman Create Submit Resignation -->
 @extends('layouts.app')
-
+@section('title', 'Submit Resignation/Create')
 @section('content')
     <div class="container-fluid">
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-xl-6">
-                        <h1>Submit Resignation</h1>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <section class="content">
             <div class="container-fluid">
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Submit Your Resignation Request</h3>
+                        <h3 class="card-title">Submit Resignation Request</h3>
                     </div>
 
                     <form method="POST" action="{{ route('submitresign.store') }}">

@@ -44,7 +44,7 @@
                                         <a class="btn btn-info btn-sm" href="{{ route('role.edit', $role->id) }}">
                                             <i class="fas fa-pencil-alt"></i> Edit
                                         </a>
-                                        @if ($role->name !== 'superadmin')
+                                        @if ($role->name !== 'Superadmin')
                                             <form action="{{ route('role.destroy', $role->id) }}" method="POST"
                                                 class="deleteForm" style="display:inline;">
                                                 @csrf

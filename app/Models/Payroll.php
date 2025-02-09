@@ -13,8 +13,10 @@ class Payroll extends Model
 
     protected $fillable = [
         'employee_id',
+        'employee_name',
         'month',
         'total_days_worked',
+        'total_absent',
         'total_days_off',
         'total_late_check_in',
         'total_early_check_out',
