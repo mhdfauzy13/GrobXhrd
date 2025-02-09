@@ -1,8 +1,7 @@
 @extends('layouts.app')
-
+@section('title', 'Resignation Requests/Approval')
 @section('content')
     <div class="container mt-4">
-        <!-- Card untuk Pending Resignation Requests -->
         <div class="card">
             <div class="card-header">
                 <h4>Resignation Requests Approval</h4>

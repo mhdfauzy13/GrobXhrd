@@ -66,7 +66,7 @@
 
     <script>
         let idleTime = 0;
-        const timeout = 30 * 60 * 1000; // 30 menit dalam milidetik
+        const timeout = 60 * 60 * 1000; // 1 jam dalam milidetik
 
         // Reset idle timer saat pengguna melakukan aktivitas
         function resetIdleTimer() {
@@ -81,11 +81,11 @@
         setInterval(() => {
             idleTime += 1000;
             if (idleTime >= timeout) {
-                alert('You will be logged out automatically due to inactivity.');
                 window.location.href = '{{ route('login') }}';
             }
         }, 1000);
     </script>
+
 
 
 </body>

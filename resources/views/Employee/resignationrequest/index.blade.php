@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Resignation Requests/Index')
 @section('content')
     <div class="container mt-4">
         <!-- Card Header -->
@@ -16,7 +16,7 @@
                 @endif
 
                 <!-- Button Create Resignation Request -->
-                @if ($role === 'manager' || $role === 'superadmin')
+                @if ($role === 'Manager' || $role === 'Superadmin' || $role === 'Employee')
                     @can('resignationrequest.create')
                         @if ($resignationsByUser->isEmpty() || $resignationsByUser->last()->status === 'rejected')
                             <div class="text-center mt-3">

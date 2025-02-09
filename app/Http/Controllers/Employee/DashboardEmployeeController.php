@@ -21,17 +21,17 @@ class DashboardEmployeeController extends Controller
         $currentMonth = Carbon::now()->month;
         $currentYear = Carbon::now()->year;
 
-        // Ambil data attendance karyawan untuk bulan saat ini
         $attendances = Attandance::where('employee_id', auth()->user()->employee_id)
             ->whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
-            ->paginate(10); // Batasi 10 data per halaman
+            ->orderBy('created_at', 'desc') // Urutkan berdasarkan created_at descending
+            ->paginate(10); 
 
-        // Ambil data offrequest karyawan untuk bulan saat ini
         $offrequests = Offrequest::where('user_id', auth()->user()->user_id)
             ->whereMonth('start_event', $currentMonth)
             ->whereYear('start_event', $currentYear)
-            ->paginate(10); // Batasi 10 data per halaman
+            ->orderBy('start_event', 'desc') // Urutkan berdasarkan start_event descending
+            ->paginate(10); 
 
         return view('Employee.dashboard.index', compact('attendances', 'offrequests'));
     }

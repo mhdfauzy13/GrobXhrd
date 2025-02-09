@@ -184,7 +184,7 @@ class RolesAndPermissionsSeeder extends Seeder
         // Pertama, pastikan employee Bunga Putri sudah ada di tabel Employee
         $bungadevtriEmployee = Employee::firstOrCreate(
             [
-                'email' => 'bungadevtri@gmail.com',
+                'email' => 'bunga111@gmail.com',
             ],
             [
                 'first_name' => 'Bunga',
@@ -220,13 +220,13 @@ class RolesAndPermissionsSeeder extends Seeder
         // Membuat pengguna untuk Bunga Putri
         $bungadevtri = User::updateOrCreate(
             [
-                'email' => 'bungadevtri@gmail.com',
+                'email' => 'bunga111@gmail.com',
             ],
             [
                 'name' => 'Bunga Putri',
                 'password' => Hash::make('password'),
                 'employee_id' => $bungadevtriEmployee->employee_id, // Relasi dengan data Employee
-            ]
+            ]  
         );
 
         // Assign role Manager ke Bunga Putri

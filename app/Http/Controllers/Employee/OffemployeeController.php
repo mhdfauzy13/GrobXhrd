@@ -7,11 +7,15 @@ use App\Mail\OffRequestStatusMail;
 use App\Models\Offrequest;
 use App\Models\User;
 use App\Notifications\OffRequestEmailNotification;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Google_Client;
+use Google_Service_Calendar;
+use Google_Service_Calendar_Event;
 
 class OffemployeeController extends Controller
 {
@@ -25,13 +29,13 @@ class OffemployeeController extends Controller
     public function index()
     {
         $totals = Offrequest::select('title', DB::raw('SUM(DATEDIFF(end_event, start_event) + 1) as total_days'))
-            ->where('user_id', auth()->user()->user_id) // Ganti id dengan user_id
+            ->where('user_id', auth()->user()->user_id) 
             ->where('status', 'approved')
             ->groupBy('title')
             ->get();
 
         $offrequests = Offrequest::with(['user', 'manager'])
-            ->where('user_id', auth()->user()->user_id) // Ganti id dengan user_id
+            ->where('user_id', auth()->user()->user_id)
             ->paginate(10);
 
         return view('Employee.Offrequest.index', compact('offrequests', 'totals'));
@@ -158,14 +162,20 @@ class OffemployeeController extends Controller
         return $imageName;
     }
 
-    public function approverIndex()
+    public function approverIndex(Request $request)
     {
-        $approverId = Auth::id();
+        $filterDate = $request->input('filter_date');
 
-        $offrequests = Offrequest::pending()->forManager($approverId)->get();
+        $offrequests = Offrequest::where('status', 'pending')
+            ->when($filterDate, function ($query) use ($filterDate) {
+                return $query->whereDate('start_event', $filterDate);
+            })
+            ->get();
 
-        $approvedRequests = Offrequest::where('manager_id', $approverId)
-            ->whereIn('status', ['approved', 'rejected'])
+        $approvedRequests = Offrequest::where('status', '!=', 'pending')
+            ->when($filterDate, function ($query) use ($filterDate) {
+                return $query->whereDate('start_event', $filterDate);
+            })
             ->get();
 
         return view('Employee.Offrequest.approve', compact('offrequests', 'approvedRequests'));
@@ -174,26 +184,69 @@ class OffemployeeController extends Controller
     public function approve($id)
     {
         $offrequest = Offrequest::findOrFail($id);
+
         $offrequest->update([
             'status' => 'approved',
-            'approver_id' => auth()->user()->user_id,
+            'approved_by' => auth()->user()->name,
         ]);
 
         Mail::to($offrequest->user->email)->send(new OffRequestStatusMail($offrequest, 'approved'));
 
-        return redirect()->route('offrequest.approver')->with('success', 'The Off Request has been successfully approved');
+        try {
+            // Konfigurasi Google Client
+            $client = new Google_Client();
+            $client->setApplicationName('Grobmart HRD App');
+            $client->setAuthConfig(storage_path('app/credentials/request-off-calendar-7d2f6a27c09a.json'));
+            $client->addScope(Google_Service_Calendar::CALENDAR);
+            $client->useApplicationDefaultCredentials();
+            $client->setAccessType('offline');
+
+            // Buat Service Google Calendar
+            $service = new Google_Service_Calendar($client);
+
+            // Ambil nama user dari relasi
+            $userName = $offrequest->user ? $offrequest->user->name : 'Unknown User';
+
+            // Data Event
+            $event = new Google_Service_Calendar_Event([
+                'summary' => 'Off - ' . $userName,
+                'description' => 'Leave Type: ' . $offrequest->title . "\n" . 'Description: ' . $offrequest->description,
+                'start' => [
+                    'dateTime' => Carbon::parse($offrequest->start_event)->format('Y-m-d\TH:i:sP'),
+                    'timeZone' => 'Asia/Jakarta',
+                ],
+                'end' => [
+                    'dateTime' => Carbon::parse($offrequest->end_event)->format('Y-m-d\TH:i:sP'),
+                    'timeZone' => 'Asia/Jakarta',
+                ],
+            ]);
+
+            // Masukkan ID Kalender secara langsung
+            $calendarId = 'grobmart.com_5pribbb1eta6qmfss7ouhbh8s8@group.calendar.google.com';
+
+            // Masukkan Event ke Google Calendar
+            $service->events->insert($calendarId, $event);
+
+            return redirect()->route('offrequest.approver')->with('success', 'The Off Request has been successfully approved and added to Google Calendar.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('offrequest.approver')
+                ->with('error', 'The Off Request was approved but could not be added to Google Calendar. Error: ' . $e->getMessage());
+        }
     }
 
     public function reject($id)
     {
         $offrequest = Offrequest::findOrFail($id);
+
+        // Ubah status pengajuan menjadi 'rejected' dan simpan nama approver
         $offrequest->update([
             'status' => 'rejected',
-            'approver_id' => auth()->user()->user_id,
+            'approved_by' => auth()->user()->name,
         ]);
 
         Mail::to($offrequest->user->email)->send(new OffRequestStatusMail($offrequest, 'rejected'));
 
-        return redirect()->route('offrequest.approver')->with('success', 'The Off Request has been successfully rejected');
+        return redirect()->route('offrequest.approver')->with('success', 'The Off Request has been successfully rejected.');
     }
 }

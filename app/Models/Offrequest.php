@@ -10,7 +10,7 @@ class Offrequest extends Model
     protected $primaryKey = 'offrequest_id';
     public $incrementing = false;
     protected $keyType = 'string';
-    protected $fillable = ['name', 'email', 'title', 'description', 'start_event', 'end_event', 'user_id', 'manager_id', 'status', 'approver_id', 'image'];
+    protected $fillable = ['name', 'email', 'title', 'description', 'start_event', 'end_event', 'user_id', 'manager_id', 'status','approved_by', 'approver_id', 'image'];
 
     protected $casts = [
         'start_event' => 'datetime',

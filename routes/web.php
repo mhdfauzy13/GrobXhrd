@@ -25,9 +25,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-
 Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
-
     Route::post('/logout', function () {
         auth()->logout();
         request()->session()->invalidate();
@@ -35,7 +33,7 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
 
         return redirect('/login');
     })->name('logout');
-    
+
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])
         ->name('dashboard.index')
@@ -110,10 +108,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('overtime.approvals')
             ->middleware('permission:overtime.approvals');
 
-        // Route::post('/overtimes/{id}/update-status', [OvertimeController::class, 'updateStatus'])
-        //     ->name('overtime.updateStatus')
-        //     ->middleware('permission:overtime.approvals');
-
         Route::post('/manager/overtimes/{id}/approve', [OvertimeController::class, 'approve'])
             ->name('overtime.approve')
             ->middleware('permission:overtime.approvals');
@@ -121,8 +115,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::post('/manager/overtimes/{id}/reject', [OvertimeController::class, 'reject'])
             ->name('overtime.reject')
             ->middleware('permission:overtime.approvals');
-
-
 
         // Payroll
         Route::get('/payrolls', [PayrollController::class, 'index'])
@@ -133,28 +125,13 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('payroll.updateStatus')
             ->middleware('permission:payroll.index');
 
-        // Route::post('/payroll/approve/{employee_id}', [PayrollController::class, 'approve'])
-        // ->name('payroll.approve')
-        // ->middleware('permission:payroll.index');
-
         Route::put('/payroll/approve/{id}', [PayrollController::class, 'approve'])
             ->name('payroll.approve')
             ->middleware('permission:payroll.index');
 
-
-
-
         Route::get('/payroll/export', [PayrollController::class, 'exportToCsv'])
             ->name('payroll.exports')
             ->middleware('permission:payroll.export');
-
-
-
-
-
-        // Route::get('/payrolls/exports', [PayrollController::class, 'exportToCsv'])
-        //     ->name('payroll.exports')
-        //     ->middleware('permission:payroll.index');
 
         // event
         Route::get('/events', [EventController::class, 'index'])
@@ -218,7 +195,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('employeebooks.searchEmployees')
             ->middleware('permission:employeebook.create');
 
-
         // Employee Books Routes
         Route::get('employeebooks', [EmployeeBooksController::class, 'index'])
             ->name('employeebooks.index')
@@ -251,7 +227,6 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::get('/employees/search', [EmployeeBooksController::class, 'searchEmployees'])
             ->name('employees.search')
             ->middleware('permission:employeebook.search');
-
 
         // Recruitment
         Route::get('/recruitment', [RecruitmentController::class, 'index'])
@@ -350,6 +325,19 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
         Route::delete('divisions/{division}', [DivisionController::class, 'destroy'])
             ->name('divisions.destroy')
             ->middleware('permission:divisions.delete');
+
+        Route::get('/submit-resignation', [SubmitResignationController::class, 'index'])
+            ->name('submitresign.index')
+            ->middleware('permission:submitresign.index');
+        Route::get('/submit-resignation/create', [SubmitResignationController::class, 'create'])
+            ->name('submitresign.create')
+            ->middleware('permission:submitresign.create');
+        Route::post('/submit-resignation', [SubmitResignationController::class, 'store'])
+            ->name('submitresign.store')
+            ->middleware('permission:submitresign.create');
+        Route::get('/employee/search', [SubmitResignationController::class, 'searchEmployees'])
+            ->name('employee.search')
+            ->middleware('permission:submitresign.index');
     });
 
     // Employee Routes
@@ -406,14 +394,12 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->middleware('permission:offrequest.approver');
 
         Route::get('/offrequest/{offrequest_id}/edit', [OffemployeeController::class, 'edit'])
-        ->name('offrequest.edit')
-        ->middleware('permission:offrequest.index');
-
+            ->name('offrequest.edit')
+            ->middleware('permission:offrequest.index');
 
         Route::put('/offrequest/{offrequest_id}', [OffemployeeController::class, 'update'])
             ->name('offrequest.update')
             ->middleware('permission:offrequest.index');
-
 
         // Resignation Request
         Route::get('/resignation', [ResignationRequestController::class, 'index'])
@@ -428,40 +414,15 @@ Route::middleware(['auth', 'checkRoleStatus'])->group(function () {
             ->name('resignationrequest.store')
             ->middleware('permission:resignationrequest.create');
 
+        Route::get('/resignation/approver', [ResignationRequestController::class, 'approver'])
+            ->name('resignationrequest.approver')
+            ->middleware('permission:resignationrequest.approver');
+
         Route::put('/resignation/{resignationrequest_id}/status', [ResignationRequestController::class, 'updateStatus'])
             ->name('resignationrequest.updateStatus')
             ->middleware('permission:resignationrequest.approver');
 
-
-
-        // Route::get('/resignation/approver', [ResignationRequestController::class, 'index'])
-        //     ->name('resignationrequest.approver')
-        //     ->middleware('permission:resignationrequest.approver');
-
-        Route::get('/resignation/approver', [ResignationRequestController::class, 'approver'])
-            ->name('resignationrequest.approver')
-            ->middleware('permission:resignationrequest.approver');
-    });
-    Route::middleware(['auth', 'role:manager|superadmin'])->group(function () {
-        Route::get('/submit-resignation', [SubmitResignationController::class, 'index'])
-            ->name('submitresign.index');
-
-        Route::get('/submit-resignation/create', [SubmitResignationController::class, 'create'])
-            ->name('submitresign.create');
-
-        Route::post('/submit-resignation', [SubmitResignationController::class, 'store'])
-            ->name('submitresign.store');
-
-        Route::get('/employee/search', [SubmitResignationController::class, 'searchEmployees'])
-            ->name('employee.search');
-
-        Route::put('/offrequest/{offrequest}/uploadImage', [OffemployeeController::class, 'uploadImage'])
-            ->name('offrequest.uploadImage');
-
-        // Route::post('offrequest/{id}/upload-image', [OffemployeeController::class, 'uploadImage'])
-        //     ->name('offrequest.uploadImage')
-        //     ->middleware('permission:offrequest.index');
-
+        Route::put('/offrequest/{offrequest}/uploadImage', [OffemployeeController::class, 'uploadImage'])->name('offrequest.uploadImage');
     });
 });
 
